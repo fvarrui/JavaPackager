@@ -161,9 +161,10 @@ public class PackageMojo extends AbstractMojo {
 								element(name("txtFileVersion"), "1.0.0.0"),
 								element(name("copyright"), "${project.organization.name}"),
 								element(name("fileDescription"), "${project.description}"),
-								element(name("productVersion"), "${project.version}"),
+								element(name("productVersion"), "${project.version}.0"),
 								element(name("txtProductVersion"), "${project.version}.0"),
 								element(name("productName"), "${project.name}"),
+								element(name("internalName"), "${project.name}"),
 								element(name("originalFilename"), "${project.name}.exe")
 								)
 						),
