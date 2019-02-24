@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Built-By: fvarrui
+Build-Jdk: 11.0.2
+Created-By: Maven Integration for Eclipse
+
