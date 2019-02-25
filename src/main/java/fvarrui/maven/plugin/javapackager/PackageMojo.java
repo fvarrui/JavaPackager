@@ -15,11 +15,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.zip.ZipFile;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.execution.MavenSession;
@@ -33,8 +31,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
-
-import com.google.common.io.Files;
 
 import fvarrui.maven.plugin.javapackager.utils.AdoptOpenJDKUtils;
 import fvarrui.maven.plugin.javapackager.utils.App;
@@ -57,6 +53,8 @@ public class PackageMojo extends AbstractMojo {
 	private ExecutionEnvironment env;
 
 	private App app;
+	
+	private File debFile;
 
 	@Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
 	private File outputDirectory;
@@ -84,6 +82,9 @@ public class PackageMojo extends AbstractMojo {
 
 	@Parameter(property = "mainClass", required = true)
 	private String mainClass;
+	
+	@Parameter(defaultValue = "false", property = "requireAdministrator", required = true)
+	private Boolean requireAdministrator;
 
 	@Parameter(defaultValue = "true", property = "bundleJre", required = true)
 	private Boolean bundleJre;
@@ -117,6 +118,7 @@ public class PackageMojo extends AbstractMojo {
 
 			createLinuxExecutable();
 			generateDebPackage();
+			generateRpmPackage();
 
 		}
 
@@ -128,6 +130,33 @@ public class PackageMojo extends AbstractMojo {
 			generateWindowsInstaller();
 		}
 
+	}
+
+	private void generateRpmPackage() throws MojoExecutionException  {
+		getLog().info("Generate RPM package...");
+		
+		if (!debFile.exists()) {
+			getLog().warn("Cannot convert DEB to RPM because " + debFile.getAbsolutePath() + " doesn't exist");
+			return;
+		}
+		
+		try {
+			// execute alien command to generate rpm package folder
+			ProcessUtils.exec(getLog(), "alien", "-g", "--to-rpm", debFile.getAbsolutePath());
+		} catch (MojoExecutionException e) {
+			getLog().warn("alien command execution failed", e);
+			return;
+		}
+		
+		try {
+			// rebuild rpm package
+			ProcessUtils.exec(getLog(), "rpmbuild", "--buildroot", "$(pwd)/$package", "--nodeps", "-bb", "$package/*.spec");
+		} catch (MojoExecutionException e) {
+			getLog().warn("rpmbuild command execution failed", e);
+			return;
+		}
+
+		
 	}
 
 	private App getApp() throws MojoExecutionException {
@@ -154,7 +183,6 @@ public class PackageMojo extends AbstractMojo {
 	}
 
 	private void createLinuxExecutable() throws MojoExecutionException {
-
 		getLog().info("Creating GNU/Linux executable...");
 
 		// concat startup.sh script + generated jar
@@ -174,9 +202,8 @@ public class PackageMojo extends AbstractMojo {
 
 	private void createWindowsExecutable() throws MojoExecutionException {
 		getLog().info("Creating Windows executable...");
-
 		
-		
+		// invoke launch4j plugin to generate windows executable
 		executeMojo(
 				plugin(
 						groupId("com.akathist.maven.plugins.launch4j"), 
@@ -194,9 +221,10 @@ public class PackageMojo extends AbstractMojo {
 								element(name("mainClass"), mainClass)
 								),
 						element(name("jre"), 
-								element(name("bundledJre64Bit"), "false"),
-								element(name("minVersion"), jreMinVersion) 
-
+								element(name("bundledJre64Bit"), bundleJre.toString()),
+								element(name("minVersion"), jreMinVersion), 
+								element(name("runtimeBits"), "64"), 
+								element(name("path"), "jre")
 								),
 						element(name("versionInfo"), 
 								element(name("fileVersion"), "1.0.0.0"),
@@ -217,39 +245,33 @@ public class PackageMojo extends AbstractMojo {
 		getLog().info("Generating Windows installer...");
 
 		// copy ico file to assets folder
-		try {
-			Files.copy(iconFile, new File(assetsFolder, app.getName() + ".ico"));
-		} catch (IOException e) {
-			throw new MojoExecutionException(e.getMessage(), e);
-		}
+		FileUtils.copy(iconFile, new File(assetsFolder, app.getName() + ".ico"));
 
 		// generate iss file from velocity template
 		File issFile = new File(assetsFolder, app.getName() + ".iss");
-		try {
-			VelocityUtils.render("windows/iss.vtl", issFile, "app", app);
-		} catch (IOException e) {
-			throw new MojoExecutionException(e.getMessage(), e);
-		}
+		VelocityUtils.render("windows/iss.vtl", issFile, "app", app);
 
 		// generate windows installer with inno setup command line compiler
-		try {
-			ProcessUtils.exec(getLog(), "iscc", "/O" + outputDirectory.getAbsolutePath(), "/F" + executable.getName(), issFile.getAbsolutePath());
-		} catch (IOException | InterruptedException e) {
-			getLog().warn(e.getMessage(), e);
-		}
+		ProcessUtils.exec(getLog(), "iscc", "/O" + outputDirectory.getAbsolutePath(), "/F" + executable.getName(), issFile.getAbsolutePath());
 
 	}
 
 	private void generateDebPackage() throws MojoExecutionException {
 		getLog().info("Generating DEB package ...");
+		
+		// generate desktop file from velocity template
+		File desktopFile = new File(assetsFolder, app.getName() + ".desktop");
+		VelocityUtils.render("linux/desktop.vtl", desktopFile, "app", app);
 
+		// generate policy file from velocity template
+		File policyFile = new File(assetsFolder, app.getName() + ".policy");
+		VelocityUtils.render("linux/policy.vtl", policyFile, "app", app);
+
+		// generate deb control file from velocity template
 		File controlFile = new File(assetsFolder, "control");
-
-		try {
-			VelocityUtils.render("linux/control.vtl", controlFile, "app", app);
-		} catch (IOException e) {
-			throw new MojoExecutionException(e.getMessage(), e);
-		}
+		VelocityUtils.render("linux/control.vtl", controlFile, "app", app);
+		
+		debFile = new File(outputDirectory.getAbsolutePath(), app.getName() + "_" + app.getVersion() + ".deb");
 
 		// invoke plugin to generate deb package
 		executeMojo(
@@ -286,7 +308,7 @@ public class PackageMojo extends AbstractMojo {
 							/* desktop file */
 							element(name("data"), 
 									element(name("type"), "file"),
-									element(name("src"), outputDirectory.getAbsolutePath() + "/assets/${project.name}.desktop"),
+									element(name("src"), desktopFile.getAbsolutePath()),
 									element(name("mapper"), 
 											element(name("type"), "perm"),
 											element(name("prefix"), "/usr/share/applications")
@@ -295,7 +317,7 @@ public class PackageMojo extends AbstractMojo {
 							/* polkit policy file (run as root) */
 							element(name("data"), 
 									element(name("type"), "file"),
-									element(name("src"), outputDirectory.getAbsolutePath() + "/assets/${project.name}.policy"),
+									element(name("src"), policyFile.getAbsolutePath()),
 									element(name("mapper"), 
 											element(name("type"), "perm"),
 											element(name("prefix"), "/usr/share/polkit-1/actions")
@@ -311,7 +333,7 @@ public class PackageMojo extends AbstractMojo {
 											element(name("prefix"), "/opt/${project.name}/jre/bin")
 											)
 									),
-							/* symbolic link to app binary */
+							/* symbolic link in /usr/local/bin to app binary */
 							element(name("data"), 
 									element(name("type"), "link"),
 									element(name("linkTarget"), "/opt/${project.name}/${project.name}"),
@@ -332,6 +354,7 @@ public class PackageMojo extends AbstractMojo {
 
 		File libsFolder = new File(appFolder, "libs");
 
+		// invoke plugin to copy dependecies to app libs folder
 		executeMojo(
 				plugin(
 						groupId("org.apache.maven.plugins"), 
@@ -350,12 +373,13 @@ public class PackageMojo extends AbstractMojo {
 		
 		getLog().info("Downloading JRE ...");
 
+		// translate jre url release to download url
 		String downloadUrl = AdoptOpenJDKUtils.getDownloadUrl(jreUrl);
 		
 		File jreFolder = new File(assetsFolder.getAbsolutePath(), "jre");
 		File zipFile = new File(jreFolder, new File(downloadUrl).getName());
 		
-		// download jre
+		// invoke plugin to download jre
 		executeMojo(
 				plugin(
 						groupId("com.googlecode.maven-download-plugin"), 
@@ -372,7 +396,7 @@ public class PackageMojo extends AbstractMojo {
 		// get jre folder name into zip file
 		String zippedJreFolder = FileUtils.getZipContent(zipFile);
 		
-		// unzip jre into app folder and rename it as jre
+		// invoke plugin to unzip jre into app folder and rename it as jre
 		executeMojo(
 				plugin(
 						groupId("org.codehaus.mojo"), 
