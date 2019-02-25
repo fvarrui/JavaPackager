@@ -1,27 +1,32 @@
-#define MyAppName "${iss.appName}"
-#define MyAppVersion "${iss.appVersion}"
-#define MyAppPublisher "${iss.appPublisher}"
-#define MyAppURL "${iss.appUrl}"
-#define MyAppExeName "${iss.appName}.exe"
-#define MyAppFolder "${iss.appName}"
+\#define MyAppName "${app.name}"
+\#define MyAppVersion "${app.version}"
+\#define MyAppPublisher "${app.organizationName}"
+#if($app.url)
+\#define MyAppURL "${app.url}"
+#end
+\#define MyAppExeName "${app.name}.exe"
+\#define MyAppFolder "${app.name}"
 
 [Setup]
-AppId={{#MyAppName}}
+AppId={{{#MyAppName}}}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
+#if($app.url)
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
+#end
 DefaultDirName={pf}\{#MyAppFolder}
 DisableDirPage=yes
 DisableProgramGroupPage=yes
 DisableFinishedPage=yes
 PrivilegesRequired=admin
-LicenseFile=..\..\LICENSE
-OutputBaseFilename=teuton-panel-setup
-SetupIconFile=teuton-panel.ico
+#if($app.license)
+LicenseFile=${app.license}
+#end
+SetupIconFile=${app.name}.ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
 Compression=lzma
 SolidCompression=yes
@@ -35,7 +40,7 @@ Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "..\..\target\app\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\app\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{commonprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
