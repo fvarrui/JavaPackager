@@ -87,6 +87,9 @@ public class PackageMojo extends AbstractMojo {
 	
 	@Parameter(defaultValue = "false", property = "requireAdministrator", required = true)
 	private Boolean requireAdministrator;
+	
+	@Parameter(defaultValue = "", property = "organizationEmail", required = true)
+	private String organizationEmail;
 
 	@Parameter(defaultValue = "true", property = "bundleJre", required = true)
 	private Boolean bundleJre;
@@ -169,6 +172,8 @@ public class PackageMojo extends AbstractMojo {
 		app.setVersion(mavenProject.getVersion());
 		app.setDescription(mavenProject.getDescription());
 		app.setOrganizationName(mavenProject.getOrganization().getName());
+		app.setAdministratorRequired(requireAdministrator);
+		app.setOrganizationEmail(organizationEmail);
 		
 		try {
 			app.setUrl(new URL(mavenProject.getOrganization().getUrl()));
