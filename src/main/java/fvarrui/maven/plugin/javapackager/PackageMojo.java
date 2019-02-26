@@ -155,9 +155,12 @@ public class PackageMojo extends AbstractMojo {
 			return;
 		}
 		
+		File packageFolder = new File(assetsFolder, app.getName() + "-" + app.getVersion());
+		File specFile = new File(packageFolder, app.getName() + "-" + app.getVersion() + "-2.spec");
+		
 		try {
 			// rebuild rpm package
-			ProcessUtils.exec(getLog(), assetsFolder, "rpmbuild", "--buildroot", FilenameUtils.getBaseName(debFile.getName()), "--nodeps", "-bb", new File(assetsFolder, "*.spec").getAbsolutePath());
+			ProcessUtils.exec(getLog(), assetsFolder, "rpmbuild", "--buildroot", FilenameUtils.getBaseName(debFile.getName()), "--nodeps", "-bb", specFile.getAbsolutePath());
 		} catch (MojoExecutionException e) {
 			getLog().warn("rpmbuild command execution failed", e);
 			return;
