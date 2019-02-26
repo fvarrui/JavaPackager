@@ -32,6 +32,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.apache.velocity.shaded.commons.io.FilenameUtils;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import fvarrui.maven.plugin.javapackager.utils.AdoptOpenJDKUtils;
@@ -124,7 +125,7 @@ public class PackageMojo extends AbstractMojo {
 
 			createLinuxExecutable();
 			generateDebPackage();
-//			generateRpmPackage();
+			generateRpmPackage();
 
 		}
 
@@ -148,7 +149,7 @@ public class PackageMojo extends AbstractMojo {
 		
 		try {
 			// execute alien command to generate rpm package folder
-			ProcessUtils.exec(getLog(), "alien", "-g", "--to-rpm", debFile.getAbsolutePath());
+			ProcessUtils.exec(getLog(), assetsFolder, "alien", "-g", "--to-rpm", debFile.getAbsolutePath());
 		} catch (MojoExecutionException e) {
 			getLog().warn("alien command execution failed", e);
 			return;
@@ -156,7 +157,7 @@ public class PackageMojo extends AbstractMojo {
 		
 		try {
 			// rebuild rpm package
-			ProcessUtils.exec(getLog(), "rpmbuild", "--buildroot", "$(pwd)/$package", "--nodeps", "-bb", "$package/*.spec");
+			ProcessUtils.exec(getLog(), assetsFolder, "rpmbuild", "--buildroot", FilenameUtils.getBaseName(debFile.getName()), "--nodeps", "-bb", new File(assetsFolder, "*.spec").getAbsolutePath());
 		} catch (MojoExecutionException e) {
 			getLog().warn("rpmbuild command execution failed", e);
 			return;
