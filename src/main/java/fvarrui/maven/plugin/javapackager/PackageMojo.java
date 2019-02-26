@@ -34,6 +34,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
+import com.google.common.io.Files;
+
 import fvarrui.maven.plugin.javapackager.utils.AdoptOpenJDKUtils;
 import fvarrui.maven.plugin.javapackager.utils.App;
 import fvarrui.maven.plugin.javapackager.utils.FileUtils;
@@ -165,7 +167,7 @@ public class PackageMojo extends AbstractMojo {
 			return;
 		}
 
-		// rename generated rpm package
+		// FIXME rename generated rpm package
 		File rpmFile = new File(assetsFolder, app.getName() + "-" + app.getVersion() + "-2.x86_64.rpm");
 		rpmFile.renameTo(new File(app.getName() + "-" + app.getVersion() + ".rpm"));
 		
