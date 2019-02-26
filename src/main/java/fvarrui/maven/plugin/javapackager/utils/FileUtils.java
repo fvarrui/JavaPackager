@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.zip.ZipFile;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.plexus.util.IOUtil;
@@ -41,16 +40,12 @@ public class FileUtils {
 		}
 	}
 	
-	public static String getZipContent(File zipFile) throws MojoExecutionException {
-		String zippedJreFolder = null;
+	public static void move(File from, File to) throws MojoExecutionException {
 		try {
-			ZipFile zip = new ZipFile(zipFile);
-			zippedJreFolder = zip.entries().nextElement().getName();		
-			zip.close();
+			Files.move(from, to);
 		} catch (IOException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
-		return zippedJreFolder;
 	}
 
 }

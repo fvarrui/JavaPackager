@@ -3,5 +3,9 @@ SCRIPTPATH="$(dirname "$(readlink -f "$0")")"
 JAVA=$SCRIPTPATH/jre/bin/java
 TEUTONPATH=$SCRIPTPATH/teuton-panel
 GDKBACKEND=x11
+#if($app.administratorRequired)
 pkexec $JAVA -jar $TEUTONPATH $@
+#else
+$JAVA -jar $TEUTONPATH $@
+#end
 exit 0

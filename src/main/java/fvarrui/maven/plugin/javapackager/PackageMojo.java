@@ -18,6 +18,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Optional;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.execution.MavenSession;
@@ -101,13 +103,14 @@ public class PackageMojo extends AbstractMojo {
 		app = getApp();
 
 		copyAllDependencies();
-		downloadJre();
+		createCustomizedJre();
+//		downloadJre();
 
 		if (SystemUtils.IS_OS_MAC_OSX) {
 
 			if (iconFile == null) iconFile = new File("assets/mac", mavenProject.getName() + ".icns");
 
-			createLinuxExecutable();
+			createMacExecutable();
 		}
 
 		if (SystemUtils.IS_OS_LINUX) {
@@ -118,7 +121,7 @@ public class PackageMojo extends AbstractMojo {
 
 			createLinuxExecutable();
 			generateDebPackage();
-			generateRpmPackage();
+//			generateRpmPackage();
 
 		}
 
@@ -181,17 +184,47 @@ public class PackageMojo extends AbstractMojo {
 		}
 		return app;
 	}
+	
+	private void createMacExecutable() throws MojoExecutionException {
+		getLog().info("Creating Mac OS X executable...");
+
+		// concat mac startup.sh script + generated jar
+		try {
+			
+			// generate startup.sh script to boot java app
+			File startupFile = new File(assetsFolder, "startup.sh");
+			VelocityUtils.render("mac/startup.sh.vtl", startupFile, "app", app);
+
+			// open stream to files
+			InputStream startup = new FileInputStream(startupFile);
+			InputStream jar = new FileInputStream(jarFile);
+			FileOutputStream binary = new FileOutputStream(executable);
+			
+			// concat files in binary
+			FileUtils.concat(binary, startup, jar);
+			
+		} catch (FileNotFoundException e) {
+			throw new MojoExecutionException(e.getMessage(), e);
+		}
+
+	}
 
 	private void createLinuxExecutable() throws MojoExecutionException {
 		getLog().info("Creating GNU/Linux executable...");
 
-		// concat startup.sh script + generated jar
+		// concat linux startup.sh script + generated jar
 		try {
 			
-			InputStream startup = getClass().getResourceAsStream("/linux/startup.sh");
+			// generate startup.sh script to boot java app
+			File startupFile = new File(assetsFolder, "startup.sh");
+			VelocityUtils.render("linux/startup.sh.vtl", startupFile, "app", app);
+
+			// open stream to files
+			InputStream startup = new FileInputStream(startupFile);
 			InputStream jar = new FileInputStream(jarFile);
 			FileOutputStream binary = new FileOutputStream(executable);
 			
+			// concat files in binary
 			FileUtils.concat(binary, startup, jar);
 			
 		} catch (FileNotFoundException e) {
@@ -202,6 +235,14 @@ public class PackageMojo extends AbstractMojo {
 
 	private void createWindowsExecutable() throws MojoExecutionException {
 		getLog().info("Creating Windows executable...");
+		
+		// generate manifest file to require administrator privileges
+		File manifestFile = null;
+		if (requireAdministrator) {
+			// generate manifest file from velocity template
+			manifestFile = new File(assetsFolder, app.getName() + ".exe.manifest");
+			VelocityUtils.render("windows/exe.manifest.vtl", manifestFile, "app", app);
+		}
 		
 		// invoke launch4j plugin to generate windows executable
 		executeMojo(
@@ -217,6 +258,7 @@ public class PackageMojo extends AbstractMojo {
 						element(name("manifest"), ""),
 						element(name("outfile"), executable.getAbsolutePath() + ".exe"),
 						element(name("icon"), iconFile.getAbsolutePath()),
+						element(name("manifest"), requireAdministrator ? manifestFile.getAbsolutePath() : ""),
 						element(name("classPath"), 
 								element(name("mainClass"), mainClass)
 								),
@@ -252,8 +294,7 @@ public class PackageMojo extends AbstractMojo {
 		VelocityUtils.render("windows/iss.vtl", issFile, "app", app);
 
 		// generate windows installer with inno setup command line compiler
-		ProcessUtils.exec(getLog(), "iscc", "/O" + outputDirectory.getAbsolutePath(), "/F" + executable.getName(), issFile.getAbsolutePath());
-
+		ProcessUtils.exec(getLog(), "iscc", "/O" + outputDirectory.getAbsolutePath(), "/F" + app.getName() + "_" + app.getVersion(), issFile.getAbsolutePath());
 	}
 
 	private void generateDebPackage() throws MojoExecutionException {
@@ -368,6 +409,26 @@ public class PackageMojo extends AbstractMojo {
 				env);
 	}
 	
+	private void createCustomizedJre() throws MojoExecutionException {
+		if (!bundleJre) return;
+		
+		getLog().info("Create customized JRE ...");
+		
+		File libsFolder = new File(appFolder, "libs");
+		File jreFolder = new File(appFolder, "jre");
+		
+		// determine required modules for libs and app jar
+		String modules = ProcessUtils.exec(getLog(), "jdeps", "--print-module-deps", "--class-path", new File(libsFolder, "*").getAbsolutePath(), jarFile.getAbsolutePath());
+		modules += ",java.scripting,jdk.unsupported"; // add required modules
+		
+		// generate customized jre using modules
+		File modulesDir = new File(System.getProperty("java.home"), "jmods");
+		jreFolder.delete();
+		ProcessUtils.exec(getLog(), "jlink", "--module-path", modulesDir.getAbsolutePath(), "--add-modules", modules, "--output", jreFolder.getAbsolutePath());
+		
+	}
+	
+	@SuppressWarnings("unused")
 	private void downloadJre() throws MojoExecutionException {
 		if (!bundleJre) return;
 		
@@ -376,8 +437,7 @@ public class PackageMojo extends AbstractMojo {
 		// translate jre url release to download url
 		String downloadUrl = AdoptOpenJDKUtils.getDownloadUrl(jreUrl);
 		
-		File jreFolder = new File(assetsFolder.getAbsolutePath(), "jre");
-		File zipFile = new File(jreFolder, new File(downloadUrl).getName());
+		File destFolder = new File(assetsFolder.getAbsolutePath(), "jre");
 		
 		// invoke plugin to download jre
 		executeMojo(
@@ -389,31 +449,20 @@ public class PackageMojo extends AbstractMojo {
 				goal("wget"),
 				configuration(
 						element(name("uri"), downloadUrl),
-						element(name("outputDirectory"), jreFolder.getAbsolutePath())
+						element(name("unpack"), "true"),
+						element(name("outputDirectory"), destFolder.getAbsolutePath())
 						),
 				env);
+
+		// locate jre unpacked folder
+		Optional<File> jre = Arrays.asList(destFolder.listFiles()).stream().filter(f -> f.isDirectory()).findFirst();
+		if (!jre.isPresent()) {
+			throw new MojoExecutionException("Unpacked JRE folder not found in " + destFolder.getAbsolutePath());
+		}
+		File unpackedJre = jre.get(); 
 		
-		// get jre folder name into zip file
-		String zippedJreFolder = FileUtils.getZipContent(zipFile);
-		
-		// invoke plugin to unzip jre into app folder and rename it as jre
-		executeMojo(
-				plugin(
-						groupId("org.codehaus.mojo"), 
-						artifactId("truezip-maven-plugin"), 
-						version("1.2")
-						),
-				goal("copy"),
-				configuration(
-						element(name("files"), 
-								element(name("file"), 
-										element(name("source"), zipFile.getAbsolutePath() + "/" + zippedJreFolder),
-										element(name("outputDirectory"), appFolder.getAbsolutePath() ),
-										element(name("destName"), "jre")
-										)
-								)
-						),
-				env);
+		// move unpacked jre to app folder
+		FileUtils.move(unpackedJre, new File(appFolder, "jre"));
 
 	}
 

@@ -11,6 +11,7 @@ public class App {
 	private String organizationName;
 	private String organizationEmail;
 	private String license;
+	private Boolean administratorRequired;
 
 	public String getName() {
 		return name;
@@ -66,6 +67,14 @@ public class App {
 
 	public void setLicense(String license) {
 		this.license = license;
+	}
+
+	public Boolean isAdministratorRequired() {
+		return administratorRequired;
+	}
+
+	public void setAdministratorRequired(Boolean administratorRequired) {
+		this.administratorRequired = administratorRequired;
 	}
 
 }
