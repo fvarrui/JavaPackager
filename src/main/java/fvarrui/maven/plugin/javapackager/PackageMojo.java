@@ -160,7 +160,7 @@ public class PackageMojo extends AbstractMojo {
 		
 		try {
 			// rebuild rpm package
-			ProcessUtils.exec(getLog(), assetsFolder, "rpmbuild", "--buildroot", FilenameUtils.getBaseName(debFile.getName()), "--nodeps", "-bb", specFile.getAbsolutePath());
+			ProcessUtils.exec(getLog(), assetsFolder, "rpmbuild", "--buildroot", packageFolder.getAbsolutePath(), "--nodeps", "-bb", specFile.getAbsolutePath());
 		} catch (MojoExecutionException e) {
 			getLog().warn("rpmbuild command execution failed", e);
 			return;
