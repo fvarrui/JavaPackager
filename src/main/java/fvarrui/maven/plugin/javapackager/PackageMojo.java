@@ -147,7 +147,7 @@ public class PackageMojo extends AbstractMojo {
 		}
 		
 		try {
-			// execute alien command to generate rpm package folder
+			// execute alien command to generate rpm package folder from deb file
 			ProcessUtils.exec(getLog(), assetsFolder, "alien", "-g", "--to-rpm", debFile.getAbsolutePath());
 		} catch (MojoExecutionException e) {
 			getLog().warn("alien command execution failed", e);
@@ -165,6 +165,9 @@ public class PackageMojo extends AbstractMojo {
 			return;
 		}
 
+		// rename generated rpm package
+		File rpmFile = new File(assetsFolder, app.getName() + "-" + app.getVersion() + "-2.x86_64.rpm");
+		rpmFile.renameTo(new File(app.getName() + "-" + app.getVersion() + ".rpm"));
 		
 	}
 
