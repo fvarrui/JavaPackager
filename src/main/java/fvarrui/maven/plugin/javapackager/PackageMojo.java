@@ -88,7 +88,7 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(defaultValue = "false", property = "requireAdministrator", required = true)
 	private Boolean requireAdministrator;
 	
-	@Parameter(defaultValue = "", property = "organizationEmail", required = true)
+	@Parameter(defaultValue = "", property = "organizationEmail", required = false)
 	private String organizationEmail;
 
 	@Parameter(defaultValue = "true", property = "bundleJre", required = true)
