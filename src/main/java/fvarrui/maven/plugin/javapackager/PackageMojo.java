@@ -73,7 +73,7 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${project.build.directory}/app/${project.name}", property = "executable", required = true)
 	private File executable;
 	
-	@Parameter(property = "jreUrl", required = true)
+	@Parameter(property = "jreUrl", required = false)
 	private URL jreUrl;
 
 	@Parameter(property = "iconFile")
