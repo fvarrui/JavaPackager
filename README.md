@@ -12,17 +12,15 @@ git clone https://github.com/fvarrui/JavaPackager.git
 cd JavaPackager
 ```
 
-2. Compile and package the project:
+2. Compile, package and install the plugin in your local repositoriy:
 
 ```bash
 mvn install
 ```
 
-It installs  JavaPackager Maven plugin in your local repository.
-
 ### How to use the plugin
 
-Add the following `plugin` to your `pom.xml`.
+Add the following `plugin` tag to your `pom.xml`.
 
 ```xml
 <plugin>
@@ -37,6 +35,8 @@ Add the following `plugin` to your `pom.xml`.
             </goals>
             <configuration>
                 <mainClass>path.to.your.mainClass</mainClass>
+                <bundleJre>true|false</bunleJre>
+                <administratorRequired>true|false</administratorRequired>
             </configuration>
         </execution>
     </executions>
@@ -45,16 +45,29 @@ Add the following `plugin` to your `pom.xml`.
 
 Where:
 
-| Property  | Description                       |
-| --------- | --------------------------------- |
-| mainClass | Full path to your app main class. |
+| Property                | Description                                          |
+| ----------------------- | ---------------------------------------------------- |
+| `mainClass`             | Full path to your app main class.                    |
+| `bundleJre`             | Embed a customized JRE with the app.                 |
+| `administratorRequired` | If true, app will run with administrator privileges. |
+
+Some assets, like app icons, must to be located in:
+
+```
+<project>
+└── assets
+	├── linux
+	│   └── projectname.png		# on GNU/Linux it has to be a png image
+	├── macosx
+	│   └── projectname.icns	# on Mac OS X it has to be a icns file
+	└── windows
+	    └── projectname.ico		# on Windows it has to be a ico file
+```
 
 By default it will generate next artifacts:
 
 - A native application in `target/app` directory with a bundled JRE.
-- A `project-name_x.y.z.deb` package file on GNU/Linux. 
-- A `project-name_x.y.z.rpm` package file on GNU/Linux.
-- A `project-name_x.y.z.exe` installer file on Windows.
-- A `project-name_x.y.z.dmg` installer file on Mac OS X.
-
-> **x.y.z** is your project version number (e.g. 1.2.3).
+- A `projectname_projectversion.deb` package file on GNU/Linux. 
+- A `projectname_projectversion.rpm` package file on GNU/Linux (requires alien && rpmbuild).
+- A `projectname_projectversion.exe` installer file on Windows.
+- A `projectname_projectversion.dmg` installer file on Mac OS X *[coming soon]*
