@@ -1,11 +1,11 @@
 #!/bin/sh
 SCRIPTPATH="$(dirname "$(readlink -f "$0")")"
 JAVA=$SCRIPTPATH/jre/bin/java
-TEUTONPATH=$SCRIPTPATH/teuton-panel
+BINARY=$SCRIPTPATH/${app.name}
 GDKBACKEND=x11
 #if($app.administratorRequired)
-pkexec $JAVA -jar $TEUTONPATH $@
+pkexec $JAVA -jar $BINARY $@
 #else
-$JAVA -jar $TEUTONPATH $@
+$JAVA -jar $BINARY $@
 #end
 exit 0
