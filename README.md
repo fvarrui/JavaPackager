@@ -64,9 +64,11 @@ Some assets, like app icons, must to be located in:
 	    └── projectname.ico		# on Windows it has to be a ico file
 ```
 
-By default it will generate next artifacts:
+>  Where **projectname** corresponds to `name` property in `pom.xml`.
 
-- A native application in `target/app` directory with a bundled JRE.
+By default it will generate next artifacts in `target ` folder:
+
+- A native application in `app` directory with a bundled JRE.
 - A `projectname_projectversion.deb` package file on GNU/Linux. 
 - A `projectname_projectversion.rpm` package file on GNU/Linux (requires alien && rpmbuild).
 - A `projectname_projectversion.exe` installer file on Windows.
