@@ -34,8 +34,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
-import com.google.common.io.Files;
-
 import fvarrui.maven.plugin.javapackager.utils.AdoptOpenJDKUtils;
 import fvarrui.maven.plugin.javapackager.utils.App;
 import fvarrui.maven.plugin.javapackager.utils.FileUtils;
