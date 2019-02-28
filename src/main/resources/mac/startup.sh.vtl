@@ -1,6 +1,6 @@
 #!/bin/sh
 SCRIPTPATH="$(dirname "$(readlink "$0")")"
 JAVA=$SCRIPTPATH/jre/bin/java
-TEUTONPATH=$SCRIPTPATH/teuton-panel
-$JAVA -jar $TEUTONPATH $@
+BINARY=$SCRIPTPATH/teuton-panel
+$JAVA -jar $BINARY $@
 exit 0
