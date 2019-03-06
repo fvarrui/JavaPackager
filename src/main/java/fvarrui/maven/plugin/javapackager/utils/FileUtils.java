@@ -36,7 +36,7 @@ public class FileUtils {
 			dest.close();
 
 		} catch (IOException e) {
-			throw new MojoExecutionException("Error concatenating linux/startup.sh and runnable jar file", e);
+			throw new MojoExecutionException("Error concatenating streams", e);
 		}
 	}
 	
