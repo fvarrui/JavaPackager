@@ -85,8 +85,8 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(property = "mainClass", required = true)
 	private String mainClass;
 	
-	@Parameter(defaultValue = "false", property = "requireAdministrator", required = true)
-	private Boolean requireAdministrator;
+	@Parameter(defaultValue = "false", property = "administratorRequired", required = true)
+	private Boolean administratorRequired;
 	
 	@Parameter(defaultValue = "", property = "organizationEmail", required = false)
 	private String organizationEmail;
@@ -167,7 +167,7 @@ public class PackageMojo extends AbstractMojo {
 
 		// FIXME rename generated rpm package
 		File rpmFile = new File(assetsFolder, app.getName() + "-" + app.getVersion() + "-2.x86_64.rpm");
-		rpmFile.renameTo(new File(app.getName() + "-" + app.getVersion() + ".rpm"));
+		rpmFile.renameTo(new File(app.getName() + "_" + app.getVersion() + ".rpm"));
 		
 	}
 
@@ -178,7 +178,7 @@ public class PackageMojo extends AbstractMojo {
 		app.setVersion(mavenProject.getVersion());
 		app.setDescription(mavenProject.getDescription());
 		app.setOrganizationName(mavenProject.getOrganization().getName());
-		app.setAdministratorRequired(requireAdministrator);
+		app.setAdministratorRequired(administratorRequired);
 		app.setOrganizationEmail(organizationEmail);
 		
 		try {
@@ -251,7 +251,7 @@ public class PackageMojo extends AbstractMojo {
 		
 		// generate manifest file to require administrator privileges
 		File manifestFile = null;
-		if (requireAdministrator) {
+		if (administratorRequired) {
 			// generate manifest file from velocity template
 			manifestFile = new File(assetsFolder, app.getName() + ".exe.manifest");
 			VelocityUtils.render("windows/exe.manifest.vtl", manifestFile, "app", app);
@@ -271,7 +271,7 @@ public class PackageMojo extends AbstractMojo {
 						element(name("manifest"), ""),
 						element(name("outfile"), executable.getAbsolutePath() + ".exe"),
 						element(name("icon"), iconFile.getAbsolutePath()),
-						element(name("manifest"), requireAdministrator ? manifestFile.getAbsolutePath() : ""),
+						element(name("manifest"), administratorRequired ? manifestFile.getAbsolutePath() : ""),
 						element(name("classPath"), 
 								element(name("mainClass"), mainClass)
 								),
