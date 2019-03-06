@@ -214,6 +214,9 @@ public class PackageMojo extends AbstractMojo {
 			// concat files in binary
 			FileUtils.concat(binary, startup, jar);
 			
+			// set execution permissions
+			executable.setExecutable(true);
+			
 		} catch (FileNotFoundException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
@@ -239,6 +242,9 @@ public class PackageMojo extends AbstractMojo {
 			
 			// concat files in binary
 			FileUtils.concat(binary, startup, jar);
+			
+			// set execution permissions
+			executable.setExecutable(true);
 			
 		} catch (FileNotFoundException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
