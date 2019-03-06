@@ -16,10 +16,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.execution.MavenSession;
@@ -34,9 +32,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
-import fvarrui.maven.plugin.javapackager.utils.AdoptOpenJDKUtils;
-import fvarrui.maven.plugin.javapackager.utils.App;
 import fvarrui.maven.plugin.javapackager.utils.FileUtils;
+import fvarrui.maven.plugin.javapackager.utils.Logger;
 import fvarrui.maven.plugin.javapackager.utils.ProcessUtils;
 import fvarrui.maven.plugin.javapackager.utils.VelocityUtils;
 
@@ -54,7 +51,7 @@ public class PackageMojo extends AbstractMojo {
 
 	private ExecutionEnvironment env;
 
-	private App app;
+	private Map<String, Object> info;
 	
 	private File debFile;
 
@@ -79,7 +76,7 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(property = "iconFile")
 	private File iconFile;
 
-	@Parameter(defaultValue = "11.0.2", property = "jreMinVersion", required = true)
+	@Parameter(defaultValue = "${java.version}", property = "jreMinVersion", required = true)
 	private String jreMinVersion;
 
 	@Parameter(property = "mainClass", required = true)
@@ -93,6 +90,11 @@ public class PackageMojo extends AbstractMojo {
 
 	@Parameter(defaultValue = "true", property = "bundleJre", required = true)
 	private Boolean bundleJre;
+	
+	public PackageMojo() {
+		super();
+		Logger.init(getLog());
+	}
 
 	public void execute() throws MojoExecutionException {
 		System.out.println(outputDirectory);
@@ -109,7 +111,7 @@ public class PackageMojo extends AbstractMojo {
 		// copy license file to app folder
 		if (licenseFile.exists()) FileUtils.copyToFolder(licenseFile, appFolder);
 		
-		this.app = getApp();
+		this.info = getInfo();
 
 		this.env = executionEnvironment(mavenProject, mavenSession, pluginManager);
 
@@ -147,9 +149,30 @@ public class PackageMojo extends AbstractMojo {
 		}
 
 	}
+	
+	private Map<String, Object> getInfo() throws MojoExecutionException {
+		HashMap<String, Object> info = new HashMap<>();
+		
+		info.put("name", mavenProject.getName());
+		info.put("version", mavenProject.getVersion());
+		info.put("description", mavenProject.getDescription());
+		info.put("organizationName", mavenProject.getOrganization().getName());
+		info.put("organizationUrl", mavenProject.getOrganization().getUrl());
+		info.put("organizationEmail", organizationEmail);
+		info.put("administratorRequired", administratorRequired);
+		info.put("bundleJre", bundleJre);
+		
+		// if license file exists
+		if (licenseFile != null) info.put("license", licenseFile.getAbsolutePath());
+
+		return info;
+	}
 
 	private void generateRpmPackage() throws MojoExecutionException  {
 		getLog().info("Generate RPM package...");
+		
+		String name = (String) info.get("name");
+		String version = (String) info.get("version");
 		
 		if (!debFile.exists()) {
 			getLog().warn("Cannot convert DEB to RPM because " + debFile.getAbsolutePath() + " doesn't exist");
@@ -158,49 +181,27 @@ public class PackageMojo extends AbstractMojo {
 		
 		try {
 			// execute alien command to generate rpm package folder from deb file
-			ProcessUtils.exec(getLog(), assetsFolder, "alien", "-g", "--to-rpm", debFile.getAbsolutePath());
+			ProcessUtils.execute(assetsFolder, "alien", "-g", "--to-rpm", debFile);
 		} catch (MojoExecutionException e) {
 			getLog().warn("alien command execution failed", e);
 			return;
 		}
 		
-		File packageFolder = new File(assetsFolder, app.getName() + "-" + app.getVersion());
-		File specFile = new File(packageFolder, app.getName() + "-" + app.getVersion() + "-2.spec");
+		File packageFolder = new File(assetsFolder, name + "-" + version);
+		File specFile = new File(packageFolder, name + "-" + version + "-2.spec");
 		
 		try {
 			// rebuild rpm package
-			ProcessUtils.exec(getLog(), assetsFolder, "rpmbuild", "--buildroot", packageFolder.getAbsolutePath(), "--nodeps", "-bb", specFile.getAbsolutePath());
+			ProcessUtils.execute(assetsFolder, "rpmbuild", "--buildroot", packageFolder, "--nodeps", "-bb", specFile);
 		} catch (MojoExecutionException e) {
 			getLog().warn("rpmbuild command execution failed", e);
 			return;
 		}
 
-		// FIXME rename generated rpm package
-		File rpmFile = new File(assetsFolder, app.getName() + "-" + app.getVersion() + "-2.x86_64.rpm");
-		rpmFile.renameTo(new File(app.getName() + "_" + app.getVersion() + ".rpm"));
+		// rename generated rpm package
+		File rpmFile = new File(assetsFolder, name + "-" + version + "-2.x86_64.rpm");
+		rpmFile.renameTo(new File(assetsFolder, name + "_" + version + ".rpm"));
 		
-	}
-
-	private App getApp() throws MojoExecutionException {
-		App app = new App();
-		
-		app.setName(mavenProject.getName());
-		app.setVersion(mavenProject.getVersion());
-		app.setDescription(mavenProject.getDescription());
-		app.setOrganizationName(mavenProject.getOrganization().getName());
-		app.setAdministratorRequired(administratorRequired);
-		app.setOrganizationEmail(organizationEmail);
-		
-		try {
-			app.setUrl(new URL(mavenProject.getOrganization().getUrl()));
-		} catch (MalformedURLException e) {
-			getLog().warn(e.getMessage(), e);
-		}
-		
-		// if license file exists
-		if (licenseFile != null) app.setLicense(licenseFile.getAbsolutePath());
-
-		return app;
 	}
 	
 	private void createMacAppBundle() throws MojoExecutionException {
@@ -223,7 +224,6 @@ public class PackageMojo extends AbstractMojo {
 						),
 				env);
 
-
 	}
 
 	private void createLinuxExecutable() throws MojoExecutionException {
@@ -231,12 +231,10 @@ public class PackageMojo extends AbstractMojo {
 
 		// concat linux startup.sh script + generated jar
 		try {
-			
-			getLog().info("Administrator required: " + app.isAdministratorRequired());
-			
+						
 			// generate startup.sh script to boot java app
 			File startupFile = new File(assetsFolder, "startup.sh");
-			VelocityUtils.render("linux/startup.sh.vtl", startupFile, "app", app);
+			VelocityUtils.render("linux/startup.sh.vtl", startupFile, info);
 
 			// open stream to files
 			InputStream startup = new FileInputStream(startupFile);
@@ -258,13 +256,11 @@ public class PackageMojo extends AbstractMojo {
 	private void createWindowsExecutable() throws MojoExecutionException {
 		getLog().info("Creating Windows executable...");
 		
-		// generate manifest file to require administrator privileges
-		File manifestFile = null;
-		if (administratorRequired) {
-			// generate manifest file from velocity template
-			manifestFile = new File(assetsFolder, app.getName() + ".exe.manifest");
-			VelocityUtils.render("windows/exe.manifest.vtl", manifestFile, "app", app);
-		}
+		String name = (String) info.get("name");
+		
+		// generate manifest file to require administrator privileges from velocity template
+		File manifestFile = new File(assetsFolder, name + ".exe.manifest");
+		VelocityUtils.render("windows/exe.manifest.vtl", manifestFile, info);
 		
 		// invoke launch4j plugin to generate windows executable
 		executeMojo(
@@ -280,7 +276,7 @@ public class PackageMojo extends AbstractMojo {
 						element(name("manifest"), ""),
 						element(name("outfile"), executable.getAbsolutePath() + ".exe"),
 						element(name("icon"), iconFile.getAbsolutePath()),
-						element(name("manifest"), administratorRequired ? manifestFile.getAbsolutePath() : ""),
+						element(name("manifest"), manifestFile.getAbsolutePath()),
 						element(name("classPath"), 
 								element(name("mainClass"), mainClass)
 								),
@@ -307,34 +303,40 @@ public class PackageMojo extends AbstractMojo {
 
 	private void generateWindowsInstaller() throws MojoExecutionException {
 		getLog().info("Generating Windows installer...");
+		
+		String name = (String) info.get("name");
+		String version = (String) info.get("version");
 
 		// copy ico file to assets folder
-		FileUtils.copy(iconFile, new File(assetsFolder, app.getName() + ".ico"));
+		FileUtils.copy(iconFile, new File(assetsFolder, name + ".ico"));
 
 		// generate iss file from velocity template
-		File issFile = new File(assetsFolder, app.getName() + ".iss");
-		VelocityUtils.render("windows/iss.vtl", issFile, "app", app);
+		File issFile = new File(assetsFolder, name + ".iss");
+		VelocityUtils.render("windows/iss.vtl", issFile, info);
 
 		// generate windows installer with inno setup command line compiler
-		ProcessUtils.exec(getLog(), "iscc", "/O" + outputDirectory.getAbsolutePath(), "/F" + app.getName() + "_" + app.getVersion(), issFile.getAbsolutePath());
+		ProcessUtils.execute("iscc", "/O" + outputDirectory.getAbsolutePath(), "/F" + name + "_" + version, issFile);
 	}
 
 	private void generateDebPackage() throws MojoExecutionException {
 		getLog().info("Generating DEB package ...");
 		
+		String name = (String) info.get("name");
+		String version = (String) info.get("version");
+		
 		// generate desktop file from velocity template
-		File desktopFile = new File(assetsFolder, app.getName() + ".desktop");
-		VelocityUtils.render("linux/desktop.vtl", desktopFile, "app", app);
+		File desktopFile = new File(assetsFolder, name + ".desktop");
+		VelocityUtils.render("linux/desktop.vtl", desktopFile, info);
 
 		// generate policy file from velocity template
-		File policyFile = new File(assetsFolder, app.getName() + ".policy");
-		VelocityUtils.render("linux/policy.vtl", policyFile, "app", app);
+//		File policyFile = new File(assetsFolder, name + ".policy");
+//		VelocityUtils.render("linux/policy.vtl", policyFile, info);
 
 		// generate deb control file from velocity template
 		File controlFile = new File(assetsFolder, "control");
-		VelocityUtils.render("linux/control.vtl", controlFile, "app", app);
+		VelocityUtils.render("linux/control.vtl", controlFile, info);
 		
-		debFile = new File(outputDirectory.getAbsolutePath(), app.getName() + "_" + app.getVersion() + ".deb");
+		debFile = new File(outputDirectory.getAbsolutePath(), name + "_" + version + ".deb");
 
 		// invoke plugin to generate deb package
 		executeMojo(
@@ -378,14 +380,14 @@ public class PackageMojo extends AbstractMojo {
 											)
 									),
 							/* polkit policy file (run as root) */
-							element(name("data"), 
-									element(name("type"), "file"),
-									element(name("src"), policyFile.getAbsolutePath()),
-									element(name("mapper"), 
-											element(name("type"), "perm"),
-											element(name("prefix"), "/usr/share/polkit-1/actions")
-											)
-									),
+//							element(name("data"), 
+//									element(name("type"), "file"),
+//									element(name("src"), policyFile.getAbsolutePath()),
+//									element(name("mapper"), 
+//											element(name("type"), "perm"),
+//											element(name("prefix"), "/usr/share/polkit-1/actions")
+//											)
+//									),
 							/* java binary file */
 							element(name("data"), 
 									element(name("type"), "file"),
@@ -440,13 +442,15 @@ public class PackageMojo extends AbstractMojo {
 		File jreFolder = new File(appFolder, "jre");
 		
 		// determine required modules for libs and app jar
-		String modules = ProcessUtils.exec(getLog(), "jdeps", "--print-module-deps", "--class-path", new File(libsFolder, "*").getAbsolutePath(), jarFile.getAbsolutePath());
-		modules += ",java.scripting,jdk.unsupported"; // add required modules
+		String modules = "java.scripting,jdk.unsupported,"; // add required modules by default
+		modules += ProcessUtils.execute("jdeps", "--print-module-deps", "--class-path", new File(libsFolder, "*"), jarFile);
 		
+		// if exists, remove old jre folder
+		if (jreFolder.exists()) jreFolder.delete();
+
 		// generate customized jre using modules
 		File modulesDir = new File(System.getProperty("java.home"), "jmods");
-		jreFolder.delete();
-		ProcessUtils.exec(getLog(), "jlink", "--module-path", modulesDir.getAbsolutePath(), "--add-modules", modules, "--output", jreFolder.getAbsolutePath());
+		ProcessUtils.execute("jlink", "--module-path", modulesDir, "--add-modules", modules, "--output", jreFolder);
 		
 	}
 	

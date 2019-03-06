@@ -3,7 +3,11 @@
 	<trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
 		<security>
 			<requestedPrivileges>
+#if($info.administratorRequired)
 				<requestedExecutionLevel level="requireAdministrator" uiAccess="false" />
+#else				
+				<requestedExecutionLevel level="asInvoker" uiAccess="false" />
+#end				
 			</requestedPrivileges>
 		</security>
 	</trustInfo>

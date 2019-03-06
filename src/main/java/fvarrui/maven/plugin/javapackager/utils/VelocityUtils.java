@@ -3,6 +3,7 @@ package fvarrui.maven.plugin.javapackager.utils;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.velocity.Template;
@@ -22,11 +23,11 @@ public class VelocityUtils {
 		velocityEngine.init();
 	}
 
-	public static void render(String templatePath, File output, String prefix, Object data) throws MojoExecutionException {
+	public static void render(String templatePath, File output, Map<String, Object> info) throws MojoExecutionException {
 		try {
 
 			VelocityContext context = new VelocityContext();
-			context.put(prefix, data);
+			context.put("info", info);
 
 			Template template = velocityEngine.getTemplate(templatePath, "UTF-8");
 

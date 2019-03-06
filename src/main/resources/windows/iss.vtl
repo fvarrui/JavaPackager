@@ -1,11 +1,11 @@
 \#define MyAppName "${app.name}"
-\#define MyAppVersion "${app.version}"
-\#define MyAppPublisher "${app.organizationName}"
-#if($app.url)
-\#define MyAppURL "${app.url}"
-#end
-\#define MyAppExeName "${app.name}.exe"
-\#define MyAppFolder "${app.name}"
+\#define MyAppVersion "${info.version}"
+\#define MyAppPublisher "${info.organizationName}"
+\#define MyAppURL "${info.organizationUrl}"
+\#define MyAppExeName "${info.name}.exe"
+\#define MyAppFolder "${info.name}"
+\#define MyAppLicense "${info.license}"
+\#define MyAppIcon "${info.name}.ico"
 
 [Setup]
 AppId={{{#MyAppName}}}
@@ -13,20 +13,16 @@ AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
-#if($app.url)
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-#end
 DefaultDirName={pf}\{#MyAppFolder}
 DisableDirPage=yes
 DisableProgramGroupPage=yes
 DisableFinishedPage=yes
 PrivilegesRequired=admin
-#if($app.license)
-LicenseFile=${app.license}
-#end
-SetupIconFile=${app.name}.ico
+LicenseFile={#MyAppLicense}
+SetupIconFile={#MyAppIcon}
 UninstallDisplayIcon={app}\{#MyAppExeName}
 Compression=lzma
 SolidCompression=yes
