@@ -2,5 +2,9 @@
 SCRIPTPATH="$(dirname "$(readlink "$0")")"
 JAVA=$SCRIPTPATH/jre/bin/java
 BINARY=$SCRIPTPATH/teuton-panel
+#if($app.isAdministratorRequired())
+system security $JAVA -jar $BINARY $@
+#else
 $JAVA -jar $BINARY $@
+#end
 exit 0

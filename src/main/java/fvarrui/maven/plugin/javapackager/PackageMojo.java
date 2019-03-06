@@ -226,6 +226,8 @@ public class PackageMojo extends AbstractMojo {
 		// concat linux startup.sh script + generated jar
 		try {
 			
+			getLog().info("Administrator required: " + app.isAdministratorRequired());
+			
 			// generate startup.sh script to boot java app
 			File startupFile = new File(assetsFolder, "startup.sh");
 			VelocityUtils.render("linux/startup.sh.vtl", startupFile, "app", app);
