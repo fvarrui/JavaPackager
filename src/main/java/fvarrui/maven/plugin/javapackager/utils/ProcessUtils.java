@@ -7,46 +7,49 @@ import java.io.InputStreamReader;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.logging.Log;
+import org.codehaus.plexus.util.cli.CommandLineException;
+import org.codehaus.plexus.util.cli.Commandline;
 
 public class ProcessUtils {
 	
-	public static String exec(Log log, File dir, String... command) throws MojoExecutionException {
+	public static String execute(File workingDirectory, String executable, Object ... arguments) throws MojoExecutionException {
 		StringBuffer outputBuffer = new StringBuffer();
 		try { 
-			if (dir == null) dir = new File(".");
-			Process process = Runtime.getRuntime().exec(command, null, dir);
-			if (log != null) log.info("Command line: " + StringUtils.join(command, " "));
+			
+			Logger.info("Executed command: " + executable + " " + StringUtils.join(arguments, " "));
+			
+			Commandline command = new Commandline();
+			command.setWorkingDirectory(workingDirectory);
+			command.setExecutable(executable);
+			for (Object argument : arguments) {
+				if (argument instanceof File)
+					command.createArg().setFile((File)argument);
+				else
+					command.createArg().setValue(argument.toString());
+			}
+
+			Process process = command.execute();
+			
 			BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream()));
 			BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+			
 			while (process.isAlive()) {
-				if (output.ready()) {
-					String line = output.readLine();
-					if (log != null) log.info(line);
-					outputBuffer.append(line);
-				}
-				if (log != null && error.ready()) {
-					log.error(error.readLine());
-				}
+				if (output.ready()) outputBuffer.append(Logger.info(output.readLine()));
+				if (error.ready()) Logger.error(error.readLine());
 			}
+			
 			output.close();
 			error.close();
-		} catch (IOException e) {
+			
+		} catch (IOException | CommandLineException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
+		
 		return outputBuffer.toString();
 	}
 	
-	public static String exec(Log log, String... command) throws MojoExecutionException {
-		return exec(log, null, command);
-	}
-
-	public static String exec(File dir, String... command) throws MojoExecutionException {
-		return exec(null, dir, command);
-	}
-	
-	public static String exec(String... command) throws MojoExecutionException {
-		return exec(null, null, command);
+	public static String execute(String executable, Object... arguments) throws MojoExecutionException {
+		return execute(new File("."), executable, arguments);
 	}
 
 }
