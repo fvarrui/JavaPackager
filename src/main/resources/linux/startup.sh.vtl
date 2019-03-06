@@ -3,9 +3,8 @@
 SCRIPTPATH="$(dirname "$(readlink "$0")")"
 JAVA=$SCRIPTPATH/jre/bin/java
 BINARY=$SCRIPTPATH/${app.name}
-GDKBACKEND=x11
 #if($app.isAdministratorRequired())
-pkexec $JAVA -jar $BINARY $@
+pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY GDKBACKEND=x11 $JAVA -jar $BINARY $@
 #else
 $JAVA -jar $BINARY $@
 #end
