@@ -69,13 +69,13 @@ public class PackageMojo extends AbstractMojo {
 
 	@Parameter(defaultValue = "${project.build.directory}/${project.name}-${project.version}.jar", property = "jarFile", required = true)
 	private File jarFile;
+	
+	@Parameter(defaultValue = "${user.dir}/LICENSE", property = "licenseFile", required = true)
+	private File licenseFile;
 
 	@Parameter(defaultValue = "${project.build.directory}/app/${project.name}", property = "executable", required = true)
 	private File executable;
 	
-	@Parameter(property = "jreUrl", required = false)
-	private URL jreUrl;
-
 	@Parameter(property = "iconFile")
 	private File iconFile;
 
@@ -97,26 +97,33 @@ public class PackageMojo extends AbstractMojo {
 	public void execute() throws MojoExecutionException {
 		System.out.println(outputDirectory);
 
-		this.env = executionEnvironment(mavenProject, mavenSession, pluginManager);
-
 		if (!appFolder.exists()) appFolder.mkdirs();
 
 		if (!assetsFolder.exists()) assetsFolder.mkdirs();
+		
+		// if default license file doesn't exist and there's a license specified in pom.xml file, get this last one
+		if (!licenseFile.exists() && !mavenProject.getLicenses().isEmpty()) {
+			licenseFile = new File(mavenProject.getLicenses().get(0).getUrl());
+		}
+		
+		// copy license file to app folder
+		if (licenseFile.exists()) FileUtils.copyToFolder(licenseFile, appFolder);
+		
+		this.app = getApp();
 
-		app = getApp();
+		this.env = executionEnvironment(mavenProject, mavenSession, pluginManager);
 
 		copyAllDependencies();
+		
 		createCustomizedJre();
-//		downloadJre();
 
 		if (SystemUtils.IS_OS_MAC_OSX) {
 
 			if (iconFile == null) iconFile = new File("assets/mac", mavenProject.getName() + ".icns");
 
-			createMacExecutable();
-		}
-
-		if (SystemUtils.IS_OS_LINUX) {
+			createMacAppBundle();
+			
+		} else if (SystemUtils.IS_OS_LINUX) {
 
 			if (iconFile == null) iconFile = new File("assets/linux", mavenProject.getName() + ".png");
 
@@ -126,14 +133,17 @@ public class PackageMojo extends AbstractMojo {
 			generateDebPackage();
 			generateRpmPackage();
 
-		}
-
-		if (SystemUtils.IS_OS_WINDOWS) {
+		} else if (SystemUtils.IS_OS_WINDOWS) {
 
 			if (iconFile == null) iconFile = new File("assets/windows", mavenProject.getName() + ".ico");
 
 			createWindowsExecutable();
 			generateWindowsInstaller();
+			
+		} else {
+
+			throw new MojoExecutionException("Unsupported operating system: " + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION + " " + SystemUtils.OS_ARCH);
+		
 		}
 
 	}
@@ -188,38 +198,31 @@ public class PackageMojo extends AbstractMojo {
 		}
 		
 		// if license file exists
-		if (!mavenProject.getLicenses().isEmpty()) {
-			File licenseFile = new File(mavenProject.getLicenses().get(0).getUrl());
-			FileUtils.copyToFolder(licenseFile, appFolder);
-			app.setLicense(licenseFile.getAbsolutePath());
-		}
+		if (licenseFile != null) app.setLicense(licenseFile.getAbsolutePath());
+
 		return app;
 	}
 	
-	private void createMacExecutable() throws MojoExecutionException {
-		getLog().info("Creating Mac OS X executable...");
+	private void createMacAppBundle() throws MojoExecutionException {
+		getLog().info("Creating Mac OS X app bundle...");
+		
+//		File dictionaryFile = new File(".");
 
-		// concat mac startup.sh script + generated jar
-		try {
-			
-			// generate startup.sh script to boot java app
-			File startupFile = new File(assetsFolder, "startup.sh");
-			VelocityUtils.render("mac/startup.sh.vtl", startupFile, "app", app);
+		// invoke appbundle plugin to generate mac bundle
+		executeMojo(
+				plugin(
+						groupId("sh.tak.appbundler"), 
+						artifactId("appbundle-maven-plugin"),
+						version("1.2.0")
+						),
+				goal("bundle"),
+				configuration(
+//						element(name("dictionaryFile"), dictionaryFile.getAbsolutePath()),
+//						element(name("iconFile"), iconFile.getAbsolutePath()),
+						element(name("mainClass"), mainClass)
+						),
+				env);
 
-			// open stream to files
-			InputStream startup = new FileInputStream(startupFile);
-			InputStream jar = new FileInputStream(jarFile);
-			FileOutputStream binary = new FileOutputStream(executable);
-			
-			// concat files in binary
-			FileUtils.concat(binary, startup, jar);
-			
-			// set execution permissions
-			executable.setExecutable(true);
-			
-		} catch (FileNotFoundException e) {
-			throw new MojoExecutionException(e.getMessage(), e);
-		}
 
 	}
 
@@ -244,7 +247,7 @@ public class PackageMojo extends AbstractMojo {
 			FileUtils.concat(binary, startup, jar);
 			
 			// set execution permissions
-			executable.setExecutable(true);
+			executable.setExecutable(true, false);
 			
 		} catch (FileNotFoundException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
@@ -447,42 +450,4 @@ public class PackageMojo extends AbstractMojo {
 		
 	}
 	
-	@SuppressWarnings("unused")
-	private void downloadJre() throws MojoExecutionException {
-		if (!bundleJre) return;
-		
-		getLog().info("Downloading JRE ...");
-
-		// translate jre url release to download url
-		String downloadUrl = AdoptOpenJDKUtils.getDownloadUrl(jreUrl);
-		
-		File destFolder = new File(assetsFolder.getAbsolutePath(), "jre");
-		
-		// invoke plugin to download jre
-		executeMojo(
-				plugin(
-						groupId("com.googlecode.maven-download-plugin"), 
-						artifactId("download-maven-plugin"), 
-						version("1.4.1")
-						),
-				goal("wget"),
-				configuration(
-						element(name("uri"), downloadUrl),
-						element(name("unpack"), "true"),
-						element(name("outputDirectory"), destFolder.getAbsolutePath())
-						),
-				env);
-
-		// locate jre unpacked folder
-		Optional<File> jre = Arrays.asList(destFolder.listFiles()).stream().filter(f -> f.isDirectory()).findFirst();
-		if (!jre.isPresent()) {
-			throw new MojoExecutionException("Unpacked JRE folder not found in " + destFolder.getAbsolutePath());
-		}
-		File unpackedJre = jre.get(); 
-		
-		// move unpacked jre to app folder
-		FileUtils.move(unpackedJre, new File(appFolder, "jre"));
-
-	}
-
 }
