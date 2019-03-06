@@ -1,5 +1,5 @@
 #!/bin/sh
-SCRIPTPATH="$(dirname "$(readlink -f "$0")")"
+SCRIPTPATH="$(dirname "$(readlink "$0")")"
 JAVA=$SCRIPTPATH/jre/bin/java
 BINARY=$SCRIPTPATH/${app.name}
 GDKBACKEND=x11
