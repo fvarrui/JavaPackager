@@ -3,7 +3,7 @@ SCRIPTPATH="$(dirname "$(readlink -f "$0")")"
 JAVA=$SCRIPTPATH/jre/bin/java
 BINARY=$SCRIPTPATH/${app.name}
 GDKBACKEND=x11
-#if($app.administratorRequired)
+#if($app.isAdministratorRequired())
 pkexec $JAVA -jar $BINARY $@
 #else
 $JAVA -jar $BINARY $@
