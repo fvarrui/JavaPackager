@@ -39,8 +39,9 @@ public class FileUtils {
 	}
 
 	public static void moveFolderToFolder(File from, File to) throws MojoExecutionException {
-		if (!from.isDirectory()) throw new MojoExecutionException("Source file " + from + " is not a directory");
-		if (!to.isDirectory()) throw new MojoExecutionException("Destination file " + to + " is not a directory");
+		if (!from.isDirectory()) throw new MojoExecutionException("Source folder " + from + " is not a directory");
+		if (!to.exists()) to.mkdirs();
+		else if (!to.isDirectory()) throw new MojoExecutionException("Destination folder " + to + " is not a directory");
 		try {
 			Files.move(from, to);
 		} catch (IOException e) {

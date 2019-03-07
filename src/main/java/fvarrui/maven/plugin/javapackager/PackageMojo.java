@@ -252,7 +252,7 @@ public class PackageMojo extends AbstractMojo {
         // 4. move all dependencies from the pom to Java folder
         getLog().info("Moving dependencies to Java folder");
         File libsFolder = new File(appFolder, "libs");
-        FileUtils.moveFolderToFolder(libsFolder, javaFolder);
+        FileUtils.moveFolderToFolder(libsFolder, new File(javaFolder, "libs"));
 
         // 5. check if JRE should be embedded. Move generated JRE inside
         if (bundleJre) {
