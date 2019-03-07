@@ -258,6 +258,8 @@ public class PackageMojo extends AbstractMojo {
         if (bundleJre) {
 
             File pluginsFolder = new File(contentsFolder, "PlugIns/JRE/Contents/Home");
+            pluginsFolder.mkdirs();
+            
             File jreFolder = new File(appFolder, "jre");
             
             getLog().info("Moving the JRE Folder from : [" + jreFolder + "] to PlugIn folder: [" + pluginsFolder + "]");
