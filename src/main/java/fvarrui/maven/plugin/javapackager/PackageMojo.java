@@ -116,7 +116,7 @@ public class PackageMojo extends AbstractMojo {
 		}
 		
 		// copy license file to app folder
-		if (licenseFile.exists()) FileUtils.copyToFolder(licenseFile, appFolder);
+		if (licenseFile.exists()) FileUtils.copyFileToFolder(licenseFile, appFolder);
 		
 		this.info = getInfo();
 
@@ -136,7 +136,7 @@ public class PackageMojo extends AbstractMojo {
 
 			if (iconFile == null) iconFile = new File("assets/linux", mavenProject.getName() + ".png");
 
-			FileUtils.copyToFolder(iconFile, appFolder);
+			FileUtils.copyFileToFolder(iconFile, appFolder);
 
 			createLinuxExecutable();
 			generateDebPackage();
@@ -237,31 +237,22 @@ public class PackageMojo extends AbstractMojo {
         
         // 2. copy in the native java application stub
         getLog().info("Copying the native Java Application Stub");
-        File launcher = new File(macOSFolder, javaLauncherName);
-        launcher.setExecutable(true);
 
-        FileOutputStream launcherStream = null;
-        try {
-            launcherStream = new FileOutputStream(launcher);
-        } catch (FileNotFoundException ex) {
-            throw new MojoExecutionException("Could not copy file to directory " + launcher, ex);
-        }
-
+        File launcherFile = new File(macOSFolder, javaLauncherName);
+        launcherFile.setExecutable(true);
+		
         InputStream launcherResourceStream = this.getClass().getResourceAsStream("/mac/" + javaLauncherName);
-        try {
-            IOUtil.copy(launcherResourceStream, launcherStream);
-        } catch (IOException ex) {
-            throw new MojoExecutionException("Could not copy file " + javaLauncherName + " to directory " + macOSFolder, ex);
-        }
+
+        FileUtils.copyStreamToFile(launcherResourceStream, launcherFile);
 
         // 3. copy icon file to resources folder if specified
         getLog().info("Copying the Icon File");
-        FileUtils.copyToFolder(iconFile, resourcesFolder);
+        FileUtils.copyFileToFolder(iconFile, resourcesFolder);
 
         // 4. move all dependencies from the pom to Java folder
         getLog().info("Moving dependencies to Java folder");
         File libsFolder = new File(appFolder, "libs");
-        FileUtils.move(libsFolder, javaFolder);
+        FileUtils.moveFolderToFolder(libsFolder, javaFolder);
 
         // 5. check if JRE should be embedded. Move generated JRE inside
         if (bundleJre) {
@@ -271,7 +262,7 @@ public class PackageMojo extends AbstractMojo {
             
             getLog().info("Moving the JRE Folder from : [" + jreFolder + "] to PlugIn folder: [" + pluginsFolder + "]");
             
-            FileUtils.move(jreFolder, pluginsFolder); 
+            FileUtils.moveFolderToFolder(jreFolder, pluginsFolder); 
             
             // setting execute permissions on executables in jre
             File binFolder = new File(pluginsFolder, "bin");
@@ -304,12 +295,12 @@ public class PackageMojo extends AbstractMojo {
         // 7. Copy specified additional resources into the top level directory
         getLog().info("Copying additional resources");
         if (licenseFile != null) {
-            FileUtils.copy(licenseFile, resourcesFolder);
+            FileUtils.copyFileToFile(licenseFile, resourcesFolder);
         }
 
         // 7. Make the stub executable
         getLog().info("Making stub executable");
-        ProcessUtils.execute("chmod", "755", launcher);
+        ProcessUtils.execute("chmod", "755", launcherFile);
 
         // 8. Create the DMG file
         getLog().info("Generating the Disk Image file");
@@ -339,7 +330,7 @@ public class PackageMojo extends AbstractMojo {
 			FileOutputStream binary = new FileOutputStream(executable);
 			
 			// concat files in binary
-			FileUtils.concat(binary, startup, jar);
+			FileUtils.concatStreams(binary, startup, jar);
 			
 			// set execution permissions
 			executable.setExecutable(true, false);
@@ -405,7 +396,7 @@ public class PackageMojo extends AbstractMojo {
 		String version = (String) info.get("version");
 
 		// copy ico file to assets folder
-		FileUtils.copy(iconFile, new File(assetsFolder, name + ".ico"));
+		FileUtils.copyFileToFile(iconFile, new File(assetsFolder, name + ".ico"));
 
 		// generate iss file from velocity template
 		File issFile = new File(assetsFolder, name + ".iss");
