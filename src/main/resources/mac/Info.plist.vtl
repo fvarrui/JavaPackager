@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>CFBundleDevelopmentRegion</key>
+		<string>English</string>
+		<key>CFBundleExecutable</key>
+		<string>${cfBundleExecutable}</string>
+		<key>CFBundleIconFile</key>
+		<string>${iconFile}</string>
+		<key>CFBundleIdentifier</key>
+		<string>${mainClass}</string>
+		<key>CFBundleDisplayName</key>
+		<string>${bundleName}</string>
+		<key>CFBundleInfoDictionaryVersion</key>
+		<string>6.0</string>
+		<key>CFBundleName</key>
+		<string>${bundleName}</string>
+		<key>CFBundlePackageType</key>
+		<string>APPL</string>
+		<key>CFBundleShortVersionString</key>
+		<string>${version}</string>
+		<key>CFBundleSignature</key>
+		<string>????</string>
+		<key>CFBundleVersion</key>
+		<string>1</string>
+		<key>NSHumanReadableCopyright</key>
+		<string></string>
+		<key>NSHighResolutionCapable</key>
+		<true />
+		<key>NSSupportsAutomaticGraphicsSwitching</key>
+		<true />
+		<key>JVMRuntime</key>
+		<string>${jrePath}</string>
+		<key>JVMRuntimePath</key>
+		<string>${jreFullPath}</string>
+		<key>JVMMainClassName</key>
+		<string>${mainClass}</string>
+		<key>JVMClassPaths</key>
+		<array>
+#foreach($lib in $libs)		
+			<string>libs/${lib}</string>
+#end
+		</array>
+		<key>JVMVersion</key>
+		<string>${jvmVersion}</string>
+		<key>JVMOptions</key>
+		<array>
+#foreach($option in $jvmOptions)		
+			<string>${option}</string>
+#end
+		</array>
+		<key>JVMArguments</key>
+		<array />
+		<key>LauncherWorkingDirectory</key>
+		<string>${workingDirectory}</string>
+	</dict>
+</plist>
