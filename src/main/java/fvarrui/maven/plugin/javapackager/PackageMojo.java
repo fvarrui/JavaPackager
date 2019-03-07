@@ -247,7 +247,7 @@ public class PackageMojo extends AbstractMojo {
             throw new MojoExecutionException("Could not copy file to directory " + launcher, ex);
         }
 
-        InputStream launcherResourceStream = this.getClass().getResourceAsStream("mac/" + javaLauncherName);
+        InputStream launcherResourceStream = this.getClass().getResourceAsStream("/mac/" + javaLauncherName);
         try {
             IOUtil.copy(launcherResourceStream, launcherStream);
         } catch (IOException ex) {
