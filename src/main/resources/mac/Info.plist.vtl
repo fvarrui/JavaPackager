@@ -5,21 +5,21 @@
 		<key>CFBundleDevelopmentRegion</key>
 		<string>English</string>
 		<key>CFBundleExecutable</key>
-		<string>${cfBundleExecutable}</string>
+		<string>${info.cfBundleExecutable}</string>
 		<key>CFBundleIconFile</key>
-		<string>${iconFile}</string>
+		<string>${info.iconFile}</string>
 		<key>CFBundleIdentifier</key>
-		<string>${mainClass}</string>
+		<string>${info.mainClass}</string>
 		<key>CFBundleDisplayName</key>
-		<string>${bundleName}</string>
+		<string>${info.bundleName}</string>
 		<key>CFBundleInfoDictionaryVersion</key>
 		<string>6.0</string>
 		<key>CFBundleName</key>
-		<string>${bundleName}</string>
+		<string>${info.bundleName}</string>
 		<key>CFBundlePackageType</key>
 		<string>APPL</string>
 		<key>CFBundleShortVersionString</key>
-		<string>${version}</string>
+		<string>${info.version}</string>
 		<key>CFBundleSignature</key>
 		<string>????</string>
 		<key>CFBundleVersion</key>
@@ -31,28 +31,28 @@
 		<key>NSSupportsAutomaticGraphicsSwitching</key>
 		<true />
 		<key>JVMRuntime</key>
-		<string>${jrePath}</string>
+		<string>${info.jrePath}</string>
 		<key>JVMRuntimePath</key>
-		<string>${jreFullPath}</string>
+		<string>${info.jreFullPath}</string>
 		<key>JVMMainClassName</key>
-		<string>${mainClass}</string>
+		<string>${info.mainClass}</string>
 		<key>JVMClassPaths</key>
 		<array>
-#foreach($lib in $libs)		
+#foreach($lib in $info.libs)		
 			<string>libs/${lib}</string>
 #end
 		</array>
 		<key>JVMVersion</key>
-		<string>${jvmVersion}</string>
+		<string>${info.jvmVersion}</string>
 		<key>JVMOptions</key>
 		<array>
-#foreach($option in $jvmOptions)		
+#foreach($option in $info.jvmOptions)		
 			<string>${option}</string>
 #end
 		</array>
 		<key>JVMArguments</key>
 		<array />
 		<key>LauncherWorkingDirectory</key>
-		<string>${workingDirectory}</string>
+		<string>${info.workingDirectory}</string>
 	</dict>
 </plist>
