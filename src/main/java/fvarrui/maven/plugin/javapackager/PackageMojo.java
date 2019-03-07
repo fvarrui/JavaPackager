@@ -297,7 +297,7 @@ public class PackageMojo extends AbstractMojo {
         // 7. Copy specified additional resources into the top level directory
         getLog().info("Copying additional resources");
         if (licenseFile != null) {
-            FileUtils.copyFileToFile(licenseFile, resourcesFolder);
+            FileUtils.moveFileToFolder(new File(appFolder, licenseFile.getName()), resourcesFolder);
         }
 
         // 7. Make the stub executable
