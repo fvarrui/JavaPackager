@@ -43,7 +43,7 @@ public class FileUtils {
 		if (!to.exists()) to.mkdirs();
 		else if (!to.isDirectory()) throw new MojoExecutionException("Destination folder " + to + " is not a directory");
 		try {
-			Files.move(from, new File(to, from.getName()));
+			Files.move(from, to);
 		} catch (IOException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
