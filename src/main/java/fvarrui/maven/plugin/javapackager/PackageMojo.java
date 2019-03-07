@@ -15,7 +15,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +32,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectHelper;
+import org.codehaus.plexus.util.IOUtil;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import fvarrui.maven.plugin.javapackager.utils.FileUtils;
@@ -48,6 +52,9 @@ public class PackageMojo extends AbstractMojo {
 
 	@Component
 	private BuildPluginManager pluginManager;
+	
+	@Component
+    private MavenProjectHelper projectHelper;
 
 	private ExecutionEnvironment env;
 
@@ -161,6 +168,7 @@ public class PackageMojo extends AbstractMojo {
 		info.put("organizationEmail", organizationEmail);
 		info.put("administratorRequired", administratorRequired);
 		info.put("bundleJre", bundleJre);
+		info.put("mainClass", mainClass);
 		
 		// if license file exists
 		if (licenseFile != null) info.put("license", licenseFile.getAbsolutePath());
@@ -207,22 +215,111 @@ public class PackageMojo extends AbstractMojo {
 	private void createMacAppBundle() throws MojoExecutionException {
 		getLog().info("Creating Mac OS X app bundle...");
 		
-//		File dictionaryFile = new File(".");
+		String javaLauncherName = "JavaAppLauncher";
 
-		// invoke appbundle plugin to generate mac bundle
-		executeMojo(
-				plugin(
-						groupId("sh.tak.appbundler"), 
-						artifactId("appbundle-maven-plugin"),
-						version("1.2.0")
-						),
-				goal("bundle"),
-				configuration(
-//						element(name("dictionaryFile"), dictionaryFile.getAbsolutePath()),
-//						element(name("iconFile"), iconFile.getAbsolutePath()),
-						element(name("mainClass"), mainClass)
-						),
-				env);
+		String name = (String) info.get("name");
+        String version = (String) info.get("version");
+		
+        // 1. create and set up directories
+        getLog().info("Creating and setting up the bundle directories");
+
+        File contentsFolder = new File(appFolder, "Contents");
+        contentsFolder.mkdirs();
+
+        File resourcesFolder = new File(contentsFolder, "Resources");
+        resourcesFolder.mkdirs();
+
+        File javaFolder = new File(contentsFolder, "Java");
+        javaFolder.mkdirs();
+
+        File macOSFolder = new File(contentsFolder, "MacOS");
+        macOSFolder.mkdirs();
+        
+        // 2. copy in the native java application stub
+        getLog().info("Copying the native Java Application Stub");
+        File launcher = new File(macOSFolder, javaLauncherName);
+        launcher.setExecutable(true);
+
+        FileOutputStream launcherStream = null;
+        try {
+            launcherStream = new FileOutputStream(launcher);
+        } catch (FileNotFoundException ex) {
+            throw new MojoExecutionException("Could not copy file to directory " + launcher, ex);
+        }
+
+        InputStream launcherResourceStream = this.getClass().getResourceAsStream("mac/" + javaLauncherName);
+        try {
+            IOUtil.copy(launcherResourceStream, launcherStream);
+        } catch (IOException ex) {
+            throw new MojoExecutionException("Could not copy file " + javaLauncherName + " to directory " + macOSFolder, ex);
+        }
+
+        // 3. copy icon file to resources folder if specified
+        getLog().info("Copying the Icon File");
+        FileUtils.copyToFolder(iconFile, resourcesFolder);
+
+        // 4. move all dependencies from the pom to Java folder
+        getLog().info("Moving dependencies to Java folder");
+        File libsFolder = new File(appFolder, "libs");
+        FileUtils.move(libsFolder, javaFolder);
+
+        // 5. check if JRE should be embedded. Move generated JRE inside
+        if (bundleJre) {
+
+            File pluginsFolder = new File(contentsFolder, "PlugIns/JRE/Contents/Home");
+            File jreFolder = new File(appFolder, "jre");
+            
+            getLog().info("Moving the JRE Folder from : [" + jreFolder + "] to PlugIn folder: [" + pluginsFolder + "]");
+            
+            FileUtils.move(jreFolder, pluginsFolder); 
+            
+            // setting execute permissions on executables in jre
+            File binFolder = new File(pluginsFolder, "bin");
+            Arrays.asList(binFolder.listFiles()).forEach(f -> f.setExecutable(true, false));
+            
+        }
+
+        // 6. create and write the Info.plist file
+        getLog().info("Writing the Info.plist file");
+        File infoPlistFile = new File(contentsFolder, "Info.plist");
+        
+        String [] jvmOptions = { 
+        		"-Dapple.laf.useScreenMenuBar=true", 
+        		"-Xdock:name=" + name 
+        		}; 
+        
+        info.put("cfBundleExecutable", javaLauncherName);
+        info.put("bundleName", name);
+        info.put("workingDirectory", "$APP_ROOT");
+        info.put("jrePath", (bundleJre) ? "JRE" : "");
+        info.put("jreFullPath", "");
+        info.put("iconFile", (iconFile == null) ? "GenericJavaApp.icns" : iconFile.getName());
+        info.put("version", version);
+        info.put("jvmVersion", jreMinVersion);
+        info.put("jvmOptions", jvmOptions);
+        info.put("libs", libsFolder.list());
+      
+        VelocityUtils.render("mac/Info.plist.vtl", infoPlistFile, info);
+
+        // 7. Copy specified additional resources into the top level directory
+        getLog().info("Copying additional resources");
+        if (licenseFile != null) {
+            FileUtils.copy(licenseFile, resourcesFolder);
+        }
+
+        // 7. Make the stub executable
+        getLog().info("Making stub executable");
+        ProcessUtils.execute("chmod", "755", launcher);
+
+        // 8. Create the DMG file
+        getLog().info("Generating the Disk Image file");
+        File diskImageFile = new File(outputDirectory, name + "-" + version + ".dmg");
+        ProcessUtils.execute("hdiutil", "create", "-srcfolder", outputDirectory, diskImageFile);
+        ProcessUtils.execute("hdiutil", "internet-enable", "-yes", diskImageFile);
+
+        projectHelper.attachArtifact(mavenProject, "dmg", null, diskImageFile);
+
+        getLog().info("App Bundle generation finished");
 
 	}
 
@@ -450,7 +547,7 @@ public class PackageMojo extends AbstractMojo {
 
 		// generate customized jre using modules
 		File modulesDir = new File(System.getProperty("java.home"), "jmods");
-		ProcessUtils.execute("jlink", "--module-path", modulesDir, "--add-modules", modules, "--output", jreFolder);
+		ProcessUtils.execute("jlink", "--module-path", modulesDir, "--add-modules", modules, "--output", jreFolder, "--no-header-files", "--no-man-pages", "--strip-debug", "--compress=2");
 		
 	}
 	
