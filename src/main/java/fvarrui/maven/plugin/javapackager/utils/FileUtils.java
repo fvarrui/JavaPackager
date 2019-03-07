@@ -53,7 +53,7 @@ public class FileUtils {
 		if (!from.isFile()) throw new MojoExecutionException("Source file " + from + " is not a file");
 		if (!to.exists()) to.mkdirs();
 		try {
-			Files.move(from, to);
+			Files.move(from, new File(to, from.getName()));
 		} catch (IOException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
