@@ -16,7 +16,7 @@ public class ProcessUtils {
 		StringBuffer outputBuffer = new StringBuffer();
 		try { 
 			
-			Logger.info("Executed command: " + executable + " " + StringUtils.join(arguments, " "));
+			Logger.info("Executing command: " + executable + " " + StringUtils.join(arguments, " "));
 			
 			Commandline command = new Commandline();
 			command.setWorkingDirectory(workingDirectory);
