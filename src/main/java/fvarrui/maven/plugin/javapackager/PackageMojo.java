@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,7 +32,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
-import org.codehaus.plexus.util.IOUtil;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import fvarrui.maven.plugin.javapackager.utils.FileUtils;
@@ -125,7 +123,7 @@ public class PackageMojo extends AbstractMojo {
 		copyAllDependencies();
 		
 		createCustomizedJre();
-
+		
 		if (SystemUtils.IS_OS_MAC_OSX) {
 
 			if (iconFile == null) iconFile = new File("assets/mac", mavenProject.getName() + ".icns");
@@ -246,13 +244,13 @@ public class PackageMojo extends AbstractMojo {
         FileUtils.copyStreamToFile(launcherResourceStream, launcherFile);
 
         // 3. copy icon file to resources folder if specified
-        getLog().info("Copying the Icon File");
+        getLog().info("Copying icon file to Resources folder");
         FileUtils.copyFileToFolder(iconFile, resourcesFolder);
 
         // 4. move all dependencies from the pom to Java folder
         getLog().info("Moving dependencies to Java folder");
         File libsFolder = new File(appFolder, "libs");
-        FileUtils.moveFolderToFolder(libsFolder, new File(javaFolder, "libs"));
+        FileUtils.moveFolderToFolder(libsFolder, javaFolder);
 
         // 5. check if JRE should be embedded. Move generated JRE inside
         if (bundleJre) {
@@ -264,7 +262,8 @@ public class PackageMojo extends AbstractMojo {
             
             getLog().info("Moving the JRE Folder from : [" + jreFolder + "] to PlugIn folder: [" + pluginsFolder + "]");
             
-            FileUtils.moveFolderToFolder(jreFolder, pluginsFolder); 
+            FileUtils.moveFolderContentToFolder(jreFolder, pluginsFolder); 
+            jreFolder.delete();
             
             // setting execute permissions on executables in jre
             File binFolder = new File(pluginsFolder, "bin");
@@ -287,7 +286,6 @@ public class PackageMojo extends AbstractMojo {
         info.put("jrePath", (bundleJre) ? "JRE" : "");
         info.put("jreFullPath", "");
         info.put("iconFile", (iconFile == null) ? "GenericJavaApp.icns" : iconFile.getName());
-        info.put("version", version);
         info.put("jvmVersion", jreMinVersion);
         info.put("jvmOptions", jvmOptions);
         info.put("libs", libsFolder.list());
@@ -302,7 +300,7 @@ public class PackageMojo extends AbstractMojo {
 
         // 7. Make the stub executable
         getLog().info("Making stub executable");
-        ProcessUtils.execute("chmod", "755", launcherFile);
+        launcherFile.setExecutable(true,  false);
 
         // 8. Create the DMG file
         getLog().info("Generating the Disk Image file");
@@ -319,27 +317,15 @@ public class PackageMojo extends AbstractMojo {
 	private void createLinuxExecutable() throws MojoExecutionException {
 		getLog().info("Creating GNU/Linux executable...");
 
-		// concat linux startup.sh script + generated jar
-		try {
-						
-			// generate startup.sh script to boot java app
-			File startupFile = new File(assetsFolder, "startup.sh");
-			VelocityUtils.render("linux/startup.sh.vtl", startupFile, info);
-
-			// open stream to files
-			InputStream startup = new FileInputStream(startupFile);
-			InputStream jar = new FileInputStream(jarFile);
-			FileOutputStream binary = new FileOutputStream(executable);
-			
-			// concat files in binary
-			FileUtils.concatStreams(binary, startup, jar);
-			
-			// set execution permissions
-			executable.setExecutable(true, false);
-			
-		} catch (FileNotFoundException e) {
-			throw new MojoExecutionException(e.getMessage(), e);
-		}
+		// generate startup.sh script to boot java app
+		File startupFile = new File(assetsFolder, "startup.sh");
+		VelocityUtils.render("linux/startup.sh.vtl", startupFile, info);
+		
+		// concat linux startup.sh script + generated jar in executable (binary)	
+		FileUtils.concat(executable, startupFile, jarFile);
+		
+		// set execution permissions
+		executable.setExecutable(true, false);
 
 	}
 
