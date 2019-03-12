@@ -12,9 +12,6 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -41,6 +38,8 @@ import fvarrui.maven.plugin.javapackager.utils.VelocityUtils;
 
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.RUNTIME)
 public class PackageMojo extends AbstractMojo {
+	
+	// maven components
 
 	@Parameter(defaultValue = "${project}", readonly = true)
 	private MavenProject mavenProject;
@@ -54,20 +53,22 @@ public class PackageMojo extends AbstractMojo {
 	@Component
     private MavenProjectHelper projectHelper;
 
+	// private variables
+	
 	private ExecutionEnvironment env;
 
 	private Map<String, Object> info;
 	
 	private File debFile;
+	
+	private File appFolder;
+
+	private File assetsFolder;
+	
+	// plugin configuration properties
 
 	@Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
 	private File outputDirectory;
-
-	@Parameter(defaultValue = "${project.build.directory}/app", property = "appFolder", required = true)
-	private File appFolder;
-
-	@Parameter(defaultValue = "${project.build.directory}/assets", property = "assetsFolder", required = true)
-	private File assetsFolder;
 
 	@Parameter(defaultValue = "${project.build.directory}/${project.name}-${project.version}.jar", property = "jarFile", required = true)
 	private File jarFile;
@@ -86,9 +87,27 @@ public class PackageMojo extends AbstractMojo {
 
 	@Parameter(property = "mainClass", required = true)
 	private String mainClass;
+
+	@Parameter(defaultValue = "${project.name}", property = "name", required = true)
+	private String name;
 	
+	@Parameter(defaultValue = "${project.name}", property = "displayName", required = false)
+	private String displayName;
+
+	@Parameter(defaultValue = "${project.version}", property = "version", required = true)
+	private String version;
+
+	@Parameter(defaultValue = "${project.description}", property = "description", required = true)
+	private String description;
+
 	@Parameter(defaultValue = "false", property = "administratorRequired", required = true)
 	private Boolean administratorRequired;
+	
+	@Parameter(defaultValue = "${project.organization.name}", property = "organizationName", required = false)
+	private String organizationName;
+	
+	@Parameter(defaultValue = "${project.organization.url}", property = "organizationUrl", required = false)
+	private String organizationUrl;
 	
 	@Parameter(defaultValue = "", property = "organizationEmail", required = false)
 	private String organizationEmail;
@@ -102,7 +121,9 @@ public class PackageMojo extends AbstractMojo {
 	}
 
 	public void execute() throws MojoExecutionException {
-		System.out.println(outputDirectory);
+		
+		appFolder = new File(outputDirectory + "/app");
+		assetsFolder = new File(outputDirectory + "/assets");
 
 		if (!appFolder.exists()) appFolder.mkdirs();
 
@@ -158,11 +179,12 @@ public class PackageMojo extends AbstractMojo {
 	private Map<String, Object> getInfo() throws MojoExecutionException {
 		HashMap<String, Object> info = new HashMap<>();
 		
-		info.put("name", mavenProject.getName());
-		info.put("version", mavenProject.getVersion());
-		info.put("description", mavenProject.getDescription());
-		info.put("organizationName", mavenProject.getOrganization().getName());
-		info.put("organizationUrl", mavenProject.getOrganization().getUrl());
+		info.put("name", name);
+		info.put("displayName", displayName);
+		info.put("version", version);
+		info.put("description", description);
+		info.put("organizationName", organizationName);
+		info.put("organizationUrl", organizationUrl);
 		info.put("organizationEmail", organizationEmail);
 		info.put("administratorRequired", administratorRequired);
 		info.put("bundleJre", bundleJre);
@@ -281,7 +303,7 @@ public class PackageMojo extends AbstractMojo {
         		}; 
         
         info.put("cfBundleExecutable", javaLauncherName);
-        info.put("bundleName", name);
+        info.put("bundleName", displayName);
         info.put("workingDirectory", "$APP_ROOT");
         info.put("jrePath", (bundleJre) ? "JRE" : "");
         info.put("jreFullPath", "");
