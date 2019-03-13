@@ -300,7 +300,7 @@ public class PackageMojo extends AbstractMojo {
         }
         
         // 8. Copy app folder as "<projectname>.app"
-        FileUtils.copyFolderToFolder(appFolder, new File(outputDirectory, name + ".app"));
+        FileUtils.copyFolderContentToFolder(appFolder, new File(outputDirectory, name + ".app"));
         
         // 9. Build PKG file
 
