@@ -241,7 +241,7 @@ public class PackageMojo extends AbstractMojo {
         String version = (String) info.get("version");
 		
         // 1. create and set up directories
-        getLog().info("Creating and setting up the bundle directories");
+        getLog().info("-----> Creating and setting up the bundle directories");
 
         File contentsFolder = new File(appFolder, "Contents");
         contentsFolder.mkdirs();
@@ -256,21 +256,24 @@ public class PackageMojo extends AbstractMojo {
         macOSFolder.mkdirs();
         
         // 2. generate startup script to boot java app
+        getLog().info("-----> Generating startup script");
 		File startupFile = new File(macOSFolder, "startup");
 		VelocityUtils.render("mac/startup.sh.vtl", startupFile, info);
 		startupFile.setExecutable(true,  false);
 
         // 3. copy icon file to resources folder if specified
-        getLog().info("Copying icon file to Resources folder");
+        getLog().info("-----> Copying icon file to Resources folder");
         FileUtils.copyFileToFolder(iconFile, resourcesFolder);
 
         // 4. move all dependencies from the pom to Java folder
-        getLog().info("Moving dependencies to Java folder");
+        getLog().info("-----> Moving dependencies to Java folder");
         File libsFolder = new File(appFolder, "libs");
         FileUtils.moveFolderToFolder(libsFolder, javaFolder);
 
         // 5. check if JRE should be embedded. Move generated JRE inside
         if (bundleJre) {
+
+            getLog().info("-----> Bundling JRE");
 
             File pluginsFolder = new File(contentsFolder, "PlugIns/JRE/Contents/Home");
             pluginsFolder.mkdirs();
