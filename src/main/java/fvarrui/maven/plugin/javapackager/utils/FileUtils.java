@@ -62,6 +62,18 @@ public class FileUtils {
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
 	}
+	
+	public static void copyFolderContentToFolder(File from, File to) throws MojoExecutionException {
+		Logger.info("Copying folder content [" + from + "] to folder [" + to + "]");
+		if (!from.isDirectory()) throw new MojoExecutionException("Source folder " + from + " is not a directory");
+		else if (!to.isDirectory()) throw new MojoExecutionException("Destination folder " + to + " is not a directory");
+		for (File file : from.listFiles()) {
+			if (file.isDirectory())
+				copyFolderToFolder(file, to);
+			else
+				copyFileToFolder(file, to);
+		}
+	}
 
 	public static void moveFolderToFolder(File from, File to) throws MojoExecutionException {
 		Logger.info("Moving folder [" + from + "] to folder [" + to + "]");
