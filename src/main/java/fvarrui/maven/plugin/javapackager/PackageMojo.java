@@ -255,15 +255,10 @@ public class PackageMojo extends AbstractMojo {
         File macOSFolder = new File(contentsFolder, "MacOS");
         macOSFolder.mkdirs();
         
-        // 2. copy in the native java application stub
-        getLog().info("Copying the native Java Application Stub");
-
-        File launcherFile = new File(macOSFolder, javaLauncherName);
-        launcherFile.setExecutable(true);
-		
-        InputStream launcherResourceStream = this.getClass().getResourceAsStream("/mac/" + javaLauncherName);
-
-        FileUtils.copyStreamToFile(launcherResourceStream, launcherFile);
+        // 2. generate startup script to boot java app
+		File startupFile = new File(macOSFolder, "startup");
+		VelocityUtils.render("mac/startup.sh.vtl", startupFile, info);
+		startupFile.setExecutable(true,  false);
 
         // 3. copy icon file to resources folder if specified
         getLog().info("Copying icon file to Resources folder");
@@ -296,22 +291,6 @@ public class PackageMojo extends AbstractMojo {
         // 6. create and write the Info.plist file
         getLog().info("Writing the Info.plist file");
         File infoPlistFile = new File(contentsFolder, "Info.plist");
-        
-        String [] jvmOptions = { 
-        		"-Dapple.laf.useScreenMenuBar=true", 
-        		"-Xdock:name=" + name 
-        		}; 
-        
-        info.put("cfBundleExecutable", javaLauncherName);
-        info.put("bundleName", displayName);
-        info.put("workingDirectory", "$APP_ROOT");
-        info.put("jrePath", (bundleJre) ? "JRE" : "");
-        info.put("jreFullPath", "");
-        info.put("iconFile", (iconFile == null) ? "GenericJavaApp.icns" : iconFile.getName());
-        info.put("jvmVersion", jreMinVersion);
-        info.put("jvmOptions", jvmOptions);
-        info.put("libs", libsFolder.list());
-      
         VelocityUtils.render("mac/Info.plist.vtl", infoPlistFile, info);
 
         // 7. Copy specified additional resources into the top level directory
@@ -319,18 +298,16 @@ public class PackageMojo extends AbstractMojo {
         if (licenseFile != null) {
             FileUtils.moveFileToFolder(new File(appFolder, licenseFile.getName()), resourcesFolder);
         }
+        
+        // 8. Build PKG file
 
-        // 7. Make the stub executable
-        getLog().info("Making stub executable");
-        launcherFile.setExecutable(true,  false);
-
-        // 8. Create the DMG file
-        getLog().info("Generating the Disk Image file");
-        File diskImageFile = new File(outputDirectory, name + "-" + version + ".dmg");
-        ProcessUtils.execute("hdiutil", "create", "-srcfolder", outputDirectory, diskImageFile);
-        ProcessUtils.execute("hdiutil", "internet-enable", "-yes", diskImageFile);
-
-        projectHelper.attachArtifact(mavenProject, "dmg", null, diskImageFile);
+        // 9. Create the DMG file
+//        getLog().info("Generating the Disk Image file");
+//        File diskImageFile = new File(outputDirectory, name + "-" + version + ".dmg");
+//        ProcessUtils.execute("hdiutil", "create", "-srcfolder", outputDirectory, diskImageFile);
+//        ProcessUtils.execute("hdiutil", "internet-enable", "-yes", diskImageFile);
+//
+//        projectHelper.attachArtifact(mavenProject, "dmg", null, diskImageFile);
 
         getLog().info("App Bundle generation finished");
 
