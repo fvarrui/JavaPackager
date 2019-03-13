@@ -299,9 +299,12 @@ public class PackageMojo extends AbstractMojo {
             FileUtils.moveFileToFolder(new File(appFolder, licenseFile.getName()), resourcesFolder);
         }
         
-        // 8. Build PKG file
+        // 8. Copy app folder as "<projectname>.app"
+        FileUtils.copyFolderToFolder(appFolder, new File(outputDirectory, name + ".app"));
+        
+        // 9. Build PKG file
 
-        // 9. Create the DMG file
+        // 10. Create the DMG file
 //        getLog().info("Generating the Disk Image file");
 //        File diskImageFile = new File(outputDirectory, name + "-" + version + ".dmg");
 //        ProcessUtils.execute("hdiutil", "create", "-srcfolder", outputDirectory, diskImageFile);

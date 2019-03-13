@@ -2,6 +2,7 @@ package fvarrui.maven.plugin.javapackager.utils;
 
 import static org.apache.commons.io.FileUtils.copyFile;
 import static org.apache.commons.io.FileUtils.copyFileToDirectory;
+import static org.apache.commons.io.FileUtils.copyDirectoryToDirectory;
 import static org.apache.commons.io.FileUtils.copyInputStreamToFile;
 import static org.apache.commons.io.FileUtils.moveDirectoryToDirectory;
 import static org.apache.commons.io.FileUtils.moveFileToDirectory;
@@ -49,6 +50,16 @@ public class FileUtils {
 			fos.close();
 		} catch (IOException e) {
 			throw new MojoExecutionException("Error concatenating streams", e);
+		}
+	}
+	
+	public static void copyFolderToFolder(File from, File to) throws MojoExecutionException {
+		Logger.info("Copying folder [" + from + "] to folder [" + to + "]");
+		if (!from.isDirectory()) throw new MojoExecutionException("Source folder " + from + " is not a directory");
+		try {
+			copyDirectoryToDirectory(from, to);
+		} catch (IOException e) {
+			throw new MojoExecutionException(e.getMessage(), e);
 		}
 	}
 
