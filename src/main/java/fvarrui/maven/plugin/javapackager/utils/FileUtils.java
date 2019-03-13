@@ -56,8 +56,6 @@ public class FileUtils {
 	public static void copyFolderToFolder(File from, File to) throws MojoExecutionException {
 		Logger.info("Copying folder [" + from + "] to folder [" + to + "]");
 		if (!from.isDirectory()) throw new MojoExecutionException("Source folder " + from + " is not a directory");
-		if (!to.exists()) to.mkdirs();
-		if (!to.isDirectory()) throw new MojoExecutionException("Destination folder " + to + " is not a directory");
 		try {
 			copyDirectoryToDirectory(from, to);
 		} catch (IOException e) {
@@ -68,6 +66,7 @@ public class FileUtils {
 	public static void copyFolderContentToFolder(File from, File to) throws MojoExecutionException {
 		Logger.info("Copying folder content [" + from + "] to folder [" + to + "]");
 		if (!from.isDirectory()) throw new MojoExecutionException("Source folder " + from + " is not a directory");
+		if (!to.exists()) to.mkdirs();
 		else if (!to.isDirectory()) throw new MojoExecutionException("Destination folder " + to + " is not a directory");
 		for (File file : from.listFiles()) {
 			if (file.isDirectory())
