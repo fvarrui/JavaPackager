@@ -12,7 +12,6 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.io.File;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -300,17 +299,20 @@ public class PackageMojo extends AbstractMojo {
             FileUtils.moveFileToFolder(new File(appFolder, licenseFile.getName()), resourcesFolder);
         }
         
-        // 8. Copy app folder as "<projectname>.app"
-        FileUtils.copyFolderContentToFolder(appFolder, new File(outputDirectory, name + ".app"));
+        // 8. Create "<projectname>.app" in app folder, and move content inside
+        File appFile = new File(outputDirectory, name + ".app");
+        FileUtils.moveFolderContentToFolder(appFolder, appFile);
+        FileUtils.moveFolderToFolder(appFile, appFolder);
         
         // 9. Build PKG file
+        // TODO I'm not sure is this is a good idea
 
-        // 10. Create the DMG file
-//        getLog().info("Generating the Disk Image file");
-//        File diskImageFile = new File(outputDirectory, name + "-" + version + ".dmg");
-//        ProcessUtils.execute("hdiutil", "create", "-srcfolder", outputDirectory, diskImageFile);
-//        ProcessUtils.execute("hdiutil", "internet-enable", "-yes", diskImageFile);
-//
+        // 10. Create the DMG file including app folder content
+        getLog().info("Generating the Disk Image file");
+        File diskImageFile = new File(outputDirectory, name + "-" + version + ".dmg");
+        ProcessUtils.execute("hdiutil", "create", "-srcfolder", appFolder, diskImageFile);
+        ProcessUtils.execute("hdiutil", "internet-enable", "-yes", diskImageFile);
+
 //        projectHelper.attachArtifact(mavenProject, "dmg", null, diskImageFile);
 
         getLog().info("App Bundle generation finished");
