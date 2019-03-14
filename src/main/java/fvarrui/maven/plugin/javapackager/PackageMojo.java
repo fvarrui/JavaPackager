@@ -12,7 +12,6 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -235,10 +234,7 @@ public class PackageMojo extends AbstractMojo {
 	private void createMacAppBundle() throws MojoExecutionException {
 		getLog().info("Creating Mac OS X app bundle...");
 		
-		String javaLauncherName = "JavaAppLauncher";
-
 		String name = (String) info.get("name");
-        String version = (String) info.get("version");
 		
         // 1. create and set up directories
         getLog().info("-----> Creating and setting up the bundle directories");
@@ -249,16 +245,17 @@ public class PackageMojo extends AbstractMojo {
         File resourcesFolder = new File(contentsFolder, "Resources");
         resourcesFolder.mkdirs();
 
-        File javaFolder = new File(contentsFolder, "Java");
+        File javaFolder = new File(resourcesFolder, "Java");
         javaFolder.mkdirs();
 
         File macOSFolder = new File(contentsFolder, "MacOS");
         macOSFolder.mkdirs();
         
-        // 2. generate startup script to boot java app
-        getLog().info("-----> Generating startup script");
+        // 2. create startup file to boot java app
+        getLog().info("-----> Creating startup file");
 		File startupFile = new File(macOSFolder, "startup");
-		VelocityUtils.render("mac/startup.sh.vtl", startupFile, info);
+//		VelocityUtils.render("mac/startup.sh.vtl", startupFile, info);
+        FileUtils.copyStreamToFile(getClass().getResourceAsStream("/mac/launcher"), startupFile);
 		startupFile.setExecutable(true,  false);
 
         // 3. copy icon file to resources folder if specified
@@ -275,7 +272,7 @@ public class PackageMojo extends AbstractMojo {
 
             getLog().info("-----> Bundling JRE");
 
-            File pluginsFolder = new File(contentsFolder, "PlugIns/JRE/Contents/Home");
+            File pluginsFolder = new File(contentsFolder, "PlugIns/jre/Contents/Home");
             pluginsFolder.mkdirs();
             
             File jreFolder = new File(appFolder, "jre");
