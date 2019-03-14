@@ -1,35 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-        <dict>
-                <key>CFBundleDevelopmentRegion</key>
-                <string>English</string>
-                <key>CFBundleExecutable</key>
-                <string>startup</string>
-                <key>CFBundleIconFile</key>
-                <string>${info.name}.icns</string>
-                <key>CFBundleIdentifier</key>
-                <string>${info.name}</string>
-                <key>CFBundleDisplayName</key>
-                <string>${info.displayName}</string>
-                <key>CFBundleInfoDictionaryVersion</key>
-                <string>6.0</string>
-                <key>CFBundleName</key>
-                <string>${info.name}</string>
-                <key>CFBundlePackageType</key>
-                <string>APPL</string>
-                <key>CFBundleShortVersionString</key>
-                <string>${info.version}</string>
-                <key>CFBundleSignature</key>
-                <string>????</string>
-                <key>CFBundleVersion</key>
-                <string>2.2</string>
-                <key>NSHumanReadableCopyright</key>
-                <string>${info.organizationName}</string>
-                <key>NSHighResolutionCapable</key>
-                <true />
-                <key>NSSupportsAutomaticGraphicsSwitching</key>
-                <true />
-        </dict>
+	<dict>
+		<key>CFBundleGetInfoString</key>
+		<string>${info.displayName} ${info.version}</string>
+		<key>CFBundleDevelopmentRegion</key>
+		<string>English</string>
+		<key>CFBundleExecutable</key>
+		<string>startup</string>
+		<key>CFBundleIconFile</key>
+		<string>${info.name}.icns</string>
+		<key>CFBundleIdentifier</key>
+		<string>${info.mainClass}</string>
+		<key>CFBundleDisplayName</key>
+		<string>${info.displayName}</string>
+		<key>CFBundleInfoDictionaryVersion</key>
+		<string>6.0</string>
+		<key>CFBundleName</key>
+		<string>${info.name}</string>
+		<key>CFBundlePackageType</key>
+		<string>APPL</string>
+		<key>CFBundleShortVersionString</key>
+		<string>${info.version}</string>
+		<key>CFBundleSignature</key>
+		<string>????</string>
+		<key>CFBundleVersion</key>
+		<string>1.0</string>
+		<key>NSHumanReadableCopyright</key>
+		<string>${info.organizationName}</string>
+		<key>NSHighResolutionCapable</key>
+		<true />
+		<key>NSSupportsAutomaticGraphicsSwitching</key>
+		<true />
+		<key>JVMRuntime</key>
+		<key>jre</key>
+		<key>JVMMainClassName</key>
+		<string>${info.mainClass}</string>
+		<key>JVMOptions</key>
+		<array />
+	</dict>
 </plist>
-
