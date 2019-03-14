@@ -12,6 +12,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.io.File;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -511,6 +512,13 @@ public class PackageMojo extends AbstractMojo {
 				env);
 	}
 	
+	/**
+	 * Create a customized Java Runtime Enrironment from the current JDK using jdeps and jlink tools.
+	 * 
+	 * Next link explains the process: {@link https://medium.com/azulsystems/using-jlink-to-build-java-runtimes-for-non-modular-applications-9568c5e70ef4}
+	 * 
+	 * @throws MojoExecutionException
+	 */
 	private void createCustomizedJre() throws MojoExecutionException {
 		if (!bundleJre) return;
 		
