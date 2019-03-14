@@ -79,7 +79,7 @@ public class FileUtils {
 	public static void moveFolderToFolder(File from, File to) throws MojoExecutionException {
 		Logger.info("Moving folder [" + from + "] to folder [" + to + "]");
 		if (!from.isDirectory()) throw new MojoExecutionException("Source folder " + from + " is not a directory");
-		else if (!to.isDirectory()) throw new MojoExecutionException("Destination folder " + to + " is not a directory");
+		else if (to.exists() && !to.isDirectory()) throw new MojoExecutionException("Destination folder " + to + " is not a directory");
 		try {
 			moveDirectoryToDirectory(from, to, true);
 		} catch (IOException e) {
