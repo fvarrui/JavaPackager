@@ -301,7 +301,8 @@ public class PackageMojo extends AbstractMojo {
         
         // 8. Create "<projectname>.app" in app folder, and move content inside
         File appFile = new File(outputDirectory, name + ".app");
-        FileUtils.moveFolderContentToFolder(appFolder, appFile);
+        appFile.mkdirs();
+        FileUtils.moveFolderToFolder(contentsFolder, appFile);
         FileUtils.moveFolderToFolder(appFile, appFolder);
         
         // 9. Build PKG file
