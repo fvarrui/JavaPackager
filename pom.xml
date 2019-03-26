@@ -68,7 +68,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>
-				<version>3.4</version>
+				<version>3.6.0</version>
 				<configuration>
 					<goalPrefix>javapackager</goalPrefix>
 					<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
@@ -83,7 +83,7 @@
 					<execution>
 						<id>help-goal</id>
 						<goals>
-							<goal>helpmojo</goal>
+							<goal>help</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -94,7 +94,6 @@
 		<profile>
 			<id>run-its</id>
 			<build>
-
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
