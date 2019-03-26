@@ -98,6 +98,9 @@ public class PackageMojo extends AbstractMojo {
 
 	@Parameter(defaultValue = "${project.description}", property = "description", required = true)
 	private String description;
+	
+	@Parameter(defaultValue = "${project.url}", property = "url", required = false)
+	private String url;
 
 	@Parameter(defaultValue = "false", property = "administratorRequired", required = true)
 	private Boolean administratorRequired;
@@ -182,6 +185,7 @@ public class PackageMojo extends AbstractMojo {
 		info.put("displayName", displayName);
 		info.put("version", version);
 		info.put("description", description);
+		info.put("url", url);
 		info.put("organizationName", organizationName);
 		info.put("organizationUrl", organizationUrl);
 		info.put("organizationEmail", organizationEmail);
