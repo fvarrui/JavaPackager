@@ -72,7 +72,7 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${project.build.directory}/${project.name}-${project.version}.jar", property = "jarFile", required = true)
 	private File jarFile;
 	
-	@Parameter(defaultValue = "${user.dir}/LICENSE", property = "licenseFile", required = true)
+	@Parameter(defaultValue = "${project.build.directory}/../src/main/resources/LICENSE.txt", property = "licenseFile", required = false)
 	private File licenseFile;
 
 	@Parameter(defaultValue = "${project.build.directory}/app/${project.name}", property = "executable", required = true)
@@ -96,7 +96,7 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${project.version}", property = "version", required = true)
 	private String version;
 
-	@Parameter(defaultValue = "${project.description}", property = "description", required = true)
+	@Parameter(defaultValue = "${project.description}", property = "description", required = false)
 	private String description;
 	
 	@Parameter(defaultValue = "${project.url}", property = "url", required = false)
@@ -313,10 +313,10 @@ public class PackageMojo extends AbstractMojo {
         // TODO I'm not sure is this is a good idea
 
         // 10. Create the DMG file including app folder content
-        getLog().info("Generating the Disk Image file");
-        File diskImageFile = new File(outputDirectory, name + "-" + version + ".dmg");
-        ProcessUtils.execute("hdiutil", "create", "-srcfolder", appFolder, diskImageFile);
-        ProcessUtils.execute("hdiutil", "internet-enable", "-yes", diskImageFile);
+//        getLog().info("Generating the Disk Image file");
+//        File diskImageFile = new File(outputDirectory, name + "-" + version + ".dmg");
+//        ProcessUtils.execute("hdiutil", "create", "-srcfolder", appFolder, diskImageFile);
+//        ProcessUtils.execute("hdiutil", "internet-enable", "-yes", diskImageFile);
 
 //        projectHelper.attachArtifact(mavenProject, "dmg", null, diskImageFile);
 
