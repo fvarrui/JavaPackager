@@ -12,6 +12,17 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
+import java.nio.file.WatchEvent.Kind;
+import java.nio.file.WatchEvent.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -271,7 +282,7 @@ public class PackageMojo extends AbstractMojo {
         File libsFolder = new File(appFolder, "libs");
         FileUtils.moveFolderContentToFolder(libsFolder, javaFolder);
         FileUtils.moveFileToFolder(jarFile, javaFolder);
-        libsFolder.deleteOnExit();
+        libsFolder.delete();
 
         // 5. check if JRE should be embedded. Move generated JRE inside
         if (bundleJre) {
@@ -311,16 +322,16 @@ public class PackageMojo extends AbstractMojo {
         FileUtils.moveFolderToFolder(contentsFolder, appFile);
         FileUtils.moveFolderToFolder(appFile, appFolder);
         
-        // 9. Build PKG file
-        // TODO I'm not sure if this is a good idea
+        // 9. Create a symlink to Applications folder
+        File targetFolder = new File("/Applications");
+        File linkFile = new File(appFolder, "Applications");
+        FileUtils.createSymlink(linkFile, targetFolder);
 
         // 10. Create the DMG file including app folder content
         getLog().info("Generating the Disk Image file");
         File diskImageFile = new File(outputDirectory, name + "-" + version + ".dmg");
         ProcessUtils.execute("hdiutil", "create", "-srcfolder", appFolder, diskImageFile);
         ProcessUtils.execute("hdiutil", "internet-enable", "-yes", diskImageFile);
-
-//        projectHelper.attachArtifact(mavenProject, "dmg", null, diskImageFile);
 
         getLog().info("App Bundle generation finished");
 
