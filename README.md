@@ -35,7 +35,7 @@ Add the following `plugin` tag to your `pom.xml`.
             </goals>
             <configuration>
                 <mainClass>path.to.your.mainClass</mainClass>
-                <bundleJre>true|false</bunleJre>
+                <bundleJre>true|false</bundleJre>
                 <administratorRequired>true|false</administratorRequired>
             </configuration>
         </execution>
@@ -66,10 +66,16 @@ Some assets, like app icons, must to be located in:
 
 >  Where **projectname** corresponds to `name` property in `pom.xml`.
 
-By default it will generate next artifacts in `target ` folder:
+Execute next command in project's root folder:
+
+```bash
+mvn package
+```
+
+By default, it will generate next artifacts in `target ` folder:
 
 - A native application in `app` directory with a bundled JRE.
 - A `projectname_projectversion.deb` package file on GNU/Linux. 
 - A `projectname_projectversion.rpm` package file on GNU/Linux (requires alien && rpmbuild).
 - A `projectname_projectversion.exe` installer file on Windows.
-- A `projectname_projectversion.dmg` installer file on Mac OS X *[coming soon]*
+- A `projectname_projectversion.dmg` installer file on Mac OS X.
