@@ -269,7 +269,9 @@ public class PackageMojo extends AbstractMojo {
         // 4. move all dependencies from the pom to Java folder
         getLog().info("-----> Moving dependencies to Java folder");
         File libsFolder = new File(appFolder, "libs");
-        FileUtils.moveFolderToFolder(libsFolder, javaFolder);
+        FileUtils.moveFolderContentToFolder(libsFolder, javaFolder);
+        FileUtils.moveFileToFolder(jarFile, javaFolder);
+        libsFolder.deleteOnExit();
 
         // 5. check if JRE should be embedded. Move generated JRE inside
         if (bundleJre) {
@@ -310,7 +312,7 @@ public class PackageMojo extends AbstractMojo {
         FileUtils.moveFolderToFolder(appFile, appFolder);
         
         // 9. Build PKG file
-        // TODO I'm not sure is this is a good idea
+        // TODO I'm not sure if this is a good idea
 
         // 10. Create the DMG file including app folder content
         getLog().info("Generating the Disk Image file");
