@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -125,6 +126,14 @@ public class FileUtils {
 	
 	public static void copyResourceToFile(String resource, File dest) throws MojoExecutionException  {
 		copyStreamToFile(FileUtils.class.getResourceAsStream(resource), dest);
+	}
+	
+	public static void createSymlink(File link, File target) throws MojoExecutionException {
+        try {
+			Files.createSymbolicLink(link.toPath(), target.toPath());
+		} catch (IOException e) {
+			throw new MojoExecutionException("Could not create symlink " + link + " to " + target, e);
+		}
 	}
 
 }
