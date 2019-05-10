@@ -261,8 +261,6 @@ public class PackageMojo extends AbstractMojo {
 //		VelocityUtils.render("mac/startup.sh.vtl", startupFile, info);
         FileUtils.copyStreamToFile(getClass().getResourceAsStream("/mac/launcher"), startupFile);
 		startupFile.setExecutable(true,  false);
-		// FIXME waiting confirmation about if it really works or not
-//        ProcessUtils.execute("codesign", "-f", "--deep", "-s", "-", startupFile);
 
         // 3. copy icon file to resources folder if specified
         getLog().info("-----> Copying icon file to Resources folder");
@@ -290,9 +288,13 @@ public class PackageMojo extends AbstractMojo {
             FileUtils.moveFolderContentToFolder(jreFolder, pluginsFolder); 
             jreFolder.delete();
             
-            // setting execute permissions on executables in jre
+            // set execution permissions on executables in jre
             File binFolder = new File(pluginsFolder, "bin");
             Arrays.asList(binFolder.listFiles()).forEach(f -> f.setExecutable(true, false));
+            
+            // remove 'legal' folder 
+            File legalFolder = new File(pluginsFolder, "legal");
+            if (legalFolder.exists()) legalFolder.delete();
             
         }
 
@@ -312,7 +314,10 @@ public class PackageMojo extends AbstractMojo {
         appFile.mkdirs();
         FileUtils.moveFolderToFolder(contentsFolder, appFile);
         FileUtils.moveFolderToFolder(appFile, appFolder);
-        
+
+		// FIXME waiting confirmation about if it really works or not
+        ProcessUtils.execute("codesign", "--force", "--deep", "--sign", "-", appFile);
+
         // 9. Create a symlink to Applications folder
         File targetFolder = new File("/Applications");
         File linkFile = new File(appFolder, "Applications");
