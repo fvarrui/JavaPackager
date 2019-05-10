@@ -316,6 +316,7 @@ public class PackageMojo extends AbstractMojo {
         FileUtils.moveFolderToFolder(appFile, appFolder);
 
 		// FIXME waiting confirmation about if it really works or not
+        appFile = new File(appFolder, appFile.getName());
         ProcessUtils.execute("codesign", "--force", "--deep", "--sign", "-", appFile);
 
         // 9. Create a symlink to Applications folder
