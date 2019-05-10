@@ -261,6 +261,7 @@ public class PackageMojo extends AbstractMojo {
 //		VelocityUtils.render("mac/startup.sh.vtl", startupFile, info);
         FileUtils.copyStreamToFile(getClass().getResourceAsStream("/mac/launcher"), startupFile);
 		startupFile.setExecutable(true,  false);
+        ProcessUtils.execute("codesign", "-f", "--deep", "-s", "-", startupFile);
 
         // 3. copy icon file to resources folder if specified
         getLog().info("-----> Copying icon file to Resources folder");
