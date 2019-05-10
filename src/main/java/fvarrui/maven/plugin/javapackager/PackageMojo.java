@@ -322,7 +322,6 @@ public class PackageMojo extends AbstractMojo {
         getLog().info("Generating the Disk Image file");
         File diskImageFile = new File(outputDirectory, name + "-" + version + ".dmg");
         ProcessUtils.execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", name, diskImageFile);
-        ProcessUtils.execute("hdiutil", "internet-enable", "-yes", diskImageFile);
 
         getLog().info("App Bundle generation finished");
 
