@@ -125,14 +125,26 @@ public class FileUtils {
 	}
 	
 	public static void copyResourceToFile(String resource, File dest) throws MojoExecutionException  {
+		Logger.info("Copying resource [" + resource + "] to file [" + dest + "]");		
 		copyStreamToFile(FileUtils.class.getResourceAsStream(resource), dest);
 	}
 	
 	public static void createSymlink(File link, File target) throws MojoExecutionException {
-        try {
+	Logger.info("Creating symbolic link [" + link + "] to [" + target + "]");		
+       try {
 			Files.createSymbolicLink(link.toPath(), target.toPath());
 		} catch (IOException e) {
 			throw new MojoExecutionException("Could not create symlink " + link + " to " + target, e);
+		}
+	}
+	
+	public static void removeFolder(File folder) throws MojoExecutionException {
+		Logger.info("Removing folder [" + folder + "]");		
+		if (!folder.exists()) return;
+		try {
+			org.apache.commons.io.FileUtils.deleteDirectory(folder);
+		} catch (IOException e) {
+			throw new MojoExecutionException("Could not remove fodler [" + folder + "]", e);
 		}
 	}
 

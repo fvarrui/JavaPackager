@@ -294,7 +294,7 @@ public class PackageMojo extends AbstractMojo {
             
             // remove 'legal' folder 
             File legalFolder = new File(pluginsFolder, "legal");
-            if (legalFolder.exists()) legalFolder.delete();
+            FileUtils.removeFolder(legalFolder);
             
         }
 
