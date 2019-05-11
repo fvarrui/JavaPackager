@@ -75,7 +75,7 @@ public class PackageMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project.build.directory}/app/${project.name}", property = "executable", required = true)
     private File executable;
 
-    @Parameter(property = "iconFile")
+    @Parameter(defaultValue = "${project.build.directory}/../src/main/resources/${project.name}.icns", property = "iconFile")
     private File iconFile;
 
     @Parameter(defaultValue = "${java.version}", property = "jreMinVersion", required = true)
@@ -152,8 +152,8 @@ public class PackageMojo extends AbstractMojo {
 
         if (SystemUtils.IS_OS_MAC_OSX) {
 
-            if (iconFile == null) {
-                iconFile = new File("assets/mac", mavenProject.getName() + ".icns");
+            if (!iconFile.exists()) {
+                iconFile = new File("assets/mac/", mavenProject.getName() + ".icns");
             }
 
             createMacAppBundle();
@@ -280,7 +280,7 @@ public class PackageMojo extends AbstractMojo {
 
         // 3. copy icon file to resources folder if specified
         getLog().info("-----> Copying icon file to Resources folder");
-        FileUtils.copyFileToFolder(iconFile, resourcesFolder);
+        FileUtils.copyFileToFolder(iconFile.getAbsoluteFile(), resourcesFolder);
 
         // 4. move all dependencies from the pom to Java folder
         getLog().info("-----> Moving dependencies to Java folder");
