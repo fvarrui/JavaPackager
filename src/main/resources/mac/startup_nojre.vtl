@@ -1,0 +1,4 @@
+#!/bin/sh
+DIR=$(cd "$(dirname "$0")" ; pwd)
+JAVA=`/usr/libexec/java_home`
+$JAVA/bin/java -Dapple.laf.useScreenMenuBar=true -Xdock:name="${info.displayName}" -Xdock:icon=$DIR/../Resources/${info.name}.icns -jar $DIR/../Resources/Java/${info.name}-${info.version}.jar $@
