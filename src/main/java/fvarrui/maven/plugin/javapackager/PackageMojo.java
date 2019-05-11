@@ -196,7 +196,7 @@ public class PackageMojo extends AbstractMojo {
         info.put("description", description);
         info.put("url", url);
         info.put("organizationName", organizationName);
-        info.put("organizationUrl", organizationUrl);
+        info.put("organizationUrl", organizationUrl == null ? "" : organizationUrl);
         info.put("organizationEmail", organizationEmail);
         info.put("administratorRequired", administratorRequired);
         info.put("bundleJre", bundleJre);
@@ -304,9 +304,13 @@ public class PackageMojo extends AbstractMojo {
             FileUtils.moveFolderContentToFolder(jreFolder, pluginsFolder);
             jreFolder.delete();
 
-            // setting execute permissions on executables in jre
+            // set execution permissions on executables in jre
             File binFolder = new File(pluginsFolder, "bin");
             Arrays.asList(binFolder.listFiles()).forEach(f -> f.setExecutable(true, false));
+
+            // remove 'legal' folder 
+            File legalFolder = new File(pluginsFolder, "legal");
+            // FileUtils.removeFolder(legalFolder);
 
         }
 
@@ -327,6 +331,10 @@ public class PackageMojo extends AbstractMojo {
         FileUtils.moveFolderToFolder(contentsFolder, appFile);
         FileUtils.moveFolderToFolder(appFile, appFolder);
 
+        // FIXME waiting confirmation about if it really works or not
+        appFile = new File(appFolder, appFile.getName());
+        ProcessUtils.execute("codesign", "--force", "--deep", "--sign", "-", appFile);
+
         // 9. Create a symlink to Applications folder
         File targetFolder = new File("/Applications");
         File linkFile = new File(appFolder, "Applications");
@@ -335,9 +343,8 @@ public class PackageMojo extends AbstractMojo {
         // 10. Create the DMG file including app folder content
         getLog().info("Generating the Disk Image file");
         File diskImageFile = new File(outputDirectory, name + "-" + version + ".dmg");
-        ProcessUtils.execute("hdiutil", "create", "-srcfolder", appFolder, diskImageFile);
-        ProcessUtils.execute("hdiutil", "internet-enable", "-yes", diskImageFile);
-        projectHelper.attachArtifact(mavenProject, "dmg", null, diskImageFile);
+        ProcessUtils.execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", name, diskImageFile);
+
         getLog().info("App Bundle generation finished");
 
     }
@@ -549,13 +556,12 @@ public class PackageMojo extends AbstractMojo {
         if (!bundleJre) {
             return;
         }
-        
+
         if (Integer.parseInt(System.getProperty("java.version").substring(0, System.getProperty("java.version").indexOf("."))) <= 12) {
             getLog().info("We need JDK 12+ for correctly generating the dependencies. You run " + System.getProperty("java.home"));
             getLog().info("Try to build without JRE embeded.");
             return;
         }
-        
 
         getLog().info("Create customized JRE ... with " + System.getProperty("java.home"));
 
