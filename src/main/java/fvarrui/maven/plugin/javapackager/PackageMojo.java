@@ -269,8 +269,13 @@ public class PackageMojo extends AbstractMojo {
         // 2. create startup file to boot java app
         getLog().info("-----> Creating startup file");
         File startupFile = new File(macOSFolder, "startup");
-//		VelocityUtils.render("mac/startup.sh.vtl", startupFile, info);
-        FileUtils.copyStreamToFile(getClass().getResourceAsStream("/mac/launcher"), startupFile);
+        if (bundleJre) {
+            VelocityUtils.render("mac/startup.vtl", startupFile, info);
+        } else {
+            VelocityUtils.render("mac/startup_nojre.vtl", startupFile, info);
+        }
+
+        //FileUtils.copyStreamToFile(getClass().getResourceAsStream("/mac/launcher"), startupFile);
         startupFile.setExecutable(true, false);
 
         // 3. copy icon file to resources folder if specified
@@ -328,11 +333,11 @@ public class PackageMojo extends AbstractMojo {
         FileUtils.createSymlink(linkFile, targetFolder);
 
         // 10. Create the DMG file including app folder content
-//        getLog().info("Generating the Disk Image file");
-//        File diskImageFile = new File(outputDirectory, name + "-" + version + ".dmg");
-//        ProcessUtils.execute("hdiutil", "create", "-srcfolder", appFolder, diskImageFile);
-//        ProcessUtils.execute("hdiutil", "internet-enable", "-yes", diskImageFile);
-//        projectHelper.attachArtifact(mavenProject, "dmg", null, diskImageFile);
+        getLog().info("Generating the Disk Image file");
+        File diskImageFile = new File(outputDirectory, name + "-" + version + ".dmg");
+        ProcessUtils.execute("hdiutil", "create", "-srcfolder", appFolder, diskImageFile);
+        ProcessUtils.execute("hdiutil", "internet-enable", "-yes", diskImageFile);
+        projectHelper.attachArtifact(mavenProject, "dmg", null, diskImageFile);
         getLog().info("App Bundle generation finished");
 
     }
@@ -544,6 +549,13 @@ public class PackageMojo extends AbstractMojo {
         if (!bundleJre) {
             return;
         }
+        
+        if (Integer.parseInt(System.getProperty("java.version").substring(0, System.getProperty("java.version").indexOf("."))) <= 12) {
+            getLog().info("We need JDK 12+ for correctly generating the dependencies. You run " + System.getProperty("java.home"));
+            getLog().info("Try to build without JRE embeded.");
+            return;
+        }
+        
 
         getLog().info("Create customized JRE ... with " + System.getProperty("java.home"));
 
@@ -552,7 +564,7 @@ public class PackageMojo extends AbstractMojo {
 
         // determine required modules for libs and app jar
         String modules = "java.scripting,jdk.unsupported,"; // add required modules by default
-        // modules += ProcessUtils.execute(System.getProperty("java.home") + "/bin/jdeps", "--print-module-deps", "--class-path", new File(libsFolder, "*"), jarFile);
+        modules += ProcessUtils.execute(System.getProperty("java.home") + "/bin/jdeps", "-q", "--ignore-missing-deps", "--print-module-deps", "--class-path", new File(libsFolder, "*"), jarFile);
 
         // if exists, remove old jre folder
         if (jreFolder.exists()) {
