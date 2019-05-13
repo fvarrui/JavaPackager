@@ -1,6 +1,7 @@
 #!/bin/sh
+DIR=`cd "$(dirname "$0")" ; pwd`
 #if($info.bundleJre)
-JAVA=`cd "$(dirname "$0")" ; pwd`/../PlugIns/jre/Contents/Home/bin/java
+JAVA=$DIR/../PlugIns/jre/Contents/Home/bin/java
 #else
 JAVA=`/usr/libexec/java_home`/bin/java
 #end
