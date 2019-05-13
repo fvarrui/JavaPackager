@@ -21,7 +21,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 public class FileUtils {
 	
 	public static void copyFileToFile(File source, File dest) throws MojoExecutionException {
-		Logger.info("Copying file [" + source + "] to foñe [" + dest + "]");			
+		Logger.info("Copying file [" + source + "] to folder [" + dest + "]");			
 		try {
 			copyFile(source, dest);
 		} catch (IOException e) {
