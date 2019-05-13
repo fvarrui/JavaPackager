@@ -26,7 +26,7 @@ Add the following `plugin` tag to your `pom.xml`.
 <plugin>
     <groupId>fvarrui.maven</groupId>
     <artifactId>javapackager</artifactId>
-    <version>0.0.1</version>
+    <version>0.5.0</version>
     <executions>
         <execution>
             <phase>package</phase>
