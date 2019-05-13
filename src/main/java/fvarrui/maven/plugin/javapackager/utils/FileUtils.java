@@ -6,6 +6,7 @@ import static org.apache.commons.io.FileUtils.copyDirectoryToDirectory;
 import static org.apache.commons.io.FileUtils.copyInputStreamToFile;
 import static org.apache.commons.io.FileUtils.moveDirectoryToDirectory;
 import static org.apache.commons.io.FileUtils.moveFileToDirectory;
+import static org.apache.commons.io.FileUtils.deleteDirectory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -129,10 +130,20 @@ public class FileUtils {
 	}
 	
 	public static void createSymlink(File link, File target) throws MojoExecutionException {
+		Logger.info("Creating symbolic link [" + link + "] to [" + target + "]");		
         try {
 			Files.createSymbolicLink(link.toPath(), target.toPath());
 		} catch (IOException e) {
 			throw new MojoExecutionException("Could not create symlink " + link + " to " + target, e);
+		}
+	}
+	
+	public static void removeFolder(File folder) throws MojoExecutionException {
+		Logger.info("Removing foler [" + folder + "]");		
+		try {
+			deleteDirectory(folder);
+		} catch (IOException e) {
+            throw new MojoExecutionException("Could not remove folder " + folder, e);
 		}
 	}
 

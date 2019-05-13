@@ -31,6 +31,7 @@ import org.apache.maven.project.MavenProjectHelper;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import fvarrui.maven.plugin.javapackager.utils.FileUtils;
+import fvarrui.maven.plugin.javapackager.utils.JavaUtils;
 import fvarrui.maven.plugin.javapackager.utils.Logger;
 import fvarrui.maven.plugin.javapackager.utils.ProcessUtils;
 import fvarrui.maven.plugin.javapackager.utils.VelocityUtils;
@@ -304,10 +305,6 @@ public class PackageMojo extends AbstractMojo {
             File binFolder = new File(pluginsFolder, "bin");
             Arrays.asList(binFolder.listFiles()).forEach(f -> f.setExecutable(true, false));
 
-            // remove 'legal' folder 
-            File legalFolder = new File(pluginsFolder, "legal");
-            // FileUtils.removeFolder(legalFolder);
-
         }
 
         // 6. create and write the Info.plist file
@@ -552,10 +549,10 @@ public class PackageMojo extends AbstractMojo {
         if (!bundleJre) {
             return;
         }
-
-        if (Integer.parseInt(System.getProperty("java.version").substring(0, System.getProperty("java.version").indexOf("."))) <= 12) {
-            getLog().info("We need JDK 12+ for correctly generating the dependencies. You run " + System.getProperty("java.home"));
-            getLog().info("Try to build without JRE embeded.");
+        
+        if (JavaUtils.getJavaMajorVersion() <= 12) {
+            getLog().warn("We need JDK 12+ for correctly generating the dependencies. You run " + System.getProperty("java.home"));
+            getLog().warn("Try to build without JRE embeded.");
             return;
         }
 
@@ -570,7 +567,7 @@ public class PackageMojo extends AbstractMojo {
 
         // if exists, remove old jre folder
         if (jreFolder.exists()) {
-            jreFolder.delete();
+            FileUtils.removeFolder(jreFolder);
         }
 
         // generate customized jre using modules
