@@ -269,11 +269,7 @@ public class PackageMojo extends AbstractMojo {
         // 2. create startup file to boot java app
         getLog().info("-----> Creating startup file");
         File startupFile = new File(macOSFolder, "startup");
-        if (bundleJre) {
-            VelocityUtils.render("mac/startup.vtl", startupFile, info);
-        } else {
-            VelocityUtils.render("mac/startup_nojre.vtl", startupFile, info);
-        }
+        VelocityUtils.render("mac/startup.vtl", startupFile, info);
 
         //FileUtils.copyStreamToFile(getClass().getResourceAsStream("/mac/launcher"), startupFile);
         startupFile.setExecutable(true, false);
