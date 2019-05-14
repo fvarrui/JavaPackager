@@ -262,7 +262,7 @@ public class PackageMojo extends AbstractMojo {
 		}
 
 		File packageFolder = new File(assetsFolder, name + "-" + version);
-		File specFile = new File(packageFolder, name + "-" + version + "-2.spec");
+		File specFile = new File(packageFolder, name.toLowerCase() + "-" + version + "-2.spec");
 
 		try {
 			// rebuild rpm package
