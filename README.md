@@ -12,7 +12,7 @@ git clone https://github.com/fvarrui/JavaPackager.git
 cd JavaPackager
 ```
 
-2. Compile, package and install the plugin in your local repositoriy:
+2. Compile, package and install the plugin in your local repository:
 
 ```bash
 mvn install
@@ -26,7 +26,7 @@ Add the following `plugin` tag to your `pom.xml`.
 <plugin>
     <groupId>fvarrui.maven</groupId>
     <artifactId>javapackager</artifactId>
-    <version>0.5.0</version>
+    <version>0.6.0</version>
     <executions>
         <execution>
             <phase>package</phase>
