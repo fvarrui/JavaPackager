@@ -274,7 +274,8 @@ public class PackageMojo extends AbstractMojo {
 
 		// rename generated rpm package
 		File rpmFile = new File(assetsFolder, name + "-" + version + "-2.x86_64.rpm");
-		rpmFile.renameTo(new File(assetsFolder, name + "_" + version + ".rpm"));
+		String newName = name + "_" + version + ".rpm";
+		FileUtils.rename(rpmFile, newName);
 
 	}
 
