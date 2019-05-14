@@ -17,7 +17,6 @@ import java.nio.file.Files;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 
 
@@ -153,14 +152,7 @@ public class FileUtils {
 	
 	public static void rename(File file, String newName) throws MojoExecutionException {
 		Logger.info("Changing name of [" + file + "] to [" + newName + "]");		
-		try {
-			if (SystemUtils.IS_OS_LINUX)
-				ProcessUtils.execute("mv", file, newName);
-			else
-				file.renameTo(new File(newName)); // FIXME this doesn't work on linux, I don't know why
-		} catch (MojoExecutionException e) {
-            throw new MojoExecutionException("File [" + file + "] couldn't be renamed to [" + newName + "]", e);
-		}
+		file.renameTo(new File(file.getParentFile(), newName)); 
 	}
 
 }
