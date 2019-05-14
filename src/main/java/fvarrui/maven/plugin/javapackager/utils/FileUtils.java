@@ -128,8 +128,7 @@ public class FileUtils {
 	}
 	
 	public static void copyResourceToFile(String resource, File dest) throws MojoExecutionException  {
-		Logger.info("Copying resuorce [" + resource + "] to file [" + dest + "]");		
-		Logger.warn("--->" + FileUtils.class.getResourceAsStream(resource));
+		Logger.info("Copying resource [" + resource + "] to file [" + dest + "]");		
 		copyStreamToFile(FileUtils.class.getResourceAsStream(resource), dest);
 	}
 	
