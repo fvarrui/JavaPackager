@@ -19,5 +19,10 @@ public class Logger {
 		if (logger != null) logger.info(info);
 		return info;
 	}
+	
+	public static String warn(String warn) {
+		if (logger != null) logger.warn(warn);
+		return warn;
+	}
 
 }
