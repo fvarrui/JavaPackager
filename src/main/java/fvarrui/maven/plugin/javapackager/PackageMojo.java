@@ -139,11 +139,11 @@ public class PackageMojo extends AbstractMojo {
 			FileUtils.copyFileToFolder(licenseFile, appFolder);
 		}
 
-		this.info = getInfo();
-
 		this.env = executionEnvironment(mavenProject, mavenSession, pluginManager);
 
 		createRunnableJar();
+
+		this.info = getInfo();
 
 		if (SystemUtils.IS_OS_MAC_OSX) {
 
@@ -197,7 +197,7 @@ public class PackageMojo extends AbstractMojo {
 	private void createRunnableJar() throws MojoExecutionException {
 		getLog().info("Creating runnable JAR...");
 		
-		String classifier = "runnable-jar";
+		String classifier = "runnable";
 
 		jarFile = new File(outputDirectory, mavenProject.getName() + "-" + mavenProject.getVersion() + "-" + classifier + "." + mavenProject.getPackaging());
 
@@ -236,6 +236,7 @@ public class PackageMojo extends AbstractMojo {
 		info.put("administratorRequired", administratorRequired);
 		info.put("bundleJre", bundleJre);
 		info.put("mainClass", mainClass);
+		info.put("jarFile", jarFile.getName());
 
 		// if license file exists
 		if (licenseFile != null) {
