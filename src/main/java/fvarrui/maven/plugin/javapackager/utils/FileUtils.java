@@ -1,12 +1,12 @@
 package fvarrui.maven.plugin.javapackager.utils;
 
+import static org.apache.commons.io.FileUtils.copyDirectoryToDirectory;
 import static org.apache.commons.io.FileUtils.copyFile;
 import static org.apache.commons.io.FileUtils.copyFileToDirectory;
-import static org.apache.commons.io.FileUtils.copyDirectoryToDirectory;
 import static org.apache.commons.io.FileUtils.copyInputStreamToFile;
+import static org.apache.commons.io.FileUtils.deleteDirectory;
 import static org.apache.commons.io.FileUtils.moveDirectoryToDirectory;
 import static org.apache.commons.io.FileUtils.moveFileToDirectory;
-import static org.apache.commons.io.FileUtils.deleteDirectory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 
 
@@ -41,7 +42,7 @@ public class FileUtils {
 	}
 	
 	public static void concat(File dest, File ... sources) throws MojoExecutionException {
-		Logger.info("Concatenating files [" + sources + "] into file [" + dest + "]");
+		Logger.info("Concatenating files [" + StringUtils.join(sources, ",") + "] into file [" + dest + "]");
 		try {
 			FileOutputStream fos = new FileOutputStream(dest);
 			for (File source : sources) {
