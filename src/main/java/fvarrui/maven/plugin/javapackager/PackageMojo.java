@@ -65,7 +65,7 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
 	private File outputDirectory;
 
-	@Parameter(defaultValue = "${project.build.directory}/../src/main/resources/LICENSE.txt", property = "licenseFile", required = false)
+	@Parameter(property = "licenseFile", required = false)
 	private File licenseFile;
 
 	@Parameter(defaultValue = "${project.build.directory}/app/${project.name}", property = "executable", required = true)
@@ -130,13 +130,12 @@ public class PackageMojo extends AbstractMojo {
 
 		// if default license file doesn't exist and there's a license specified in
 		// pom.xml file, get this last one
-		if (!licenseFile.exists() && !mavenProject.getLicenses().isEmpty()) {
-			licenseFile = new File(mavenProject.getLicenses().get(0).getUrl());
+		if (licenseFile != null && !licenseFile.exists()) {
+			getLog().warn("Specified license file doesn't exist: " + licenseFile.getAbsolutePath());
+			licenseFile = null;
 		}
-
-		// copy license file to app folder
-		if (licenseFile.exists()) {
-			FileUtils.copyFileToFolder(licenseFile, appFolder);
+		if (licenseFile == null && !mavenProject.getLicenses().isEmpty()) {
+			licenseFile = new File(mavenProject.getLicenses().get(0).getUrl());
 		}
 
 		this.env = executionEnvironment(mavenProject, mavenSession, pluginManager);
@@ -284,8 +283,11 @@ public class PackageMojo extends AbstractMojo {
 
 		// create and set up directories
 		getLog().info("Creating and setting up the bundle directories");
+		
+		File appFile = new File(appFolder, name + ".app");
+		appFile.mkdirs();
 
-		File contentsFolder = new File(appFolder, "Contents");
+		File contentsFolder = new File(appFile, "Contents");
 		contentsFolder.mkdirs();
 
 		File resourcesFolder = new File(contentsFolder, "Resources");
@@ -301,7 +303,6 @@ public class PackageMojo extends AbstractMojo {
 		getLog().info("Creating startup file");
 		File startupFile = new File(macOSFolder, "startup");
 		VelocityUtils.render("mac/startup.vtl", startupFile, info);
-		// FileUtils.copyStreamToFile(getClass().getResourceAsStream("/mac/launcher"), startupFile);
 		startupFile.setExecutable(true, false);
 
 		// copy icon file to resources folder
@@ -331,18 +332,10 @@ public class PackageMojo extends AbstractMojo {
 		// copy specified additional resources into the top level directory
 		getLog().info("Copying additional resources");
 		if (licenseFile != null) {
-			FileUtils.moveFileToFolder(new File(appFolder, licenseFile.getName()), resourcesFolder);
+			FileUtils.copyFileToFolder(licenseFile, resourcesFolder);
 		}
 
-		// create "<projectname>.app" in app folder, and move content inside
-		File appFile = new File(outputDirectory, name + ".app");
-		appFile.mkdirs();
-		FileUtils.moveFolderToFolder(contentsFolder, appFile);
-		FileUtils.moveFolderToFolder(appFile, appFolder);
-
 		// codesign app folder
-		// FIXME waiting confirmation about if it's really needed
-		appFile = new File(appFolder, appFile.getName());
 		ProcessUtils.execute("codesign", "--force", "--deep", "--sign", "-", appFile);
 
 		// create a symlink to Applications folder
@@ -414,7 +407,6 @@ public class PackageMojo extends AbstractMojo {
 				configuration(
 						element("headerType", "gui"), 
 						element("jar", jarFile.getAbsolutePath()),
-						element("manifest", ""), 
 						element("outfile", executable.getAbsolutePath() + ".exe"),
 						element("icon", iconFile.getAbsolutePath()),
 						element("manifest", manifestFile.getAbsolutePath()),
@@ -447,7 +439,7 @@ public class PackageMojo extends AbstractMojo {
 
 		// copy ico file to assets folder
 		FileUtils.copyFileToFolder(iconFile, assetsFolder);
-
+		
 		// generate iss file from velocity template
 		File issFile = new File(assetsFolder, name + ".iss");
 		VelocityUtils.render("windows/iss.vtl", issFile, info);
