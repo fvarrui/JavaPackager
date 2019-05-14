@@ -32,6 +32,7 @@ public class FileUtils {
 	
 	public static void copyFileToFolder(File source, File destFolder) throws MojoExecutionException {
 		Logger.info("Copying file [" + source + "] to folder [" + destFolder + "]");
+		if (new File(destFolder, source.getName()).exists()) return;
 		try {
 			copyFileToDirectory(source, destFolder);
 		} catch (IOException e) {
@@ -126,6 +127,8 @@ public class FileUtils {
 	}
 	
 	public static void copyResourceToFile(String resource, File dest) throws MojoExecutionException  {
+		Logger.info("Copying resuorce [" + resource + "] to file [" + dest + "]");		
+		Logger.warn("--->" + FileUtils.class.getResourceAsStream(resource));
 		copyStreamToFile(FileUtils.class.getResourceAsStream(resource), dest);
 	}
 	
@@ -139,7 +142,7 @@ public class FileUtils {
 	}
 	
 	public static void removeFolder(File folder) throws MojoExecutionException {
-		Logger.info("Removing foler [" + folder + "]");		
+		Logger.info("Removing folder [" + folder + "]");		
 		try {
 			deleteDirectory(folder);
 		} catch (IOException e) {
