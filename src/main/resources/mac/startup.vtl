@@ -8,7 +8,7 @@ JAVA=`/usr/libexec/java_home`/bin/java
 #end
 BINARY=$SCRIPTPATH/../Resources/Java/${info.jarFile}
 #if($info.administratorRequired)
-/usr/bin/osascript -e 'do shell script "$JAVA -Dapple.laf.useScreenMenuBar=true -Xdock:name=\"${info.displayName}\" -Xdock:icon=$SCRIPTPATH/../Resources/${info.name}.icns -jar $BINARY $@" with administrator privileges'
+/usr/bin/osascript -e "do shell script \"$JAVA -Dapple.laf.useScreenMenuBar=true -Xdock:name='${info.displayName}' -Xdock:icon=$SCRIPTPATH/../Resources/${info.name}.icns -jar $BINARY $@\" with administrator privileges"
 #else
 $JAVA -Dapple.laf.useScreenMenuBar=true -Xdock:name="${info.displayName}" -Xdock:icon=$SCRIPTPATH/../Resources/${info.name}.icns -jar $BINARY $@
 #end
