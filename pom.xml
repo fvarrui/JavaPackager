@@ -5,7 +5,7 @@
 
 	<groupId>fvarrui.maven</groupId>
 	<artifactId>javapackager</artifactId>
-	<version>0.6.0</version>
+	<version>0.7.0</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>JavaPackager Maven Plugin</name>
@@ -75,12 +75,6 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>mojo-descriptor</id>
-						<goals>
-							<goal>descriptor</goal>
-						</goals>
-					</execution>
-					<execution>
 						<id>help-goal</id>
 						<goals>
 							<goal>help</goal>
@@ -90,6 +84,7 @@
 			</plugin>
 		</plugins>
 	</build>
+	
 	<profiles>
 		<profile>
 			<id>run-its</id>

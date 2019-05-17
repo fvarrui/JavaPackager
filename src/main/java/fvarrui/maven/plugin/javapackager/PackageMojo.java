@@ -11,8 +11,10 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.SystemUtils;
@@ -27,6 +29,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
+import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import fvarrui.maven.plugin.javapackager.utils.FileUtils;
@@ -109,6 +112,12 @@ public class PackageMojo extends AbstractMojo {
 
 	@Parameter(defaultValue = "false", property = "bundleJre", required = true)
 	private Boolean bundleJre;
+	
+	@Parameter(defaultValue = "false", property = "forceJreOptimization", required = true)
+	private Boolean forceJreOptimization;
+	
+	@Parameter(property = "additionalResources", required = false)
+	private List<File> additionalResources;
 
 	public PackageMojo() {
 		super();
@@ -118,12 +127,11 @@ public class PackageMojo extends AbstractMojo {
 	public void execute() throws MojoExecutionException {
 
 		appFolder = new File(outputDirectory, "app");
-		assetsFolder = new File(outputDirectory, "assets");
-
 		if (!appFolder.exists()) {
 			appFolder.mkdirs();
 		}
 
+		assetsFolder = new File(outputDirectory, "assets");
 		if (!assetsFolder.exists()) {
 			assetsFolder.mkdirs();
 		}
@@ -134,6 +142,7 @@ public class PackageMojo extends AbstractMojo {
 			getLog().warn("Specified license file doesn't exist: " + licenseFile.getAbsolutePath());
 			licenseFile = null;
 		}
+		// if license not specified, get from pom
 		if (licenseFile == null && !mavenProject.getLicenses().isEmpty()) {
 			licenseFile = new File(mavenProject.getLicenses().get(0).getUrl());
 		}
@@ -330,11 +339,9 @@ public class PackageMojo extends AbstractMojo {
 		File infoPlistFile = new File(contentsFolder, "Info.plist");
 		VelocityUtils.render("mac/Info.plist.vtl", infoPlistFile, info);
 
-		// copy specified additional resources into the top level directory
-		getLog().info("Copying additional resources");
-		if (licenseFile != null) {
-			FileUtils.copyFileToFolder(licenseFile, resourcesFolder);
-		}
+		// copy specified additional resources into the top level directory (include license file)
+		if (licenseFile != null) additionalResources.add(licenseFile);
+		copyAdditionalResources(additionalResources, resourcesFolder);
 
 		// codesign app folder
 		ProcessUtils.execute("codesign", "--force", "--deep", "--sign", "-", appFile);
@@ -369,7 +376,11 @@ public class PackageMojo extends AbstractMojo {
 		// copy all dependencies
 		File libsFolder = new File(appFolder, "libs");
 		copyAllDependencies(libsFolder);
-		
+
+		// copy additional resources
+		if (licenseFile != null) additionalResources.add(licenseFile);
+		copyAdditionalResources(additionalResources, appFolder);
+
 		// check if JRE should be embedded
 		if (bundleJre) {
 			getLog().info("Bundling JRE");
@@ -390,12 +401,49 @@ public class PackageMojo extends AbstractMojo {
 		File libsFolder = new File(appFolder, "libs");
 		copyAllDependencies(libsFolder);
 		
+		// copy additional resources
+		if (licenseFile != null) additionalResources.add(licenseFile);		
+		copyAdditionalResources(additionalResources, appFolder);
+		
 		// check if JRE should be embedded
 		if (bundleJre) {
 			getLog().info("Bundling JRE");
 			File jreFolder = new File(appFolder, "jre");
 			createCustomizedJre(jreFolder, libsFolder);
 		}
+		
+		// prepare launch4j plugin configuration
+		
+		List<Element> config = new ArrayList<>();
+		
+		config.add(element("headerType", "gui"));
+		config.add(element("jar", jarFile.getAbsolutePath()));
+		config.add(element("outfile", executable.getAbsolutePath() + ".exe"));
+		config.add(element("icon", iconFile.getAbsolutePath()));
+		config.add(element("manifest", manifestFile.getAbsolutePath()));
+		config.add(element("classPath",  element("mainClass", mainClass)));
+		
+		if (bundleJre) {
+			config.add(element("jre", 
+					element("path", "jre")
+			));
+		} else {
+			config.add(element("jre", 
+					element("path", "%JAVA_HOME%")
+			));
+		}
+		
+		config.add(element("versionInfo", 
+				element("fileVersion", "1.0.0.0"),
+				element("txtFileVersion", "1.0.0.0"),
+				element("copyright", "${project.organization.name}"),
+				element("fileDescription", "${project.description}"),
+				element("productVersion", "${project.version}.0"),
+				element("txtProductVersion", "${project.version}.0"),
+				element("productName", "${project.name}"),
+				element("internalName", "${project.name}"),
+				element("originalFilename", "${project.name}.exe")
+		));
 
 		// invoke launch4j plugin to generate windows executable
 		executeMojo(
@@ -405,33 +453,7 @@ public class PackageMojo extends AbstractMojo {
 						version("1.7.25")
 				),
 				goal("launch4j"),
-				configuration(
-						element("headerType", "gui"), 
-						element("jar", jarFile.getAbsolutePath()),
-						element("outfile", executable.getAbsolutePath() + ".exe"),
-						element("icon", iconFile.getAbsolutePath()),
-						element("manifest", manifestFile.getAbsolutePath()),
-						element("classPath", 
-								element("mainClass", mainClass)
-						),
-						element("jre", 
-								element("bundledJre64Bit", bundleJre.toString()),
-								element("minVersion", jreMinVersion), 
-								element("runtimeBits", "64"),
-								element("path", "jre")
-						),
-						element("versionInfo", 
-								element("fileVersion", "1.0.0.0"),
-								element("txtFileVersion", "1.0.0.0"),
-								element("copyright", "${project.organization.name}"),
-								element("fileDescription", "${project.description}"),
-								element("productVersion", "${project.version}.0"),
-								element("txtProductVersion", "${project.version}.0"),
-								element("productName", "${project.name}"),
-								element("internalName", "${project.name}"),
-								element("originalFilename", "${project.name}.exe")
-						)
-				),
+				configuration(config.toArray(new Element[config.size()])),
 				env);
 	}
 
@@ -561,7 +583,7 @@ public class PackageMojo extends AbstractMojo {
 		String modules;
 
 		// warn and generate a non optimized JRE
-		if (JavaUtils.getJavaMajorVersion() <= 12) {
+		if (JavaUtils.getJavaMajorVersion() <= 12 && !forceJreOptimization) {
 
 			getLog().warn("We need JDK 12+ for correctly determining the dependencies. You run " + System.getProperty("java.home"));
 			getLog().warn("All modules will be included in the generated JRE.");
@@ -569,12 +591,22 @@ public class PackageMojo extends AbstractMojo {
 			modules = "ALL-MODULE-PATH";
 
 		} else { // generate an optimized JRE, including only required modules
+			
+			if (forceJreOptimization) {
+				getLog().warn("JRE optimization has been forced. It can cause issues with some JDKs.");
+			}
 
 			File jdeps = new File(System.getProperty("java.home"), "/bin/jdeps");
 
 			// determine required modules for libs and app jar
 			modules = "java.scripting,jdk.unsupported,"; // add required modules by default
-			modules += ProcessUtils.execute(jdeps.getAbsolutePath(), "-q", "--ignore-missing-deps", "--print-module-deps", "--class-path", new File(libsFolder, "*"), jarFile);
+			
+			Object [] additionalArguments = {};
+			if (JavaUtils.getJavaMajorVersion() > 12) { 
+				additionalArguments = new Object [] { "--ignore-missing-deps" };
+			}
+			
+			modules += ProcessUtils.execute(jdeps.getAbsolutePath(), "-q", additionalArguments, "--print-module-deps", "--class-path", new File(libsFolder, "*"), jarFile);
 
 		}
 
@@ -591,6 +623,25 @@ public class PackageMojo extends AbstractMojo {
 		File binFolder = new File(jreFolder, "bin");
 		Arrays.asList(binFolder.listFiles()).forEach(f -> f.setExecutable(true, false));
 
+	}
+	
+	private void copyAdditionalResources(List<File> resources, File destination) {
+		getLog().info("Copying additional resources");
+		resources.stream().forEach(r -> {
+			if (!r.exists()) {
+				getLog().warn("Additional resource " + r + " doesn't exist");
+				return;
+			}
+			try {
+				if (r.isDirectory()) {
+					FileUtils.copyFolderToFolder(r, destination);
+				} else if (r.isFile()) {
+					FileUtils.copyFileToFolder(r, destination);
+				}
+			} catch (MojoExecutionException e) {
+				e.printStackTrace();
+			}
+		});
 	}
 
 }
