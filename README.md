@@ -58,7 +58,7 @@ Where:
 | `administratorRequired` | No        | `false`       | If true, app will run with administrator privileges.        |
 | `additionalResources`   | No        | []            | Additional files and folders to include in the bundled app. |
 
-Some assets, like app icons, must to be located in:
+Some assets, like app icons, must be located in:
 
 ```
 <project>
@@ -88,3 +88,9 @@ By default, it will generate next artifacts in `target ` folder:
 - A `projectname_projectversion.rpm` package file on GNU/Linux (requires alien && rpmbuild).
 - A `projectname_projectversion.exe` installer file on Windows.
 - A `projectname_projectversion.dmg` installer file on Mac OS X.
+
+## Contributors
+
+Thanks to the following contributors, who have provided patches and other assistance:
+
+* **[Heinrich Drendorf (nachsommer)](https://github.com/nachsommer)**
