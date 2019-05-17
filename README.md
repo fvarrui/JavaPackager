@@ -26,7 +26,7 @@ Add the following `plugin` tag to your `pom.xml`.
 <plugin>
     <groupId>fvarrui.maven</groupId>
     <artifactId>javapackager</artifactId>
-    <version>0.6.0</version>
+    <version>0.7.0</version>
     <executions>
         <execution>
             <phase>package</phase>
@@ -37,6 +37,11 @@ Add the following `plugin` tag to your `pom.xml`.
                 <mainClass>path.to.your.mainClass</mainClass>
                 <bundleJre>true|false</bundleJre>
                 <administratorRequired>true|false</administratorRequired>
+                <additionalResources>
+                    <param>file path</param>
+                    <param>folder path</param>
+                    <param>...</param>
+                </additionalResources>
             </configuration>
         </execution>
     </executions>
@@ -45,11 +50,13 @@ Add the following `plugin` tag to your `pom.xml`.
 
 Where:
 
-| Property                | Description                                          |
-| ----------------------- | ---------------------------------------------------- |
-| `mainClass`             | Full path to your app main class.                    |
-| `bundleJre`             | Embed a customized JRE with the app.                 |
-| `administratorRequired` | If true, app will run with administrator privileges. |
+| Property                | Mandatory | Default value | Description                                                 |
+| ----------------------- | --------- | ------------- | ----------------------------------------------------------- |
+| `mainClass`             | Yes       | `null`        | Full path to your app main class.                           |
+| `bundleJre`             | No        | `false`       | Embed a customized JRE with the app.                        |
+| `forceJreOptimization`  | No        | `false`       | If JDK version < 13, it will try to reduce the bundled JRE. |
+| `administratorRequired` | No        | `false`       | If true, app will run with administrator privileges.        |
+| `additionalResources`   | No        | []            | Additional files and folders to include in the bundled app. |
 
 Some assets, like app icons, must to be located in:
 
@@ -65,6 +72,8 @@ Some assets, like app icons, must to be located in:
 ```
 
 >  Where **projectname** corresponds to `name` property in `pom.xml`.
+
+> :warning: If icon is not specified, it will use a default icon for every platform.
 
 Execute next command in project's root folder:
 
