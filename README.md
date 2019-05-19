@@ -26,7 +26,7 @@ Add the following `plugin` tag to your `pom.xml`.
 <plugin>
     <groupId>fvarrui.maven</groupId>
     <artifactId>javapackager</artifactId>
-    <version>0.7.0</version>
+    <version>0.8.0</version>
     <executions>
         <execution>
             <phase>package</phase>
@@ -42,6 +42,8 @@ Add the following `plugin` tag to your `pom.xml`.
                     <param>folder path</param>
                     <param>...</param>
                 </additionalResources>
+                <generateInstaller>true|false</generateInstaller>        
+                [...]
             </configuration>
         </execution>
     </executions>
@@ -50,15 +52,23 @@ Add the following `plugin` tag to your `pom.xml`.
 
 Where:
 
-| Property                | Mandatory | Default value | Description                                                 |
-| ----------------------- | --------- | ------------- | ----------------------------------------------------------- |
-| `mainClass`             | Yes       | `null`        | Full path to your app main class.                           |
-| `bundleJre`             | No        | `false`       | Embed a customized JRE with the app.                        |
-| `forceJreOptimization`  | No        | `false`       | If JDK version < 13, it will try to reduce the bundled JRE. |
-| `administratorRequired` | No        | `false`       | If true, app will run with administrator privileges.        |
-| `additionalResources`   | No        | []            | Additional files and folders to include in the bundled app. |
+| Property                | Mandatory | Default value                  | Description                                                 |
+| ----------------------- | --------- | ------------------------------ | ----------------------------------------------------------- |
+| `mainClass`             | Yes       | `null`                         | Full path to your app main class.                           |
+| `bundleJre`             | No        | `false`                        | Embed a customized JRE with the app.                        |
+| `forceJreOptimization`  | No        | `false`                        | If JDK version < 13, it will try to reduce the bundled JRE. |
+| `administratorRequired` | No        | `false`                        | If true, app will run with administrator privileges.        |
+| `additionalResources`   | No        | []                             | Additional files and folders to include in the bundled app. |
+| `generateInstaller`     | No        | `true`                         | Generate an installer for the app.                          |
+| `displayName`           | No        | `${project.name}`              | App name to show.                                           |
+| `iconFile`              | No        | `null`                         | Path to the app icon file (PNG, ICO or ICNS).               |
+| `licenseFile`           | No        | `${project.licenses[0].url}`   | Path to project license file.                               |
+| `url`                   | No        | `null`                         | App website URL.                                            |
+| `organizationName`      | No        | `${project.organization.name}` | Organization name.                                          |
+| `organizationUrl`       | No        | `${project.organization.url}`  | Organization website URL.                                   |
+| `organizationEmail`     | No        | `null`                         | Organization email.                                         |
 
-Some assets, like app icons, must be located in:
+Some assets, such as application icons, could be located in `assets` folder organized by platform, and so it would not be necessary to specify the `iconFile` property:
 
 ```
 <project>
@@ -68,12 +78,14 @@ Some assets, like app icons, must be located in:
 	├── macosx
 	│   └── projectname.icns	# on Mac OS X it has to be a icns file
 	└── windows
-	    └── projectname.ico		# on Windows it has to be a ico file
+	    └── projectname.ico		# on Windows it has to be an ico file
 ```
 
->  Where **projectname** corresponds to `name` property in `pom.xml`.
+Where **projectname** corresponds to `name` property in `pom.xml`.
 
-> :warning: If icon is not specified, it will use a default icon for every platform.
+> :warning: If `iconFile` property is not specified and it can't find the correct icon in `assets` folder, it will use next icon by default for all platforms:
+>
+> ![Default icon](https://raw.githubusercontent.com/fvarrui/JavaPackager/master/src/main/resources/linux/default-icon.png)
 
 Execute next command in project's root folder:
 
@@ -83,11 +95,12 @@ mvn package
 
 By default, it will generate next artifacts in `target ` folder:
 
-- A native application in `app` directory with a bundled JRE.
-- A `projectname_projectversion.deb` package file on GNU/Linux. 
-- A `projectname_projectversion.rpm` package file on GNU/Linux (requires alien && rpmbuild).
-- A `projectname_projectversion.exe` installer file on Windows.
-- A `projectname_projectversion.dmg` installer file on Mac OS X.
+- `app`: directory with the native application.
+- `projectname-projectversion-runnable.jar`: runnable JAR file.
+- `projectname_projectversion.deb`: DEB package file only on GNU/Linux. 
+- `projectname_projectversion.rpm`: RPM package file only on GNU/Linux (requires alien && rpmbuild).
+- `projectname_projectversion.exe`: installer file only on Windows.
+- `projectname_projectversion.dmg`: disk image file only on Mac OS X.
 
 ## Contributors
 
