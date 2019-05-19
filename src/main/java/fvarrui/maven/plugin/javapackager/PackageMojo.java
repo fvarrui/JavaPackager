@@ -436,13 +436,13 @@ public class PackageMojo extends AbstractMojo {
 		config.add(element("versionInfo", 
 				element("fileVersion", "1.0.0.0"),
 				element("txtFileVersion", "1.0.0.0"),
-				element("copyright", "${project.organization.name}"),
-				element("fileDescription", "${project.description}"),
-				element("productVersion", "${project.version}.0"),
-				element("txtProductVersion", "${project.version}.0"),
-				element("productName", "${project.name}"),
-				element("internalName", "${project.name}"),
-				element("originalFilename", "${project.name}.exe")
+				element("copyright", organizationName),
+				element("fileDescription", description),
+				element("productVersion", version + ".0"),
+				element("txtProductVersion", version + ".0"),
+				element("productName", name),
+				element("internalName", name),
+				element("originalFilename", name + ".exe")
 		));
 
 		// invoke launch4j plugin to generate windows executable
