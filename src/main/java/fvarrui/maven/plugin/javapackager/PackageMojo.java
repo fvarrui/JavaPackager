@@ -63,6 +63,7 @@ public class PackageMojo extends AbstractMojo {
 	private File appFolder;
 	private File assetsFolder;
 	private File jarFile;
+	private File executable;
 
 	// plugin configuration properties
 	@Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
@@ -71,14 +72,14 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(property = "licenseFile", required = false)
 	private File licenseFile;
 
-	@Parameter(defaultValue = "${project.build.directory}/app/${project.name}", property = "executable", required = true)
-	private File executable;
-
 	@Parameter(property = "iconFile")
 	private File iconFile;
 
 	@Parameter(defaultValue = "${java.version}", property = "jreMinVersion", required = true)
 	private String jreMinVersion;
+
+	@Parameter(defaultValue = "true", property = "generateInstaller", required = true)
+	private Boolean generateInstaller;
 
 	@Parameter(property = "mainClass", required = true)
 	private String mainClass;
@@ -125,7 +126,7 @@ public class PackageMojo extends AbstractMojo {
 	}
 
 	public void execute() throws MojoExecutionException {
-
+		
 		appFolder = new File(outputDirectory, "app");
 		if (!appFolder.exists()) {
 			appFolder.mkdirs();
@@ -135,6 +136,8 @@ public class PackageMojo extends AbstractMojo {
 		if (!assetsFolder.exists()) {
 			assetsFolder.mkdirs();
 		}
+
+		executable = new File(appFolder, name);
 
 		// if default license file doesn't exist and there's a license specified in
 		// pom.xml file, get this last one
@@ -163,7 +166,8 @@ public class PackageMojo extends AbstractMojo {
 				FileUtils.copyResourceToFile("/mac/default-icon.icns", iconFile);
 			}
 
-			createMacAppBundle();
+			createMacApp();
+			generateDmgImage();
 
 		} else if (SystemUtils.IS_OS_LINUX) {
 
@@ -251,6 +255,8 @@ public class PackageMojo extends AbstractMojo {
 	}
 
 	private void generateRpmPackage() throws MojoExecutionException {
+		if (!generateInstaller) return;
+
 		getLog().info("Generating RPM package...");
 
 		if (!debFile.exists()) {
@@ -284,7 +290,7 @@ public class PackageMojo extends AbstractMojo {
 
 	}
 
-	private void createMacAppBundle() throws MojoExecutionException {
+	private void createMacApp() throws MojoExecutionException {
 		getLog().info("Creating Mac OS X app bundle...");
 
 		// create and set up directories
@@ -341,16 +347,6 @@ public class PackageMojo extends AbstractMojo {
 
 		// codesign app folder
 		ProcessUtils.execute("codesign", "--force", "--deep", "--sign", "-", appFile);
-
-		// create a symlink to Applications folder
-		File targetFolder = new File("/Applications");
-		File linkFile = new File(appFolder, "Applications");
-		FileUtils.createSymlink(linkFile, targetFolder);
-
-		// create the DMG file including app folder content
-		getLog().info("Generating the Disk Image file");
-		File diskImageFile = new File(outputDirectory, name + "_" + version + ".dmg");
-		ProcessUtils.execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", name, diskImageFile);
 
 		getLog().info("App Bundle generation finished");
 
@@ -455,6 +451,8 @@ public class PackageMojo extends AbstractMojo {
 	}
 
 	private void generateWindowsInstaller() throws MojoExecutionException {
+		if (!generateInstaller) return;
+
 		getLog().info("Generating Windows installer...");
 
 		// copy ico file to assets folder
@@ -469,6 +467,8 @@ public class PackageMojo extends AbstractMojo {
 	}
 
 	private void generateDebPackage() throws MojoExecutionException {
+		if (!generateInstaller) return;
+
 		getLog().info("Generating DEB package ...");
 
 		// generate desktop file from velocity template
@@ -546,6 +546,22 @@ public class PackageMojo extends AbstractMojo {
 						)
 				),
 				env);
+	}
+	
+	private void generateDmgImage() throws MojoExecutionException {
+		if (!generateInstaller) return;
+		
+		getLog().info("Generating DMG disk image file");
+
+		// create a symlink to Applications folder
+		File targetFolder = new File("/Applications");
+		File linkFile = new File(appFolder, "Applications");
+		FileUtils.createSymlink(linkFile, targetFolder);
+
+		// create the DMG file including app folder content
+		getLog().info("Generating the Disk Image file");
+		File diskImageFile = new File(outputDirectory, name + "_" + version + ".dmg");
+		ProcessUtils.execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", name, diskImageFile);
 	}
 
 	private void copyAllDependencies(File libsFolder) throws MojoExecutionException {
