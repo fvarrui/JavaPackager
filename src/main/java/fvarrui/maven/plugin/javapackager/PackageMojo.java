@@ -245,11 +245,7 @@ public class PackageMojo extends AbstractMojo {
 		info.put("bundleJre", bundleJre);
 		info.put("mainClass", mainClass);
 		info.put("jarFile", jarFile.getName());
-
-		// if license file exists
-		if (licenseFile != null) {
-			info.put("license", licenseFile.getAbsolutePath());
-		}
+		info.put("license", licenseFile != null ? licenseFile.getAbsolutePath() : "");
 
 		return info;
 	}
@@ -454,7 +450,8 @@ public class PackageMojo extends AbstractMojo {
 				),
 				goal("launch4j"),
 				configuration(config.toArray(new Element[config.size()])),
-				env);
+				env
+			);
 	}
 
 	private void generateWindowsInstaller() throws MojoExecutionException {
