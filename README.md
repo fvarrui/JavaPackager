@@ -102,6 +102,8 @@ By default, it will generate next artifacts in `target ` folder:
 - `projectname_projectversion.exe`: installer file only on Windows.
 - `projectname_projectversion.dmg`: disk image file only on Mac OS X.
 
+>  :warning: DEB, RPM, EXE installer and DMG files will be ommited if `generateInstaller` property is `false`.
+
 ## Contributors
 
 Thanks to the following contributors, who have provided patches and other assistance:
