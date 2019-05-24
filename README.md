@@ -1,7 +1,7 @@
 # JavaPackager
 JavaPackager Maven Plugin provides an easy way to package Java applications in native Windows, OS X, or Linux executables.
 
-### How to build and install the plugin
+## How to build and install the plugin
 
 Execute next commands in BASH (GNU/Linux) or CMD (Windows):
 
@@ -12,26 +12,24 @@ git clone https://github.com/fvarrui/JavaPackager.git
 cd JavaPackager
 ```
 
-2. Compile, package and install the plugin in your local repository and in `releases` folder:
+2. Compile, package and install the plugin in your local repository and in the project's `releases` folder:
 
 ```bash
 mvn install
 ```
 
-### How to use the plugin
+## How to use the plugin
 
 Add the following `pluginRepository` to your `pom.xml`:
 
 ```xml
-<pluginRepositories>
-    <pluginRepository>
-        <id>javapackager-repo</id>
-        <url>https://github.com/fvarrui/JavaPackager/raw/master/releases</url>
-        <releases>
-            <enabled>true</enabled>
-        </releases>
-    </pluginRepository>
-</pluginRepositories>
+<pluginRepository>
+    <id>javapackager-repo</id>
+    <url>https://github.com/fvarrui/JavaPackager/raw/master/releases</url>
+    <releases>
+        <enabled>true</enabled>
+    </releases>
+</pluginRepository>
 ```
 
 And the following `plugin` tag to your `pom.xml`.
@@ -95,7 +93,7 @@ Some assets, such as application icons, could be located in `assets` folder orga
 	    └── projectname.ico		# on Windows it has to be an ico file
 ```
 
-Where **projectname** corresponds to `name` property in `pom.xml`.
+> **projectname** corresponds to `name` property in `pom.xml`.
 
 > :warning: If `iconFile` property is not specified and it can't find the correct icon in `assets` folder, it will use next icon by default for all platforms:
 >
