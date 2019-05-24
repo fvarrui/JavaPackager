@@ -20,13 +20,18 @@ mvn install
 
 ### How to use the plugin
 
-Add the following `repository` to your `pom.xml`:
+Add the following `pluginRepository` to your `pom.xml`:
 
 ```xml
-<repository>
-    <id>javapackager-repo</id>
-    <url>https://github.com/fvarrui/JavaPackager/raw/master/releases</url>
-</repository>
+<pluginRepositories>
+    <pluginRepository>
+        <id>javapackager-repo</id>
+        <url>https://github.com/fvarrui/JavaPackager/raw/master/releases</url>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+    </pluginRepository>
+</pluginRepositories>
 ```
 
 And the following `plugin` tag to your `pom.xml`.
