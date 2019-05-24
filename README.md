@@ -12,7 +12,7 @@ git clone https://github.com/fvarrui/JavaPackager.git
 cd JavaPackager
 ```
 
-2. Compile, package and install the plugin in your local repository:
+2. Compile, package and install the plugin in your local repository and in `releases` folder:
 
 ```bash
 mvn install
@@ -20,7 +20,16 @@ mvn install
 
 ### How to use the plugin
 
-Add the following `plugin` tag to your `pom.xml`.
+Add the following `repository` to your `pom.xml`:
+
+```xml
+<repository>
+    <id>javapackager-repo</id>
+    <url>https://github.com/fvarrui/JavaPackager/raw/master/releases</url>
+</repository>
+```
+
+And the following `plugin` tag to your `pom.xml`.
 
 ```xml
 <plugin>
