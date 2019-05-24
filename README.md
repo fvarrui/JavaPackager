@@ -3,7 +3,7 @@ JavaPackager Maven Plugin provides an easy way to package Java applications in n
 
 ## How to build and install the plugin
 
-Execute next commands in BASH (GNU/Linux) or CMD (Windows):
+Execute next commands in BASH (GNU/Linux or macOS) or CMD (Windows):
 
 1. Download source code and change to the project directory:
 
