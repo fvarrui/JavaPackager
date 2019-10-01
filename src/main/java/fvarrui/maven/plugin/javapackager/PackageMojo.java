@@ -619,7 +619,18 @@ public class PackageMojo extends AbstractMojo {
 				additionalArguments = new Object [] { "--ignore-missing-deps" };
 			}
 			
-			modules += ProcessUtils.execute(jdeps.getAbsolutePath(), "-q", additionalArguments, "--print-module-deps", "--class-path", new File(libsFolder, "*"), jarFile);
+			String javaMajorVersion = SystemUtils.JAVA_VERSION.split("\\.")[0];
+			
+			modules += ProcessUtils.execute(
+					jdeps.getAbsolutePath(), 
+					"-q", 
+					additionalArguments, 
+					"--print-module-deps", 
+					"--multi-release",
+					javaMajorVersion,
+					"--class-path", new File(libsFolder, "*"), 
+					jarFile
+				);
 
 		}
 
