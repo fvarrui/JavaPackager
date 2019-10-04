@@ -38,7 +38,7 @@ And the following `plugin` tag to your `pom.xml`.
 <plugin>
     <groupId>fvarrui.maven</groupId>
     <artifactId>javapackager</artifactId>
-    <version>0.8.0</version>
+    <version>0.8.2</version>
     <executions>
         <execution>
             <phase>package</phase>
