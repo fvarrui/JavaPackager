@@ -1,6 +1,6 @@
 package fvarrui.maven.plugin.javapackager;
 
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 public class Main {
 
