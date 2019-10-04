@@ -618,16 +618,14 @@ public class PackageMojo extends AbstractMojo {
 			if (JavaUtils.getJavaMajorVersion() > 12) { 
 				additionalArguments = new Object [] { "--ignore-missing-deps" };
 			}
-			
-			String javaMajorVersion = SystemUtils.JAVA_VERSION.split("\\.")[0];
-			
+						
 			modules += ProcessUtils.execute(
 					jdeps.getAbsolutePath(), 
 					"-q", 
 					additionalArguments, 
 					"--print-module-deps", 
 					"--multi-release",
-					javaMajorVersion,
+					JavaUtils.getJavaMajorVersion(),
 					"--class-path", new File(libsFolder, "*"), 
 					jarFile
 				);
