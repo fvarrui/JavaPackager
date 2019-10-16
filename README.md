@@ -38,7 +38,7 @@ And the following `plugin` tag to your `pom.xml`.
 <plugin>
     <groupId>fvarrui.maven</groupId>
     <artifactId>javapackager</artifactId>
-    <version>0.8.2</version>
+    <version>0.8.3</version>
     <executions>
         <execution>
             <phase>package</phase>
@@ -64,21 +64,22 @@ And the following `plugin` tag to your `pom.xml`.
 
 Where:
 
-| Property                | Mandatory | Default value                  | Description                                                 |
-| ----------------------- | --------- | ------------------------------ | ----------------------------------------------------------- |
-| `mainClass`             | Yes       | `null`                         | Full path to your app main class.                           |
-| `bundleJre`             | No        | `false`                        | Embed a customized JRE with the app.                        |
-| `forceJreOptimization`  | No        | `false`                        | If JDK version < 13, it will try to reduce the bundled JRE. |
-| `administratorRequired` | No        | `false`                        | If true, app will run with administrator privileges.        |
-| `additionalResources`   | No        | []                             | Additional files and folders to include in the bundled app. |
-| `generateInstaller`     | No        | `true`                         | Generate an installer for the app.                          |
-| `displayName`           | No        | `${project.name}`              | App name to show.                                           |
-| `iconFile`              | No        | `null`                         | Path to the app icon file (PNG, ICO or ICNS).               |
-| `licenseFile`           | No        | `${project.licenses[0].url}`   | Path to project license file.                               |
-| `url`                   | No        | `null`                         | App website URL.                                            |
-| `organizationName`      | No        | `${project.organization.name}` | Organization name.                                          |
-| `organizationUrl`       | No        | `${project.organization.url}`  | Organization website URL.                                   |
-| `organizationEmail`     | No        | `null`                         | Organization email.                                         |
+| Property                | Mandatory | Default value                  | Description                                                  |
+| ----------------------- | --------- | ------------------------------ | ------------------------------------------------------------ |
+| `mainClass`             | Yes       | `null`                         | Full path to your app main class.                            |
+| `bundleJre`             | No        | `false`                        | Embed a customized JRE with the app.                         |
+| `forceJreOptimization`  | No        | `false`                        | Although JDK version < 13, it will try to reduce the bundled JRE. |
+| `jrePath`               | No        | `""`                           | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least. |
+| `administratorRequired` | No        | `false`                        | If true, app will run with administrator privileges.         |
+| `additionalResources`   | No        | []                             | Additional files and folders to include in the bundled app.  |
+| `generateInstaller`     | No        | `true`                         | Generate an installer for the app.                           |
+| `displayName`           | No        | `${project.name}`              | App name to show.                                            |
+| `iconFile`              | No        | `null`                         | Path to the app icon file (PNG, ICO or ICNS).                |
+| `licenseFile`           | No        | `${project.licenses[0].url}`   | Path to project license file.                                |
+| `url`                   | No        | `null`                         | App website URL.                                             |
+| `organizationName`      | No        | `${project.organization.name}` | Organization name.                                           |
+| `organizationUrl`       | No        | `${project.organization.url}`  | Organization website URL.                                    |
+| `organizationEmail`     | No        | `null`                         | Organization email.                                          |
 
 Some assets, such as application icons, could be located in `assets` folder organized by platform, and so it would not be necessary to specify the `iconFile` property:
 
