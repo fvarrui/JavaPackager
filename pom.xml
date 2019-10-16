@@ -5,7 +5,7 @@
 
 	<groupId>fvarrui.maven</groupId>
 	<artifactId>javapackager</artifactId>
-	<version>0.8.2</version>
+	<version>0.8.3</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>JavaPackager Maven Plugin</name>

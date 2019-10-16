@@ -116,7 +116,10 @@ public class PackageMojo extends AbstractMojo {
 	
 	@Parameter(defaultValue = "false", property = "forceJreOptimization", required = true)
 	private Boolean forceJreOptimization;
-	
+
+	@Parameter(defaultValue = "", property = "jrePath", required = false)
+	private String jrePath;
+
 	@Parameter(property = "additionalResources", required = false)
 	private List<File> additionalResources;
 
@@ -331,7 +334,6 @@ public class PackageMojo extends AbstractMojo {
 
 		// check if JRE should be embedded
 		if (bundleJre) {
-			getLog().info("Bundling JRE");
 			File jreFolder = new File(contentsFolder, "PlugIns/jre/Contents/Home");
 			createCustomizedJre(jreFolder, libsFolder);
 		}
@@ -375,7 +377,6 @@ public class PackageMojo extends AbstractMojo {
 
 		// check if JRE should be embedded
 		if (bundleJre) {
-			getLog().info("Bundling JRE");
 			File jreFolder = new File(appFolder, "jre");
 			createCustomizedJre(jreFolder, libsFolder);
 		}
@@ -399,7 +400,6 @@ public class PackageMojo extends AbstractMojo {
 		
 		// check if JRE should be embedded
 		if (bundleJre) {
-			getLog().info("Bundling JRE");
 			File jreFolder = new File(appFolder, "jre");
 			createCustomizedJre(jreFolder, libsFolder);
 		}
@@ -591,60 +591,90 @@ public class PackageMojo extends AbstractMojo {
 	 * @throws MojoExecutionException
 	 */
 	private void createCustomizedJre(File jreFolder, File libsFolder) throws MojoExecutionException {
-		getLog().info("Creating customized JRE ... with " + System.getProperty("java.home"));
+		getLog().info("Bundling JRE ... with " + System.getProperty("java.home"));
 
-		String modules;
-
-		// warn and generate a non optimized JRE
-		if (JavaUtils.getJavaMajorVersion() <= 12 && !forceJreOptimization) {
-
-			getLog().warn("We need JDK 12+ for correctly determining the dependencies. You run " + System.getProperty("java.home"));
-			getLog().warn("All modules will be included in the generated JRE.");
-
-			modules = "ALL-MODULE-PATH";
-
-		} else { // generate an optimized JRE, including only required modules
+		if (jrePath != null && !jrePath.isEmpty()) {
 			
-			if (forceJreOptimization) {
-				getLog().warn("JRE optimization has been forced. It can cause issues with some JDKs.");
-			}
-
-			File jdeps = new File(System.getProperty("java.home"), "/bin/jdeps");
-
-			// determine required modules for libs and app jar
-			modules = "java.scripting,jdk.unsupported,"; // add required modules by default
+			getLog().info("- Copying JRE from " + jrePath);
 			
-			Object [] additionalArguments = {};
-			if (JavaUtils.getJavaMajorVersion() > 12) { 
-				additionalArguments = new Object [] { "--ignore-missing-deps" };
+			File jrePathFile = new File(jrePath);
+
+			if (!jrePathFile.exists()) {
+				throw new MojoExecutionException("JRE path specified does not exist: " + jrePath);
+			} else if (!jrePathFile.isDirectory()) {
+				throw new MojoExecutionException("JRE path specified is not a folder: " + jrePath);
 			}
-						
-			modules += ProcessUtils.execute(
-					jdeps.getAbsolutePath(), 
-					"-q", 
-					additionalArguments, 
-					"--print-module-deps", 
-					"--multi-release",
-					JavaUtils.getJavaMajorVersion(),
-					"--class-path", new File(libsFolder, "*"), 
-					jarFile
-				);
+			
+			// remove old jre folder from bundle
+			if (jreFolder.exists()) FileUtils.removeFolder(jreFolder);
+
+			// copy JRE folder to bundle
+			FileUtils.copyFolderContentToFolder(jrePathFile, jreFolder);
+
+			// set execution permissions on executables in jre
+			File binFolder = new File(jreFolder, "bin");
+			Arrays.asList(binFolder.listFiles()).forEach(f -> f.setExecutable(true, false));
+
+			return;
+			
+		} else { 
+
+			getLog().info("- Creating customized JRE ...");
+	
+			String modules;
+	
+			// warn and generate a non optimized JRE
+			if (JavaUtils.getJavaMajorVersion() <= 12 && !forceJreOptimization) {
+	
+				getLog().warn("We need JDK 12+ for correctly determining the dependencies. You run " + System.getProperty("java.home"));
+				getLog().warn("All modules will be included in the generated JRE.");
+	
+				modules = "ALL-MODULE-PATH";
+	
+			} else { // generate an optimized JRE, including only required modules
+				
+				if (forceJreOptimization) {
+					getLog().warn("JRE optimization has been forced. It can cause issues with some JDKs.");
+				}
+	
+				File jdeps = new File(System.getProperty("java.home"), "/bin/jdeps");
+	
+				// determine required modules for libs and app jar
+				modules = "java.scripting,jdk.unsupported,"; // add required modules by default
+				
+				Object [] additionalArguments = {};
+				if (JavaUtils.getJavaMajorVersion() > 12) { 
+					additionalArguments = new Object [] { "--ignore-missing-deps" };
+				}
+							
+				modules += ProcessUtils.execute(
+						jdeps.getAbsolutePath(), 
+						"-q", 
+						additionalArguments, 
+						"--print-module-deps", 
+						"--multi-release",
+						JavaUtils.getJavaMajorVersion(),
+						"--class-path", new File(libsFolder, "*"), 
+						jarFile
+					);
+	
+			}
+	
+			File modulesDir = new File(System.getProperty("java.home"), "jmods");
+	
+			File jlink = new File(System.getProperty("java.home"), "/bin/jlink");
+	
+			if (jreFolder.exists()) FileUtils.removeFolder(jreFolder);
+			
+			// generate customized jre using modules
+			ProcessUtils.execute(jlink.getAbsolutePath(), "--module-path", modulesDir, "--add-modules", modules, "--output", jreFolder, "--no-header-files", "--no-man-pages", "--strip-debug", "--compress=2");
+	
+			// set execution permissions on executables in jre
+			File binFolder = new File(jreFolder, "bin");
+			Arrays.asList(binFolder.listFiles()).forEach(f -> f.setExecutable(true, false));
 
 		}
-
-		File modulesDir = new File(System.getProperty("java.home"), "jmods");
-
-		File jlink = new File(System.getProperty("java.home"), "/bin/jlink");
-
-		if (jreFolder.exists()) FileUtils.removeFolder(jreFolder);
-		
-		// generate customized jre using modules
-		ProcessUtils.execute(jlink.getAbsolutePath(), "--module-path", modulesDir, "--add-modules", modules, "--output", jreFolder, "--no-header-files", "--no-man-pages", "--strip-debug", "--compress=2");
-
-		// set execution permissions on executables in jre
-		File binFolder = new File(jreFolder, "bin");
-		Arrays.asList(binFolder.listFiles()).forEach(f -> f.setExecutable(true, false));
-
+			
 	}
 	
 	private void copyAdditionalResources(List<File> resources, File destination) {
