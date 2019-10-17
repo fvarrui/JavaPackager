@@ -110,10 +110,10 @@ By default, it will generate next artifacts in `target ` folder:
 
 - `app`: directory with the native application.
 - `projectname-projectversion-runnable.jar`: runnable JAR file.
-- `projectname_projectversion.deb`: DEB package file only on GNU/Linux. 
-- `projectname_projectversion.rpm`: RPM package file only on GNU/Linux (requires alien && rpmbuild).
-- `projectname_projectversion.exe`: installer file only on Windows.
-- `projectname_projectversion.dmg`: disk image file only on Mac OS X.
+- `projectname_projectversion.deb`: DEB package file if it's executed on GNU/Linux. 
+- `projectname_projectversion.rpm`: RPM package file if it's executed on GNU/Linux (requires **alien** & **rpmbuild**).
+- `projectname_projectversion.exe`: installer file if it's executed on Windows (requires [**InnoSetup**](http://www.jrsoftware.org/isinfo.php)).
+- `projectname_projectversion.dmg`: disk image file if it's executed on Mac OS X.
 
 >  :warning: DEB, RPM, EXE installer and DMG files will be ommited if `generateInstaller` property is `false`.
 
