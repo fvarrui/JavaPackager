@@ -28,6 +28,17 @@ public class ProcessUtils {
 		return args.toArray();
 	}
 	
+	private static void createArguments(Commandline command, Object ... arguments) {
+		for (Object argument : arguments) {
+			if (argument instanceof File)
+				command.createArg().setFile((File)argument);
+			else if (argument.getClass().isArray())
+				createArguments(command, argument);
+			else
+				command.createArg().setValue(argument.toString());
+		}
+	}
+	
 	public static String execute(File workingDirectory, String executable, Object ... arguments) throws MojoExecutionException {
 		StringBuffer outputBuffer = new StringBuffer();
 		try { 
@@ -39,14 +50,7 @@ public class ProcessUtils {
 			Commandline command = new Commandline();
 			command.setWorkingDirectory(workingDirectory);
 			command.setExecutable(executable);
-			for (Object argument : arguments) {
-				if (argument instanceof File)
-					command.createArg().setFile((File)argument);
-				else if (argument.getClass().isArray())
-					;
-				else
-					command.createArg().setValue(argument.toString());
-			}
+			createArguments(command, arguments);
 
 			Process process = command.execute();
 			
@@ -54,7 +58,7 @@ public class ProcessUtils {
 			BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 			
 			while (process.isAlive()) {
-				if (output.ready()) outputBuffer.append(Logger.info(output.readLine()));
+				if (output.ready()) outputBuffer.append(Logger.info(output.readLine()) + "\n");
 				if (error.ready()) Logger.error(error.readLine());
 			}
 			
