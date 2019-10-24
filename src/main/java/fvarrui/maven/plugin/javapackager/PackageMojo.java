@@ -16,7 +16,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -597,11 +599,11 @@ public class PackageMojo extends AbstractMojo {
 			
 			getLog().info("- Copying JRE from " + jrePath);
 			
-			File jrePathFile = new File(jrePath);
+			File jrePathFolder = new File(jrePath);
 
-			if (!jrePathFile.exists()) {
+			if (!jrePathFolder.exists()) {
 				throw new MojoExecutionException("JRE path specified does not exist: " + jrePath);
-			} else if (!jrePathFile.isDirectory()) {
+			} else if (!jrePathFolder.isDirectory()) {
 				throw new MojoExecutionException("JRE path specified is not a folder: " + jrePath);
 			}
 			
@@ -609,13 +611,11 @@ public class PackageMojo extends AbstractMojo {
 			if (jreFolder.exists()) FileUtils.removeFolder(jreFolder);
 
 			// copy JRE folder to bundle
-			FileUtils.copyFolderContentToFolder(jrePathFile, jreFolder);
+			FileUtils.copyFolderContentToFolder(jrePathFolder, jreFolder);
 
 			// set execution permissions on executables in jre
 			File binFolder = new File(jreFolder, "bin");
 			Arrays.asList(binFolder.listFiles()).forEach(f -> f.setExecutable(true, false));
-
-			return;
 			
 		} else { 
 
@@ -636,27 +636,8 @@ public class PackageMojo extends AbstractMojo {
 				if (forceJreOptimization) {
 					getLog().warn("JRE optimization has been forced. It can cause issues with some JDKs.");
 				}
-	
-				File jdeps = new File(System.getProperty("java.home"), "/bin/jdeps");
-	
-				// determine required modules for libs and app jar
-				modules = "java.scripting,jdk.unsupported,"; // add required modules by default
-				
-				Object [] additionalArguments = {};
-				if (JavaUtils.getJavaMajorVersion() > 12) { 
-					additionalArguments = new Object [] { "--ignore-missing-deps" };
-				}
-							
-				modules += ProcessUtils.execute(
-						jdeps.getAbsolutePath(), 
-						"-q", 
-						additionalArguments, 
-						"--print-module-deps", 
-						"--multi-release",
-						JavaUtils.getJavaMajorVersion(),
-						"--class-path", new File(libsFolder, "*"), 
-						jarFile
-					);
+
+				modules = getRequiredModules(libsFolder);
 	
 			}
 	
@@ -675,6 +656,37 @@ public class PackageMojo extends AbstractMojo {
 
 		}
 			
+	}
+	
+	private String getRequiredModules(File libsFolder) throws MojoExecutionException {
+		
+		File jdeps = new File(System.getProperty("java.home"), "/bin/jdeps");
+
+		Object [] additionalArguments = {};
+		
+		if (JavaUtils.getJavaMajorVersion() > 12) { 
+			additionalArguments = new Object [] { "--ignore-missing-deps" };
+		}
+
+		String modules = 
+			ProcessUtils.execute(
+				jdeps.getAbsolutePath(), 
+				"-q", 
+				additionalArguments, 
+				"--list-deps", 
+				"--multi-release", JavaUtils.getJavaMajorVersion(),
+				new File(libsFolder, "*"), 
+				jarFile
+			);
+		
+		String [] modulesArray = modules.split("\n");
+		
+		List<String> modulesList = Arrays.asList(modulesArray).stream()
+				.map(module -> module.trim())
+				.filter(module -> !module.startsWith("JDK removed internal"))
+				.collect(Collectors.toList());
+		
+		return StringUtils.join(modulesList, ",");
 	}
 	
 	private void copyAdditionalResources(List<File> resources, File destination) {
