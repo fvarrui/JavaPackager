@@ -418,16 +418,17 @@ public class PackageMojo extends AbstractMojo {
 		config.add(element("classPath",  element("mainClass", mainClass)));
 		
 		if (bundleJre) {
-			config.add(element("jre", 
-					element("path", "jre")
+			config.add(
+					element("jre",  element("path", "jre")
 			));
 		} else {
-			config.add(element("jre", 
-					element("path", "%JAVA_HOME%")
+			config.add(
+					element("jre", element("path", "%JAVA_HOME%")
 			));
 		}
 		
-		config.add(element("versionInfo", 
+		config.add(
+				element("versionInfo", 
 				element("fileVersion", "1.0.0.0"),
 				element("txtFileVersion", "1.0.0.0"),
 				element("copyright", organizationName),
