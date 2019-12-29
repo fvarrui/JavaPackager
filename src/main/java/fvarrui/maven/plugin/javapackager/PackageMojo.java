@@ -125,6 +125,12 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(property = "additionalResources", required = false)
 	private List<File> additionalResources;
 
+	@Parameter(defaultValue = "--list-deps", property = "moduleDependenceAnalysisOption", required = false)
+	private String moduleDependenceAnalysisOption;
+
+	@Parameter(defaultValue = "", property = "additionalModules", required = false)
+	private String additionalModules;
+
 	public PackageMojo() {
 		super();
 		Logger.init(getLog());
@@ -674,9 +680,9 @@ public class PackageMojo extends AbstractMojo {
 				jdeps.getAbsolutePath(), 
 				"-q", 
 				additionalArguments, 
-				"--list-deps", 
+				moduleDependenceAnalysisOption, 
 				"--multi-release", JavaUtils.getJavaMajorVersion(),
-				new File(libsFolder, "*"), 
+				new File(libsFolder, "*.jar"), 
 				jarFile
 			);
 		
@@ -686,6 +692,9 @@ public class PackageMojo extends AbstractMojo {
 				.map(module -> module.trim())
 				.filter(module -> !module.startsWith("JDK removed internal"))
 				.collect(Collectors.toList());
+		if (!StringUtils.isEmpty(additionalModules)) {
+			modulesList.addAll(Arrays.asList(additionalModules.split(",")).stream().map(module->module.trim()).collect(Collectors.toList()));
+		}
 		
 		return StringUtils.join(modulesList, ",");
 	}
