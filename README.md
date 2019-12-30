@@ -119,8 +119,3 @@ By default, it will generate next artifacts in `target ` folder:
 
 >  :warning: DEB, RPM, EXE installer and DMG files will be ommited if `generateInstaller` property is `false`.
 
-## Contributors
-
-Thanks to the following contributors, who have provided patches and other assistance:
-
-* **[Heinrich Drendorf (nachsommer)](https://github.com/nachsommer)**
