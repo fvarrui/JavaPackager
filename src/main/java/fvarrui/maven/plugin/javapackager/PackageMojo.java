@@ -690,8 +690,10 @@ public class PackageMojo extends AbstractMojo {
 		
 		List<String> modulesList = Arrays.asList(modulesArray).stream()
 				.map(module -> module.trim())
+				.filter(module -> !module.startsWith("Warning"))
 				.filter(module -> !module.startsWith("JDK removed internal"))
 				.collect(Collectors.toList());
+		
 		if (!StringUtils.isEmpty(additionalModules)) {
 			modulesList.addAll(Arrays.asList(additionalModules.split(",")).stream().map(module->module.trim()).collect(Collectors.toList()));
 		}
