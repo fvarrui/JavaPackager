@@ -693,7 +693,9 @@ public class PackageMojo extends AbstractMojo {
 		
 		List<String> modulesList = Arrays.asList(modulesArray).stream()
 				.map(module -> module.trim())
+				.map(module -> module.contains("/") ? module.split("/")[0] : module)
 				.filter(module -> !module.startsWith("JDK removed internal"))
+				.distinct()
 				.collect(Collectors.toList());
 		
 		if (!StringUtils.isEmpty(additionalModules)) {
