@@ -35,6 +35,7 @@ import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import fvarrui.maven.plugin.javapackager.utils.FileUtils;
+import fvarrui.maven.plugin.javapackager.utils.FilenameExtensionFilter;
 import fvarrui.maven.plugin.javapackager.utils.JavaUtils;
 import fvarrui.maven.plugin.javapackager.utils.Logger;
 import fvarrui.maven.plugin.javapackager.utils.ProcessUtils;
@@ -674,15 +675,17 @@ public class PackageMojo extends AbstractMojo {
 		if (JavaUtils.getJavaMajorVersion() > 12) { 
 			additionalArguments = new Object [] { "--ignore-missing-deps" };
 		}
+		
+		File [] jarLibs = libsFolder.listFiles(new FilenameExtensionFilter("jar"));
 
 		String modules = 
 			ProcessUtils.execute(
 				jdeps.getAbsolutePath(), 
-				"-q", 
+				"-q",
 				additionalArguments, 
 				moduleDependenceAnalysisOption, 
 				"--multi-release", JavaUtils.getJavaMajorVersion(),
-				new File(libsFolder, "*.jar"), 
+				jarLibs, 
 				jarFile
 			);
 		
@@ -690,7 +693,6 @@ public class PackageMojo extends AbstractMojo {
 		
 		List<String> modulesList = Arrays.asList(modulesArray).stream()
 				.map(module -> module.trim())
-				.filter(module -> !module.startsWith("Warning"))
 				.filter(module -> !module.startsWith("JDK removed internal"))
 				.collect(Collectors.toList());
 		
