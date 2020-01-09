@@ -667,8 +667,8 @@ public class PackageMojo extends AbstractMojo {
 		
 		File jdeps = new File(System.getProperty("java.home"), "/bin/jdeps");
 
-//		File [] jarLibs = libsFolder.listFiles(new FilenameExtensionFilter("jar"));
-		File jarLibs = new File(libsFolder, "*.jar");
+		File [] jarLibs = libsFolder.listFiles(new FilenameExtensionFilter("jar"));
+//		File jarLibs = new File(libsFolder, "*.jar");
 		
 		List<String> modulesList;
 		
