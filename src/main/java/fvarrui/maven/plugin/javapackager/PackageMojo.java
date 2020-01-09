@@ -117,8 +117,8 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(defaultValue = "false", property = "bundleJre", required = true)
 	private Boolean bundleJre;
 	
-	@Parameter(defaultValue = "false", property = "forceJreOptimization", required = true)
-	private Boolean forceJreOptimization;
+	@Parameter(defaultValue = "true", property = "customizedJre", required = false)
+	private Boolean customizedJre;
 
 	@Parameter(defaultValue = "", property = "jrePath", required = false)
 	private String jrePath;
@@ -602,7 +602,7 @@ public class PackageMojo extends AbstractMojo {
 
 		if (jrePath != null && !jrePath.isEmpty()) {
 			
-			getLog().info("- Copying JRE from " + jrePath);
+			getLog().info("- Embedding JRE from " + jrePath);
 			
 			File jrePathFolder = new File(jrePath);
 
@@ -626,25 +626,25 @@ public class PackageMojo extends AbstractMojo {
 
 			getLog().info("- Creating customized JRE ...");
 	
-			String modules;
+			String modules = getRequiredModules(libsFolder);
 	
 			// warn and generate a non optimized JRE
-			if (JavaUtils.getJavaMajorVersion() <= 12 && !forceJreOptimization) {
-	
-				getLog().warn("We need JDK 12+ for correctly determining the dependencies. You run " + System.getProperty("java.home"));
-				getLog().warn("All modules will be included in the generated JRE.");
-	
-				modules = "ALL-MODULE-PATH";
-	
-			} else { // generate an optimized JRE, including only required modules
-				
-				if (forceJreOptimization) {
-					getLog().warn("JRE optimization has been forced. It can cause issues with some JDKs.");
-				}
-
-				modules = getRequiredModules(libsFolder);
-	
-			}
+//			if (JavaUtils.getJavaMajorVersion() < 12 && !forceJreOptimization) {
+//	
+//				getLog().warn("We need JDK 12+ for correctly determining the dependencies. You run " + System.getProperty("java.home"));
+//				getLog().warn("All modules will be included in the generated JRE.");
+//	
+//				modules = "ALL-MODULE-PATH";
+//	
+//			} else { // generate an optimized JRE, including only required modules
+//				
+//				if (forceJreOptimization) {
+//					getLog().warn("JRE optimization has been forced. It can cause issues with some JDKs.");
+//				}
+//
+//				modules = getRequiredModules(libsFolder);
+//	
+//			}
 	
 			File modulesDir = new File(System.getProperty("java.home"), "jmods");
 	
@@ -668,11 +668,10 @@ public class PackageMojo extends AbstractMojo {
 		File jdeps = new File(System.getProperty("java.home"), "/bin/jdeps");
 
 		File [] jarLibs = libsFolder.listFiles(new FilenameExtensionFilter("jar"));
-//		File jarLibs = new File(libsFolder, "*.jar");
 		
 		List<String> modulesList;
 		
-		if (JavaUtils.getJavaMajorVersion() >= 13) { 
+		if (customizedJre && JavaUtils.getJavaMajorVersion() >= 13) { 
 			
 			String modules = 
 				ProcessUtils.execute(
@@ -691,7 +690,7 @@ public class PackageMojo extends AbstractMojo {
 					.collect(Collectors.toList());
 
 			
-		} else if (JavaUtils.getJavaMajorVersion() >= 9) { 
+		} else if (customizedJre && JavaUtils.getJavaMajorVersion() >= 9) { 
 		
 			String modules = 
 				ProcessUtils.execute(
