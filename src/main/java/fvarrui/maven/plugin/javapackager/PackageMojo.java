@@ -687,10 +687,11 @@ public class PackageMojo extends AbstractMojo {
 			
 			modulesList = Arrays.asList(modules.split(","))
 					.stream()
+					.filter(module -> !module.startsWith("jdk."))
 					.collect(Collectors.toList());
 
 			
-		} else {
+		} else if (JavaUtils.getJavaMajorVersion() >= 9) { 
 		
 			String modules = 
 				ProcessUtils.execute(
@@ -706,8 +707,13 @@ public class PackageMojo extends AbstractMojo {
 					.stream()
 					.map(module -> module.trim())
 					.filter(module -> !module.startsWith("JDK removed internal"))
+					.filter(module -> !module.startsWith("jdk."))
 					.collect(Collectors.toList());
 
+		} else {
+			
+			modulesList = Arrays.asList("ALL-MODULE-PATH");
+			
 		}
 				
 		modulesList.addAll(additionalModules);

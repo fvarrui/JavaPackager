@@ -4,7 +4,11 @@ public class JavaUtils {
 	
 	public static int getJavaMajorVersion() {
 		String version = System.getProperty("java.version");
-		return Integer.parseInt(version.split("\\.")[0]);
+		
+		int major = Integer.parseInt(version.split("\\.")[0]);
+		if (major >= 2) return major;
+		
+		return Integer.parseInt(version.split("\\.")[1]);
 	}
 
 }
