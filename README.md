@@ -73,7 +73,7 @@ Where:
 | -------------------------------- | --------- | ------------------------------ | ------------------------------------------------------------ |
 | `mainClass`                      | Yes       | `null`                         | Full path to your app main class.                            |
 | `bundleJre`                      | No        | `false`                        | Embed a customized JRE with the app.                         |
-| `customizedJre`                  | No        | `true`                         | If this option and `bundleJre`  are `true`, a customized JRE will be generated, including only needed modules. If not, all modules will be included. |
+| `customizedJre`                  | No        | `true`                         | If `true`, a customized JRE will be generated, including only needed modules. Otherwise, all modules will be included. |
 | `forceJreOptimization`           | No        | `false`                        | Although JDK version < 13, it will try to reduce the bundled JRE. :warning: **DEPRECATED since v0.8.7** |
 | `jrePath`                        | No        | `""`                           | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least. |
 | `moduleDependenceAnalysisOption` | No        | `"--list-deps"`                | When generating a customized JRE, this option allows to specify a different Module dependence analysis option other than the default (`--list-deps`) for `jdeps`. :warning: **DEPRECATED since v0.8.7** |
