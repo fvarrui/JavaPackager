@@ -35,7 +35,7 @@ public class ProcessUtils {
 			else if (argument.getClass().isArray())
 				createArguments(command, argument);
 			else
-				command.createArg().setValue(argument.toString());
+				command.createArg().setValue(argument.toString().trim());
 		}
 	}
 	
