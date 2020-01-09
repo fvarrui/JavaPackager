@@ -126,11 +126,8 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(property = "additionalResources", required = false)
 	private List<File> additionalResources;
 
-	@Parameter(defaultValue = "--print-module-deps", property = "moduleDependenceAnalysisOption", required = false)
-	private String moduleDependenceAnalysisOption;
-
-	@Parameter(defaultValue = "", property = "additionalModules", required = false)
-	private String additionalModules;
+	@Parameter(property = "additionalModules", required = false)
+	private List<String> additionalModules;
 
 	public PackageMojo() {
 		super();
@@ -670,35 +667,50 @@ public class PackageMojo extends AbstractMojo {
 		
 		File jdeps = new File(System.getProperty("java.home"), "/bin/jdeps");
 
-		Object [] additionalArguments = {};
+//		File [] jarLibs = libsFolder.listFiles(new FilenameExtensionFilter("jar"));
+		File jarLibs = new File(libsFolder, "*.jar");
 		
-		if (JavaUtils.getJavaMajorVersion() > 12) { 
-			additionalArguments = new Object [] { "--ignore-missing-deps" };
-		}
+		List<String> modulesList;
 		
-		File [] jarLibs = libsFolder.listFiles(new FilenameExtensionFilter("jar"));
+		if (JavaUtils.getJavaMajorVersion() >= 13) { 
+			
+			String modules = 
+				ProcessUtils.execute(
+					jdeps.getAbsolutePath(), 
+					"-q",
+					"--ignore-missing-deps", 
+					"--print-module-deps", 
+					"--multi-release", JavaUtils.getJavaMajorVersion(),
+					jarLibs,
+					jarFile
+				);
+			
+			modulesList = Arrays.asList(modules.split(","))
+					.stream()
+					.collect(Collectors.toList());
 
-		String modules = 
-			ProcessUtils.execute(
-				jdeps.getAbsolutePath(), 
-				"-q",
-				additionalArguments, 
-				moduleDependenceAnalysisOption, 
-				"--multi-release", JavaUtils.getJavaMajorVersion(),
-				jarLibs,
-				jarFile
-			);
+			
+		} else {
 		
-		String [] modulesArray = modules.split(",");
-		
-		List<String> modulesList = Arrays.asList(modulesArray).stream()
-				.map(module -> module.trim())
-				.filter(module -> !module.startsWith("JDK removed internal"))
-				.collect(Collectors.toList());
-		
-		if (!StringUtils.isEmpty(additionalModules)) {
-			modulesList.addAll(Arrays.asList(additionalModules.split(",")).stream().map(module->module.trim()).collect(Collectors.toList()));
+			String modules = 
+				ProcessUtils.execute(
+					jdeps.getAbsolutePath(), 
+					"-q",
+					"--list-deps", 
+					"--multi-release", JavaUtils.getJavaMajorVersion(),
+					jarLibs,
+					jarFile
+				);
+
+			modulesList = Arrays.asList(modules.split("\n"))
+					.stream()
+					.map(module -> module.trim())
+					.filter(module -> !module.startsWith("JDK removed internal"))
+					.collect(Collectors.toList());
+
 		}
+				
+		modulesList.addAll(additionalModules);
 		
 		return StringUtils.join(modulesList, ",");
 	}
