@@ -686,6 +686,7 @@ public class PackageMojo extends AbstractMojo {
 			
 			modulesList = Arrays.asList(modules.split(","))
 					.stream()
+					.map(module -> module.trim())
 					.filter(module -> !module.startsWith("jdk."))
 					.collect(Collectors.toList());
 
