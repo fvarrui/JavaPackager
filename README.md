@@ -38,7 +38,7 @@ And the following `plugin` tag to your `pom.xml`.
 <plugin>
     <groupId>fvarrui.maven</groupId>
     <artifactId>javapackager</artifactId>
-    <version>0.8.6</version>
+    <version>0.8.7</version>
     <executions>
         <execution>
             <phase>package</phase>
@@ -54,6 +54,11 @@ And the following `plugin` tag to your `pom.xml`.
                     <param>folder path</param>
                     <param>...</param>
                 </additionalResources>
+                <additionalModules>
+                    <param>module1</param>
+                    <param>module2</param>
+                    <param>...</param>
+                </additionalModules>
                 <generateInstaller>true|false</generateInstaller>        
                 [...]
             </configuration>
@@ -64,24 +69,24 @@ And the following `plugin` tag to your `pom.xml`.
 
 Where:
 
-| Property                          | Mandatory | Default value                  | Description                                                                                                                                                      |
-| --------------------------------- | --------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `mainClass`                       | Yes       | `null`                         | Full path to your app main class.                                                                                                                                |
-| `bundleJre`                       | No        | `false`                        | Embed a customized JRE with the app.                                                                                                                             |
-| `forceJreOptimization`            | No        | `false`                        | Although JDK version < 13, it will try to reduce the bundled JRE.                                                                                                |
-| `jrePath`                         | No        | `""`                           | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least.                        |
-| `moduleDependenceAnalysisOption`  | No        | `"--list-deps"`                | When generating a customized JRE, this option allows to specify a different Module dependence analysis option other than the default (--list-deps) for jdeps     |
-| `additionalModules`               | No        | `""`                           | When generating a customized JRE, allows adding aditional modules other than the ones identified by jdeps before calling jlink.                                  |
-| `administratorRequired`           | No        | `false`                        | If true, app will run with administrator privileges.                                                                                                             |
-| `additionalResources`             | No        | []                             | Additional files and folders to include in the bundled app.                                                                                                      |
-| `generateInstaller`               | No        | `true`                         | Generate an installer for the app.                                                                                                                               |
-| `displayName`                     | No        | `${project.name}`              | App name to show.                                                                                                                                                |
-| `iconFile`                        | No        | `null`                         | Path to the app icon file (PNG, ICO or ICNS).                                                                                                                    |
-| `licenseFile`                     | No        | `${project.licenses[0].url}`   | Path to project license file.                                                                                                                                    |
-| `url`                             | No        | `null`                         | App website URL.                                                                                                                                                 |
-| `organizationName`                | No        | `${project.organization.name}` | Organization name.                                                                                                                                               |
-| `organizationUrl`                 | No        | `${project.organization.url}`  | Organization website URL.                                                                                                                                        |
-| `organizationEmail`               | No        | `null`                         | Organization email.                                                                                                                                              |
+| Property                         | Mandatory | Default value                  | Description                                                  |
+| -------------------------------- | --------- | ------------------------------ | ------------------------------------------------------------ |
+| `mainClass`                      | Yes       | `null`                         | Full path to your app main class.                            |
+| `bundleJre`                      | No        | `false`                        | Embed a customized JRE with the app.                         |
+| `forceJreOptimization`           | No        | `false`                        | Although JDK version < 13, it will try to reduce the bundled JRE. |
+| `jrePath`                        | No        | `""`                           | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least. |
+| `moduleDependenceAnalysisOption` | No        | `"--list-deps"`                | When generating a customized JRE, this option allows to specify a different Module dependence analysis option other than the default (`--list-deps`) for `jdeps`. :warning: **DEPRECATED since v0.8.7** |
+| `additionalModules`              | No        | []                             | When generating a customized JRE, allows adding aditional modules other than the ones identified by `jdeps` before calling `jlink`. |
+| `administratorRequired`          | No        | `false`                        | If `true`, app will run with administrator privileges.       |
+| `additionalResources`            | No        | []                             | Additional files and folders to include in the bundled app.  |
+| `generateInstaller`              | No        | `true`                         | Generate an installer for the app.                           |
+| `displayName`                    | No        | `${project.name}`              | App name to show.                                            |
+| `iconFile`                       | No        | `null`                         | Path to the app icon file (PNG, ICO or ICNS).                |
+| `licenseFile`                    | No        | `${project.licenses[0].url}`   | Path to project license file.                                |
+| `url`                            | No        | `null`                         | App website URL.                                             |
+| `organizationName`               | No        | `${project.organization.name}` | Organization name.                                           |
+| `organizationUrl`                | No        | `${project.organization.url}`  | Organization website URL.                                    |
+| `organizationEmail`              | No        | `null`                         | Organization email.                                          |
 
 Some assets, such as application icons, could be located in `assets` folder organized by platform, and so it would not be necessary to specify the `iconFile` property:
 
