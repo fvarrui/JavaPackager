@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.execution.MavenSession;
@@ -649,12 +648,7 @@ public class PackageMojo extends AbstractMojo {
 		if (legalFolder.exists()) {
 			Arrays.asList(legalFolder.listFiles())
 				.stream()
-				.forEach(d -> {
-					File newname = new File(d.getParentFile(), d.getName().replaceAll("\\.", "_"));
-					System.out.println("renombrando " + d.getName() + " por " + newname.getName());
-					d.renameTo(newname);
-				}
-				);
+				.forEach(d -> FileUtils.rename(d, d.getName().replaceAll("\\.", "_"))); 
 		}
 			
 	}
