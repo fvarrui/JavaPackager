@@ -354,7 +354,7 @@ public class PackageMojo extends AbstractMojo {
 		copyAdditionalResources(additionalResources, resourcesFolder);
 
 		// codesign app folder
-		ProcessUtils.execute("codesign", "--force", "--deep", "--sign", "-", appFile);
+		ProcessUtils.execute("codesign", "--force", "--sign", "-", appFile);
 
 		getLog().info("App Bundle generation finished");
 
