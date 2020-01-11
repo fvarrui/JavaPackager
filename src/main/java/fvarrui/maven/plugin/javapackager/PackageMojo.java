@@ -643,12 +643,10 @@ public class PackageMojo extends AbstractMojo {
 
 		}
 		
-		// rename all folders into jre/legal (needed to codesign command not to fail on macos), replacing "." (dots) with "_" (underscores)  
-		File legalFolder = new File(jreFolder, "legal");
-		if (legalFolder.exists()) {
-			Arrays.asList(legalFolder.listFiles())
-				.stream()
-				.forEach(d -> FileUtils.rename(d, d.getName().replaceAll("\\.", "_"))); 
+		// remove jre/legal folder (needed to codesign command not to fail on macos)
+		if (SystemUtils.IS_OS_MAC) {
+			File legalFolder = new File(jreFolder, "legal");
+			FileUtils.removeFolder(legalFolder);
 		}
 			
 	}
