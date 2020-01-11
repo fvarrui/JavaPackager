@@ -150,7 +150,7 @@ public class FileUtils {
 		}
 	}
 	
-	public static void rename(File file, String newName) throws MojoExecutionException {
+	public static void rename(File file, String newName) {
 		Logger.info("Changing name of [" + file + "] to [" + newName + "]");		
 		file.renameTo(new File(file.getParentFile(), newName)); 
 	}
