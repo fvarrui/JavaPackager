@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.execution.MavenSession;
@@ -628,24 +629,6 @@ public class PackageMojo extends AbstractMojo {
 	
 			String modules = getRequiredModules(libsFolder);
 	
-			// warn and generate a non optimized JRE
-//			if (JavaUtils.getJavaMajorVersion() < 12 && !forceJreOptimization) {
-//	
-//				getLog().warn("We need JDK 12+ for correctly determining the dependencies. You run " + System.getProperty("java.home"));
-//				getLog().warn("All modules will be included in the generated JRE.");
-//	
-//				modules = "ALL-MODULE-PATH";
-//	
-//			} else { // generate an optimized JRE, including only required modules
-//				
-//				if (forceJreOptimization) {
-//					getLog().warn("JRE optimization has been forced. It can cause issues with some JDKs.");
-//				}
-//
-//				modules = getRequiredModules(libsFolder);
-//	
-//			}
-	
 			File modulesDir = new File(System.getProperty("java.home"), "jmods");
 	
 			File jlink = new File(System.getProperty("java.home"), "/bin/jlink");
@@ -659,6 +642,19 @@ public class PackageMojo extends AbstractMojo {
 			File binFolder = new File(jreFolder, "bin");
 			Arrays.asList(binFolder.listFiles()).forEach(f -> f.setExecutable(true, false));
 
+		}
+		
+		// rename all folders into jre/legal (needed to codesign command not to fail on macos), replacing "." (dots) with "_" (underscores)  
+		File legalFolder = new File(jreFolder, "legal");
+		if (legalFolder.exists()) {
+			Arrays.asList(legalFolder.listFiles())
+				.stream()
+				.forEach(d -> {
+					File newname = new File(d.getParentFile(), d.getName().replaceAll("\\.", "_"));
+					System.out.println("renombrando " + d.getName() + " por " + newname.getName());
+					d.renameTo(newname);
+				}
+				);
 		}
 			
 	}
