@@ -780,7 +780,7 @@ public class PackageMojo extends AbstractMojo {
 					"--ignore-missing-deps", 
 					"--print-module-deps", 
 					"--multi-release", JavaUtils.getJavaMajorVersion(),
-					jarLibs.getAbsolutePath(),
+					"\"" + jarLibs.getAbsolutePath() + "\"",
 					jarFile
 				);
 			
@@ -797,7 +797,7 @@ public class PackageMojo extends AbstractMojo {
 					"-q",
 					"--list-deps", 
 					"--multi-release", JavaUtils.getJavaMajorVersion(),
-					jarLibs.getAbsolutePath(),
+					"\"" + jarLibs.getAbsolutePath() + "\"",
 					jarFile
 				);
 
