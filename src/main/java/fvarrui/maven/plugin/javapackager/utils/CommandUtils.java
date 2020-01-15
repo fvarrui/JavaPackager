@@ -41,6 +41,8 @@ public class CommandUtils {
 
 			Logger.info("Executing command: " + StringUtils.join(command.getCommandline(), " "));
 			
+			System.out.println("Executing command: " + StringUtils.join(command.getCommandline(), " "));
+			
 			Process process = command.execute();
 			
 			BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream()));
