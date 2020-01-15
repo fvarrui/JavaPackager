@@ -44,14 +44,14 @@ public class ProcessUtils {
 		try { 
 			
 			arguments = expandArray(arguments);
-			
-			Logger.info("Executing command: " + executable + " " + StringUtils.join(arguments, " "));
-			
+						
 			Commandline command = new Commandline();
 			command.setWorkingDirectory(workingDirectory);
 			command.setExecutable(executable);
 			createArguments(command, arguments);
 
+			Logger.info("Executing command: " + command.getCommandline());
+			
 			Process process = command.execute();
 			
 			BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -74,6 +74,10 @@ public class ProcessUtils {
 	
 	public static String execute(String executable, Object... arguments) throws MojoExecutionException {
 		return execute(new File("."), executable, arguments);
+	}
+
+	public static String execute(File executable, Object... arguments) throws MojoExecutionException {
+		return execute(new File("."), executable.getAbsolutePath(), arguments);
 	}
 
 }
