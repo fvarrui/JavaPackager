@@ -85,6 +85,8 @@ public class CommandUtils {
 
 			String line = StringUtils.join(command.getCommandline(), " ");
 			
+			System.out.println(line);
+			
 			Process process = Runtime.getRuntime().exec(line);
 			
 			BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream()));
