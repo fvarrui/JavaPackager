@@ -12,6 +12,8 @@ public class Main {
 		String result = 
 			CommandUtils.execute2(
 				new File("."),
+				"/bin/bash/",
+				"-c",
 				"/Library/Java/JavaVirtualMachines/adoptopenjdk-13.jdk/Contents/Home/bin/jdeps", 
 				"-q",
 				"--ignore-missing-deps",
