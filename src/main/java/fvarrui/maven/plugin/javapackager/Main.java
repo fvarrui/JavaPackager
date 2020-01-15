@@ -10,8 +10,7 @@ public class Main {
 
 	public static void main(String[] args) throws MojoExecutionException {
 		String result = 
-			CommandUtils.execute2(
-				new File("."),
+			CommandUtils.execute(
 				"/bin/bash",
 				"-c",
 				"/Library/Java/JavaVirtualMachines/adoptopenjdk-13.jdk/Contents/Home/bin/jdeps " +
