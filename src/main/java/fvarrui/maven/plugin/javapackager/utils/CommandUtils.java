@@ -85,7 +85,7 @@ public class CommandUtils {
 
 			String line = StringUtils.join(command.getCommandline(), " ");
 			
-			System.out.println(line);
+			System.out.println(Arrays.asList(command.getCommandline()));
 			
 			Process process = Runtime.getRuntime().exec(line);
 			
