@@ -35,7 +35,6 @@ import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import fvarrui.maven.plugin.javapackager.utils.FileUtils;
-import fvarrui.maven.plugin.javapackager.utils.FilenameExtensionFilter;
 import fvarrui.maven.plugin.javapackager.utils.JavaUtils;
 import fvarrui.maven.plugin.javapackager.utils.Logger;
 import fvarrui.maven.plugin.javapackager.utils.ProcessUtils;
@@ -45,6 +44,7 @@ import fvarrui.maven.plugin.javapackager.utils.VelocityUtils;
 public class PackageMojo extends AbstractMojo {
 
 	// maven components
+	
 	@Parameter(defaultValue = "${project}", readonly = true)
 	private MavenProject mavenProject;
 
@@ -58,17 +58,17 @@ public class PackageMojo extends AbstractMojo {
 	private MavenProjectHelper projectHelper;
 
 	// private variables
+	
 	private ExecutionEnvironment env;
 
 	private Map<String, Object> info;
+	
+	private Platform currentPlatform;
 
-	private File debFile;
-	private File appFolder;
-	private File assetsFolder;
-	private File jarFile;
-	private File executable;
+	private File debFile, appFolder, assetsFolder, jarFile, executable;
 
 	// plugin configuration properties
+	
 	@Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
 	private File outputDirectory;
 
@@ -126,95 +126,114 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(property = "additionalResources", required = false)
 	private List<File> additionalResources;
 
+	@Parameter(property = "modules", required = false)
+	private List<String> modules;
+
 	@Parameter(property = "additionalModules", required = false)
 	private List<String> additionalModules;
 
+	@Parameter(defaultValue = "auto", property = "platform", required = true)
+	private Platform platform;
+	
+	@Parameter(property = "path", required = false)
+	private String path;	
+
 	public PackageMojo() {
 		super();
-		Logger.init(getLog());
+		Logger.init(getLog()); // sets Mojo's logger to Logger class, so it could be used from static methods
 	}
 
 	public void execute() throws MojoExecutionException {
+
+		// gets plugin execution environment 
+		this.env = executionEnvironment(mavenProject, mavenSession, pluginManager);
+
+		// determines current platform
+		currentPlatform = getCurrentPlatform();
 		
+		// determines target platform if not specified 
+		if (platform == null || platform == Platform.auto) {
+			platform = currentPlatform;
+		}
+		getLog().info("Packaging app for " + platform);
+
+		// creates app destination folder
 		appFolder = new File(outputDirectory, "app");
 		if (!appFolder.exists()) {
 			appFolder.mkdirs();
 		}
 
+		// creates folder for intermmediate assets 
 		assetsFolder = new File(outputDirectory, "assets");
 		if (!assetsFolder.exists()) {
 			assetsFolder.mkdirs();
 		}
 
+		// sets app's main executable file 
 		executable = new File(appFolder, name);
 
 		// if default license file doesn't exist and there's a license specified in
-		// pom.xml file, get this last one
+		// pom.xml file, gets this last one
 		if (licenseFile != null && !licenseFile.exists()) {
 			getLog().warn("Specified license file doesn't exist: " + licenseFile.getAbsolutePath());
 			licenseFile = null;
 		}
-		// if license not specified, get from pom
+		// if license not specified, gets from pom
 		if (licenseFile == null && !mavenProject.getLicenses().isEmpty()) {
 			licenseFile = new File(mavenProject.getLicenses().get(0).getUrl());
 		}
 
-		this.env = executionEnvironment(mavenProject, mavenSession, pluginManager);
-
+		// creates a runnable jar file
 		createRunnableJar();
 
+		// collects app info 
 		this.info = getInfo();
 
-		if (SystemUtils.IS_OS_MAC_OSX) {
-
-			if (iconFile == null) {
-				iconFile = new File("assets/mac/", mavenProject.getName() + ".icns");
-			}
-			if (!iconFile.exists()) {
-				iconFile = new File(assetsFolder, iconFile.getName());
-				FileUtils.copyResourceToFile("/mac/default-icon.icns", iconFile);
-			}
-
+		// generates bundle depending on the specified target platform  
+		switch (platform) {
+		case mac:
 			createMacApp();
 			generateDmgImage();
-
-		} else if (SystemUtils.IS_OS_LINUX) {
-
-			if (iconFile == null) {
-				iconFile = new File("assets/linux", mavenProject.getName() + ".png");
-			}
-			if (!iconFile.exists()) {
-				iconFile = new File(assetsFolder, iconFile.getName());
-				FileUtils.copyResourceToFile("/linux/default-icon.png", iconFile);
-			}
-
-			FileUtils.copyFileToFolder(iconFile, appFolder);
-
-			createLinuxExecutable();
+			break;
+		case linux:
+			createLinuxApp();
 			generateDebPackage();
 			generateRpmPackage();
-
-		} else if (SystemUtils.IS_OS_WINDOWS) {
-
-			if (iconFile == null) {
-				iconFile = new File("assets/windows", mavenProject.getName() + ".ico");
-			}
-			if (!iconFile.exists()) {
-				iconFile = new File(assetsFolder, iconFile.getName());
-				FileUtils.copyResourceToFile("/windows/default-icon.ico", iconFile);
-			}
-
-			createWindowsExecutable();
+			break;
+		case windows:
+			createWindowsApp();
 			generateWindowsInstaller();
-
-		} else {
-
+			break;
+		default:
 			throw new MojoExecutionException("Unsupported operating system: " + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION + " " + SystemUtils.OS_ARCH);
-
-		}
+		}		
 
 	}
+	
+	/**
+	 * Locates assets or default icon file if the specified one doesn't exist or
+	 * isn't specified
+	 * 
+	 * @param platform      Target platform
+	 * @param iconExtension Icon file extension (.ico for Windows, .png for
+	 *                      GNU/Linux, .icns for MacOS)
+	 * @throws MojoExecutionException
+	 */
+	private void resolveIcon(Platform platform, String iconExtension) throws MojoExecutionException {
+		if (iconFile == null) {
+			iconFile = new File("assets/" + platform + "/", mavenProject.getName() + iconExtension);
+		}
+		if (!iconFile.exists()) {
+			iconFile = new File(assetsFolder, iconFile.getName());
+			FileUtils.copyResourceToFile("/" + platform + "/default-icon" + iconExtension, iconFile);
+		}
+	}
 
+	/**
+	 * Creates a runnable jar file from sources
+	 * 
+	 * @throws MojoExecutionException
+	 */
 	private void createRunnableJar() throws MojoExecutionException {
 		getLog().info("Creating runnable JAR...");
 		
@@ -243,6 +262,12 @@ public class PackageMojo extends AbstractMojo {
 				env);
 	}
 
+	/**
+	 * Collects info needed for Velocity templates
+	 * 
+	 * @return Map with collected properties
+	 * @throws MojoExecutionException
+	 */
 	private Map<String, Object> getInfo() throws MojoExecutionException {
 		HashMap<String, Object> info = new HashMap<>();
 
@@ -259,12 +284,19 @@ public class PackageMojo extends AbstractMojo {
 		info.put("mainClass", mainClass);
 		info.put("jarFile", jarFile.getName());
 		info.put("license", licenseFile != null ? licenseFile.getAbsolutePath() : "");
-
+		info.put("path", path);
+		
 		return info;
 	}
 
+	/**
+	 * Creates a RPM package file including all app folder's content only for 
+	 * GNU/Linux so app could be easily distributed
+	 * 
+	 * @throws MojoExecutionException
+	 */
 	private void generateRpmPackage() throws MojoExecutionException {
-		if (!generateInstaller) return;
+		if (!generateInstaller || currentPlatform != Platform.linux) return;
 
 		getLog().info("Generating RPM package...");
 
@@ -274,7 +306,7 @@ public class PackageMojo extends AbstractMojo {
 		}
 
 		try {
-			// execute alien command to generate rpm package folder from deb file
+			// executes alien command to generate rpm package folder from deb file
 			ProcessUtils.execute(assetsFolder, "alien", "-g", "--to-rpm", debFile);
 		} catch (MojoExecutionException e) {
 			getLog().warn("alien command execution failed", e);
@@ -285,24 +317,29 @@ public class PackageMojo extends AbstractMojo {
 		File specFile = new File(packageFolder, name + "-" + version + "-2.spec");
 
 		try {
-			// rebuild rpm package
+			// rebuilds rpm package
 			ProcessUtils.execute(assetsFolder, "rpmbuild", "--buildroot", packageFolder, "--nodeps", "-bb", specFile);
 		} catch (MojoExecutionException e) {
 			getLog().warn("rpmbuild command execution failed", e);
 			return;
 		}
 
-		// rename generated rpm package
+		// renames generated rpm package
 		File rpmFile = new File(outputDirectory, name + "-" + version + "-2.x86_64.rpm");
 		String newName = name + "_" + version + ".rpm";
 		FileUtils.rename(rpmFile, newName);
 
 	}
 
+	/**
+	 * Creates a native MacOS app bundle
+	 * 
+	 * @throws MojoExecutionException
+	 */
 	private void createMacApp() throws MojoExecutionException {
 		getLog().info("Creating Mac OS X app bundle...");
 
-		// create and set up directories
+		// creates and set up directories
 		getLog().info("Creating and setting up the bundle directories");
 		
 		File appFile = new File(appFolder, name + ".app");
@@ -320,97 +357,115 @@ public class PackageMojo extends AbstractMojo {
 		File macOSFolder = new File(contentsFolder, "MacOS");
 		macOSFolder.mkdirs();
 
-		// create startup file to boot java app
+		// copies all dependencies to Java folder
+		getLog().info("Copying dependencies to Java folder");
+		File libsFolder = new File(javaFolder, "libs");
+		copyAllDependencies(libsFolder);
+
+		// copies jarfile to Java folder
+		FileUtils.copyFileToFolder(jarFile, javaFolder);
+
+		// checks if JRE should be embedded
+		if (bundleJre) {
+			File jreFolder = new File(contentsFolder, "PlugIns/jre/Contents/Home");
+			bundleJre(jreFolder, libsFolder);
+		}
+
+		// creates startup file to boot java app
 		getLog().info("Creating startup file");
 		File startupFile = new File(macOSFolder, "startup");
 		VelocityUtils.render("mac/startup.vtl", startupFile, info);
 		startupFile.setExecutable(true, false);
 
-		// copy icon file to resources folder
+		// determines icon file location and copies it to resources folder
 		getLog().info("Copying icon file to Resources folder");
+		resolveIcon(Platform.mac, ".icns");
 		FileUtils.copyFileToFolder(iconFile.getAbsoluteFile(), resourcesFolder);
 
-		// copy all dependencies to Java folder
-		getLog().info("Copying dependencies to Java folder");
-		File libsFolder = new File(javaFolder, "libs");
-		copyAllDependencies(libsFolder);
-
-		// copy jarfile to Java folder
-		FileUtils.copyFileToFolder(jarFile, javaFolder);
-
-		// check if JRE should be embedded
-		if (bundleJre) {
-			File jreFolder = new File(contentsFolder, "PlugIns/jre/Contents/Home");
-			createCustomizedJre(jreFolder, libsFolder);
-		}
-
-		// create and write the Info.plist file
+		// creates and write the Info.plist file
 		getLog().info("Writing the Info.plist file");
 		File infoPlistFile = new File(contentsFolder, "Info.plist");
 		VelocityUtils.render("mac/Info.plist.vtl", infoPlistFile, info);
 
-		// copy specified additional resources into the top level directory (include license file)
+		// copies specified additional resources into the top level directory (include license file)
 		if (licenseFile != null) additionalResources.add(licenseFile);
 		copyAdditionalResources(additionalResources, resourcesFolder);
 
-		// codesign app folder
-		ProcessUtils.execute("codesign", "--force", "--deep", "--sign", "-", appFile);
-
-		getLog().info("App Bundle generation finished");
+		// codesigns app folder
+		if (currentPlatform == Platform.mac) {
+			ProcessUtils.execute("codesign", "--force", "--deep", "--sign", "-", appFile);
+		}
 
 	}
 
-	private void createLinuxExecutable() throws MojoExecutionException {
-		getLog().info("Creating GNU/Linux executable...");
+	/**
+	 * Creates a GNU/Linux app file structure with native executable
+	 * 
+	 * @throws MojoExecutionException
+	 */
+	private void createLinuxApp() throws MojoExecutionException {
+		getLog().info("Creating GNU/Linux app bundle...");
 
-		// generate startup.sh script to boot java app
-		File startupFile = new File(assetsFolder, "startup.sh");
-		VelocityUtils.render("linux/startup.sh.vtl", startupFile, info);
+		// determines icon file location and copies it to app folder
+		resolveIcon(Platform.linux, ".png");
+		FileUtils.copyFileToFolder(iconFile, appFolder);
 
-		// concat linux startup.sh script + generated jar in executable (binary)
-		FileUtils.concat(executable, startupFile, jarFile);
-
-		// set execution permissions
-		executable.setExecutable(true, false);
-		
-		// copy all dependencies
+		// copies all dependencies
 		File libsFolder = new File(appFolder, "libs");
 		copyAllDependencies(libsFolder);
 
-		// copy additional resources
+		// copies additional resources
 		if (licenseFile != null) additionalResources.add(licenseFile);
 		copyAdditionalResources(additionalResources, appFolder);
 
-		// check if JRE should be embedded
+		// checks if JRE should be embedded
 		if (bundleJre) {
 			File jreFolder = new File(appFolder, "jre");
-			createCustomizedJre(jreFolder, libsFolder);
+			bundleJre(jreFolder, libsFolder);
 		}
 
+		// generates startup.sh script to boot java app
+		File startupFile = new File(assetsFolder, "startup.sh");
+		VelocityUtils.render("linux/startup.sh.vtl", startupFile, info);
+
+		// concats linux startup.sh script + generated jar in executable (binary)
+		FileUtils.concat(executable, startupFile, jarFile);
+
+		// sets execution permissions
+		executable.setExecutable(true, false);
+		
 	}
 
-	private void createWindowsExecutable() throws MojoExecutionException {
-		getLog().info("Creating Windows executable...");
+	/**
+	 * Creates a Windows app file structure with native executable
+	 * 
+	 * @throws MojoExecutionException
+	 */
+	private void createWindowsApp() throws MojoExecutionException {
+		getLog().info("Creating Windows app bundle...");
+		
+		// determines icon file location
+		resolveIcon(Platform.windows, ".ico");
 
-		// generate manifest file to require administrator privileges from velocity template
+		// generates manifest file to require administrator privileges from velocity template
 		File manifestFile = new File(assetsFolder, name + ".exe.manifest");
 		VelocityUtils.render("windows/exe.manifest.vtl", manifestFile, info);
 		
-		// copy all dependencies
+		// copies all dependencies
 		File libsFolder = new File(appFolder, "libs");
 		copyAllDependencies(libsFolder);
 		
-		// copy additional resources
+		// copies additional resources
 		if (licenseFile != null) additionalResources.add(licenseFile);		
 		copyAdditionalResources(additionalResources, appFolder);
 		
-		// check if JRE should be embedded
+		// checks if JRE should be embedded
 		if (bundleJre) {
 			File jreFolder = new File(appFolder, "jre");
-			createCustomizedJre(jreFolder, libsFolder);
+			bundleJre(jreFolder, libsFolder);
 		}
 		
-		// prepare launch4j plugin configuration
+		// prepares launch4j plugin configuration
 		
 		List<Element> config = new ArrayList<>();
 		
@@ -444,7 +499,7 @@ public class PackageMojo extends AbstractMojo {
 				element("originalFilename", name + ".exe")
 		));
 
-		// invoke launch4j plugin to generate windows executable
+		// invokes launch4j plugin to generate windows executable
 		executeMojo(
 				plugin(
 						groupId("com.akathist.maven.plugins.launch4j"), 
@@ -457,38 +512,51 @@ public class PackageMojo extends AbstractMojo {
 			);
 	}
 
+	/**
+	 * Creates a EXE installer file including all app folder's content only for
+	 * Windows so app could be easily distributed
+	 * 
+	 * @throws MojoExecutionException
+	 */
 	private void generateWindowsInstaller() throws MojoExecutionException {
-		if (!generateInstaller) return;
+		if (!generateInstaller || currentPlatform != Platform.windows) return;
 
 		getLog().info("Generating Windows installer...");
 
-		// copy ico file to assets folder
+		// copies ico file to assets folder
 		FileUtils.copyFileToFolder(iconFile, assetsFolder);
 		
-		// generate iss file from velocity template
+		// generates iss file from velocity template
 		File issFile = new File(assetsFolder, name + ".iss");
 		VelocityUtils.render("windows/iss.vtl", issFile, info);
 
-		// generate windows installer with inno setup command line compiler
+		// generates windows installer with inno setup command line compiler
 		ProcessUtils.execute("iscc", "/O" + outputDirectory.getAbsolutePath(), "/F" + name + "_" + version, issFile);
+		
 	}
 
+	/**
+	 * Creates a DEB package file including all app folder's content only for 
+	 * GNU/Linux so app could be easily distributed
+	 * 
+	 * @throws MojoExecutionException
+	 */
 	private void generateDebPackage() throws MojoExecutionException {
-		if (!generateInstaller) return;
+		if (!generateInstaller || currentPlatform != Platform.linux) return;
 
 		getLog().info("Generating DEB package ...");
 
-		// generate desktop file from velocity template
+		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");
 		VelocityUtils.render("linux/desktop.vtl", desktopFile, info);
 
-		// generate deb control file from velocity template
+		// generates deb control file from velocity template
 		File controlFile = new File(assetsFolder, "control");
 		VelocityUtils.render("linux/control.vtl", controlFile, info);
 
 		debFile = new File(outputDirectory, name + "_" + version + ".deb");
 
-		// invoke plugin to generate deb package
+		// invokes plugin to generate deb package
 		executeMojo(
 				plugin(
 						groupId("org.vafer"), 
@@ -555,26 +623,39 @@ public class PackageMojo extends AbstractMojo {
 				env);
 	}
 	
+	/**
+	 * Creates a DMG image file including all app folder's content only for MacOS so
+	 * app could be easily distributed
+	 * 
+	 * @throws MojoExecutionException
+	 */
 	private void generateDmgImage() throws MojoExecutionException {
-		if (!generateInstaller) return;
+		if (!generateInstaller || currentPlatform != Platform.mac) return;
 		
 		getLog().info("Generating DMG disk image file");
 
-		// create a symlink to Applications folder
+		// creates a symlink to Applications folder
 		File targetFolder = new File("/Applications");
 		File linkFile = new File(appFolder, "Applications");
 		FileUtils.createSymlink(linkFile, targetFolder);
 
-		// create the DMG file including app folder content
+		// creates the DMG file including app folder's content
 		getLog().info("Generating the Disk Image file");
 		File diskImageFile = new File(outputDirectory, name + "_" + version + ".dmg");
 		ProcessUtils.execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", name, diskImageFile);
+		
 	}
 
+	/**
+	 * Copies all dependencies to app folder
+	 * 
+	 * @param libsFolder folder containing all dependencies
+	 * @throws MojoExecutionException
+	 */
 	private void copyAllDependencies(File libsFolder) throws MojoExecutionException {
 		getLog().info("Copying all dependencies to app folder ...");
 
-		// invoke plugin to copy dependecies to app libs folder
+		// invokes plugin to copy dependecies to app libs folder
 		executeMojo(
 				plugin(
 						groupId("org.apache.maven.plugins"), 
@@ -589,20 +670,19 @@ public class PackageMojo extends AbstractMojo {
 	}
 
 	/**
-	 * Create a customized Java Runtime Enrironment from the current JDK using jdeps
-	 * and jlink tools.
+	 * Bundle a Java Runtime Enrironment with the app.
 	 *
 	 * Next link explains the process:
 	 * {@link https://medium.com/azulsystems/using-jlink-to-build-java-runtimes-for-non-modular-applications-9568c5e70ef4}
 	 *
 	 * @throws MojoExecutionException
 	 */
-	private void createCustomizedJre(File jreFolder, File libsFolder) throws MojoExecutionException {
+	private boolean bundleJre(File jreFolder, File libsFolder) throws MojoExecutionException {
 		getLog().info("Bundling JRE ... with " + System.getProperty("java.home"));
-
+		
 		if (jrePath != null && !jrePath.isEmpty()) {
 			
-			getLog().info("- Embedding JRE from " + jrePath);
+			getLog().info("Embedding JRE from " + jrePath);
 			
 			File jrePathFolder = new File(jrePath);
 
@@ -612,54 +692,86 @@ public class PackageMojo extends AbstractMojo {
 				throw new MojoExecutionException("JRE path specified is not a folder: " + jrePath);
 			}
 			
-			// remove old jre folder from bundle
+			// removes old jre folder from bundle
 			if (jreFolder.exists()) FileUtils.removeFolder(jreFolder);
 
-			// copy JRE folder to bundle
+			// copies JRE folder to bundle
 			FileUtils.copyFolderContentToFolder(jrePathFolder, jreFolder);
 
-			// set execution permissions on executables in jre
+			// sets execution permissions on executables in jre
 			File binFolder = new File(jreFolder, "bin");
 			Arrays.asList(binFolder.listFiles()).forEach(f -> f.setExecutable(true, false));
-			
-		} else { 
 
-			getLog().info("- Creating customized JRE ...");
-	
+		} else if (JavaUtils.getJavaMajorVersion() <= 8) {
+			
+			throw new MojoExecutionException("Could not create a customized JRE due to JDK version is " + SystemUtils.JAVA_VERSION + ". Must use jrePath property to specify JRE location to be embedded");
+			
+		} else if (platform != currentPlatform) {
+			
+			getLog().warn("Cannot create a customized JRE ... target platform (" + platform + ") is different than execution platform (" + currentPlatform + ")");
+			
+			info.put("bundleJre", false);
+			
+			return false;
+			
+		} else {
+
 			String modules = getRequiredModules(libsFolder);
-	
+
+			getLog().info("Creating JRE with next modules included: " + modules);
+
 			File modulesDir = new File(System.getProperty("java.home"), "jmods");
 	
 			File jlink = new File(System.getProperty("java.home"), "/bin/jlink");
 	
 			if (jreFolder.exists()) FileUtils.removeFolder(jreFolder);
 			
-			// generate customized jre using modules
+			// generates customized jre using modules
 			ProcessUtils.execute(jlink.getAbsolutePath(), "--module-path", modulesDir, "--add-modules", modules, "--output", jreFolder, "--no-header-files", "--no-man-pages", "--strip-debug", "--compress=2");
 	
-			// set execution permissions on executables in jre
+			// sets execution permissions on executables in jre
 			File binFolder = new File(jreFolder, "bin");
 			Arrays.asList(binFolder.listFiles()).forEach(f -> f.setExecutable(true, false));
 
 		}
 		
-		// remove jre/legal folder (needed to codesign command not to fail on macos)
+		// removes jre/legal folder (needed to codesign command not to fail on macos)
 		if (SystemUtils.IS_OS_MAC) {
 			File legalFolder = new File(jreFolder, "legal");
+			getLog().info("Removing " + legalFolder.getAbsolutePath() + " folder so app could be code signed");
 			FileUtils.removeFolder(legalFolder);
 		}
+		
+		return true;
 			
 	}
 	
+	/**
+	 * Uses jdeps command to determine on which modules depends all used jar files
+	 * 
+	 * @param libsFolder folder containing all needed libraries
+	 * @return strign containing a comma separated list with all needed modules
+	 * @throws MojoExecutionException
+	 */
 	private String getRequiredModules(File libsFolder) throws MojoExecutionException {
+		
+		getLog().info("Getting required modules ... ");
 		
 		File jdeps = new File(System.getProperty("java.home"), "/bin/jdeps");
 
-		File [] jarLibs = libsFolder.listFiles(new FilenameExtensionFilter("jar"));
+//		File [] jarLibs = libsFolder.listFiles(new FilenameExtensionFilter("jar"));
+		File jarLibs = new File(libsFolder, "*.jar");
 		
 		List<String> modulesList;
 		
-		if (customizedJre && JavaUtils.getJavaMajorVersion() >= 13) { 
+		if (customizedJre && modules != null && !modules.isEmpty()) {
+			
+			modulesList = modules
+					.stream()
+					.map(module -> module.trim())
+					.collect(Collectors.toList());
+		
+		} else if (customizedJre && JavaUtils.getJavaMajorVersion() >= 13) { 
 			
 			String modules = 
 				ProcessUtils.execute(
@@ -676,7 +788,6 @@ public class PackageMojo extends AbstractMojo {
 					.stream()
 					.map(module -> module.trim())
 					.collect(Collectors.toList());
-
 			
 		} else if (customizedJre && JavaUtils.getJavaMajorVersion() >= 9) { 
 		
@@ -704,9 +815,18 @@ public class PackageMojo extends AbstractMojo {
 				
 		modulesList.addAll(additionalModules);
 		
+		getLog().info("- Modules: " + modulesList);
+		
 		return StringUtils.join(modulesList, ",");
 	}
 	
+	/**
+	 * Copy a list of resources to a folder
+	 * 
+	 * @param resources   List of files and folders to be copied
+	 * @param destination Destination folder. All specified resources will be copied
+	 *                    here
+	 */
 	private void copyAdditionalResources(List<File> resources, File destination) {
 		getLog().info("Copying additional resources");
 		resources.stream().forEach(r -> {
@@ -724,6 +844,18 @@ public class PackageMojo extends AbstractMojo {
 				e.printStackTrace();
 			}
 		});
+	}
+	
+	/**
+	 * Returns current platform (Windows, MacOs, GNU/Linux)
+	 * 
+	 * @return current platform or null if it's not known
+	 */
+	private Platform getCurrentPlatform() {
+		if (SystemUtils.IS_OS_WINDOWS) return Platform.windows;
+		if (SystemUtils.IS_OS_LINUX) return Platform.linux;
+		if (SystemUtils.IS_OS_MAC_OSX) return Platform.mac;
+		return null;
 	}
 
 }

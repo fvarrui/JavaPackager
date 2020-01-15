@@ -7,6 +7,9 @@ JAVA=$SCRIPTPATH/jre/bin/java
 JAVA=java
 #end
 BINARY=$SCRIPTPATH/${info.name}
+#if($info.path)
+export PATH=${info.path}
+#end
 #if($info.administratorRequired)
 pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY GDKBACKEND=x11 $JAVA -jar $BINARY $@
 #else
