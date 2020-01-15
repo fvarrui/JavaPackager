@@ -72,6 +72,39 @@ public class CommandUtils {
 		return outputBuffer.toString();
 	}
 	
+	public static String execute2(File workingDirectory, String executable, Object ... arguments) throws MojoExecutionException {
+		StringBuffer outputBuffer = new StringBuffer();
+		try { 
+			
+			arguments = expandArray(arguments);
+						
+			Commandline command = new Commandline();
+			command.setWorkingDirectory(workingDirectory);
+			command.setExecutable(executable);
+			createArguments(command, arguments);
+
+			String line = StringUtils.join(command.getCommandline(), " ");
+			
+			Process process = Runtime.getRuntime().exec(line);
+			
+			BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+			
+			while (process.isAlive()) {
+				if (output.ready()) outputBuffer.append(Logger.info(output.readLine()) + "\n");
+				if (error.ready()) Logger.error(error.readLine());
+			}
+			
+			output.close();
+			error.close();
+			
+		} catch (IOException e) {
+			throw new MojoExecutionException(e.getMessage(), e);
+		}
+		
+		return outputBuffer.toString();
+	}
+	
 	public static String execute(String executable, Object... arguments) throws MojoExecutionException {
 		return execute(new File("."), executable, arguments);
 	}
