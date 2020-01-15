@@ -14,12 +14,12 @@ public class Main {
 				new File("."),
 				"/bin/bash",
 				"-c",
-				"/Library/Java/JavaVirtualMachines/adoptopenjdk-13.jdk/Contents/Home/bin/jdeps", 
-				"-q",
-				"--ignore-missing-deps",
-				"--print-module-deps",
-				"--multi-release", "13",
-				"/Users/fran/teuton-panel/target/app/teuton-panel.app/Contents/Resources/Java/libs/*.jar",
+				"/Library/Java/JavaVirtualMachines/adoptopenjdk-13.jdk/Contents/Home/bin/jdeps " +
+				"-q " +
+				"--ignore-missing-deps " +
+				"--print-module-deps " +
+				"--multi-release 13 " +
+				"/Users/fran/teuton-panel/target/app/teuton-panel.app/Contents/Resources/Java/libs/*.jar " +
 				"/Users/fran/teuton-panel/target/teuton-panel-0.1.1-runnable.jar"
 			);
 			
