@@ -760,7 +760,7 @@ public class PackageMojo extends AbstractMojo {
 		File jdeps = new File(System.getProperty("java.home"), "/bin/jdeps");
 
 //		File [] jarLibs = libsFolder.listFiles(new FilenameExtensionFilter("jar"));
-		File jarLibs = new File(libsFolder, "*");
+		File jarLibs = new File(libsFolder, "*.jar");
 		
 		List<String> modulesList;
 		
@@ -775,12 +775,12 @@ public class PackageMojo extends AbstractMojo {
 			
 			String modules = 
 				ProcessUtils.execute(
-					jdeps.getAbsolutePath(), 
+					jdeps, 
 					"-q",
 					"--ignore-missing-deps", 
 					"--print-module-deps", 
 					"--multi-release", JavaUtils.getJavaMajorVersion(),
-					jarLibs.getAbsolutePath(),
+					jarLibs,
 					jarFile
 				);
 			
@@ -793,11 +793,11 @@ public class PackageMojo extends AbstractMojo {
 		
 			String modules = 
 				ProcessUtils.execute(
-					jdeps.getAbsolutePath(), 
+					jdeps, 
 					"-q",
 					"--list-deps", 
 					"--multi-release", JavaUtils.getJavaMajorVersion(),
-					jarLibs.getAbsolutePath(),
+					jarLibs,
 					jarFile
 				);
 
