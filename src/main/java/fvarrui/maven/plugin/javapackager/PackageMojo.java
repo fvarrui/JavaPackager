@@ -37,7 +37,7 @@ import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 import fvarrui.maven.plugin.javapackager.utils.FileUtils;
 import fvarrui.maven.plugin.javapackager.utils.JavaUtils;
 import fvarrui.maven.plugin.javapackager.utils.Logger;
-import fvarrui.maven.plugin.javapackager.utils.ProcessUtils;
+import fvarrui.maven.plugin.javapackager.utils.CommandUtils;
 import fvarrui.maven.plugin.javapackager.utils.VelocityUtils;
 
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.RUNTIME)
@@ -307,7 +307,7 @@ public class PackageMojo extends AbstractMojo {
 
 		try {
 			// executes alien command to generate rpm package folder from deb file
-			ProcessUtils.execute(assetsFolder, "alien", "-g", "--to-rpm", debFile);
+			CommandUtils.execute(assetsFolder, "alien", "-g", "--to-rpm", debFile);
 		} catch (MojoExecutionException e) {
 			getLog().warn("alien command execution failed", e);
 			return;
@@ -318,7 +318,7 @@ public class PackageMojo extends AbstractMojo {
 
 		try {
 			// rebuilds rpm package
-			ProcessUtils.execute(assetsFolder, "rpmbuild", "--buildroot", packageFolder, "--nodeps", "-bb", specFile);
+			CommandUtils.execute(assetsFolder, "rpmbuild", "--buildroot", packageFolder, "--nodeps", "-bb", specFile);
 		} catch (MojoExecutionException e) {
 			getLog().warn("rpmbuild command execution failed", e);
 			return;
@@ -393,7 +393,7 @@ public class PackageMojo extends AbstractMojo {
 
 		// codesigns app folder
 		if (currentPlatform == Platform.mac) {
-			ProcessUtils.execute("codesign", "--force", "--deep", "--sign", "-", appFile);
+			CommandUtils.execute("codesign", "--force", "--deep", "--sign", "-", appFile);
 		}
 
 	}
@@ -531,7 +531,7 @@ public class PackageMojo extends AbstractMojo {
 		VelocityUtils.render("windows/iss.vtl", issFile, info);
 
 		// generates windows installer with inno setup command line compiler
-		ProcessUtils.execute("iscc", "/O" + outputDirectory.getAbsolutePath(), "/F" + name + "_" + version, issFile);
+		CommandUtils.execute("iscc", "/O" + outputDirectory.getAbsolutePath(), "/F" + name + "_" + version, issFile);
 		
 	}
 
@@ -642,7 +642,7 @@ public class PackageMojo extends AbstractMojo {
 		// creates the DMG file including app folder's content
 		getLog().info("Generating the Disk Image file");
 		File diskImageFile = new File(outputDirectory, name + "_" + version + ".dmg");
-		ProcessUtils.execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", name, diskImageFile);
+		CommandUtils.execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", name, diskImageFile);
 		
 	}
 
@@ -727,7 +727,7 @@ public class PackageMojo extends AbstractMojo {
 			if (jreFolder.exists()) FileUtils.removeFolder(jreFolder);
 			
 			// generates customized jre using modules
-			ProcessUtils.execute(jlink.getAbsolutePath(), "--module-path", modulesDir, "--add-modules", modules, "--output", jreFolder, "--no-header-files", "--no-man-pages", "--strip-debug", "--compress=2");
+			CommandUtils.execute(jlink.getAbsolutePath(), "--module-path", modulesDir, "--add-modules", modules, "--output", jreFolder, "--no-header-files", "--no-man-pages", "--strip-debug", "--compress=2");
 	
 			// sets execution permissions on executables in jre
 			File binFolder = new File(jreFolder, "bin");
@@ -774,12 +774,12 @@ public class PackageMojo extends AbstractMojo {
 		} else if (customizedJre && JavaUtils.getJavaMajorVersion() >= 13) { 
 			
 			String modules = 
-				ProcessUtils.execute(
+				CommandUtils.execute(
 					jdeps.getAbsolutePath(), 
 					"-q",
+					"--multi-release", JavaUtils.getJavaMajorVersion(),
 					"--ignore-missing-deps", 
 					"--print-module-deps", 
-					"--multi-release", JavaUtils.getJavaMajorVersion(),
 					jarLibs,
 					jarFile
 				);
@@ -792,11 +792,11 @@ public class PackageMojo extends AbstractMojo {
 		} else if (customizedJre && JavaUtils.getJavaMajorVersion() >= 9) { 
 		
 			String modules = 
-				ProcessUtils.execute(
+				CommandUtils.execute(
 					jdeps.getAbsolutePath(), 
 					"-q",
-					"--list-deps", 
 					"--multi-release", JavaUtils.getJavaMajorVersion(),
+					"--list-deps", 
 					jarLibs,
 					jarFile
 				);

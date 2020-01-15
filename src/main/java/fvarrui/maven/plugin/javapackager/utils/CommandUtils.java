@@ -13,7 +13,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.Commandline;
 
-public class ProcessUtils {
+public class CommandUtils {
 	
 	private static Object [] expandArray(Object [] array) {
 		List<Object> args = new ArrayList<Object>();
