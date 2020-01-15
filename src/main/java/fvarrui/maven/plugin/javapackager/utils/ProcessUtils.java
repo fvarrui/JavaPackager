@@ -50,7 +50,7 @@ public class ProcessUtils {
 			command.setExecutable(executable);
 			createArguments(command, arguments);
 
-			Logger.info("Executing command: " + command.getCommandline());
+			Logger.info("Executing command: " + StringUtils.join(command.getCommandline(), " "));
 			
 			Process process = command.execute();
 			
@@ -74,10 +74,6 @@ public class ProcessUtils {
 	
 	public static String execute(String executable, Object... arguments) throws MojoExecutionException {
 		return execute(new File("."), executable, arguments);
-	}
-
-	public static String execute(File executable, Object... arguments) throws MojoExecutionException {
-		return execute(new File("."), executable.getAbsolutePath(), arguments);
 	}
 
 }

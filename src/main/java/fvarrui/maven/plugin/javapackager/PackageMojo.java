@@ -775,7 +775,7 @@ public class PackageMojo extends AbstractMojo {
 			
 			String modules = 
 				ProcessUtils.execute(
-					jdeps, 
+					jdeps.getAbsolutePath(), 
 					"-q",
 					"--ignore-missing-deps", 
 					"--print-module-deps", 
@@ -793,7 +793,7 @@ public class PackageMojo extends AbstractMojo {
 		
 			String modules = 
 				ProcessUtils.execute(
-					jdeps, 
+					jdeps.getAbsolutePath(), 
 					"-q",
 					"--list-deps", 
 					"--multi-release", JavaUtils.getJavaMajorVersion(),
