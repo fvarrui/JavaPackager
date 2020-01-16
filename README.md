@@ -138,7 +138,7 @@ If icons are located in `assets` folders, it would not be necessary to specify t
 
 [Velocity](https://velocity.apache.org/engine/2.0/user-guide.html) templates (.vtl files) are used to generate some artifacts which have to be bundled with the app.
 
-It is possible to use your own customized templates. You only have to put all or some of the next templates in the `assets` folder organized by platform, and the plugin will use these templates instead of default ones:
+It is possible to use your own customized templates. You just have to put one of the following templates in the `assets` folder organized by platform, and the plugin will use these templates instead of default ones:
 
 ```
 <project>/
