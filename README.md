@@ -155,7 +155,7 @@ It is possible to use your own customized templates. You just have to put one of
 	    └── iss.vtl            # Inno Setup Script template
 ```
 
-> You can use the [default templates](https://github.com/fvarrui/JavaPackager/tree/master/src/main/resources) as an example.
+> Use [default templates](https://github.com/fvarrui/JavaPackager/tree/master/src/main/resources) as examples.
 
 A map called `info` is passed to all templates when they are rendered with next properties:
 
