@@ -99,7 +99,7 @@ And by default it will generate next artifacts in `target ` folder:
 | `url`                   | No        | `null`                         | App website URL.                                             |
 | `vmArgs`                | No        | []                             | Adds VM arguments.                                           |
 
-> See [**Older documentation**](#Older documentation) for previous versions properties.
+> See [**Older documentation**](#older-documentation) for previous versions properties.
 
 ### Plugin assets
 
