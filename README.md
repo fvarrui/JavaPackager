@@ -35,6 +35,7 @@ And the following `plugin` tag.
                 <bundleJre>true|false</bundleJre>
                 <generateInstaller>true|false</generateInstaller>        
                 <administratorRequired>true|false</administratorRequired>
+                <platform>auto|linux|mac|windows</platform>
                 <additionalResources>
                     <param>file path</param>
                     <param>folder path</param>
@@ -71,7 +72,7 @@ And by default it will generate next artifacts in `target ` folder:
 | `projectname_projectversion.exe`          | Installer file if it's executed on Windows (requires [**InnoSetup**](http://www.jrsoftware.org/isinfo.php)). |
 | `projectname_projectversion.dmg`          | Disk image file if it's executed on Mac OS X.                |
 
->  :warning: DEB, RPM, EXE installer and DMG files will be ommited if `generateInstaller` property is `false` or if target platform is different than running platform.
+>  :warning: DEB, RPM, EXE installer and DMG files will be ommited if `generateInstaller` plugin property is `false` or if target platform is different from execution platform.
 
 ### Plugin configutation properties
 
@@ -95,7 +96,7 @@ And by default it will generate next artifacts in `target ` folder:
 | `organizationUrl`       | No        | `${project.organization.url}`  | Organization website URL.                                    |
 | `organizationEmail`     | No        | `null`                         | Organization email.                                          |
 | `platform`              | No        | `auto`                         | Specifies the target platform, which could be different to current one. Possible values:  `auto`, `mac`, `linux`, `windows`. Use `auto`  for using current platform as target. |
-| `runnableJar`           | No        | `null`                         | Specifies your own JAR file to be bundled. If it's ommited, the plugin packages your code in a runnable JAR and bundle with the app. |
+| `runnableJar`           | No        | `null`                         | Specifies your own JAR file to be bundled. If it's ommited, the plugin packages your code in a runnable JAR and bundle it with the app. |
 | `url`                   | No        | `null`                         | App website URL.                                             |
 | `vmArgs`                | No        | []                             | Adds VM arguments.                                           |
 
@@ -103,7 +104,7 @@ And by default it will generate next artifacts in `target ` folder:
 
 ### Plugin assets
 
-Some assets, such as application icons and Velocity templates, could be located in `assets` folder organized by platform.
+Some assets, such as application icons and Velocity templates, could be placed in `assets` folder organized by platform.
 
 ```
 <project>/
@@ -128,17 +129,16 @@ If icons are located in `assets` folders, it would not be necessary to specify t
 	    └── projectname.ico		# on Windows it has to be a ico file
 ```
 
-> **projectname** corresponds to `name` property in `pom.xml`.
+> **projectname** corresponds to `name` plugin property.
 
-> :warning: If `iconFile` property is not specified and it can't find the correct icon in `assets` folder, it will use next icon by default for all platforms:
+> :warning: If `iconFile` plugin property is not specified and it can't find the correct icon in `assets` folder, it will use an [icon by default](https://raw.githubusercontent.com/fvarrui/JavaPackager/master/src/main/resources/linux/default-icon.png) for all platforms.
 >
-> ![Default icon](https://raw.githubusercontent.com/fvarrui/JavaPackager/master/src/main/resources/linux/default-icon.png)
 
 #### Velocity templates
 
-Velocity templates (.vtl files) are used to generate some artifacts which have to be bundled with the app.
+[Velocity](https://velocity.apache.org/engine/2.0/user-guide.html) templates (.vtl files) are used to generate some artifacts which have to be bundled with the app.
 
-It is possible to use our own customized templates. We only have to put all or some of the next templates in the `assets` folder organized by platform, and the plugin will use these templates instead of default ones:
+It is possible to use your own customized templates. You only have to put all or some of the next templates in the `assets` folder organized by platform, and the plugin will use these templates instead of default ones:
 
 ```
 <project>/
@@ -155,9 +155,9 @@ It is possible to use our own customized templates. We only have to put all or s
 	    └── iss.vtl            # Inno Setup Script template
 ```
 
-You can use the [default templates](https://github.com/fvarrui/JavaPackager/tree/master/src/main/resources) as an example.
+> You can use the [default templates](https://github.com/fvarrui/JavaPackager/tree/master/src/main/resources) as an example.
 
-A map called `info` is given to all templates when they are rendered, which contains next properties:
+A map called `info` is passed to all templates when they are rendered with next properties:
 
 | Property                        | Type    | Description                                      |
 | ------------------------------- | ------- | ------------------------------------------------ |
