@@ -11,6 +11,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
 
 public class VelocityUtils {
 
@@ -18,14 +19,23 @@ public class VelocityUtils {
 
 	static {
 		velocityEngine = new VelocityEngine();
-		velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
-		velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+		
+		// specify resource loaders to use
+		velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "file,class");
+		
+		// for the loader 'file', set the FileResourceLoader as the class to use and use 'assets' directory for templates
+		velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
+		velocityEngine.setProperty("file.resource.loader.path", "assets");
+		
+		// for the loader 'class', set the ClasspathResourceLoader as the class to use
+		velocityEngine.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
+		
 		velocityEngine.init();
 	}
 
 	public static void render(String templatePath, File output, Map<String, Object> info) throws MojoExecutionException {
 		try {
-
+			
 			VelocityContext context = new VelocityContext();
 			context.put("info", info);
 

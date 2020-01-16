@@ -35,6 +35,7 @@ import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import fvarrui.maven.plugin.javapackager.utils.FileUtils;
+import fvarrui.maven.plugin.javapackager.utils.IconUtils;
 import fvarrui.maven.plugin.javapackager.utils.JavaUtils;
 import fvarrui.maven.plugin.javapackager.utils.Logger;
 import fvarrui.maven.plugin.javapackager.utils.CommandUtils;
@@ -207,6 +208,9 @@ public class PackageMojo extends AbstractMojo {
 
 		// locates license file
 		resolveLicense();
+		
+		// locates icon file
+		resolveIcon();
 
 		// creates a runnable jar file
         if (runnableJar == null || runnableJar.isBlank()) {
@@ -260,12 +264,10 @@ public class PackageMojo extends AbstractMojo {
 	 * Locates assets or default icon file if the specified one doesn't exist or
 	 * isn't specified
 	 * 
-	 * @param platform      Target platform
-	 * @param iconExtension Icon file extension (.ico for Windows, .png for
-	 *                      GNU/Linux, .icns for MacOS)
 	 * @throws MojoExecutionException
 	 */
-	private void resolveIcon(Platform platform, String iconExtension) throws MojoExecutionException {
+	private void resolveIcon() throws MojoExecutionException {
+		String iconExtension = IconUtils.getIconFileExtensionByPlatform(platform);
 		if (iconFile == null) {
 			iconFile = new File("assets/" + platform + "/", mavenProject.getName() + iconExtension);
 		}
@@ -424,7 +426,6 @@ public class PackageMojo extends AbstractMojo {
 
 		// determines icon file location and copies it to resources folder
 		getLog().info("Copying icon file to Resources folder");
-		resolveIcon(Platform.mac, ".icns");
 		FileUtils.copyFileToFolder(iconFile.getAbsoluteFile(), resourcesFolder);
 
 		// creates and write the Info.plist file
@@ -452,7 +453,6 @@ public class PackageMojo extends AbstractMojo {
 		getLog().info("Creating GNU/Linux app bundle...");
 
 		// determines icon file location and copies it to app folder
-		resolveIcon(Platform.linux, ".png");
 		FileUtils.copyFileToFolder(iconFile, appFolder);
 
 		// copies all dependencies
@@ -489,9 +489,6 @@ public class PackageMojo extends AbstractMojo {
 	private void createWindowsApp() throws MojoExecutionException {
 		getLog().info("Creating Windows app bundle...");
 		
-		// determines icon file location
-		resolveIcon(Platform.windows, ".ico");
-
 		// generates manifest file to require administrator privileges from velocity template
 		File manifestFile = new File(assetsFolder, name + ".exe.manifest");
 		VelocityUtils.render("windows/exe.manifest.vtl", manifestFile, info);
