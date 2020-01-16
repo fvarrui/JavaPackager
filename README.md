@@ -144,15 +144,15 @@ It is possible to use our own customized templates. We only have to put all or s
 <project>/
 └── assets/
 	├── linux/
-	|   ├── control.vtl	        # DEB control template
-	|   ├── desktop.vtl	        # Desktop template
-	│   └── startup.sh.vtl		# Startup script template
+	|   ├── control.vtl        # DEB control template
+	|   ├── desktop.vtl        # Desktop template
+	│   └── startup.sh.vtl     # Startup script template
 	├── macosx/
-	|   ├── Info.plist.vtl	    # Info.plist template
-	│   └── startup.vtl	        # Startup script template
+	|   ├── Info.plist.vtl     # Info.plist template
+	│   └── startup.vtl        # Startup script template
 	└── windows/
-	    ├── exe.manifest.vtl	# exe.manifest template
-	    └── iss.vtl				# Inno Setup Script template
+	    ├── exe.manifest.vtl   # exe.manifest template
+	    └── iss.vtl            # Inno Setup Script template
 ```
 
 You can use the [default templates](https://github.com/fvarrui/JavaPackager/tree/master/src/main/resources) as an example.
