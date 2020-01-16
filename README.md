@@ -162,7 +162,7 @@ A map called `info` is given to all templates when they are rendered, which cont
 | Property                        | Type    | Description                                      |
 | ------------------------------- | ------- | ------------------------------------------------ |
 | `${info.name}`                  | String  | Same as `name` plugin property.                  |
-| `${displayName}`                | String  | Same as `displayName` plugin property.           |
+| `${info.displayName}`                | String  | Same as `displayName` plugin property.           |
 | `${info.version}`               | String  | Same as `version` plugin property.               |
 | `${info.description}`           | String  | Same as `description` plugin property.           |
 | `${info.url}`                   | String  | Same as `url` plugin property.                   |
