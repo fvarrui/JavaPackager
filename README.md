@@ -1,5 +1,5 @@
 # JavaPackager
-JavaPackager Maven Plugin provides an easy way to package Java applications in native Windows, Mac OS X, or Linux executables.
+JavaPackager is a Maven plugin which provides an easy way to package Java applications in native Windows, Mac OS X, or GNU/Linux executables, and generates installers for them.
 
 ## How to use the plugin
 
@@ -60,7 +60,7 @@ Execute next command in project's root folder:
 mvn package
 ```
 
-By default, it generates next artifacts in `target ` folder:
+And by default it will generate next artifacts in `target ` folder:
 
 | Artifact                                  | Description                                                  |
 | ----------------------------------------- | ------------------------------------------------------------ |
@@ -77,24 +77,27 @@ By default, it generates next artifacts in `target ` folder:
 
 | Property                | Mandatory | Default value                  | Description                                                  |
 | ----------------------- | --------- | ------------------------------ | ------------------------------------------------------------ |
-| `mainClass`             | Yes       | `null`                         | Full path to your app main class.                            |
-| `bundleJre`             | No        | `false`                        | Embeds a customized JRE with the app.                        |
-| `customizedJre`         | No        | `true`                         | If `true`, a customized JRE will be generated, including only needed modules. Otherwise, all modules will be included. |
-| `jrePath`               | No        | `""`                           | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least. |
-| `modules`               | No        | []                             | Uses specified modules to customize the bundled JRE. Don't use `jdeps` to get module dependencies. |
 | `additionalModules`     | No        | []                             | Adds additional modules other than the ones identified by `jdeps` before calling `jlink`. |
-| `administratorRequired` | No        | `false`                        | If `true`, app will run with administrator privileges.       |
 | `additionalResources`   | No        | []                             | Additional files and folders to include in the bundled app.  |
-| `platform`              | No        | `auto`                         | Specifies the target platform, which could be different to current one. Possible values:  `auto`, `mac`, `linux`, `windows`. Use `auto`  for using current platform as target. |
-| `generateInstaller`     | No        | `true`                         | Generates an installer for the app.                          |
+| `administratorRequired` | No        | `false`                        | If `true`, app will run with administrator privileges.       |
+| `bundleJre`             | No        | `false`                        | Embeds a customized JRE with the app.                        |
+| `copyDependencies`      | No        | `true`                         | If `true`, all dependencies (JAR files) will be bundled with the app. |
+| `customizedJre`         | No        | `true`                         | If `true`, a customized JRE will be generated, including only needed modules. Otherwise, all modules will be included. |
 | `displayName`           | No        | `${project.name}`              | App name to show.                                            |
+| `envPath`               | No        | `null`                         | Defines environment variable PATH in GNU/Linux and Mac OS X startup scripts. |
+| `generateInstaller`     | No        | `true`                         | Generates an installer for the app.                          |
 | `iconFile`              | No        | `null`                         | Path to the app icon file (PNG, ICO or ICNS).                |
+| `jrePath`               | No        | `""`                           | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least. |
 | `licenseFile`           | No        | `${project.licenses[0].url}`   | Path to project license file.                                |
-| `url`                   | No        | `null`                         | App website URL.                                             |
+| `mainClass`             | Yes       | `null`                         | Full path to your app main class.                            |
+| `modules`               | No        | []                             | Uses specified modules to customize the bundled JRE. Don't use `jdeps` to get module dependencies. |
 | `organizationName`      | No        | `${project.organization.name}` | Organization name.                                           |
 | `organizationUrl`       | No        | `${project.organization.url}`  | Organization website URL.                                    |
 | `organizationEmail`     | No        | `null`                         | Organization email.                                          |
-| `envPath`               | No        | `null`                         | Defines environment variable PATH in GNU/Linux and Mac OS X startup scripts. |
+| `platform`              | No        | `auto`                         | Specifies the target platform, which could be different to current one. Possible values:  `auto`, `mac`, `linux`, `windows`. Use `auto`  for using current platform as target. |
+| `runnableJar`           | No        | `null`                         | Specifies your own JAR file to be bundled. If it's ommited, the plugin packages your code in a runnable JAR and bundle with the app. |
+| `url`                   | No        | `null`                         | App website URL.                                             |
+| `vmArgs`                | No        | []                             | Adds VM arguments.                                           |
 
 > See [**Older documentation**](#Older documentation) for previous versions properties.
 
@@ -118,8 +121,6 @@ Some assets, such as application icons, could be located in `assets` folder orga
 > :warning: If `iconFile` property is not specified and it can't find the correct icon in `assets` folder, it will use next icon by default for all platforms:
 >
 > ![Default icon](https://raw.githubusercontent.com/fvarrui/JavaPackager/master/src/main/resources/linux/default-icon.png)
-
->  
 
 ## How to build and install the plugin
 
