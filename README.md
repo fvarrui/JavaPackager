@@ -103,17 +103,29 @@ And by default it will generate next artifacts in `target ` folder:
 
 ### Plugin assets
 
-Some assets, such as application icons, could be located in `assets` folder organized by platform, and so it would not be necessary to specify the `iconFile` property:
+Some assets, such as application icons and Velocity templates, could be located in `assets` folder organized by platform.
 
 ```
-<project>
-└── assets
-	├── linux
+<project>/
+└── assets/
+	├── linux/
+	├── macosx/
+	└── windows/
+```
+
+#### Icons
+
+If icons are located in `assets` folders, it would not be necessary to specify the `iconFile` property:
+
+```
+<project>/
+└── assets/
+	├── linux/
 	│   └── projectname.png		# on GNU/Linux it has to be a png image
-	├── macosx
+	├── macosx/
 	│   └── projectname.icns	# on Mac OS X it has to be a icns file
-	└── windows
-	    └── projectname.ico		# on Windows it has to be an ico file
+	└── windows/
+	    └── projectname.ico		# on Windows it has to be a ico file
 ```
 
 > **projectname** corresponds to `name` property in `pom.xml`.
@@ -121,6 +133,48 @@ Some assets, such as application icons, could be located in `assets` folder orga
 > :warning: If `iconFile` property is not specified and it can't find the correct icon in `assets` folder, it will use next icon by default for all platforms:
 >
 > ![Default icon](https://raw.githubusercontent.com/fvarrui/JavaPackager/master/src/main/resources/linux/default-icon.png)
+
+#### Velocity templates
+
+Velocity templates (.vtl files) are used to generate some artifacts which have to be bundled with the app.
+
+It is possible to use our own customized templates. We only have to put all or some of the next templates in the `assets` folder organized by platform, and the plugin will use these templates instead of default ones:
+
+```
+<project>/
+└── assets/
+	├── linux/
+	|   ├── control.vtl	        # DEB control template
+	|   ├── desktop.vtl	        # Desktop template
+	│   └── startup.sh.vtl		# Startup script template
+	├── macosx/
+	|   ├── Info.plist.vtl	    # Info.plist template
+	│   └── startup.vtl	        # Startup script template
+	└── windows/
+	    ├── exe.manifest.vtl	# exe.manifest template
+	    └── iss.vtl				# Inno Setup Script template
+```
+
+You can use the [default templates](https://github.com/fvarrui/JavaPackager/tree/master/src/main/resources) as an example.
+
+A map called `info` is given to all templates when they are rendered, which contains next properties:
+
+| Property                        | Type    | Description                                      |
+| ------------------------------- | ------- | ------------------------------------------------ |
+| `${info.name}`                  | String  | Same as `name` plugin property.                  |
+| `${displayName}`                | String  | Same as `displayName` plugin property.           |
+| `${info.version}`               | String  | Same as `version` plugin property.               |
+| `${info.description}`           | String  | Same as `description` plugin property.           |
+| `${info.url}`                   | String  | Same as `url` plugin property.                   |
+| `${info.organizationName}`      | String  | Same as `organizationName` plugin property.      |
+| `${info.organizationUrl}`       | String  | Same as `organizationUrl` plugin property.       |
+| `${info.organizationEmail}`     | String  | Same as `organizationEmail` plugin property.     |
+| `${info.administratorRequired}` | Boolean | Same as `administratorRequired` plugin property. |
+| `${info.bundleJre}`             | Boolean | Same as `bundleJre` plugin property.             |
+| `${info.jarFile}`               | String  | Full path to runnable JAR file.                  |
+| `${info.license}`               | String  | Full path to license file.                       |
+| `${info.envPath}`               | String  | Same as `envPath` plugin property.               |
+| `${info.vmArgs}`                | String  | Same as `vmArgs` plugin property.                |
 
 ## How to build and install the plugin
 
