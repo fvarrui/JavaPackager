@@ -69,7 +69,7 @@ public class PackageMojo extends AbstractMojo {
 
 	// plugin configuration properties
 	
-	@Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
+	@Parameter(defaultValue = "${project.build.directory}", property = "outputDirectory", required = true)
 	private File outputDirectory;
 
 	@Parameter(property = "licenseFile", required = false)
@@ -77,9 +77,6 @@ public class PackageMojo extends AbstractMojo {
 
 	@Parameter(property = "iconFile")
 	private File iconFile;
-
-	@Parameter(defaultValue = "${java.version}", property = "jreMinVersion", required = true)
-	private String jreMinVersion;
 
 	@Parameter(defaultValue = "true", property = "generateInstaller", required = true)
 	private Boolean generateInstaller;
@@ -132,11 +129,41 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(property = "additionalModules", required = false)
 	private List<String> additionalModules;
 
+    /**
+     * Which platform to build, one of:
+     * <ul>
+     * <li><tt>auto</tt> - automatically detect based on the host OS (the default)</li>
+     * <li><tt>mac</tt></li>
+     * <li><tt>linux</tt></li>
+     * <li><tt>windows</tt></li>
+     * </ul>
+     * To build for multiple platforms at once, add multiple executions to the plugin's configuration.
+     */	
 	@Parameter(defaultValue = "auto", property = "platform", required = true)
 	private Platform platform;
+
+	@Parameter(property = "envPath", required = false)
+	private String envPath;
+
+    /**
+	 * Additional arguments to provide to the JVM (for example <tt>-Xmx2G</tt>).
+	 */	
+	@Parameter(property = "vmArgs", required = false)
+	private List<String> vmArgs;
 	
-	@Parameter(property = "path", required = false)
-	private String path;	
+	/**
+	 * Provide your own runnable .jar (for example, a shaded .jar) instead of letting this plugin create one via
+	 * the <tt>maven-jar-plugin</tt>.
+	 */
+    @Parameter(property = "runnableJar", required = false)
+    private String runnableJar;
+
+    /**
+     * Whether or not to copy dependencies into the bundle. Generally, you will only disable this if you specified
+     * a <tt>runnableJar</tt> with all dependencies shaded into the .jar itself. 
+     */
+    @Parameter(defaultValue = "true", property = "copyDependencies", required = true)
+    private Boolean copyDependencies;
 
 	public PackageMojo() {
 		super();
@@ -155,7 +182,13 @@ public class PackageMojo extends AbstractMojo {
 		if (platform == null || platform == Platform.auto) {
 			platform = currentPlatform;
 		}
+		
 		getLog().info("Packaging app for " + platform);
+		
+		// creates output directory if 
+		if (!outputDirectory.exists()) {
+			outputDirectory.mkdirs();
+		}
 
 		// creates app destination folder
 		appFolder = new File(outputDirectory, "app");
@@ -172,20 +205,17 @@ public class PackageMojo extends AbstractMojo {
 		// sets app's main executable file 
 		executable = new File(appFolder, name);
 
-		// if default license file doesn't exist and there's a license specified in
-		// pom.xml file, gets this last one
-		if (licenseFile != null && !licenseFile.exists()) {
-			getLog().warn("Specified license file doesn't exist: " + licenseFile.getAbsolutePath());
-			licenseFile = null;
-		}
-		// if license not specified, gets from pom
-		if (licenseFile == null && !mavenProject.getLicenses().isEmpty()) {
-			licenseFile = new File(mavenProject.getLicenses().get(0).getUrl());
-		}
+		// locates license file
+		resolveLicense();
 
 		// creates a runnable jar file
-		createRunnableJar();
-
+        if (runnableJar == null || runnableJar.isBlank()) {
+            createRunnableJar();
+        } else {
+        	getLog().info("Using runnable JAR: " + runnableJar);
+            jarFile = new File(runnableJar);
+        }
+        
 		// collects app info 
 		this.info = getInfo();
 
@@ -206,8 +236,24 @@ public class PackageMojo extends AbstractMojo {
 			break;
 		default:
 			throw new MojoExecutionException("Unsupported operating system: " + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION + " " + SystemUtils.OS_ARCH);
-		}		
+		}
 
+	}
+
+	/**
+	 * Locates license file
+	 */
+	private void resolveLicense() {
+		// if default license file doesn't exist and there's a license specified in
+		// pom.xml file, gets this last one
+		if (licenseFile != null && !licenseFile.exists()) {
+			getLog().warn("Specified license file doesn't exist: " + licenseFile.getAbsolutePath());
+			licenseFile = null;
+		}
+		// if license not specified, gets from pom
+		if (licenseFile == null && !mavenProject.getLicenses().isEmpty()) {
+			licenseFile = new File(mavenProject.getLicenses().get(0).getUrl());
+		}
 	}
 	
 	/**
@@ -263,14 +309,13 @@ public class PackageMojo extends AbstractMojo {
 	}
 
 	/**
-	 * Collects info needed for Velocity templates
+	 * Collects info needed for Velocity templates and populates a map with it
 	 * 
 	 * @return Map with collected properties
 	 * @throws MojoExecutionException
 	 */
-	private Map<String, Object> getInfo() throws MojoExecutionException {
+	private Map<String, Object> getInfo() {
 		HashMap<String, Object> info = new HashMap<>();
-
 		info.put("name", name);
 		info.put("displayName", displayName);
 		info.put("version", version);
@@ -284,8 +329,8 @@ public class PackageMojo extends AbstractMojo {
 		info.put("mainClass", mainClass);
 		info.put("jarFile", jarFile.getName());
 		info.put("license", licenseFile != null ? licenseFile.getAbsolutePath() : "");
-		info.put("path", path);
-		
+		info.put("envPath", envPath);
+		info.put("vmArgs", StringUtils.join(vmArgs, " "));
 		return info;
 	}
 
@@ -467,37 +512,30 @@ public class PackageMojo extends AbstractMojo {
 		
 		// prepares launch4j plugin configuration
 		
-		List<Element> config = new ArrayList<>();
+		List<Element> jreElements = new ArrayList<>();
+		jreElements.add(element("path", bundleJre ? "jre" : "%JAVA_HOME%"));
+		jreElements.addAll(vmArgs.stream().map(a -> element("opt", a)).collect(Collectors.toList()));
 		
+		List<Element> config = new ArrayList<>();
 		config.add(element("headerType", "gui"));
 		config.add(element("jar", jarFile.getAbsolutePath()));
 		config.add(element("outfile", executable.getAbsolutePath() + ".exe"));
 		config.add(element("icon", iconFile.getAbsolutePath()));
 		config.add(element("manifest", manifestFile.getAbsolutePath()));
 		config.add(element("classPath",  element("mainClass", mainClass)));
-		
-		if (bundleJre) {
-			config.add(
-					element("jre",  element("path", "jre")
-			));
-		} else {
-			config.add(
-					element("jre", element("path", "%JAVA_HOME%")
-			));
-		}
-		
-		config.add(
-				element("versionInfo", 
-				element("fileVersion", "1.0.0.0"),
-				element("txtFileVersion", "1.0.0.0"),
-				element("copyright", organizationName),
-				element("fileDescription", description),
-				element("productVersion", version + ".0"),
-				element("txtProductVersion", version + ".0"),
-				element("productName", name),
-				element("internalName", name),
-				element("originalFilename", name + ".exe")
-		));
+		config.add(element("jre", jreElements.toArray(new Element[jreElements.size()])));
+		config.add(element("versionInfo", 
+						element("fileVersion", "1.0.0.0"),
+						element("txtFileVersion", "1.0.0.0"),
+						element("copyright", organizationName),
+						element("fileDescription", description),
+						element("productVersion", version + ".0"),
+						element("txtProductVersion", version + ".0"),
+						element("productName", name),
+						element("internalName", name),
+						element("originalFilename", name + ".exe")
+					)
+				);
 
 		// invokes launch4j plugin to generate windows executable
 		executeMojo(
@@ -653,6 +691,8 @@ public class PackageMojo extends AbstractMojo {
 	 * @throws MojoExecutionException
 	 */
 	private void copyAllDependencies(File libsFolder) throws MojoExecutionException {
+		if (copyDependencies != null && !copyDependencies) return;
+		
 		getLog().info("Copying all dependencies to app folder ...");
 
 		// invokes plugin to copy dependecies to app libs folder
@@ -759,7 +799,6 @@ public class PackageMojo extends AbstractMojo {
 		
 		File jdeps = new File(System.getProperty("java.home"), "/bin/jdeps");
 
-//		File [] jarLibs = libsFolder.listFiles(new FilenameExtensionFilter("jar"));
 		File jarLibs = new File(libsFolder, "*.jar");
 		
 		List<String> modulesList;

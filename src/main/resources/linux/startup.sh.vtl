@@ -7,12 +7,12 @@ JAVA=$SCRIPTPATH/jre/bin/java
 JAVA=java
 #end
 BINARY=$SCRIPTPATH/${info.name}
-#if($info.path)
-export PATH=${info.path}
+#if($info.envPath)
+export PATH=${info.envPath}
 #end
 #if($info.administratorRequired)
-pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY GDKBACKEND=x11 $JAVA -jar $BINARY $@
+pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY GDKBACKEND=x11 $JAVA ${info.vmArgs} -jar $BINARY $@
 #else
-$JAVA -jar $BINARY $@
+$JAVA ${info.vmArgs} -jar $BINARY $@
 #end
 exit 0
