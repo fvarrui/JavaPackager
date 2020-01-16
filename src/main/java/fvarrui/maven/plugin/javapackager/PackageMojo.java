@@ -509,9 +509,7 @@ public class PackageMojo extends AbstractMojo {
 		
 		// prepares launch4j plugin configuration
 		
-		List<Element> jreElements = new ArrayList<>();
-		jreElements.add(element("path", bundleJre ? "jre" : "%JAVA_HOME%"));
-		jreElements.addAll(vmArgs.stream().map(a -> element("opt", a)).collect(Collectors.toList()));
+		List<Element> optsElements = vmArgs.stream().map(arg -> element("opt", arg)).collect(Collectors.toList()); 
 		
 		List<Element> config = new ArrayList<>();
 		config.add(element("headerType", "gui"));
@@ -520,7 +518,11 @@ public class PackageMojo extends AbstractMojo {
 		config.add(element("icon", iconFile.getAbsolutePath()));
 		config.add(element("manifest", manifestFile.getAbsolutePath()));
 		config.add(element("classPath",  element("mainClass", mainClass)));
-		config.add(element("jre", jreElements.toArray(new Element[jreElements.size()])));
+		config.add(element("jre", 
+						element("path", bundleJre ? "jre" : "%JAVA_HOME%"),
+						element("opts", optsElements.toArray(new Element[optsElements.size()]))
+					)
+				);
 		config.add(element("versionInfo", 
 						element("fileVersion", "1.0.0.0"),
 						element("txtFileVersion", "1.0.0.0"),
