@@ -193,6 +193,10 @@ cd JavaPackager
 mvn install
 ```
 
+## Future features
+
+Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column-7704117) for the features we plan to add to JavaPackager.
+
 ## Older documentation
 
 - [v0.8.7](https://github.com/fvarrui/JavaPackager/blob/882f7e2eed31d67940d8f34e2a4ebb44ba0e8001/README.md)
