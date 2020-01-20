@@ -195,9 +195,12 @@ mvn install
 
 ## Future features
 
-Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column-7704117) for the features we plan to add to JavaPackager.
+Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column-7704117) to know the features we plan to add to JavaPackager.
 
 ## Older documentation
 
-- [v0.8.7](https://github.com/fvarrui/JavaPackager/blob/882f7e2eed31d67940d8f34e2a4ebb44ba0e8001/README.md)
-- [v0.8.6](https://github.com/fvarrui/JavaPackager/blob/63f7787ba769672701f49fcf014cb0f7cea86117/README.md)
+- [v0.8.7](https://github.com/fvarrui/JavaPackager/blob/v0.8.7/README.md)
+- [v0.8.6](https://github.com/fvarrui/JavaPackager/blob/v0.8.6/README.md)
+- [v0.8.5](https://github.com/fvarrui/JavaPackager/blob/v0.8.5/README.md)
+- [v0.8.4](https://github.com/fvarrui/JavaPackager/blob/v0.8.4/README.md)
+- [v0.8.3](https://github.com/fvarrui/JavaPackager/blob/v0.8.3/README.md)
