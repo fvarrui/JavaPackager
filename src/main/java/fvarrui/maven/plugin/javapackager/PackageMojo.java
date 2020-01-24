@@ -739,6 +739,9 @@ public class PackageMojo extends AbstractMojo {
 
 			// sets execution permissions on executables in jre
 			File binFolder = new File(jreFolder, "bin");
+			if (!binFolder.exists()) {
+				throw new MojoExecutionException("Could not embed JRE from " + jrePath + ": " + binFolder.getAbsolutePath() + " doesn't exist");
+			}
 			Arrays.asList(binFolder.listFiles()).forEach(f -> f.setExecutable(true, false));
 
 		} else if (JavaUtils.getJavaMajorVersion() <= 8) {
