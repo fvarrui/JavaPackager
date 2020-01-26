@@ -828,6 +828,7 @@ public class PackageMojo extends AbstractMojo {
 			modulesList = Arrays.asList(modules.split(","))
 					.stream()
 					.map(module -> module.trim())
+					.filter(module -> !module.isEmpty())
 					.collect(Collectors.toList());
 			
 		} else if (customizedJre && JavaUtils.getJavaMajorVersion() >= 9) { 
@@ -845,6 +846,7 @@ public class PackageMojo extends AbstractMojo {
 			modulesList = Arrays.asList(modules.split("\n"))
 					.stream()
 					.map(module -> module.trim())
+					.filter(module -> !module.isEmpty())
 					.filter(module -> !module.startsWith("JDK removed internal"))
 					.collect(Collectors.toList());
 
@@ -855,6 +857,11 @@ public class PackageMojo extends AbstractMojo {
 		}
 				
 		modulesList.addAll(additionalModules);
+		
+		if (modulesList.isEmpty()) {
+			getLog().warn("It was not possible to determine the necessary modules. all modules will be included");
+			modulesList.add("ALL-MODULE-PATH");
+		}
 		
 		getLog().info("- Modules: " + modulesList);
 		
