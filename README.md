@@ -23,7 +23,7 @@ And the following `plugin` tag.
 <plugin>
     <groupId>fvarrui.maven</groupId>
     <artifactId>javapackager</artifactId>
-    <version>0.8.8</version>
+    <version>0.8.9</version>
     <executions>
         <execution>
             <phase>package</phase>
@@ -199,6 +199,7 @@ Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column
 
 ## Older documentation
 
+- [v0.8.8](https://github.com/fvarrui/JavaPackager/blob/v0.8.8/README.md)
 - [v0.8.7](https://github.com/fvarrui/JavaPackager/blob/v0.8.7/README.md)
 - [v0.8.6](https://github.com/fvarrui/JavaPackager/blob/v0.8.6/README.md)
 - [v0.8.5](https://github.com/fvarrui/JavaPackager/blob/v0.8.5/README.md)
