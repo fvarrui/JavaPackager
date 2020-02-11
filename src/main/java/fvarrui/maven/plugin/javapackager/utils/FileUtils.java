@@ -22,6 +22,14 @@ import org.apache.maven.plugin.MojoExecutionException;
 
 public class FileUtils {
 	
+	public static File mkdir(File parent, String name) {
+		File dir = new File(parent, name);
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+		return dir;
+	}
+	
 	public static void copyFileToFile(File source, File dest) throws MojoExecutionException {
 		Logger.info("Copying file [" + source + "] to folder [" + dest + "]");			
 		try {
