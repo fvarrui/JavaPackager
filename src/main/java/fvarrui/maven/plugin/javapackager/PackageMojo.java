@@ -192,16 +192,10 @@ public class PackageMojo extends AbstractMojo {
 		}
 
 		// creates app destination folder
-		appFolder = new File(outputDirectory, "app");
-		if (!appFolder.exists()) {
-			appFolder.mkdirs();
-		}
+		appFolder = FileUtils.mkdir(outputDirectory, "app");
 
 		// creates folder for intermmediate assets 
-		assetsFolder = new File(outputDirectory, "assets");
-		if (!assetsFolder.exists()) {
-			assetsFolder.mkdirs();
-		}
+		assetsFolder = FileUtils.mkdir(outputDirectory, "assets");
 
 		// sets app's main executable file 
 		executable = new File(appFolder, name);
@@ -388,21 +382,11 @@ public class PackageMojo extends AbstractMojo {
 
 		// creates and set up directories
 		getLog().info("Creating and setting up the bundle directories");
-		
-		File appFile = new File(appFolder, name + ".app");
-		appFile.mkdirs();
-
-		File contentsFolder = new File(appFile, "Contents");
-		contentsFolder.mkdirs();
-
-		File resourcesFolder = new File(contentsFolder, "Resources");
-		resourcesFolder.mkdirs();
-
-		File javaFolder = new File(resourcesFolder, "Java");
-		javaFolder.mkdirs();
-
-		File macOSFolder = new File(contentsFolder, "MacOS");
-		macOSFolder.mkdirs();
+		File appFile 			= FileUtils.mkdir(appFolder, name + ".app");
+		File contentsFolder 	= FileUtils.mkdir(appFile, "Contents");
+		File resourcesFolder 	= FileUtils.mkdir(contentsFolder, "Resources");
+		File javaFolder 		= FileUtils.mkdir(resourcesFolder, "Java");
+		File macOSFolder 		= FileUtils.mkdir(contentsFolder, "MacOS");
 
 		// copies all dependencies to Java folder
 		getLog().info("Copying dependencies to Java folder");
