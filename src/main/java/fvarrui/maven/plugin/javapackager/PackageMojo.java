@@ -175,6 +175,12 @@ public class PackageMojo extends AbstractMojo {
 
 		// gets plugin execution environment 
 		this.env = executionEnvironment(mavenProject, mavenSession, pluginManager);
+		
+		// using artifactId as name, if it's not specified
+		if (name == null || name.isEmpty()) {
+			name = mavenProject.getArtifactId();
+			getLog().warn("Using artifactId ('" + name + "') as name, because name property has not been specified");
+		}
 
 		// determines current platform
 		currentPlatform = getCurrentPlatform();
