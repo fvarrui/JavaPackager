@@ -53,7 +53,7 @@ And the following `plugin` tag.
 </plugin>
 ```
 
-> Some [plugin configuration samples](docs/plugin-configuration-samples) here.
+> Some [plugin configuration samples](docs/plugin-configuration-samples.md) here.
 
 ### Package your app
 
