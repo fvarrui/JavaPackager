@@ -70,28 +70,28 @@ public class PackageMojo extends AbstractMojo {
 
 	// plugin configuration properties
 	
-	@Parameter(defaultValue = "${project.build.directory}", property = "outputDirectory", required = true)
+	@Parameter(defaultValue = "${project.build.directory}", property = "outputDirectory", required = false)
 	private File outputDirectory;
 
 	@Parameter(property = "licenseFile", required = false)
 	private File licenseFile;
 
-	@Parameter(property = "iconFile")
+	@Parameter(property = "iconFile", required = false)
 	private File iconFile;
 
-	@Parameter(defaultValue = "true", property = "generateInstaller", required = true)
+	@Parameter(defaultValue = "true", property = "generateInstaller", required = false)
 	private Boolean generateInstaller;
 
 	@Parameter(defaultValue = "${exec.mainClass}", property = "mainClass", required = true)
 	private String mainClass;
 
-	@Parameter(defaultValue = "${project.name}", property = "name", required = true)
+	@Parameter(defaultValue = "${project.name}", property = "name", required = false)
 	private String name;
 
 	@Parameter(defaultValue = "${project.name}", property = "displayName", required = false)
 	private String displayName;
 
-	@Parameter(defaultValue = "${project.version}", property = "version", required = true)
+	@Parameter(defaultValue = "${project.version}", property = "version", required = false)
 	private String version;
 
 	@Parameter(defaultValue = "${project.description}", property = "description", required = false)
@@ -100,7 +100,7 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${project.url}", property = "url", required = false)
 	private String url;
 
-	@Parameter(defaultValue = "false", property = "administratorRequired", required = true)
+	@Parameter(defaultValue = "false", property = "administratorRequired", required = false)
 	private Boolean administratorRequired;
 
 	@Parameter(defaultValue = "${project.organization.name}", property = "organizationName", required = false)
@@ -112,7 +112,7 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(defaultValue = "", property = "organizationEmail", required = false)
 	private String organizationEmail;
 
-	@Parameter(defaultValue = "false", property = "bundleJre", required = true)
+	@Parameter(defaultValue = "false", property = "bundleJre", required = false)
 	private Boolean bundleJre;
 	
 	@Parameter(defaultValue = "true", property = "customizedJre", required = false)
@@ -275,6 +275,17 @@ public class PackageMojo extends AbstractMojo {
 		// if license not specified, gets from pom
 		if (licenseFile == null && !mavenProject.getLicenses().isEmpty()) {
 			licenseFile = new File(mavenProject.getLicenses().get(0).getUrl());
+		}
+		// if license is still null, looks for LICENSE file
+		if (licenseFile == null || !licenseFile.exists()) {
+			licenseFile = new File("LICENSE");
+			if (!licenseFile.exists()) licenseFile = null;
+		}
+		
+		if (licenseFile != null) {
+			getLog().info("License file found: " + licenseFile.getAbsolutePath());
+		} else {
+			getLog().warn("No license file specified");
 		}
 	}
 	
