@@ -53,6 +53,8 @@ And the following `plugin` tag.
 </plugin>
 ```
 
+> Some [plugin configuration samples](docs/plugin-configuration-samples) here.
+
 ### Package your app
 
 Execute next command in project's root folder:
@@ -76,32 +78,32 @@ And by default it will generate next artifacts in `target ` folder:
 
 ### Plugin configutation properties
 
-| Property                | Mandatory | Default value                  | Description                                                  |
-| ----------------------- | --------- | ------------------------------ | ------------------------------------------------------------ |
-| `additionalModules`     | No        | []                             | Additional modules to the ones identified by `jdeps` or the specified with `modules` property. |
-| `additionalResources`   | No        | []                             | Additional files and folders to include in the bundled app.  |
-| `administratorRequired` | No        | `false`                        | App will run as administrator (with elevated privileges).    |
-| `bundleJre`             | No        | `false`                        | Embeds a customized JRE with the app.                        |
-| `copyDependencies`      | No        | `true`                         | Bundles all dependencies (JAR files) with the app.           |
-| `customizedJre`         | No        | `true`                         | Generates a customized JRE, including only identified or specified modules. Otherwise, all modules will be included. |
-| `description`           | No        | `${project.description}`       | Project description.                                         |
-| `displayName`           | No        | `${project.name}`              | App name to show.                                            |
-| `envPath`               | No        | `null`                         | Defines PATH environment variable in GNU/Linux and Mac OS X startup scripts. |
-| `generateInstaller`     | No        | `true`                         | Generates an installer for the app.                          |
-| `iconFile`              | No        | `null`                         | Path to the app icon file (PNG, ICO or ICNS).                |
-| `jrePath`               | No        | `""`                           | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least. |
-| `licenseFile`           | No        | `${project.licenses[0].url}`   | Path to project license file.                                |
-| `mainClass`             | **Yes**   | `null`                         | Full path to your app main class.                            |
-| `modules`               | No        | []                             | Defines modules to customize the bundled JRE. Don't use `jdeps` to get module dependencies. |
-| `name`                  | **Yes**   | `${project.name}`              | Project name.                                                |
-| `organizationName`      | **Yes**   | `${project.organization.name}` | Organization name.                                           |
-| `organizationUrl`       | No        | `${project.organization.url}`  | Organization website URL.                                    |
-| `organizationEmail`     | No        | `null`                         | Organization email.                                          |
-| `platform`              | No        | `auto`                         | Defines the target platform, which could be different to the execution platform. Possible values:  `auto`, `mac`, `linux`, `windows`. Use `auto`  for using execution platform as target. |
-| `runnableJar`           | No        | `null`                         | Defines your own JAR file to be bundled. If it's ommited, the plugin packages your code in a runnable JAR and bundle it with the app. |
-| `url`                   | No        | `null`                         | App website URL.                                             |
-| ` version`              | **Yes**   | `${project.version}`           | Project version in X.X.X format (e.g. 1.2.3), without letters. |
-| `vmArgs`                | No        | []                             | Adds VM arguments.                                           |
+| Property                | Mandatory | Default value                                 | Description                                                  |
+| ----------------------- | --------- | --------------------------------------------- | ------------------------------------------------------------ |
+| `additionalModules`     | No        | []                                            | Additional modules to the ones identified by `jdeps` or the specified with `modules` property. |
+| `additionalResources`   | No        | []                                            | Additional files and folders to include in the bundled app.  |
+| `administratorRequired` | No        | `false`                                       | App will run as administrator (with elevated privileges).    |
+| `bundleJre`             | No        | `false`                                       | Embeds a customized JRE with the app.                        |
+| `copyDependencies`      | No        | `true`                                        | Bundles all dependencies (JAR files) with the app.           |
+| `customizedJre`         | No        | `true`                                        | Generates a customized JRE, including only identified or specified modules. Otherwise, all modules will be included. |
+| `description`           | No        | `${project.description}`                      | Project description.                                         |
+| `displayName`           | No        | `${project.name}`                             | App name to show.                                            |
+| `envPath`               | No        | `null`                                        | Defines PATH environment variable in GNU/Linux and Mac OS X startup scripts. |
+| `generateInstaller`     | No        | `true`                                        | Generates an installer for the app.                          |
+| `iconFile`              | No        | `null`                                        | Path to the app icon file (PNG, ICO or ICNS).                |
+| `jrePath`               | No        | `""`                                          | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least. |
+| `licenseFile`           | No        | `${project.licenses[0].url}`                  | Path to project license file.                                |
+| `mainClass`             | **Yes**   | `null`                                        | Full path to your app main class.                            |
+| `modules`               | No        | []                                            | Defines modules to customize the bundled JRE. Don't use `jdeps` to get module dependencies. |
+| `name`                  | **Yes**   | `${project.name}`  || `${project.artifactId}` | Project name.                                                |
+| `organizationName`      | **Yes**   | `${project.organization.name}`                | Organization name.                                           |
+| `organizationUrl`       | No        | `${project.organization.url}`                 | Organization website URL.                                    |
+| `organizationEmail`     | No        | `null`                                        | Organization email.                                          |
+| `platform`              | No        | `auto`                                        | Defines the target platform, which could be different to the execution platform. Possible values:  `auto`, `mac`, `linux`, `windows`. Use `auto`  for using execution platform as target. |
+| `runnableJar`           | No        | `null`                                        | Defines your own JAR file to be bundled. If it's ommited, the plugin packages your code in a runnable JAR and bundle it with the app. |
+| `url`                   | No        | `null`                                        | App website URL.                                             |
+| ` version`              | **Yes**   | `${project.version}`                          | Project version in X.X.X format (e.g. 1.2.3), without letters. |
+| `vmArgs`                | No        | []                                            | Adds VM arguments.                                           |
 
 > See [**Older documentation**](#older-documentation) for previous versions properties.
 
