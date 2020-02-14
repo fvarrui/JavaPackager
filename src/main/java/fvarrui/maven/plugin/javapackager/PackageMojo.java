@@ -179,7 +179,25 @@ public class PackageMojo extends AbstractMojo {
 		// using artifactId as name, if it's not specified
 		if (name == null || name.isEmpty()) {
 			name = mavenProject.getArtifactId();
-			getLog().warn("Using artifactId ('" + name + "') as name, because name property has not been specified");
+			getLog().warn("Using artifactId ('" + name + "') as name, because it has not been specified");
+		}
+
+		// using name as displayName, if it's not specified
+		if (displayName == null || displayName.isEmpty()) {
+			displayName = name;
+			getLog().warn("Using name ('" + name + "') as displayName, because it has not been specified");
+		}
+
+		// using displayName as description, if it's not specified
+		if (description == null || description.isEmpty()) {
+			description = displayName;
+			getLog().warn("Using displayName ('" + displayName + "') as description, because it has not been specified");
+		}
+
+		// using "Anonymous" as organizationName, if it's not specified
+		if (organizationName == null || organizationName.isEmpty()) {
+			organizationName = "ACME";
+			getLog().warn("Using '" + organizationName + "' as organizationName, because it has not been specified");
 		}
 
 		// determines current platform
@@ -269,7 +287,7 @@ public class PackageMojo extends AbstractMojo {
 	private void resolveIcon() throws MojoExecutionException {
 		String iconExtension = IconUtils.getIconFileExtensionByPlatform(platform);
 		if (iconFile == null) {
-			iconFile = new File("assets/" + platform + "/", mavenProject.getName() + iconExtension);
+			iconFile = new File("assets/" + platform + "/", name + iconExtension);
 		}
 		if (!iconFile.exists()) {
 			iconFile = new File(assetsFolder, iconFile.getName());
