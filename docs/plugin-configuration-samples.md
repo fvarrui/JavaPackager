@@ -15,9 +15,6 @@
             </goals>
             <configuration>
                 <mainClass>fvarrui.sample.Main</mainClass>
-                <name>Sample</name>
-                <organizationName>ACME</organizationName>
-                <version>1.0.0</version>
             </configuration>
         </execution>
     </executions>
@@ -28,11 +25,9 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
 
 ```xml
 <project>
-    <name>Sample</name>
-    <version>1.0.0</version>
-    <organization>
-        <name>ACME</name>
-    </organization>
+    <properties>
+        <exec.mainClass>fvarrui.sample.Main</exec.mainClass>
+    </properties>
     <build>
         <plugins>
             <plugin>
@@ -45,9 +40,6 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
                         <goals>
                             <goal>package</goal>
                         </goals>
-                        <configuration>
-                            <mainClass>fvarrui.sample.Main</mainClass>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -72,9 +64,6 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
             </goals>
             <configuration>
                 <mainClass>fvarrui.sample.Main</mainClass>
-                <name>Sample</name>
-                <organizationName>ACME</organizationName>
-                <version>1.0.0</version>
                 <bundleJre>true</bundleJre>
             </configuration>
         </execution>
@@ -99,9 +88,6 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
             </goals>
             <configuration>
                 <mainClass>fvarrui.sample.Main</mainClass>
-                <name>Sample</name>
-                <organizationName>ACME</organizationName>
-                <version>1.0.0</version>
                 <bundleJre>true</bundleJre>
                 <customizedJre>false</customizedJre>
             </configuration>
@@ -125,9 +111,6 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
             </goals>
             <configuration>
                 <mainClass>fvarrui.sample.Main</mainClass>
-                <name>Sample</name>
-                <organizationName>ACME</organizationName>
-                <version>1.0.0</version>
                 <bundleJre>true</bundleJre>
                 <jrePath>C:\Program Files\Java\jre1.8.0_231</jrePath>
             </configuration>
@@ -151,11 +134,8 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
             </goals>
             <configuration>
                 <mainClass>fvarrui.sample.Main</mainClass>
-                <name>Sample</name>
-                <organizationName>ACME</organizationName>
-                <version>1.0.0</version>
                 <bundleJre>true</bundleJre>
-                <runnableJar>${project.build.directory}/your-own-fat.jar</runnableJar>
+                <runnableJar>path/to/your/own/fat.jar</runnableJar>
                 <copyDependencies>false</copyDependencies>
             </configuration>
         </execution>
