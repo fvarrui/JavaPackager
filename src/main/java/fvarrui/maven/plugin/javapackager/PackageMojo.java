@@ -82,7 +82,7 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(defaultValue = "true", property = "generateInstaller", required = true)
 	private Boolean generateInstaller;
 
-	@Parameter(property = "mainClass", required = true)
+	@Parameter(defaultValue = "${exec.mainClass}", property = "mainClass", required = true)
 	private String mainClass;
 
 	@Parameter(defaultValue = "${project.name}", property = "name", required = true)
