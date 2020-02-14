@@ -95,7 +95,7 @@ And by default it will generate next artifacts in `target ` folder:
 | `licenseFile`           | No        | `${project.licenses[0].url}`                 | Path to project license file.                                |
 | `mainClass`             | **Yes**   | `null`                                       | Full path to your app main class.                            |
 | `modules`               | No        | []                                           | Defines modules to customize the bundled JRE. Don't use `jdeps` to get module dependencies. |
-| `name`                  | **Yes**   | `${project.name}` || `${project.artifactId}` | App name.                                                    |
+| `name`                  | **Yes**   | `${project.name}` or `${project.artifactId}` | App name.                                                    |
 | `organizationName`      | **Yes**   | `${project.organization.name}`               | Organization name.                                           |
 | `organizationUrl`       | No        | `${project.organization.url}`                | Organization website URL.                                    |
 | `organizationEmail`     | No        | `null`                                       | Organization email.                                          |
