@@ -287,7 +287,7 @@ public class PackageMojo extends AbstractMojo {
 		
 		String classifier = "runnable";
 
-		jarFile = new File(outputDirectory, mavenProject.getName() + "-" + mavenProject.getVersion() + "-" + classifier + "." + mavenProject.getPackaging());
+		jarFile = new File(outputDirectory, name + "-" + version + "-" + classifier + "." + mavenProject.getPackaging());
 
 		executeMojo(
 				plugin(
