@@ -24,7 +24,7 @@
 </plugin>
 ```
 
-Or:
+Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you don't need to specify them twice:
 
 ```xml
 <project>
@@ -55,10 +55,9 @@ Or:
     </build>    
 </project>
 ```
+> :warning: This minimal configuration will not bundle a  JRE, so final user will need one in order to run the app.
 
->  This configuration will not bundle JRE, so a JRE is needed in final user host.
-
-## Bundle a customized JRE
+## Bundle with a customized JRE
 
 ```xml
 <plugin>
@@ -77,14 +76,41 @@ Or:
                 <organizationName>ACME</organizationName>
                 <version>1.0.0</version>
                 <bundleJre>true</bundleJre>
-                <customizedJre>true</customizedJre>
             </configuration>
         </execution>
     </executions>
 </plugin>
 ```
 
-## Bundle an existing JRE
+> `customizedJre` is `true` by default, so you don't have to specify it.
+
+## Bundle with a full  JRE
+
+```xml
+<plugin>
+    <groupId>fvarrui.maven</groupId>
+    <artifactId>javapackager</artifactId>
+    <version>{latest-plugin-version-here}</version>
+    <executions>
+        <execution>
+            <phase>package</phase>
+            <goals>
+                <goal>package</goal>
+            </goals>
+            <configuration>
+                <mainClass>fvarrui.sample.Main</mainClass>
+                <name>Sample</name>
+                <organizationName>ACME</organizationName>
+                <version>1.0.0</version>
+                <bundleJre>true</bundleJre>
+                <customizedJre>false</customizedJre>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
+
+## Bundle with an existing JRE
 
 ```xml
 <plugin>
