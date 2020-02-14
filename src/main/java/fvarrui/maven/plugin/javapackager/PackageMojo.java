@@ -275,6 +275,7 @@ public class PackageMojo extends AbstractMojo {
 		// if license not specified, gets from pom
 		if (licenseFile == null && !mavenProject.getLicenses().isEmpty()) {
 			licenseFile = new File(mavenProject.getLicenses().get(0).getUrl());
+			if (!licenseFile.exists()) licenseFile = null;
 		}
 		// if license is still null, looks for LICENSE file
 		if (licenseFile == null || !licenseFile.exists()) {
