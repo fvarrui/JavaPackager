@@ -93,7 +93,7 @@ And by default it will generate next artifacts in `target ` folder:
 | `iconFile`              | No        | `null`                                       | Path to the app icon file (PNG, ICO or ICNS).                |
 | `jrePath`               | No        | `""`                                         | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least. |
 | `licenseFile`           | No        | `${project.licenses[0].url}`                 | Path to project license file.                                |
-| `mainClass`             | **Yes**   | `null`                                       | Full path to your app main class.                            |
+| `mainClass`             | **Yes**   | `${exec.mainClass}`                          | Full path to your app main class.                            |
 | `modules`               | No        | []                                           | Defines modules to customize the bundled JRE. Don't use `jdeps` to get module dependencies. |
 | `name`                  | **Yes**   | `${project.name}` or `${project.artifactId}` | App name.                                                    |
 | `organizationName`      | **Yes**   | `${project.organization.name}`               | Organization name.                                           |
