@@ -135,3 +135,30 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
     </executions>
 </plugin>
 ```
+
+## Bundle your own fat JAR
+
+```xml
+<plugin>
+    <groupId>fvarrui.maven</groupId>
+    <artifactId>javapackager</artifactId>
+    <version>{latest-plugin-version-here}</version>
+    <executions>
+        <execution>
+            <phase>package</phase>
+            <goals>
+                <goal>package</goal>
+            </goals>
+            <configuration>
+                <mainClass>fvarrui.sample.Main</mainClass>
+                <name>Sample</name>
+                <organizationName>ACME</organizationName>
+                <version>1.0.0</version>
+                <bundleJre>true</bundleJre>
+                <runnableJar>${project.build.directory}/your-own-fat.jar</runnableJar>
+                <copyDependencies>false</copyDependencies>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
