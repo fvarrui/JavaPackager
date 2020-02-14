@@ -77,7 +77,7 @@ And by default it will generate next artifacts in `target ` folder:
 
 | Property                | Mandatory | Default value                                                | Description                                                  |
 | ----------------------- | --------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `additionalModules`     | No        | []                                                           | Additional modules to the ones identified by `jdeps` or the specified with `modules` property. |
+| `additionalModules`     | [ ]       | []                                                           | Additional modules to the ones identified by `jdeps` or the specified with `modules` property. |
 | `additionalResources`   | No        | []                                                           | Additional files and folders to include in the bundled app.  |
 | `administratorRequired` | No        | `false`                                                      | App will run as administrator (with elevated privileges).    |
 | `bundleJre`             | No        | `false`                                                      | Embeds a customized JRE with the app.                        |
