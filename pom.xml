@@ -69,16 +69,16 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>
 				<version>3.6.0</version>
-				<configuration>
-					<goalPrefix>javapackager</goalPrefix>
-					<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-				</configuration>
 				<executions>
 					<execution>
 						<id>help-goal</id>
 						<goals>
 							<goal>help</goal>
 						</goals>
+						<configuration>
+							<goalPrefix>javapackager</goalPrefix>
+							<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -87,8 +87,7 @@
 				<artifactId>maven-install-plugin</artifactId>
 				<version>3.0.0-M1</version>
 				<configuration>
-					<localRepositoryPath>releases</localRepositoryPath>
-					<file>${project.build.directory}/${project.artifactId}-${project.version}.jar</file>
+					<createChecksum>true</createChecksum>
 				</configuration>
 				<executions>
 					<execution>
@@ -97,8 +96,53 @@
 						<goals>
 							<goal>install-file</goal>
 						</goals>
+						<configuration>
+							<localRepositoryPath>releases</localRepositoryPath>
+							<file>${project.build.directory}/${project.artifactId}-${project.version}.jar</file>
+						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>net.nicoulaj.maven.plugins</groupId>
+				<artifactId>checksum-maven-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<id>create-checksums</id>
+						<phase>package</phase>
+						<goals>
+							<goal>artifacts</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<id>copy-checksums</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.basedir}/releases/fvarrui/maven/javapackager/${project.version}</outputDirectory>
+							<overwrite>true</overwrite>
+							<resources>
+								<resource>
+									<directory>${project.build.directory}</directory>
+									<includes>
+										<include>${project.artifactId}-${project.version}.jar.md5</include>
+										<include>${project.artifactId}-${project.version}.jar.sha1</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>				
 			</plugin>
 		</plugins>
 	</build>
@@ -138,7 +182,6 @@
 						</executions>
 					</plugin>
 				</plugins>
-
 			</build>
 		</profile>
 	</profiles>
@@ -149,6 +192,5 @@
 			<url>file://${project.basedir}/releases</url>
 		</repository>
 	</distributionManagement>
-
 
 </project>
