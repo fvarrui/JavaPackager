@@ -109,11 +109,28 @@
 				<version>1.8</version>
 				<executions>
 					<execution>
-						<id>create-checksums</id>
+						<id>create-artifact-checksums</id>
 						<phase>package</phase>
 						<goals>
 							<goal>artifacts</goal>
 						</goals>
+					</execution>
+					<execution>
+						<id>create-pom-checksums</id>
+						<phase>install</phase>
+						<goals>
+							<goal>files</goal>
+						</goals>
+						<configuration>
+							<fileSets>
+								<fileSet>
+									<directory>${project.basedir}/releases/fvarrui/maven/javapackager/${project.version}</directory>
+									<includes>
+										<include>${project.artifactId}-${project.version}.pom</include>
+									</includes>
+								</fileSet>
+							</fileSets>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -142,7 +159,7 @@
 							</resources>
 						</configuration>
 					</execution>
-				</executions>				
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
