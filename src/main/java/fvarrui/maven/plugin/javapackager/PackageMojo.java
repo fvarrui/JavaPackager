@@ -627,7 +627,7 @@ public class PackageMojo extends AbstractMojo {
 				goal("jdeb"), 
 				configuration(
 						element("controlDir", controlFile.getParentFile().getAbsolutePath()),
-						element("deb", outputDirectory.getAbsolutePath() + "/${project.name}_${project.version}.deb"),
+						element("deb", outputDirectory.getAbsolutePath() + "/" + debFile.getName()),
 						element("dataSet",
 								/* app folder files, except executable file and jre/bin/java */
 								element("data", 
@@ -635,18 +635,18 @@ public class PackageMojo extends AbstractMojo {
 										element("src", appFolder.getAbsolutePath()),
 										element("mapper", 
 												element("type", "perm"),
-												element("prefix", "/opt/${project.name}")
+												element("prefix", "/opt/" + name)
 										),
 										element("excludes", executable.getName() + "," + "jre/bin/java")
 								),
 								/* executable */
 								element("data", 
 										element("type", "file"),
-										element("src", appFolder.getAbsolutePath() + "/${project.name}"),
+										element("src", appFolder.getAbsolutePath() + "/" + name),
 										element("mapper", 
 												element("type", "perm"), 
 												element("filemode", "755"),
-												element("prefix", "/opt/${project.name}")
+												element("prefix", "/opt/" + name)
 										)
 								),
 								/* desktop file */
@@ -665,14 +665,14 @@ public class PackageMojo extends AbstractMojo {
 										element("mapper", 
 												element("type", "perm"), 
 												element("filemode", "755"),
-												element("prefix", "/opt/${project.name}/jre/bin")
+												element("prefix", "/opt/" + name + "/jre/bin")
 										)
 								),
 								/* symbolic link in /usr/local/bin to app binary */
 								element("data", 
 										element("type", "link"),
-										element("linkTarget", "/opt/${project.name}/${project.name}"),
-										element("linkName", "/usr/local/bin/${project.name}"),
+										element("linkTarget", "/opt/" + name + "/" + name),
+										element("linkName", "/usr/local/bin/" + name),
 										element("symlink", "true"), 
 										element("mapper", 
 												element("type", "perm"),
