@@ -217,6 +217,9 @@ public class PackageMojo extends AbstractMojo {
 
 		// creates app destination folder
 		appFolder = FileUtils.mkdir(outputDirectory, "app");
+		if (appFolder.exists()) {
+			FileUtils.removeFolder(appFolder);
+		}
 
 		// creates folder for intermmediate assets 
 		assetsFolder = FileUtils.mkdir(outputDirectory, "assets");
@@ -335,7 +338,8 @@ public class PackageMojo extends AbstractMojo {
 										element("mainClass", mainClass)
 								)
 						),
-						element("outputDirectory", jarFile.getParentFile().getAbsolutePath())
+						element("outputDirectory", jarFile.getParentFile().getAbsolutePath()),
+						element("finalName", name + "-" + version)
 				),
 				env);
 	}
