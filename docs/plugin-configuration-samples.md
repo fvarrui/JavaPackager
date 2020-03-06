@@ -152,6 +152,7 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
     <version>{latest-plugin-version-here}</version>
     <executions>
         <execution>
+            <id>with-jre</id>
             <phase>package</phase>
             <goals>
                 <goal>package</goal>
@@ -163,6 +164,7 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
             </configuration>
         </execution>
         <execution>
+            <id>without-jre</id>
             <phase>package</phase>
             <goals>
                 <goal>package</goal>
@@ -176,6 +178,6 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
     </executions>
 </plugin>
 ```
-Last configuration, e.g. on Windows,  will generate next artifacts:
+E.g. on Windows, last configuration will generate next artifacts:
 * `Sample-with-jre_x.y.z.exe` with a bundled JRE.
 * `Sample-without-jre_x.y.z.exe` without JRE.
