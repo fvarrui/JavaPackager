@@ -1,4 +1,4 @@
-package fvarrui.maven.plugin.javapackager.utils;
+package io.github.fvarrui.javapackager.utils;
 
 import java.io.File;
 import java.io.FilenameFilter;
