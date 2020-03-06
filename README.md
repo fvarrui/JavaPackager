@@ -5,22 +5,13 @@ JavaPackager is a Maven plugin which provides an easy way to package Java applic
 
 ### Config your project 
 
-Add to your `pom.xml` the following `pluginRepository` tag:
-
-```xml
-<pluginRepository>
-    <id>javapackager</id>
-    <url>https://github.com/fvarrui/JavaPackager/raw/master/releases</url>
-</pluginRepository>
-```
-
-And the following `plugin` tag.
+Add the following `plugin` tag to your `pom.xml`:
 
 ```xml
 <plugin>
-    <groupId>fvarrui.maven</groupId>
-    <artifactId>javapackager</artifactId>
-    <version>0.8.9</version>
+	<groupId>io.github.fvarrui</groupId>
+	<artifactId>javapackager</artifactId>
+	<version>0.9.0</version>    
     <executions>
         <execution>
             <phase>package</phase>
@@ -195,12 +186,23 @@ cd JavaPackager
 mvn install
 ```
 
+## How to publish the plugin on Maven Central
+
+```bash
+mvn clean
+mvn release:prepare
+mvn release:perform
+```
+
+> Related [guide](https://dzone.com/articles/publish-your-artifacts-to-maven-central).
+
 ## Future features
 
 Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column-7704117) to know the features we plan to add to JavaPackager.
 
 ## Older documentation
 
+- [v0.8.9](https://github.com/fvarrui/JavaPackager/blob/v0.8.9/README.md)
 - [v0.8.8](https://github.com/fvarrui/JavaPackager/blob/v0.8.8/README.md)
 - [v0.8.7](https://github.com/fvarrui/JavaPackager/blob/v0.8.7/README.md)
 - [v0.8.6](https://github.com/fvarrui/JavaPackager/blob/v0.8.6/README.md)
