@@ -1,4 +1,4 @@
-package fvarrui.maven.plugin.javapackager.utils;
+package io.github.fvarrui.javapackager.utils;
 
 import static org.apache.commons.io.FileUtils.copyDirectoryToDirectory;
 import static org.apache.commons.io.FileUtils.copyFile;
