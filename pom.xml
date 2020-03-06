@@ -3,7 +3,7 @@
 
 	<groupId>io.github.fvarrui</groupId>
 	<artifactId>javapackager</artifactId>
-	<version>0.8.9</version>
+	<version>0.8.9-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>JavaPackager Maven Plugin</name>
@@ -35,7 +35,6 @@
 		<connection>scm:git:git://github.com/fvarrui/JavaPackager.git</connection>
 		<developerConnection>scm:git:git@github.com:fvarrui/fvarrui.git</developerConnection>
 		<url>https://github.com/fvarrui/JavaPackager</url>
-		<tag>javapackager-0.8.9</tag>
 	</scm>
 
 	<dependencies>
@@ -103,28 +102,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
-			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-install-plugin</artifactId> 
-				<version>3.0.0-M1</version> <configuration> <createChecksum>true</createChecksum> 
-				</configuration> <executions> <execution> <id>release</id> <phase>install</phase> 
-				<goals> <goal>install-file</goal> </goals> <configuration> <localRepositoryPath>releases</localRepositoryPath> 
-				<file>${project.build.directory}/${project.artifactId}-${project.version}.jar</file> 
-				</configuration> </execution> </executions> </plugin> <plugin> <groupId>net.nicoulaj.maven.plugins</groupId> 
-				<artifactId>checksum-maven-plugin</artifactId> <version>1.8</version> <executions> 
-				<execution> <id>create-artifact-checksums</id> <phase>package</phase> <goals> 
-				<goal>artifacts</goal> </goals> </execution> <execution> <id>create-pom-checksums</id> 
-				<phase>install</phase> <goals> <goal>files</goal> </goals> <configuration> 
-				<fileSets> <fileSet> <directory>${project.basedir}/releases/io/github/fvarrui/javapackager/${project.version}</directory> 
-				<includes> <include>${project.artifactId}-${project.version}.pom</include> 
-				</includes> </fileSet> </fileSets> </configuration> </execution> </executions> 
-				</plugin> <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-resources-plugin</artifactId> 
-				<version>3.1.0</version> <executions> <execution> <id>copy-checksums</id> 
-				<phase>install</phase> <goals> <goal>copy-resources</goal> </goals> <configuration> 
-				<outputDirectory>${project.basedir}/releases/io/github/fvarrui/javapackager/${project.version}</outputDirectory> 
-				<overwrite>true</overwrite> <resources> <resource> <directory>${project.build.directory}</directory> 
-				<includes> <include>${project.artifactId}-${project.version}.jar.md5</include> 
-				<include>${project.artifactId}-${project.version}.jar.sha1</include> </includes> 
-				</resource> </resources> </configuration> </execution> </executions> </plugin> -->
 
 			<plugin>
 				<artifactId>maven-deploy-plugin</artifactId>
