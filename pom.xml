@@ -3,7 +3,7 @@
 
 	<groupId>io.github.fvarrui</groupId>
 	<artifactId>javapackager</artifactId>
-	<version>0.9.0</version>
+	<version>0.9.1-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>JavaPackager Maven Plugin</name>
@@ -35,7 +35,7 @@
 		<connection>scm:git:git://github.com/fvarrui/JavaPackager.git</connection>
 		<developerConnection>scm:git:git@github.com:fvarrui/fvarrui.git</developerConnection>
 		<url>https://github.com/fvarrui/JavaPackager</url>
-    <tag>javapackager-0.9.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
 	<dependencies>
