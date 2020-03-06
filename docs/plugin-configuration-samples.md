@@ -152,25 +152,25 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
     <version>{latest-plugin-version-here}</version>
     <executions>
         <execution>
-            <id>with-jre</id>
+            <id>bundle-with-jre</id>
             <phase>package</phase>
             <goals>
                 <goal>package</goal>
             </goals>
             <configuration>
-            	<name>Sample-with-jre</name>
+            	<name>Sample</name>
                 <mainClass>fvarrui.sample.Main</mainClass>
                 <bundleJre>true</bundleJre>
             </configuration>
         </execution>
         <execution>
-            <id>without-jre</id>
+            <id>bundle-without-jre</id>
             <phase>package</phase>
             <goals>
                 <goal>package</goal>
             </goals>
             <configuration>
-            	<name>Sample-without-jre</name>
+            	<name>Sample-nojre</name>
                 <mainClass>fvarrui.sample.Main</mainClass>
                 <bundleJre>false</bundleJre>
             </configuration>
@@ -179,5 +179,5 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
 </plugin>
 ```
 E.g. on Windows, last configuration will generate next artifacts:
-* `Sample-with-jre_x.y.z.exe` with a bundled JRE.
-* `Sample-without-jre_x.y.z.exe` without JRE.
+* `Sample_x.y.z.exe` with a bundled JRE.
+* `Sample-nojre_x.y.z.exe` without JRE.
