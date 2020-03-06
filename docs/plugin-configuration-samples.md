@@ -4,7 +4,7 @@
 
 ```xml
 <plugin>
-    <groupId>fvarrui.maven</groupId>
+	<groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
     <version>{latest-plugin-version-here}</version>
     <executions>
@@ -31,7 +31,7 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
     <build>
         <plugins>
             <plugin>
-                <groupId>fvarrui.maven</groupId>
+				<groupId>io.github.fvarrui</groupId>
                 <artifactId>javapackager</artifactId>
                 <version>{latest-plugin-version-here}</version>
                 <executions>
@@ -53,7 +53,7 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
 
 ```xml
 <plugin>
-    <groupId>fvarrui.maven</groupId>
+	<groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
     <version>{latest-plugin-version-here}</version>
     <executions>
@@ -77,7 +77,7 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
 
 ```xml
 <plugin>
-    <groupId>fvarrui.maven</groupId>
+	<groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
     <version>{latest-plugin-version-here}</version>
     <executions>
@@ -100,7 +100,7 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
 
 ```xml
 <plugin>
-    <groupId>fvarrui.maven</groupId>
+	<groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
     <version>{latest-plugin-version-here}</version>
     <executions>
@@ -123,8 +123,8 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
 
 ```xml
 <plugin>
-    <groupId>fvarrui.maven</groupId>
-    <artifactId>javapackager</artifactId>
+	<groupId>io.github.fvarrui</groupId>
+	<artifactId>javapackager</artifactId>
     <version>{latest-plugin-version-here}</version>
     <executions>
         <execution>
@@ -142,3 +142,40 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
     </executions>
 </plugin>
 ```
+
+## Multiple executions
+
+```xml
+<plugin>
+	<groupId>io.github.fvarrui</groupId>
+	<artifactId>javapackager</artifactId>
+    <version>{latest-plugin-version-here}</version>
+    <executions>
+        <execution>
+            <phase>package</phase>
+            <goals>
+                <goal>package</goal>
+            </goals>
+            <configuration>
+            	<name>Sample-with-jre</name>
+                <mainClass>fvarrui.sample.Main</mainClass>
+                <bundleJre>true</bundleJre>
+            </configuration>
+        </execution>
+        <execution>
+            <phase>package</phase>
+            <goals>
+                <goal>package</goal>
+            </goals>
+            <configuration>
+            	<name>Sample-without-jre</name>
+                <mainClass>fvarrui.sample.Main</mainClass>
+                <bundleJre>false</bundleJre>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
+Last configuration, e.g. on Windows,  will generate next artifacts:
+* `Sample-with-jre_x.y.z.exe` with a bundled JRE.
+* `Sample-without-jre_x.y.z.exe` without JRE.
