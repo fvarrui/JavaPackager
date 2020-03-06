@@ -1,6 +1,6 @@
-package fvarrui.maven.plugin.javapackager.utils;
+package io.github.fvarrui.javapackager.utils;
 
-import fvarrui.maven.plugin.javapackager.Platform;
+import io.github.fvarrui.javapackager.Platform;
 
 public class IconUtils {
 

@@ -1,4 +1,4 @@
-package fvarrui.maven.plugin.javapackager;
+package io.github.fvarrui.javapackager;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
@@ -34,12 +34,12 @@ import org.apache.maven.project.MavenProjectHelper;
 import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
-import fvarrui.maven.plugin.javapackager.utils.FileUtils;
-import fvarrui.maven.plugin.javapackager.utils.IconUtils;
-import fvarrui.maven.plugin.javapackager.utils.JavaUtils;
-import fvarrui.maven.plugin.javapackager.utils.Logger;
-import fvarrui.maven.plugin.javapackager.utils.CommandUtils;
-import fvarrui.maven.plugin.javapackager.utils.VelocityUtils;
+import io.github.fvarrui.javapackager.utils.CommandUtils;
+import io.github.fvarrui.javapackager.utils.FileUtils;
+import io.github.fvarrui.javapackager.utils.IconUtils;
+import io.github.fvarrui.javapackager.utils.JavaUtils;
+import io.github.fvarrui.javapackager.utils.Logger;
+import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.RUNTIME)
 public class PackageMojo extends AbstractMojo {
