@@ -4,7 +4,7 @@
 
 ```xml
 <plugin>
-	<groupId>io.github.fvarrui</groupId>
+    <groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
     <version>{latest-plugin-version-here}</version>
     <executions>
@@ -31,7 +31,7 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
     <build>
         <plugins>
             <plugin>
-				<groupId>io.github.fvarrui</groupId>
+                <groupId>io.github.fvarrui</groupId>
                 <artifactId>javapackager</artifactId>
                 <version>{latest-plugin-version-here}</version>
                 <executions>
@@ -53,7 +53,7 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
 
 ```xml
 <plugin>
-	<groupId>io.github.fvarrui</groupId>
+    <groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
     <version>{latest-plugin-version-here}</version>
     <executions>
@@ -77,7 +77,7 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
 
 ```xml
 <plugin>
-	<groupId>io.github.fvarrui</groupId>
+    <groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
     <version>{latest-plugin-version-here}</version>
     <executions>
@@ -100,7 +100,7 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
 
 ```xml
 <plugin>
-	<groupId>io.github.fvarrui</groupId>
+    <groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
     <version>{latest-plugin-version-here}</version>
     <executions>
@@ -123,8 +123,8 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
 
 ```xml
 <plugin>
-	<groupId>io.github.fvarrui</groupId>
-	<artifactId>javapackager</artifactId>
+    <groupId>io.github.fvarrui</groupId>
+    <artifactId>javapackager</artifactId>
     <version>{latest-plugin-version-here}</version>
     <executions>
         <execution>
@@ -147,8 +147,8 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
 
 ```xml
 <plugin>
-	<groupId>io.github.fvarrui</groupId>
-	<artifactId>javapackager</artifactId>
+    <groupId>io.github.fvarrui</groupId>
+    <artifactId>javapackager</artifactId>
     <version>{latest-plugin-version-here}</version>
     <executions>
         <execution>
