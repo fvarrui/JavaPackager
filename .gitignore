@@ -1,3 +1,4 @@
 /bin/
 /target/ 
 release.properties
+pom.xml.releaseBackup
