@@ -1,4 +1,4 @@
-package fvarrui.maven.plugin.javapackager.utils;
+package io.github.fvarrui.javapackager.utils;
 
 public class JavaUtils {
 	

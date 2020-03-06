@@ -1,4 +1,4 @@
-package fvarrui.maven.plugin.javapackager;
+package io.github.fvarrui.javapackager;
 
 public enum Platform {
 	auto,
