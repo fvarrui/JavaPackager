@@ -9,9 +9,9 @@ Add the following `plugin` tag to your `pom.xml`:
 
 ```xml
 <plugin>
-	<groupId>io.github.fvarrui</groupId>
-	<artifactId>javapackager</artifactId>
-	<version>0.9.0</version>    
+    <groupId>io.github.fvarrui</groupId>
+    <artifactId>javapackager</artifactId>
+    <version>0.9.0</version>    
     <executions>
         <execution>
             <phase>package</phase>
