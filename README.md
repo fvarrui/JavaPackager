@@ -182,7 +182,7 @@ git clone https://github.com/fvarrui/JavaPackager.git
 cd JavaPackager
 ```
 
-2. Compile, package and install the plugin in your local repository and in the project's `releases` folder:
+2. Compile, package and install the plugin in your local repository:
 
 ```bash
 mvn install
