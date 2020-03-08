@@ -13,7 +13,7 @@ Add the following `plugin` tag to your `pom.xml`:
 <plugin>
     <groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
-    <version>0.9.0</version>    
+    <version>0.9.1</version>    
     <executions>
         <execution>
             <phase>package</phase>
@@ -57,12 +57,12 @@ And by default it will generate next artifacts in `target ` folder:
 
 | Artifact                                  | Description                                                  |
 | ----------------------------------------- | ------------------------------------------------------------ |
-| `app`                                     | Directory with the native application and other needed assets. |
+| `${name}`                                 | Directory with the native application and other needed assets. |
 | `projectname-projectversion-runnable.jar` | Runnable JAR file.                                           |
-| `projectname_projectversion.deb`          | DEB package file if it's executed on GNU/Linux (requires **dpkg-deb**).              |
+| `projectname_projectversion.deb`          | DEB package file if it's executed on GNU/Linux (requires **dpkg-deb**). |
 | `projectname_projectversion.rpm`          | RPM package file if it's executed on GNU/Linux (requires **alien** & **rpmbuild**). |
 | `projectname_projectversion.exe`          | Installer file if it's executed on Windows (requires [**Inno Setup**](http://www.jrsoftware.org/isinfo.php)). |
-| `projectname_projectversion.dmg`          | Disk image file if it's executed on Mac OS X (requires **hdiutil**).                |
+| `projectname_projectversion.dmg`          | Disk image file if it's executed on Mac OS X (requires **hdiutil**). |
 
 >  :warning: DEB, RPM, EXE installer and DMG files will be ommited if `generateInstaller` plugin property is `false` or if target platform is different from execution platform.
 
