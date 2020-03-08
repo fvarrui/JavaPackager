@@ -55,14 +55,14 @@ mvn package
 
 And by default it will generate next artifacts in `target ` folder:
 
-| Artifact                                  | Description                                                  |
-| ----------------------------------------- | ------------------------------------------------------------ |
-| `${name}`                                 | Directory with the native application and other needed assets. |
-| `projectname-projectversion-runnable.jar` | Runnable JAR file.                                           |
-| `projectname_projectversion.deb`          | DEB package file if it's executed on GNU/Linux (requires **dpkg-deb**). |
-| `projectname_projectversion.rpm`          | RPM package file if it's executed on GNU/Linux (requires **alien** & **rpmbuild**). |
-| `projectname_projectversion.exe`          | Installer file if it's executed on Windows (requires [**Inno Setup**](http://www.jrsoftware.org/isinfo.php)). |
-| `projectname_projectversion.dmg`          | Disk image file if it's executed on Mac OS X (requires **hdiutil**). |
+| Artifact                          | Description                                                  |
+| --------------------------------- | ------------------------------------------------------------ |
+| `${name}`                         | Directory with the native application and other needed assets. |
+| `${name}-${version}-runnable.jar` | Runnable JAR file.                                           |
+| `${name}_${version}.deb`          | DEB package file if it's executed on GNU/Linux (requires **dpkg-deb**). |
+| `${name}_${version}.rpm`          | RPM package file if it's executed on GNU/Linux (requires **alien** & **rpmbuild**). |
+| `${name}_${version}.exe`          | Installer file if it's executed on Windows (requires [**Inno Setup**](http://www.jrsoftware.org/isinfo.php)). |
+| `${name}_${version}.dmg`          | Disk image file if it's executed on Mac OS X (requires **hdiutil**). |
 
 >  :warning: DEB, RPM, EXE installer and DMG files will be ommited if `generateInstaller` plugin property is `false` or if target platform is different from execution platform.
 
@@ -117,11 +117,11 @@ If icons are located in `assets` folders, it would not be necessary to specify t
 <project>/
 └── assets/
 	├── linux/
-	│   └── projectname.png		# on GNU/Linux it has to be a png image
+	│   └── ${name}.png		# on GNU/Linux it has to be a png image
 	├── macosx/
-	│   └── projectname.icns	# on Mac OS X it has to be a icns file
+	│   └── ${name}.icns	# on Mac OS X it has to be a icns file
 	└── windows/
-	    └── projectname.ico		# on Windows it has to be a ico file
+	    └── ${name}.ico		# on Windows it has to be a ico file
 ```
 
 > **projectname** corresponds to `name` plugin property.
