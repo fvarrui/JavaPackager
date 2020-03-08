@@ -216,7 +216,7 @@ public class PackageMojo extends AbstractMojo {
 		}
 
 		// creates app destination folder
-		appFolder = FileUtils.mkdir(outputDirectory, "app");
+		appFolder = FileUtils.mkdir(outputDirectory, name);
 		if (appFolder.exists()) {
 			FileUtils.removeFolder(appFolder);
 		}
@@ -550,10 +550,10 @@ public class PackageMojo extends AbstractMojo {
 		config.add(element("versionInfo", 
 						element("fileVersion", "1.0.0.0"),
 						element("txtFileVersion", "1.0.0.0"),
+						element("productVersion", "1.0.0.0"),
+						element("txtProductVersion", "1.0.0.0"),
 						element("copyright", organizationName),
 						element("fileDescription", description),
-						element("productVersion", version + ".0"),
-						element("txtProductVersion", version + ".0"),
 						element("productName", name),
 						element("internalName", name),
 						element("originalFilename", name + ".exe")
