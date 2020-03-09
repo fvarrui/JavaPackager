@@ -232,6 +232,8 @@ public class PackageMojo extends AbstractMojo {
 	}
 
 	public void execute() throws MojoExecutionException {
+		
+		System.setProperty("line.separator", "\n");
 
 		// gets plugin execution environment 
 		this.env = executionEnvironment(mavenProject, mavenSession, pluginManager);
