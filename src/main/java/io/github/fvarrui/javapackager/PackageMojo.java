@@ -61,72 +61,129 @@ public class PackageMojo extends AbstractMojo {
 	// private variables
 	
 	private ExecutionEnvironment env;
-
 	private Map<String, Object> info;
-	
-	private Platform currentPlatform;
-
+	private Platform hostPlatform;
 	private File debFile, appFolder, assetsFolder, jarFile, executable;
 
 	// plugin configuration properties
-	
+
+	/**
+	 * Output directory.
+	 */
 	@Parameter(defaultValue = "${project.build.directory}", property = "outputDirectory", required = false)
 	private File outputDirectory;
 
+	/**
+	 * Path to project license file.
+	 */
 	@Parameter(property = "licenseFile", required = false)
 	private File licenseFile;
 
+	/**
+	 * Path to the app icon file (PNG, ICO or ICNS).
+	 */
 	@Parameter(property = "iconFile", required = false)
 	private File iconFile;
 
+	/**
+	 * Generates an installer for the app.
+	 */
 	@Parameter(defaultValue = "true", property = "generateInstaller", required = false)
 	private Boolean generateInstaller;
 
+	/**
+	 * Full path to your app main class.
+	 */
 	@Parameter(defaultValue = "${exec.mainClass}", property = "mainClass", required = true)
 	private String mainClass;
 
+	/**
+	 * App name.
+	 */
 	@Parameter(defaultValue = "${project.name}", property = "name", required = false)
 	private String name;
 
+	/**
+	 * App name to show.
+	 */
 	@Parameter(defaultValue = "${project.name}", property = "displayName", required = false)
 	private String displayName;
 
+	/**
+	 * Project version.
+	 */
 	@Parameter(defaultValue = "${project.version}", property = "version", required = false)
 	private String version;
 
+	/**
+	 * Project description.
+	 */
 	@Parameter(defaultValue = "${project.description}", property = "description", required = false)
 	private String description;
 
+	/**
+	 * App website URL.
+	 */
 	@Parameter(defaultValue = "${project.url}", property = "url", required = false)
 	private String url;
 
+	/**
+	 * App will run as administrator (with elevated privileges).
+	 */
 	@Parameter(defaultValue = "false", property = "administratorRequired", required = false)
 	private Boolean administratorRequired;
 
+	/**
+	 * Organization name.
+	 */
 	@Parameter(defaultValue = "${project.organization.name}", property = "organizationName", required = false)
 	private String organizationName;
 
+	/**
+	 * Organization website URL.
+	 */
 	@Parameter(defaultValue = "${project.organization.url}", property = "organizationUrl", required = false)
 	private String organizationUrl;
 
+	/**
+	 * Organization email.
+	 */
 	@Parameter(defaultValue = "", property = "organizationEmail", required = false)
 	private String organizationEmail;
 
+	/**
+	 * Embeds a customized JRE with the app.
+	 */
 	@Parameter(defaultValue = "false", property = "bundleJre", required = false)
 	private Boolean bundleJre;
 	
+	/**
+	 * Generates a customized JRE, including only identified or specified modules. Otherwise, all modules will be included.
+	 */
 	@Parameter(defaultValue = "true", property = "customizedJre", required = false)
 	private Boolean customizedJre;
 
+	/**
+	 * Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least.
+	 */
 	@Parameter(defaultValue = "", property = "jrePath", required = false)
 	private String jrePath;
 
+	/**
+	 * Additional files and folders to include in the bundled app.
+	 */
 	@Parameter(property = "additionalResources", required = false)
 	private List<File> additionalResources;
 
+	/**
+	 * Defines modules to customize the bundled JRE. Don't use jdeps to get module dependencies.
+	 */
 	@Parameter(property = "modules", required = false)
 	private List<String> modules;
 
+	/**
+	 * Additional modules to the ones identified by jdeps or the specified with modules property.
+	 */
 	@Parameter(property = "additionalModules", required = false)
 	private List<String> additionalModules;
 
@@ -143,6 +200,9 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(defaultValue = "auto", property = "platform", required = true)
 	private Platform platform;
 
+	/**
+	 * Defines PATH environment variable in GNU/Linux and Mac OS X startup scripts.
+	 */
 	@Parameter(property = "envPath", required = false)
 	private String envPath;
 
@@ -201,11 +261,11 @@ public class PackageMojo extends AbstractMojo {
 		}
 
 		// determines current platform
-		currentPlatform = getCurrentPlatform();
+		hostPlatform = getCurrentPlatform();
 		
 		// determines target platform if not specified 
 		if (platform == null || platform == Platform.auto) {
-			platform = currentPlatform;
+			platform = hostPlatform;
 		}
 		
 		getLog().info("Packaging app for " + platform);
@@ -377,7 +437,7 @@ public class PackageMojo extends AbstractMojo {
 	 * @throws MojoExecutionException
 	 */
 	private void generateRpmPackage() throws MojoExecutionException {
-		if (!generateInstaller || currentPlatform != Platform.linux) return;
+		if (!generateInstaller || hostPlatform != Platform.linux) return;
 
 		getLog().info("Generating RPM package...");
 
@@ -462,7 +522,7 @@ public class PackageMojo extends AbstractMojo {
 		copyAdditionalResources(additionalResources, resourcesFolder);
 
 		// codesigns app folder
-		if (currentPlatform == Platform.mac) {
+		if (hostPlatform == Platform.mac) {
 			CommandUtils.execute("codesign", "--force", "--deep", "--sign", "-", appFile);
 		}
 
@@ -580,7 +640,7 @@ public class PackageMojo extends AbstractMojo {
 	 * @throws MojoExecutionException
 	 */
 	private void generateWindowsInstaller() throws MojoExecutionException {
-		if (!generateInstaller || currentPlatform != Platform.windows) return;
+		if (!generateInstaller || hostPlatform != Platform.windows) return;
 
 		getLog().info("Generating Windows installer...");
 
@@ -603,7 +663,7 @@ public class PackageMojo extends AbstractMojo {
 	 * @throws MojoExecutionException
 	 */
 	private void generateDebPackage() throws MojoExecutionException {
-		if (!generateInstaller || currentPlatform != Platform.linux) return;
+		if (!generateInstaller || hostPlatform != Platform.linux) return;
 
 		getLog().info("Generating DEB package ...");
 
@@ -691,7 +751,7 @@ public class PackageMojo extends AbstractMojo {
 	 * @throws MojoExecutionException
 	 */
 	private void generateDmgImage() throws MojoExecutionException {
-		if (!generateInstaller || currentPlatform != Platform.mac) return;
+		if (!generateInstaller || hostPlatform != Platform.mac) return;
 		
 		getLog().info("Generating DMG disk image file");
 
@@ -715,9 +775,9 @@ public class PackageMojo extends AbstractMojo {
 	 */
 	private void copyAllDependencies(File libsFolder) throws MojoExecutionException {
 		if (copyDependencies != null && !copyDependencies) return;
-		
-		getLog().info("Copying all dependencies to app folder ...");
 
+		getLog().info("Copying all dependencies to " + appFolder.getName() + " folder ...");		
+		
 		// invokes plugin to copy dependecies to app libs folder
 		executeMojo(
 				plugin(
@@ -728,10 +788,11 @@ public class PackageMojo extends AbstractMojo {
 				goal("copy-dependencies"),
 				configuration(
 						element("outputDirectory", libsFolder.getAbsolutePath())
-				), 
+				),
 				env);
+		
 	}
-
+	
 	/**
 	 * Bundle a Java Runtime Enrironment with the app.
 	 *
@@ -772,9 +833,9 @@ public class PackageMojo extends AbstractMojo {
 			
 			throw new MojoExecutionException("Could not create a customized JRE due to JDK version is " + SystemUtils.JAVA_VERSION + ". Must use jrePath property to specify JRE location to be embedded");
 			
-		} else if (platform != currentPlatform) {
+		} else if (platform != hostPlatform) {
 			
-			getLog().warn("Cannot create a customized JRE ... target platform (" + platform + ") is different than execution platform (" + currentPlatform + ")");
+			getLog().warn("Cannot create a customized JRE ... target platform (" + platform + ") is different than execution platform (" + hostPlatform + ")");
 			
 			info.put("bundleJre", false);
 			
