@@ -1,11 +1,11 @@
 # JavaPackager
 JavaPackager is a Maven plugin which provides an easy way to package Java applications in native Windows, Mac OS X, or GNU/Linux executables, and generates installers for them.
 
+Available on [Maven Central](https://search.maven.org/artifact/io.github.fvarrui/javapackager) since v0.9.0.
+
 ## How to use the plugin
 
 ### Config your project
-
-> Available on Maven Central since v0.9.0.
 
 Add the following `plugin` tag to your `pom.xml`:
 
@@ -13,7 +13,7 @@ Add the following `plugin` tag to your `pom.xml`:
 <plugin>
     <groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
-    <version>0.9.1</version>    
+    <version>0.9.3</version>    
     <executions>
         <execution>
             <phase>package</phase>
@@ -191,7 +191,7 @@ mvn install
 ## How to publish the plugin on Maven Central
 
 ```bash
-mvn clean
+mvn clean release:clean
 mvn release:prepare
 mvn release:perform
 ```
@@ -204,6 +204,8 @@ Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column
 
 ## Older documentation
 
+- [v0.9.1](https://github.com/fvarrui/JavaPackager/blob/v0.9.1/README.md)
+- [v0.9.0](https://github.com/fvarrui/JavaPackager/blob/v0.9.0/README.md)
 - [v0.8.9](https://github.com/fvarrui/JavaPackager/blob/v0.8.9/README.md)
 - [v0.8.8](https://github.com/fvarrui/JavaPackager/blob/v0.8.8/README.md)
 - [v0.8.7](https://github.com/fvarrui/JavaPackager/blob/v0.8.7/README.md)
