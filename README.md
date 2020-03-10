@@ -117,14 +117,12 @@ If icons are located in `assets` folders, it would not be necessary to specify t
 <project>/
 └── assets/
 	├── linux/
-	│   └── ${name}.png		# on GNU/Linux it has to be a png image
+	│   └── ${name}.png     # on GNU/Linux it has to be a png image
 	├── macosx/
-	│   └── ${name}.icns	# on Mac OS X it has to be a icns file
+	│   └── ${name}.icns    # on Mac OS X it has to be a icns file
 	└── windows/
-	    └── ${name}.ico		# on Windows it has to be a ico file
+	    └── ${name}.ico     # on Windows it has to be a ico file
 ```
-
-> **projectname** corresponds to `name` plugin property.
 
 > :warning: If `iconFile` plugin property is not specified and it can't find the correct icon in `assets` folder, it will use an [icon by default](https://raw.githubusercontent.com/fvarrui/JavaPackager/master/src/main/resources/linux/default-icon.png) for all platforms.
 >
