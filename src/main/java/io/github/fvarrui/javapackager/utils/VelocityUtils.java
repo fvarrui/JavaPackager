@@ -1,7 +1,8 @@
 package io.github.fvarrui.javapackager.utils;
 
+import static org.apache.commons.io.FileUtils.writeStringToFile;
+
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
+import org.apache.velocity.util.StringBuilderWriter;
 
 public class VelocityUtils {
 
@@ -35,22 +37,21 @@ public class VelocityUtils {
 
 	public static void render(String templatePath, File output, Map<String, Object> info) throws MojoExecutionException {
 		try {
-			
-			VelocityContext context = new VelocityContext();
-			context.put("info", info);
-
-			Template template = velocityEngine.getTemplate(templatePath, "UTF-8");
-
-			FileWriter fw = new FileWriter(output);
-
-			template.merge(context, fw);
-
-			fw.flush();
-			fw.close();
-
+			String data = render(templatePath, info);
+			data = data.replaceAll("\\r\\n", "\n").replaceAll("\\r", "\n");
+			writeStringToFile(output, data, "UTF-8");
 		} catch (IOException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
+	}
+	
+	public static String render(String templatePath, Map<String, Object> info) throws MojoExecutionException {
+		VelocityContext context = new VelocityContext();
+		context.put("info", info);
+		Template template = velocityEngine.getTemplate(templatePath, "UTF-8");
+		StringBuilderWriter writer = new StringBuilderWriter();
+		template.merge(context, writer);		
+		return writer.toString();
 	}
 
 }
