@@ -23,7 +23,9 @@ Add the following `plugin` tag to your `pom.xml`:
                 <goal>package</goal>
             </goals>
             <configuration>
+                <!-- mandatory -->
                 <mainClass>path.to.your.mainClass</mainClass>
+                <!-- optional -->
                 <bundleJre>true|false</bundleJre>
                 <generateInstaller>true|false</generateInstaller>        
                 <administratorRequired>true|false</administratorRequired>
