@@ -41,6 +41,8 @@ import io.github.fvarrui.javapackager.utils.JavaUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.RUNTIME)
 public class PackageMojo extends AbstractMojo {
 
@@ -225,6 +227,19 @@ public class PackageMojo extends AbstractMojo {
      */
     @Parameter(defaultValue = "true", property = "copyDependencies", required = true)
     private Boolean copyDependencies;
+    
+	/**
+	 * Bundled JRE directory name
+	 */
+	@Parameter(defaultValue = "jre", property = "jreDirectoryName", required = false)
+	private String jreDirectoryName;
+
+	/**
+	 * Launch4j version info
+	 */
+	@Parameter(property = "versionInfo", required = false)
+	private VersionInfo versionInfo;
+	
 
 	public PackageMojo() {
 		super();
@@ -237,28 +252,16 @@ public class PackageMojo extends AbstractMojo {
 		this.env = executionEnvironment(mavenProject, mavenSession, pluginManager);
 		
 		// using artifactId as name, if it's not specified
-		if (name == null || name.isEmpty()) {
-			name = mavenProject.getArtifactId();
-			getLog().warn("Using artifactId ('" + name + "') as name, because it has not been specified");
-		}
-
+		name = defaultIfBlank(name, mavenProject.getArtifactId());
+		
 		// using name as displayName, if it's not specified
-		if (displayName == null || displayName.isEmpty()) {
-			displayName = name;
-			getLog().warn("Using name ('" + name + "') as displayName, because it has not been specified");
-		}
-
+		displayName = defaultIfBlank(displayName, name);
+		
 		// using displayName as description, if it's not specified
-		if (description == null || description.isEmpty()) {
-			description = displayName;
-			getLog().warn("Using displayName ('" + displayName + "') as description, because it has not been specified");
-		}
-
-		// using "Anonymous" as organizationName, if it's not specified
-		if (organizationName == null || organizationName.isEmpty()) {
-			organizationName = "ACME";
-			getLog().warn("Using '" + organizationName + "' as organizationName, because it has not been specified");
-		}
+		description = defaultIfBlank(description, displayName);
+		
+		// using "ACME" as organizationName, if it's not specified
+		organizationName = defaultIfBlank(organizationName, "ACME");
 
 		// determines current platform
 		hostPlatform = getCurrentPlatform();
@@ -427,6 +430,7 @@ public class PackageMojo extends AbstractMojo {
 		info.put("license", licenseFile != null ? licenseFile.getAbsolutePath() : "");
 		info.put("envPath", envPath);
 		info.put("vmArgs", StringUtils.join(vmArgs, " "));
+		info.put("jreDirectoryName", jreDirectoryName);
 		return info;
 	}
 
@@ -498,7 +502,7 @@ public class PackageMojo extends AbstractMojo {
 
 		// checks if JRE should be embedded
 		if (bundleJre) {
-			File jreFolder = new File(contentsFolder, "PlugIns/jre/Contents/Home");
+			File jreFolder = new File(contentsFolder, "PlugIns/" + jreDirectoryName + "/Contents/Home");
 			bundleJre(jreFolder, libsFolder);
 		}
 
@@ -549,7 +553,7 @@ public class PackageMojo extends AbstractMojo {
 
 		// checks if JRE should be embedded
 		if (bundleJre) {
-			File jreFolder = new File(appFolder, "jre");
+			File jreFolder = new File(appFolder, jreDirectoryName);
 			bundleJre(jreFolder, libsFolder);
 		}
 
@@ -587,9 +591,18 @@ public class PackageMojo extends AbstractMojo {
 		
 		// checks if JRE should be embedded
 		if (bundleJre) {
-			File jreFolder = new File(appFolder, "jre");
+			File jreFolder = new File(appFolder, jreDirectoryName);
 			bundleJre(jreFolder, libsFolder);
 		}
+		
+		// test version info
+		
+		if (versionInfo == null) {
+			getLog().warn("Version info not specified. Using defaults.");
+			versionInfo = new VersionInfo();
+		}
+		versionInfo.setDefaults(info);
+		getLog().info(versionInfo.toString());
 		
 		// prepares launch4j plugin configuration
 		
@@ -603,20 +616,23 @@ public class PackageMojo extends AbstractMojo {
 		config.add(element("manifest", manifestFile.getAbsolutePath()));
 		config.add(element("classPath",  element("mainClass", mainClass)));
 		config.add(element("jre", 
-						element("path", bundleJre ? "jre" : "%JAVA_HOME%"),
+						element("path", bundleJre ? jreDirectoryName : "%JAVA_HOME%"),
 						element("opts", optsElements.toArray(new Element[optsElements.size()]))
 					)
 				);
 		config.add(element("versionInfo", 
-						element("fileVersion", "1.0.0.0"),
-						element("txtFileVersion", "1.0.0.0"),
-						element("productVersion", "1.0.0.0"),
-						element("txtProductVersion", "1.0.0.0"),
-						element("copyright", organizationName),
-						element("fileDescription", description),
-						element("productName", name),
-						element("internalName", name),
-						element("originalFilename", name + ".exe")
+						element("fileVersion", versionInfo.getFileVersion()),
+						element("txtFileVersion", versionInfo.getTxtFileVersion()),
+						element("productVersion", versionInfo.getProductVersion()),
+						element("txtProductVersion", versionInfo.getTxtProductVersion()),
+						element("copyright", versionInfo.getCopyright()),
+						element("companyName", versionInfo.getCompanyName()),
+						element("fileDescription", versionInfo.getFileDescription()),
+						element("productName", versionInfo.getProductName()),
+						element("internalName", versionInfo.getInternalName()),
+						element("originalFilename", versionInfo.getOriginalFilename()),
+						element("trademarks", versionInfo.getTrademarks()),
+						element("language", versionInfo.getLanguage())
 					)
 				);
 
