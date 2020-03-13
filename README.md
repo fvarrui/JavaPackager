@@ -3,7 +3,7 @@ JavaPackager is a Maven plugin which provides an easy way to package Java applic
 
 Available on [Maven Central](https://search.maven.org/artifact/io.github.fvarrui/javapackager) since v0.9.0.
 
-> SNAPSHOT versions are not available on Maven Central, so you have to [install them manually](#how-to-build-and-install-the-plugin).
+> SNAPSHOT versions are not available on Maven Central, so you have to [install them manually](#how-to-build-and-install-the-plugin). To know published versions on Maven Central take a look at [releases](https://github.com/fvarrui/JavaPackager/releases).
 
 ## How to use the plugin
 
