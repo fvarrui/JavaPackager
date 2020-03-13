@@ -81,6 +81,7 @@ And by default it will generate next artifacts in `target ` folder:
 | `envPath`               | :x:                | `null`                                                       | Defines PATH environment variable in GNU/Linux and Mac OS X startup scripts. |
 | `generateInstaller`     | :x:                | `true`                                                       | Generates an installer for the app.                          |
 | `iconFile`              | :x:                | `null`                                                       | Path to the app icon file (PNG, ICO or ICNS).                |
+| `jreDirectoryName`      | :x:                | `"jre"`                                                      | Bundled JRE directory name.                                  |
 | `jrePath`               | :x:                | `""`                                                         | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least. |
 | `licenseFile`           | :x:                | `${project.licenses[0].url}` or `${project.basedir}/LICENSE` | Path to project license file.                                |
 | `mainClass`             | :heavy_check_mark: | `${exec.mainClass}`                                          | Full path to your app main class.                            |
@@ -93,9 +94,26 @@ And by default it will generate next artifacts in `target ` folder:
 | `runnableJar`           | :x:                | `null`                                                       | Defines your own JAR file to be bundled. If it's ommited, the plugin packages your code in a runnable JAR and bundle it with the app. |
 | `url`                   | :x:                | `null`                                                       | App website URL.                                             |
 | ` version`              | :x:                | `${project.version}`                                         | Project version in X.X.X format (e.g. 1.2.3), without letters. |
+| `versionInfo`           | :x:                | `null`                                                       | Version information for native Windows `.exe` file.\*        |
 | `vmArgs`                | :x:                | []                                                           | Adds VM arguments.                                           |
 
 > See [**Older documentation**](#older-documentation) for previous versions properties.
+
+> #### \* Version information property example, using default values:
+>
+> ```xml
+> <versionInfo>
+> 	<fileVersion>1.0.0.0</fileVersion>
+> 	<txtFileVersion>${version}</txtFileVersion>
+> 	<productVersion>1.0.0.0</productVersion>
+> 	<txtProductVersion>${version}</txtProductVersion>
+> 	<fileDescription>${description}</fileDescription>
+> 	<copyright>${organizationName}</copyright>
+> 	<productName>${name}</productName>
+> 	<internalName>${name}</internalName>
+> 	<originalFilename>${name}.exe</originalFilename>
+> </versionInfo>
+> ```
 
 ### Plugin assets
 
@@ -165,11 +183,14 @@ A map called `info` is passed to all templates when they are rendered with next 
 | `${info.administratorRequired}` | Boolean | Same as `administratorRequired` plugin property. |
 | `${info.bundleJre}`             | Boolean | Same as `bundleJre` plugin property.             |
 | `${info.jarFile}`               | String  | Full path to runnable JAR file.                  |
+| `${info.jreDirectoryName}` | String | Same as `jreDirectoryName` plugin property. |
 | `${info.license}`               | String  | Full path to license file.                       |
 | `${info.envPath}`               | String  | Same as `envPath` plugin property.               |
 | `${info.vmArgs}`                | String  | Same as `vmArgs` plugin property.                |
 
 ## How to build and install the plugin
+
+> Useful to try SNAPSHOT versions.
 
 Execute next commands in BASH (GNU/Linux or macOS) or CMD (Windows):
 
@@ -202,6 +223,7 @@ Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column
 
 ## Older documentation
 
+- [v0.9.3](https://github.com/fvarrui/JavaPackager/blob/v0.9.3/README.md)
 - [v0.9.1](https://github.com/fvarrui/JavaPackager/blob/v0.9.1/README.md)
 - [v0.9.0](https://github.com/fvarrui/JavaPackager/blob/v0.9.0/README.md)
 - [v0.8.9](https://github.com/fvarrui/JavaPackager/blob/v0.8.9/README.md)
