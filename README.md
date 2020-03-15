@@ -1,9 +1,9 @@
 # JavaPackager
 JavaPackager is a Maven plugin which provides an easy way to package Java applications in native Windows, Mac OS X, or GNU/Linux executables, and generates installers for them.
 
-> Available on [Maven Central](https://search.maven.org/artifact/io.github.fvarrui/javapackager) since v0.9.0. To know published versions take a look at [releases](https://github.com/fvarrui/JavaPackager/releases).
+> Available on [Maven Central](https://search.maven.org/artifact/io.github.fvarrui/javapackager) since v0.9.0. Published versions at [releases](https://github.com/fvarrui/JavaPackager/releases).
 >
-> SNAPSHOT versions are not pusblished on Maven Central, so you have to [install them manually](#how-to-build-and-install-the-plugin). 
+> SNAPSHOT version is not pusblished on Maven Central, so you have to [install it manually](#how-to-build-and-install-the-plugin). 
 
 ## How to use the plugin
 
