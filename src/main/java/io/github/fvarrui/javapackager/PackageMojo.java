@@ -45,6 +45,8 @@ import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.RUNTIME)
 public class PackageMojo extends AbstractMojo {
+	
+	private static final String DEFAULT_ORGANIZATION_NAME = "ACME";
 
 	// maven components
 	
@@ -273,7 +275,7 @@ public class PackageMojo extends AbstractMojo {
 		description = defaultIfBlank(description, displayName);
 		
 		// using "ACME" as organizationName, if it's not specified
-		organizationName = defaultIfBlank(organizationName, "ACME");
+		organizationName = defaultIfBlank(organizationName, DEFAULT_ORGANIZATION_NAME);
 
 		// determines current platform
 		hostPlatform = getCurrentPlatform();
@@ -310,7 +312,7 @@ public class PackageMojo extends AbstractMojo {
 
 		// creates a runnable jar file
         if (runnableJar == null || runnableJar.isBlank()) {
-            createRunnableJar();
+            jarFile = createRunnableJar(name, version, mavenProject.getPackaging());
         } else {
         	getLog().info("Using runnable JAR: " + runnableJar);
             jarFile = new File(runnableJar);
@@ -393,12 +395,12 @@ public class PackageMojo extends AbstractMojo {
 	 * 
 	 * @throws MojoExecutionException
 	 */
-	private void createRunnableJar() throws MojoExecutionException {
+	private File createRunnableJar(String name, String version, String packaging) throws MojoExecutionException {
 		getLog().info("Creating runnable JAR...");
 		
 		String classifier = "runnable";
 
-		jarFile = new File(outputDirectory, name + "-" + version + "-" + classifier + "." + mavenProject.getPackaging());
+		File jarFile = new File(outputDirectory, name + "-" + version + "-" + classifier + "." + packaging);
 
 		executeMojo(
 				plugin(
@@ -420,6 +422,8 @@ public class PackageMojo extends AbstractMojo {
 						element("finalName", name + "-" + version)
 				),
 				env);
+		
+		return jarFile;
 	}
 
 	/**
