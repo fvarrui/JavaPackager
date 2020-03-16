@@ -178,9 +178,9 @@ It is possible to use your own customized templates. You just have to put one of
 
 > Use [default templates](https://github.com/fvarrui/JavaPackager/tree/master/src/main/resources) as examples.
 
-A map called `info` is passed to all templates when they are rendered with next properties:
+A map called `info` is passed to all templates when they are rendered with next keys:
 
-| Property                        | Type    | Description                                      |
+| Key                      | Type    | Description                                      |
 | ------------------------------- | ------- | ------------------------------------------------ |
 | `${info.name}`                  | String  | Same as `name` plugin property.                  |
 | `${info.displayName}`                | String  | Same as `displayName` plugin property.           |
