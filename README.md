@@ -59,14 +59,17 @@ mvn package
 
 And by default it will generate next artifacts in `target ` folder:
 
-| Artifact                          | Description                                                  |
-| --------------------------------- | ------------------------------------------------------------ |
-| `${name}`                         | Directory with the native application and other needed assets. |
-| `${name}-${version}-runnable.jar` | Runnable JAR file.                                           |
-| `${name}_${version}.deb`          | DEB package file if it's executed on GNU/Linux (requires **dpkg-deb**). |
-| `${name}_${version}.rpm`          | RPM package file if it's executed on GNU/Linux (requires **alien** & **rpmbuild**). |
-| `${name}_${version}.exe`          | Installer file if it's executed on Windows (requires [**Inno Setup**](http://www.jrsoftware.org/isinfo.php)). |
-| `${name}_${version}.dmg`          | Disk image file if it's executed on Mac OS X (requires **hdiutil**). |
+| Artifact                           | Description                                                  |
+| ---------------------------------- | ------------------------------------------------------------ |
+| `${name}`                          | Directory with the native application and other needed assets. |
+| `${name}-${version}-runnable.jar`  | Runnable JAR file.                                           |
+| `${name}_${version}.deb`           | DEB package file if it's executed on GNU/Linux (requires **dpkg-deb**). |
+| `${name}_${version}.rpm`           | RPM package file if it's executed on GNU/Linux (requires **alien** & **rpmbuild**). |
+| `${name}_${version}.exe`           | Installer file if it's executed on Windows (requires [**Inno Setup**](http://www.jrsoftware.org/isinfo.php)). |
+| `${name}_${version}.dmg`           | Disk image file if it's executed on Mac OS X (requires **hdiutil**). |
+| `${name}-${version}-bundle.zip`    | Zipball containing generated directory `${name}` if `createZipball` property is `true`. |
+| `${name}-${version}-bundle.tar`    | Tarball containing generated directory `${name}` if `createTarball` property is `true`. |
+| `${name}-${version}-bundle.tar.gz` | Compressed tarball containing generated directory `${name}` if `createTarball` property is `true`. |
 
 >  :warning: DEB, RPM, EXE installer and DMG files will be ommited if `generateInstaller` plugin property is `false` or if target platform is different from execution platform.
 
@@ -79,6 +82,8 @@ And by default it will generate next artifacts in `target ` folder:
 | `administratorRequired` | :x:                | `false`                                                      | App will run as administrator (with elevated privileges).    |
 | `bundleJre`             | :x:                | `false`                                                      | Embeds a customized JRE with the app.                        |
 | `copyDependencies`      | :x:                | `true`                                                       | Bundles all dependencies (JAR files) with the app.           |
+| `createTarball`         | :x:                | `false`                                                      | Bundles app folder in tarball.                               |
+| `createZipball`         | :x:                | `false`                                                      | Bundles app folder in zipball.                               |
 | `customizedJre`         | :x:                | `true`                                                       | Generates a customized JRE, including only identified or specified modules. Otherwise, all modules will be included. |
 | `description`           | :x:                | `${project.description}` or `${displayName}`                 | Project description.                                         |
 | `displayName`           | :x:                | `${project.name}` or `${name}`                               | App name to show.                                            |
@@ -165,9 +170,10 @@ It is possible to use your own customized templates. You just have to put one of
 	├── macosx/
 	|   ├── Info.plist.vtl     # Info.plist template
 	│   └── startup.vtl        # Startup script template
-	└── windows/
-	    ├── exe.manifest.vtl   # exe.manifest template
-	    └── iss.vtl            # Inno Setup Script template
+	├── windows/
+	|   ├── exe.manifest.vtl   # exe.manifest template
+	│   └── iss.vtl            # Inno Setup Script template
+	└── assembly.xml.vtl       # assembly.xml template for maven-assembly-plugin
 ```
 
 > Use [default templates](https://github.com/fvarrui/JavaPackager/tree/master/src/main/resources) as examples.
@@ -191,6 +197,8 @@ A map called `info` is passed to all templates when they are rendered with next 
 | `${info.license}`               | String  | Full path to license file.                       |
 | `${info.envPath}`               | String  | Same as `envPath` plugin property.               |
 | `${info.vmArgs}`                | String  | Same as `vmArgs` plugin property.                |
+| `${info.createTarball}` | Boolean | Same as `createTarball` plugin property. |
+| `${info.createZipball}` | Boolean | Same as `createZipball` plugin property. |
 
 ## How to build and install the plugin
 

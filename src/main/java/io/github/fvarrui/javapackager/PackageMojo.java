@@ -240,6 +240,18 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(property = "versionInfo", required = false)
 	private VersionInfo versionInfo;
 	
+	/**
+	 * Bundles app in a tarball file
+	 */
+	@Parameter(defaultValue = "false", property = "createTarball", required = false)
+	private Boolean createTarball;
+
+	/**
+	 * Bundles app in a zipball file
+	 */
+	@Parameter(defaultValue = "false", property = "createZipball", required = false)
+	private Boolean createZipball;
+
 
 	public PackageMojo() {
 		super();
@@ -325,6 +337,9 @@ public class PackageMojo extends AbstractMojo {
 		default:
 			throw new MojoExecutionException("Unsupported operating system: " + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION + " " + SystemUtils.OS_ARCH);
 		}
+		
+		// bundles app in tarball/zipball
+		createBundle(appFolder);
 
 	}
 
@@ -431,6 +446,8 @@ public class PackageMojo extends AbstractMojo {
 		info.put("envPath", envPath);
 		info.put("vmArgs", StringUtils.join(vmArgs, " "));
 		info.put("jreDirectoryName", jreDirectoryName);
+		info.put("createTarball", createTarball);
+		info.put("createZipball", createZipball);
 		return info;
 	}
 
@@ -1007,6 +1024,34 @@ public class PackageMojo extends AbstractMojo {
 		if (SystemUtils.IS_OS_LINUX) return Platform.linux;
 		if (SystemUtils.IS_OS_MAC_OSX) return Platform.mac;
 		return null;
+	}
+	
+	/**
+	 * Bundling app folder in tarball and/or zipball 
+	 * @param appFolder Folder to be bundled
+	 * @throws MojoExecutionException 
+	 */
+	private void createBundle(File appFolder) throws MojoExecutionException {
+		if (!createTarball && !createZipball) return;
+
+		getLog().info("Bundling app in tarball/zipball ...");
+		
+		// generate assembly.xml file 
+		File assemblyFile = new File(assetsFolder, "assembly.xml");
+		VelocityUtils.render("assembly.xml.vtl", assemblyFile, info);
+		
+		// invokes plugin to copy dependecies to app libs folder
+		executeMojo(
+				plugin(
+						groupId("org.apache.maven.plugins"), 
+						artifactId("maven-assembly-plugin"), 
+						version("3.1.1")
+				),
+				goal("single"),
+				configuration(
+						element("descriptors", element("descriptor", assemblyFile.getAbsolutePath()))
+				),
+				env);
 	}
 
 }
