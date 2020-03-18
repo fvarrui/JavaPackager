@@ -15,7 +15,7 @@ Add the following `plugin` tag to your `pom.xml`:
 <plugin>
     <groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
-    <version>0.9.4-SNAPSHOT</version>    
+    <version>0.9.4|0.9.5-SNAPSHOT</version>    
     <executions>
         <execution>
             <phase>package</phase>
@@ -47,7 +47,7 @@ Add the following `plugin` tag to your `pom.xml`:
 </plugin>
 ```
 
-> Some [plugin configuration samples](docs/plugin-configuration-samples.md) here.
+> See [plugin configuration samples](docs/plugin-configuration-samples.md) to know more.
 
 ### Package your app
 
