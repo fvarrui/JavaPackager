@@ -77,8 +77,8 @@ And by default it will generate next artifacts in `target ` folder:
 
 | Property                | Mandatory          | Default value                                                | Description                                                  |
 | ----------------------- | ------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `additionalModules`     | :x:                | []                                                           | Additional modules to the ones identified by `jdeps` or the specified with `modules` property. |
-| `additionalResources`   | :x:                | []                                                           | Additional files and folders to include in the bundled app.  |
+| `additionalModules`     | :x:                | `[]`                                                         | Additional modules to the ones identified by `jdeps` or the specified with `modules` property. |
+| `additionalResources`   | :x:                | `[]`                                                         | Additional files and folders to include in the bundled app.  |
 | `administratorRequired` | :x:                | `false`                                                      | App will run as administrator (with elevated privileges).    |
 | `bundleJre`             | :x:                | `false`                                                      | Embeds a customized JRE with the app.                        |
 | `copyDependencies`      | :x:                | `true`                                                       | Bundles all dependencies (JAR files) with the app.           |
@@ -94,7 +94,7 @@ And by default it will generate next artifacts in `target ` folder:
 | `jrePath`               | :x:                | `""`                                                         | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least. |
 | `licenseFile`           | :x:                | `${project.licenses[0].url}` or `${project.basedir}/LICENSE` | Path to project license file.                                |
 | `mainClass`             | :heavy_check_mark: | `${exec.mainClass}`                                          | Full path to your app main class.                            |
-| `modules`               | :x:                | []                                                           | Defines modules to customize the bundled JRE. Don't use `jdeps` to get module dependencies. |
+| `modules`               | :x:                | `[]`                                                         | Defines modules to customize the bundled JRE. Don't use `jdeps` to get module dependencies. |
 | `name`                  | :x:                | `${project.name}` or `${project.artifactId}`                 | App name.                                                    |
 | `organizationName`      | :x:                | `${project.organization.name}` or `"ACME"`                   | Organization name.                                           |
 | `organizationUrl`       | :x:                | `${project.organization.url}`                                | Organization website URL.                                    |
@@ -102,27 +102,29 @@ And by default it will generate next artifacts in `target ` folder:
 | `platform`              | :x:                | `auto`                                                       | Defines the target platform, which could be different to the execution platform. Possible values:  `auto`, `mac`, `linux`, `windows`. Use `auto`  for using execution platform as target. |
 | `runnableJar`           | :x:                | `null`                                                       | Defines your own JAR file to be bundled. If it's ommited, the plugin packages your code in a runnable JAR and bundle it with the app. |
 | `url`                   | :x:                | `null`                                                       | App website URL.                                             |
-| ` version`              | :x:                | `${project.version}`                                         | Project version in X.X.X format (e.g. 1.2.3), without letters. |
-| `versionInfo`           | :x:                | `null`                                                       | Version information for native Windows `.exe` file.\*        |
-| `vmArgs`                | :x:                | []                                                           | Adds VM arguments.                                           |
+| ` version`              | :x:                | `${project.version}`                                         | Project version.                                             |
+| `versionInfo`           | :x:                | `null`                                                       | [Version information](#version-information-property) for native Windows `.exe` file. |
+| `vmArgs`                | :x:                | `[]`                                                         | Adds VM arguments.                                           |
 
 > See [**Older documentation**](#older-documentation) for previous versions properties.
 
-> #### \* Version information property example, using default values:
->
-> ```xml
-> <versionInfo>
-> 	<fileVersion>1.0.0.0</fileVersion>
-> 	<txtFileVersion>${version}</txtFileVersion>
-> 	<productVersion>1.0.0.0</productVersion>
-> 	<txtProductVersion>${version}</txtProductVersion>
-> 	<fileDescription>${description}</fileDescription>
-> 	<copyright>${organizationName}</copyright>
-> 	<productName>${name}</productName>
-> 	<internalName>${name}</internalName>
-> 	<originalFilename>${name}.exe</originalFilename>
-> </versionInfo>
-> ```
+#### Version information property example
+
+Using default values:
+
+```xml
+<versionInfo>
+	<fileVersion>1.0.0.0</fileVersion>
+	<txtFileVersion>${version}</txtFileVersion>
+	<productVersion>1.0.0.0</productVersion>
+	<txtProductVersion>${version}</txtProductVersion>
+	<fileDescription>${description}</fileDescription>
+	<copyright>${organizationName}</copyright>
+	<productName>${name}</productName>
+	<internalName>${name}</internalName>
+	<originalFilename>${name}.exe</originalFilename>
+</versionInfo>
+```
 
 ### Plugin assets
 
@@ -180,10 +182,10 @@ It is possible to use your own customized templates. You just have to put one of
 
 A map called `info` is passed to all templates when they are rendered with next keys:
 
-| Key                      | Type    | Description                                      |
+| Key                             | Type    | Description                                      |
 | ------------------------------- | ------- | ------------------------------------------------ |
 | `${info.name}`                  | String  | Same as `name` plugin property.                  |
-| `${info.displayName}`                | String  | Same as `displayName` plugin property.           |
+| `${info.displayName}`           | String  | Same as `displayName` plugin property.           |
 | `${info.version}`               | String  | Same as `version` plugin property.               |
 | `${info.description}`           | String  | Same as `description` plugin property.           |
 | `${info.url}`                   | String  | Same as `url` plugin property.                   |
@@ -193,12 +195,12 @@ A map called `info` is passed to all templates when they are rendered with next 
 | `${info.administratorRequired}` | Boolean | Same as `administratorRequired` plugin property. |
 | `${info.bundleJre}`             | Boolean | Same as `bundleJre` plugin property.             |
 | `${info.jarFile}`               | String  | Full path to runnable JAR file.                  |
-| `${info.jreDirectoryName}` | String | Same as `jreDirectoryName` plugin property. |
+| `${info.jreDirectoryName}`      | String  | Same as `jreDirectoryName` plugin property.      |
 | `${info.license}`               | String  | Full path to license file.                       |
 | `${info.envPath}`               | String  | Same as `envPath` plugin property.               |
 | `${info.vmArgs}`                | String  | Same as `vmArgs` plugin property.                |
-| `${info.createTarball}` | Boolean | Same as `createTarball` plugin property. |
-| `${info.createZipball}` | Boolean | Same as `createZipball` plugin property. |
+| `${info.createTarball}`         | Boolean | Same as `createTarball` plugin property.         |
+| `${info.createZipball}`         | Boolean | Same as `createZipball` plugin property.         |
 
 ## How to build and install the plugin
 
