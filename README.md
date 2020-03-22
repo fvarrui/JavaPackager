@@ -103,7 +103,7 @@ And by default it will generate next artifacts in `target ` folder:
 | `runnableJar`           | :x:                | `null`                                                       | Defines your own JAR file to be bundled. If it's ommited, the plugin packages your code in a runnable JAR and bundle it with the app. |
 | `url`                   | :x:                | `null`                                                       | App website URL.                                             |
 | ` version`              | :x:                | `${project.version}`                                         | Project version.                                             |
-| `versionInfo`           | :x:                | `null`                                                       | [Version information](#version-information-property) for native Windows `.exe` file. |
+| `versionInfo`           | :x:                | `null`                                                       | [Version information](#version-information-property-example) for native Windows `.exe` file. |
 | `vmArgs`                | :x:                | `[]`                                                         | Adds VM arguments.                                           |
 
 > See [**Older documentation**](#older-documentation) for previous versions properties.
