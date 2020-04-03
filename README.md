@@ -108,7 +108,7 @@ And by default it will generate next artifacts in `target ` folder:
 
 > See [**Older documentation**](#older-documentation) for previous versions properties.
 
-> :warning: Be careful when using the `platform` property if your project uses platform dependent libraries, so the libraries of the current platform will be copied, not those of the target platform. You can solve this problem using `classfiers`.
+> :warning: Be careful when using the `platform` property if your project uses platform dependent libraries, so the libraries of the current platform will be copied, not those of the target platform. You can solve this problem using `classifiers`.
 
 #### Version information property example
 
