@@ -71,7 +71,7 @@ And by default it will generate next artifacts in `target ` folder:
 | `${name}-${version}-bundle.tar`    | Tarball containing generated directory `${name}` if `createTarball` property is `true`. |
 | `${name}-${version}-bundle.tar.gz` | Compressed tarball containing generated directory `${name}` if `createTarball` property is `true`. |
 
->  :warning: DEB, RPM, EXE installer and DMG files will be ommited if `generateInstaller` plugin property is `false` or if target platform is different from execution platform.
+>  :warning: DEB, RPM, EXE installer and DMG files will be ommited if `generateInstaller` property is `false` or if target platform is different from current platform.
 
 ### Plugin configutation properties
 
@@ -107,6 +107,8 @@ And by default it will generate next artifacts in `target ` folder:
 | `vmArgs`                | :x:                | `[]`                                                         | Adds VM arguments.                                           |
 
 > See [**Older documentation**](#older-documentation) for previous versions properties.
+
+> :warning: Be careful when using the `platform` property if your project uses platform dependent libraries, so the libraries of the current platform will be copied, not those of the target platform. You can solve this problem using `classfiers`.
 
 #### Version information property example
 
