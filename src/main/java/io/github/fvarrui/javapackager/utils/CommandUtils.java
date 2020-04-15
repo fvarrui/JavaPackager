@@ -15,6 +15,7 @@ public class CommandUtils {
 	
 	private static void createArguments(Commandline command, Object ... arguments) {
 		for (Object argument : arguments) {
+			if (argument == null) continue;
 			if (argument instanceof File)
 				command.createArg().setFile((File)argument);
 			else if (argument.getClass().isArray())

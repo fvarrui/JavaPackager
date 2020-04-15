@@ -923,7 +923,11 @@ public class PackageMojo extends AbstractMojo {
 		
 		File jdeps = new File(System.getProperty("java.home"), "/bin/jdeps");
 
-		File jarLibs = new File(libsFolder, "*.jar");
+		File jarLibs = null;
+		if (libsFolder.exists()) 
+			jarLibs = new File(libsFolder, "*.jar");
+		else
+			getLog().warn("No dependencies found!");
 		
 		List<String> modulesList;
 		
@@ -983,7 +987,7 @@ public class PackageMojo extends AbstractMojo {
 		modulesList.addAll(additionalModules);
 		
 		if (modulesList.isEmpty()) {
-			getLog().warn("It was not possible to determine the necessary modules. all modules will be included");
+			getLog().warn("It was not possible to determine the necessary modules. All modules will be included");
 			modulesList.add("ALL-MODULE-PATH");
 		}
 		
