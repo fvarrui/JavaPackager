@@ -136,7 +136,7 @@ Some assets, such as application icons and Velocity templates, could be placed i
 <project>/
 └── assets/
 	├── linux/
-	├── macosx/
+	├── mac/
 	└── windows/
 ```
 
@@ -149,7 +149,7 @@ If icons are located in `assets` folders, it would not be necessary to specify t
 └── assets/
 	├── linux/
 	│   └── ${name}.png     # on GNU/Linux it has to be a png image
-	├── macosx/
+	├── mac/
 	│   └── ${name}.icns    # on Mac OS X it has to be a icns file
 	└── windows/
 	    └── ${name}.ico     # on Windows it has to be a ico file
@@ -171,7 +171,7 @@ It is possible to use your own customized templates. You just have to put one of
 	|   ├── control.vtl        # DEB control template
 	|   ├── desktop.vtl        # Desktop template
 	│   └── startup.sh.vtl     # Startup script template
-	├── macosx/
+	├── mac/
 	|   ├── Info.plist.vtl     # Info.plist template
 	│   └── startup.vtl        # Startup script template
 	├── windows/
