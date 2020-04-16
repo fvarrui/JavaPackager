@@ -558,7 +558,7 @@ public class PackageMojo extends AbstractMojo {
 														element("location", "/opt/" + name + "/" + name)
 												)
 										)
-								),
+								)
 						)
 				),
 				env);
