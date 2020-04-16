@@ -14,6 +14,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -161,6 +165,19 @@ public class FileUtils {
 	public static void rename(File file, String newName) {
 		Logger.info("Changing name of [" + file + "] to [" + newName + "]");		
 		file.renameTo(new File(file.getParentFile(), newName)); 
+	}
+	
+	public static List<File> findFiles(File searchFolder, String regex) {
+		return Arrays.asList(searchFolder.listFiles((dir, name) -> Pattern.matches(regex, name)))
+				.stream()
+				.map(f -> new File(f.getName()))
+				.collect(Collectors.toList());
+	}
+	
+	public static File findFirstFile(File searchFolder, String regex) {
+		return Arrays.asList(searchFolder.listFiles((dir, name) -> Pattern.matches(regex, name)))
+				.stream()
+				.map(f -> new File(f.getName())).findFirst().get();
 	}
 
 }
