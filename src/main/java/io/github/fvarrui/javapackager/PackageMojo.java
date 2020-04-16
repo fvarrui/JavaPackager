@@ -470,10 +470,7 @@ public class PackageMojo extends AbstractMojo {
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");
 		VelocityUtils.render("linux/desktop.vtl", desktopFile, info);
-
-		// generates deb control file from velocity template
-		File controlFile = new File(assetsFolder, "control");
-		VelocityUtils.render("linux/control.vtl", controlFile, info);
+		FileUtils.copyFileToFolder(desktopFile, appFolder);
 
 		// determines xpm icon file location or takes default one
 		File xpmIcon = new File(iconFile.getParentFile(), FilenameUtils.removeExtension(iconFile.getName()) + ".xpm");
@@ -501,7 +498,6 @@ public class PackageMojo extends AbstractMojo {
 						element("needarch", "true"),
 						element("defaultDirmode", "755"),
 						element("defaultFilemode", "644"),
-						element("needarch", "true"),
 						element("copyTo", rpmFile.getAbsolutePath()),
 						element("mappings",
 								/* app folder files, except executable file and jre/bin/java */
@@ -535,8 +531,8 @@ public class PackageMojo extends AbstractMojo {
 								element("mapping", 
 										element("directory", "/usr/share/applications"),
 										element("sources",
-												element("source", 
-														element("location", desktopFile.getAbsolutePath())
+												element("softlinkSource", 
+														element("location", "/opt/" + name + "/" + desktopFile.getName())
 												)
 										)
 								),
