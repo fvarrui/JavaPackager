@@ -68,7 +68,7 @@ public class PackageMojo extends AbstractMojo {
 	private ExecutionEnvironment env;
 	private Map<String, Object> info;
 	private Platform hostPlatform;
-	private File debFile, appFolder, assetsFolder, jarFile, executable;
+	private File appFolder, assetsFolder, jarFile, executable;
 
 	// plugin configuration properties
 
@@ -467,40 +467,21 @@ public class PackageMojo extends AbstractMojo {
 
 		getLog().info("Generating RPM package...");
 
-//		if (!debFile.exists()) {
-//			getLog().warn("Cannot convert DEB to RPM because " + debFile.getAbsolutePath() + " doesn't exist");
-//			return;
-//		}
-//
-//		try {
-//			// executes alien command to generate rpm package folder from deb file
-//			CommandUtils.execute(assetsFolder, "alien", "-g", "--to-rpm", debFile);
-//		} catch (MojoExecutionException e) {
-//			getLog().warn("alien command execution failed", e);
-//			return;
-//		}
-//
-//		File packageFolder = new File(assetsFolder, name.toLowerCase() + "-" + version);
-//		File specFile = FileUtils.findFirstFile(packageFolder, ".*\\.spec");
-//
-//		try {
-//			// rebuilds rpm package
-//			CommandUtils.execute(assetsFolder, "rpmbuild", "--buildroot", packageFolder, "--nodeps", "-bb", specFile);
-//		} catch (MojoExecutionException e) {
-//			getLog().warn("rpmbuild command execution failed", e);
-//			return;
-//		}
-//
-//		// renames generated rpm package
-//		File rpmFile = FileUtils.findFirstFile(outputDirectory, ".*\\.rpm");
-//		String newName = name + "_" + version + ".rpm";
-//		FileUtils.rename(rpmFile, newName);
-		
+		// generates desktop file from velocity template
+		File desktopFile = new File(assetsFolder, name + ".desktop");
+		VelocityUtils.render("linux/desktop.vtl", desktopFile, info);
+
+		// generates deb control file from velocity template
+		File controlFile = new File(assetsFolder, "control");
+		VelocityUtils.render("linux/control.vtl", controlFile, info);
+
+		// determines xpm icon file location or takes default one
 		File xpmIcon = new File(iconFile.getParentFile(), FilenameUtils.removeExtension(iconFile.getName()) + ".xpm");
 		if (!xpmIcon.exists()) {
 			FileUtils.copyResourceToFile("/linux/default-icon.xpm", xpmIcon);
 		}
 
+		// generated rpm file
 		File rpmFile = new File(outputDirectory, name + "_" + version + ".rpm");
 		
 		// invokes plugin to generate deb package
@@ -546,6 +527,18 @@ public class PackageMojo extends AbstractMojo {
 														element("includes", 
 																element("include", name),
 																element("include", jreDirectoryName + "/bin/java")
+														)
+												)
+										)
+								),
+								/* desktop file */
+								element("mapping", 
+										element("directory", "/usr/share/applications"),
+										element("sources",
+												element("source", 
+														element("location", assetsFolder.getAbsolutePath()),
+														element("includes", 
+																element("include", desktopFile.getName())
 														)
 												)
 										)
@@ -780,7 +773,8 @@ public class PackageMojo extends AbstractMojo {
 		File controlFile = new File(assetsFolder, "control");
 		VelocityUtils.render("linux/control.vtl", controlFile, info);
 
-		debFile = new File(outputDirectory, name + "_" + version + ".deb");
+		// generated deb file
+		File debFile = new File(outputDirectory, name + "_" + version + ".deb");
 
 		// invokes plugin to generate deb package
 		executeMojo(
