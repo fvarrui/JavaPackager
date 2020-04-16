@@ -528,45 +528,29 @@ public class PackageMojo extends AbstractMojo {
 										element("directory", "/opt/" + name),
 										element("sources", 
 												element("source", 
-														element("location", appFolder.getAbsolutePath())
+														element("location", appFolder.getAbsolutePath()),
+														element("excludes", 
+																element("exclude", name),
+																element("exclude", jreDirectoryName + "/bin/java")
 														)
-												),
-										element("excludes", 
-												element("exclude", appFolder.getAbsolutePath() + "/" + name),
-												element("exclude", appFolder.getAbsolutePath() + "/" + jreDirectoryName + "/bin")
 												)
-										),
-								/* executable */
+										)
+								),
+								/* app executable and java binary file */
 								element("mapping", 
 										element("directory", "/opt/" + name),
 										element("filemode", "755"),
 										element("sources",
 												element("source", 
-														element("location", appFolder.getAbsolutePath() + "/" + name)
-														)
-												)
-										),
-//								/* desktop file */
-//								element("data", 
-//										element("type", "file"),
-//										element("src", desktopFile.getAbsolutePath()),
-//										element("mapper", 
-//												element("type", "perm"),
-//												element("prefix", "/usr/share/applications")
-//										)
-//								),
-
-								/* java binary file */
-								element("mapping", 
-										element("directory", "/opt/" + name),
-										element("dirmode", "755"),
-										element("filemode", "755"),
-										element("sources", 
-												element("source", 
-														element("location", appFolder.getAbsolutePath() + "/" + jreDirectoryName + "/bin")
+														element("location", appFolder.getAbsolutePath()),
+														element("includes", 
+																element("include", name),
+																element("include", jreDirectoryName + "/bin/java")
 														)
 												)
 										)
+								)
+								
 								/*
 								element("data", 
 										element("type", "file"),
