@@ -549,32 +549,16 @@ public class PackageMojo extends AbstractMojo {
 														)
 												)
 										)
-								)
-								
-								/*
-								element("data", 
-										element("type", "file"),
-										element("src", appFolder.getAbsolutePath() + "/jre/bin/java"),
-										element("mapper", 
-												element("type", "perm"), 
-												element("filemode", "755"),
-												element("prefix", "/opt/" + name + "/jre/bin")
-											)
+								),
+								/* symbolic link in /usr/local/bin to app binary */
+								element("mapping", 
+										element("directory", "/usr/local/bin"),
+										element("sources", 
+												element("softlinkSource", 
+														element("location", "/opt/" + name + "/" + name)
+												)
 										)
-								*/
-								
-//								),
-//								/* symbolic link in /usr/local/bin to app binary */
-//								element("data", 
-//										element("type", "link"),
-//										element("linkTarget", "/opt/" + name + "/" + name),
-//										element("linkName", "/usr/local/bin/" + name),
-//										element("symlink", "true"), 
-//										element("mapper", 
-//												element("type", "perm"),
-//												element("filemode", "777")
-//										)
-//								)
+								),
 						)
 				),
 				env);
