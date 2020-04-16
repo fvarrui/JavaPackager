@@ -64,7 +64,7 @@ And by default it will generate next artifacts in `target ` folder:
 | `${name}`                          | Directory with the native application and other needed assets. |
 | `${name}-${version}-runnable.jar`  | Runnable JAR file.                                           |
 | `${name}_${version}.deb`           | DEB package file if it's executed on GNU/Linux (requires **dpkg-deb**). |
-| `${name}_${version}.rpm`           | RPM package file if it's executed on GNU/Linux (requires **alien** & **rpmbuild**). |
+| `${name}_${version}.rpm`           | RPM package file if it's executed on GNU/Linux (requires **rpm-build**). |
 | `${name}_${version}.exe`           | Installer file if it's executed on Windows (requires [**Inno Setup**](http://www.jrsoftware.org/isinfo.php)). |
 | `${name}_${version}.dmg`           | Disk image file if it's executed on Mac OS X (requires **hdiutil**). |
 | `${name}-${version}-bundle.zip`    | Zipball containing generated directory `${name}` if `createZipball` property is `true`. |
@@ -89,7 +89,7 @@ And by default it will generate next artifacts in `target ` folder:
 | `displayName`           | :x:                | `${project.name}` or `${name}`                               | App name to show.                                            |
 | `envPath`               | :x:                | `null`                                                       | Defines PATH environment variable in GNU/Linux and Mac OS X startup scripts. |
 | `generateInstaller`     | :x:                | `true`                                                       | Generates an installer for the app.                          |
-| `iconFile`              | :x:                | `null`                                                       | Path to the app icon file (PNG, ICO or ICNS).                |
+| `iconFile`              | :x:                | `null`                                                       | Path to the app icon file (PNG, XPM, ICO or ICNS).           |
 | `jreDirectoryName`      | :x:                | `"jre"`                                                      | Bundled JRE directory name.                                  |
 | `jrePath`               | :x:                | `""`                                                         | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least. |
 | `licenseFile`           | :x:                | `${project.licenses[0].url}` or `${project.basedir}/LICENSE` | Path to project license file.                                |
@@ -148,11 +148,12 @@ If icons are located in `assets` folders, it would not be necessary to specify t
 <project>/
 └── assets/
 	├── linux/
-	│   └── ${name}.png     # on GNU/Linux it has to be a png image
+	│   ├── ${name}.png     # on GNU/Linux it has to be a PNG file for DEB package
+	│   └── ${name}.xpm     # and XPM file for RPM package
 	├── mac/
-	│   └── ${name}.icns    # on Mac OS X it has to be a icns file
+	│   └── ${name}.icns    # on Mac OS X it has to be a ICNS file
 	└── windows/
-	    └── ${name}.ico     # on Windows it has to be a ico file
+	    └── ${name}.ico     # on Windows it has to be a ICO file
 ```
 
 > :warning: If `iconFile` plugin property is not specified and it can't find the correct icon in `assets` folder, it will use an [icon by default](https://raw.githubusercontent.com/fvarrui/JavaPackager/master/src/main/resources/linux/default-icon.png) for all platforms.
