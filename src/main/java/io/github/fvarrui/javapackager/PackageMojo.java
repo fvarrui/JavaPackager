@@ -504,7 +504,7 @@ public class PackageMojo extends AbstractMojo {
 				), 
 				goal("rpm"), 
 				configuration(
-						element("license", mavenProject.getLicenses() != null && mavenProject.getLicenses().get(0) != null ? mavenProject.getLicenses().get(0).getName() : ""),
+						element("license", mavenProject.getLicenses() != null && !mavenProject.getLicenses().isEmpty() && mavenProject.getLicenses().get(0) != null ? mavenProject.getLicenses().get(0).getName() : ""),
 						element("packager", organizationName),
 						element("group", ""),
 						element("icon", iconFile.getAbsolutePath()),
