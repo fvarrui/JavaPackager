@@ -979,12 +979,9 @@ public class PackageMojo extends AbstractMojo {
 
 		}
 		
-		// removes jre/legal folder (needed to codesign command not to fail on macos)
-		if (SystemUtils.IS_OS_MAC) {
-			File legalFolder = new File(jreFolder, "legal");
-			getLog().info("Removing " + legalFolder.getAbsolutePath() + " folder so app could be code signed");
-			FileUtils.removeFolder(legalFolder);
-		}
+		// removes jre/legal folder
+		File legalFolder = new File(jreFolder, "legal");
+		FileUtils.removeFolder(legalFolder);
 		
 		return true;
 			
