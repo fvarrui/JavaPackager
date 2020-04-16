@@ -536,10 +536,7 @@ public class PackageMojo extends AbstractMojo {
 										element("directory", "/usr/share/applications"),
 										element("sources",
 												element("source", 
-														element("location", assetsFolder.getAbsolutePath()),
-														element("includes", 
-																element("include", desktopFile.getName())
-														)
+														element("location", desktopFile.getAbsolutePath())
 												)
 										)
 								),
