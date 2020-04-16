@@ -518,29 +518,30 @@ public class PackageMojo extends AbstractMojo {
 						element("icon", xpmIcon.getAbsolutePath()),
 						element("autoRequires", "false"),
 						element("needarch", "true"),
+						element("defaultDirmode", "755"),
+						element("defaultFilemode", "644"),
+						element("needarch", "true"),
 						element("copyTo", rpmFile.getAbsolutePath()),
 						element("mappings",
 								/* app folder files, except executable file and jre/bin/java */
 								element("mapping", 
 										element("directory", "/opt/" + name),
-										element("filemode", "755"),
 										element("sources", 
 												element("source", 
 														element("location", appFolder.getAbsolutePath())
 														)
 												)
-										)
-								)
-//								/* executable */
-//								element("mapping", 
-//										element("type", "file"),
-//										element("src", appFolder.getAbsolutePath() + "/" + name),
-//										element("mapper", 
-//												element("type", "perm"), 
-//												element("filemode", "755"),
-//												element("prefix", "/opt/" + name)
-//										)
-//								),
+										),
+								/* executable */
+								element("mapping", 
+										element("directory", "/opt/" + name + "/" + name),
+										element("filemode", "755"),
+										element("sources", 
+												element("source", 
+														element("location", appFolder.getAbsolutePath() + "/" + name)
+														)
+												)
+										),
 //								/* desktop file */
 //								element("data", 
 //										element("type", "file"),
@@ -550,15 +551,30 @@ public class PackageMojo extends AbstractMojo {
 //												element("prefix", "/usr/share/applications")
 //										)
 //								),
-//								/* java binary file */
-//								element("data", 
-//										element("type", "file"),
-//										element("src", appFolder.getAbsolutePath() + "/jre/bin/java"),
-//										element("mapper", 
-//												element("type", "perm"), 
-//												element("filemode", "755"),
-//												element("prefix", "/opt/" + name + "/jre/bin")
-//										)
+
+								/* java binary file */
+								element("mapping", 
+										element("directory", "/opt/" + name + "/" + jreDirectoryName + "/bin"),
+										element("dirmode", "755"),
+										element("filemode", "755"),
+										element("sources", 
+												element("source", 
+														element("location", appFolder.getAbsolutePath() + "/" + jreDirectoryName + "/bin")
+														)
+												)
+										)
+								/*
+								element("data", 
+										element("type", "file"),
+										element("src", appFolder.getAbsolutePath() + "/jre/bin/java"),
+										element("mapper", 
+												element("type", "perm"), 
+												element("filemode", "755"),
+												element("prefix", "/opt/" + name + "/jre/bin")
+											)
+										)
+								*/
+								
 //								),
 //								/* symbolic link in /usr/local/bin to app binary */
 //								element("data", 
@@ -571,7 +587,7 @@ public class PackageMojo extends AbstractMojo {
 //												element("filemode", "777")
 //										)
 //								)
-//						)
+						)
 				),
 				env);
 
