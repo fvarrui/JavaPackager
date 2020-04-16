@@ -516,6 +516,7 @@ public class PackageMojo extends AbstractMojo {
 						element("icon", xpmIcon.getAbsolutePath()),
 						element("autoRequires", "false"),
 						element("needarch", "true"),
+						element("copyTo", outputDirectory.getAbsolutePath()),
 						element("mappings",
 								/* app folder files, except executable file and jre/bin/java */
 								element("mapping", 
