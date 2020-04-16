@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.execution.MavenSession;
@@ -495,19 +496,24 @@ public class PackageMojo extends AbstractMojo {
 //		String newName = name + "_" + version + ".rpm";
 //		FileUtils.rename(rpmFile, newName);
 		
+		File xpmIcon = new File(iconFile.getParentFile(), FilenameUtils.removeExtension(iconFile.getName()) + ".xpm");
+		if (!xpmIcon.exists()) {
+			FileUtils.copyResourceToFile("/linux/default-icon.xpm", xpmIcon);
+		}
+		
 		// invokes plugin to generate deb package
 		executeMojo(
 				plugin(
 						groupId("org.codehaus.mojo"), 
 						artifactId("rpm-maven-plugin"), 
 						version("2.2.0")
-				), 
+				),
 				goal("rpm"), 
 				configuration(
 						element("license", mavenProject.getLicenses() != null && !mavenProject.getLicenses().isEmpty() && mavenProject.getLicenses().get(0) != null ? mavenProject.getLicenses().get(0).getName() : ""),
 						element("packager", organizationName),
 						element("group", "Application"),
-						element("icon", iconFile.getAbsolutePath()),
+						element("icon", xpmIcon.getAbsolutePath()),
 						element("needarch", "true"),
 						element("mappings",
 								/* app folder files, except executable file and jre/bin/java */
