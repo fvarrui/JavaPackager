@@ -500,6 +500,8 @@ public class PackageMojo extends AbstractMojo {
 		if (!xpmIcon.exists()) {
 			FileUtils.copyResourceToFile("/linux/default-icon.xpm", xpmIcon);
 		}
+
+		File rpmFile = new File(outputDirectory, name + "_" + version + ".rpm");
 		
 		// invokes plugin to generate deb package
 		executeMojo(
@@ -516,7 +518,7 @@ public class PackageMojo extends AbstractMojo {
 						element("icon", xpmIcon.getAbsolutePath()),
 						element("autoRequires", "false"),
 						element("needarch", "true"),
-						element("copyTo", outputDirectory.getAbsolutePath()),
+						element("copyTo", rpmFile.getAbsolutePath()),
 						element("mappings",
 								/* app folder files, except executable file and jre/bin/java */
 								element("mapping", 
