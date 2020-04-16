@@ -508,11 +508,11 @@ public class PackageMojo extends AbstractMojo {
 						element("packager", organizationName),
 						element("group", "Application"),
 						element("icon", iconFile.getAbsolutePath()),
-						element("prefix", "/opt"),
+						element("needarch", "true"),
 						element("mappings",
 								/* app folder files, except executable file and jre/bin/java */
 								element("mapping", 
-										element("directory", name),
+										element("directory", "/opt/" + name),
 										element("filemode", "755"),
 										element("sources", 
 												element("source", 
