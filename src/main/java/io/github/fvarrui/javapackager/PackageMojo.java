@@ -530,13 +530,17 @@ public class PackageMojo extends AbstractMojo {
 												element("source", 
 														element("location", appFolder.getAbsolutePath())
 														)
+												),
+										element("excludes", 
+												element("exclude", appFolder.getAbsolutePath() + "/" + name),
+												element("exclude", appFolder.getAbsolutePath() + "/" + jreDirectoryName + "/bin")
 												)
 										),
 								/* executable */
 								element("mapping", 
-										element("directory", "/opt/" + name + "/" + name),
+										element("directory", "/opt/" + name),
 										element("filemode", "755"),
-										element("sources", 
+										element("sources",
 												element("source", 
 														element("location", appFolder.getAbsolutePath() + "/" + name)
 														)
@@ -554,7 +558,7 @@ public class PackageMojo extends AbstractMojo {
 
 								/* java binary file */
 								element("mapping", 
-										element("directory", "/opt/" + name + "/" + jreDirectoryName + "/bin"),
+										element("directory", "/opt/" + name),
 										element("dirmode", "755"),
 										element("filemode", "755"),
 										element("sources", 
