@@ -466,34 +466,104 @@ public class PackageMojo extends AbstractMojo {
 
 		getLog().info("Generating RPM package...");
 
-		if (!debFile.exists()) {
-			getLog().warn("Cannot convert DEB to RPM because " + debFile.getAbsolutePath() + " doesn't exist");
-			return;
-		}
-
-		try {
-			// executes alien command to generate rpm package folder from deb file
-			CommandUtils.execute(assetsFolder, "alien", "-g", "--to-rpm", debFile);
-		} catch (MojoExecutionException e) {
-			getLog().warn("alien command execution failed", e);
-			return;
-		}
-
-		File packageFolder = new File(assetsFolder, name.toLowerCase() + "-" + version);
-		File specFile = FileUtils.findFirstFile(packageFolder, ".*\\.spec");
-
-		try {
-			// rebuilds rpm package
-			CommandUtils.execute(assetsFolder, "rpmbuild", "--buildroot", packageFolder, "--nodeps", "-bb", specFile);
-		} catch (MojoExecutionException e) {
-			getLog().warn("rpmbuild command execution failed", e);
-			return;
-		}
-
-		// renames generated rpm package
-		File rpmFile = FileUtils.findFirstFile(outputDirectory, ".*\\.rpm");
-		String newName = name + "_" + version + ".rpm";
-		FileUtils.rename(rpmFile, newName);
+//		if (!debFile.exists()) {
+//			getLog().warn("Cannot convert DEB to RPM because " + debFile.getAbsolutePath() + " doesn't exist");
+//			return;
+//		}
+//
+//		try {
+//			// executes alien command to generate rpm package folder from deb file
+//			CommandUtils.execute(assetsFolder, "alien", "-g", "--to-rpm", debFile);
+//		} catch (MojoExecutionException e) {
+//			getLog().warn("alien command execution failed", e);
+//			return;
+//		}
+//
+//		File packageFolder = new File(assetsFolder, name.toLowerCase() + "-" + version);
+//		File specFile = FileUtils.findFirstFile(packageFolder, ".*\\.spec");
+//
+//		try {
+//			// rebuilds rpm package
+//			CommandUtils.execute(assetsFolder, "rpmbuild", "--buildroot", packageFolder, "--nodeps", "-bb", specFile);
+//		} catch (MojoExecutionException e) {
+//			getLog().warn("rpmbuild command execution failed", e);
+//			return;
+//		}
+//
+//		// renames generated rpm package
+//		File rpmFile = FileUtils.findFirstFile(outputDirectory, ".*\\.rpm");
+//		String newName = name + "_" + version + ".rpm";
+//		FileUtils.rename(rpmFile, newName);
+		
+		// invokes plugin to generate deb package
+		executeMojo(
+				plugin(
+						groupId("org.codehaus.mojo"), 
+						artifactId("rpm-maven-plugin"), 
+						version("2.2.0")
+				), 
+				goal("rpm"), 
+				configuration(
+						element("license", mavenProject.getLicenses().get(0) != null ? mavenProject.getLicenses().get(0).getName() : ""),
+						element("packager", organizationName),
+						element("group", ""),
+						element("icon", iconFile.getAbsolutePath()),
+						element("prefix", "/opt"),
+						element("mappings",
+								/* app folder files, except executable file and jre/bin/java */
+								element("mapping", 
+										element("directory", name),
+										element("filemode", "755"),
+										element("sources", 
+												element("source", 
+														element("location", appFolder.getAbsolutePath())
+														)
+												)
+										)
+								)
+//								/* executable */
+//								element("mapping", 
+//										element("type", "file"),
+//										element("src", appFolder.getAbsolutePath() + "/" + name),
+//										element("mapper", 
+//												element("type", "perm"), 
+//												element("filemode", "755"),
+//												element("prefix", "/opt/" + name)
+//										)
+//								),
+//								/* desktop file */
+//								element("data", 
+//										element("type", "file"),
+//										element("src", desktopFile.getAbsolutePath()),
+//										element("mapper", 
+//												element("type", "perm"),
+//												element("prefix", "/usr/share/applications")
+//										)
+//								),
+//								/* java binary file */
+//								element("data", 
+//										element("type", "file"),
+//										element("src", appFolder.getAbsolutePath() + "/jre/bin/java"),
+//										element("mapper", 
+//												element("type", "perm"), 
+//												element("filemode", "755"),
+//												element("prefix", "/opt/" + name + "/jre/bin")
+//										)
+//								),
+//								/* symbolic link in /usr/local/bin to app binary */
+//								element("data", 
+//										element("type", "link"),
+//										element("linkTarget", "/opt/" + name + "/" + name),
+//										element("linkName", "/usr/local/bin/" + name),
+//										element("symlink", "true"), 
+//										element("mapper", 
+//												element("type", "perm"),
+//												element("filemode", "777")
+//										)
+//								)
+//						)
+				),
+				env);
 
 	}
 
@@ -561,7 +631,7 @@ public class PackageMojo extends AbstractMojo {
 	private void createLinuxApp() throws MojoExecutionException {
 		getLog().info("Creating GNU/Linux app bundle...");
 
-		// determines icon file location and copies it to app folder
+		// copies icon file to app folder
 		FileUtils.copyFileToFolder(iconFile, appFolder);
 
 		// copies all dependencies
