@@ -480,7 +480,7 @@ public class PackageMojo extends AbstractMojo {
 		}
 
 		File packageFolder = new File(assetsFolder, name.toLowerCase() + "-" + version);
-		File specFile = new File(packageFolder, name + "-" + version + "-2.spec");
+		File specFile = FileUtils.findFirstFile(packageFolder, ".*\\.spec");
 
 		try {
 			// rebuilds rpm package
@@ -491,7 +491,7 @@ public class PackageMojo extends AbstractMojo {
 		}
 
 		// renames generated rpm package
-		File rpmFile = new File(outputDirectory, name + "-" + version + "-2.x86_64.rpm");
+		File rpmFile = FileUtils.findFirstFile(outputDirectory, ".*\\.rpm");
 		String newName = name + "_" + version + ".rpm";
 		FileUtils.rename(rpmFile, newName);
 
@@ -1048,7 +1048,7 @@ public class PackageMojo extends AbstractMojo {
 		File assemblyFile = new File(assetsFolder, "assembly.xml");
 		VelocityUtils.render("assembly.xml.vtl", assemblyFile, info);
 		
-		// invokes plugin to copy dependecies to app libs folder
+		// invokes plugin to assemble zipball and/or tarball
 		executeMojo(
 				plugin(
 						groupId("org.apache.maven.plugins"), 
