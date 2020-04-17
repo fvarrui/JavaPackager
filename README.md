@@ -59,19 +59,19 @@ mvn package
 
 And by default it will generate next artifacts in `target ` folder:
 
-| Artifact                           | Description                                                  |
-| ---------------------------------- | ------------------------------------------------------------ |
-| `${name}`                          | Directory with the native application and other needed assets. |
-| `${name}-${version}-runnable.jar`  | Runnable JAR file.                                           |
-| `${name}_${version}.deb`           | DEB package file if it's executed on GNU/Linux (requires **dpkg-deb**). |
-| `${name}_${version}.rpm`           | RPM package file if it's executed on GNU/Linux (requires **rpm-build**). |
-| `${name}_${version}.exe`           | Installer file if it's executed on Windows (requires [**Inno Setup**](http://www.jrsoftware.org/isinfo.php)). |
-| `${name}_${version}.dmg`           | Disk image file if it's executed on Mac OS X (requires **hdiutil**). |
-| `${name}-${version}-bundle.zip`    | Zipball containing generated directory `${name}` if `createZipball` property is `true`. |
-| `${name}-${version}-bundle.tar`    | Tarball containing generated directory `${name}` if `createTarball` property is `true`. |
-| `${name}-${version}-bundle.tar.gz` | Compressed tarball containing generated directory `${name}` if `createTarball` property is `true`. |
+| Artifact                           | Description                                                  | Related property    |
+| ---------------------------------- | ------------------------------------------------------------ | ------------------- |
+| `${name}`                          | Directory with the native application and other needed assets. |                     |
+| `${name}-${version}-runnable.jar`  | Runnable JAR file.                                           |                     |
+| `${name}_${version}.deb`           | DEB package file if it's executed on GNU/Linux (requires **dpkg-deb**). | `generateInstaller` |
+| `${name}_${version}.rpm`           | RPM package file if it's executed on GNU/Linux (requires **rpm-build**). | `generateInstaller` |
+| `${name}_${version}.exe`           | Installer file if it's executed on Windows (requires [**Inno Setup**](http://www.jrsoftware.org/isinfo.php)). | `generateInstaller` |
+| `${name}_${version}.dmg`           | Disk image file if it's executed on Mac OS X (requires **hdiutil**). | `generateInstaller` |
+| `${name}-${version}-bundle.zip`    | Zipball containing generated directory `${name}`.            | `createZipball`     |
+| `${name}-${version}-bundle.tar`    | Tarball containing generated directory `${name}`.            | `createTarball`     |
+| `${name}-${version}-bundle.tar.gz` | Compressed tarball containing generated directory `${name}`. | `createTarball`     |
 
->  :warning: DEB, RPM, EXE installer and DMG files will be ommited if `generateInstaller` property is `false` or if target platform is different from current platform.
+>  :warning: DEB, RPM, EXE installer and DMG files generation will be ommited if target platform is different from current platform (see `platform` property).
 
 ### Plugin configutation properties
 
@@ -108,7 +108,7 @@ And by default it will generate next artifacts in `target ` folder:
 
 > See [**Older documentation**](#older-documentation) for previous versions properties.
 
-> :warning: Be careful when using the `platform` property if your project uses platform dependent libraries, so the libraries of the current platform will be copied, not those of the target platform. You can solve this problem using `classifiers`.
+> :warning: Be careful when using the `platform` property if your project uses platform dependent libraries, so the libraries of the current platform will be copied, not those required for the target platform. You can solve this problem using `classifiers`. Also, customized JRE generation will be ommited.
 
 #### Version information property example
 
