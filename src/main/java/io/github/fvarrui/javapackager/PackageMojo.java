@@ -899,7 +899,7 @@ public class PackageMojo extends AbstractMojo {
 		params.put("windowHeight", 360);
 		params.put("iconSize", 128);
 		params.put("textSize", 16);
-		params.put("background", backgroundFile.getParentFile().getName() + "/" + backgroundFile.getName());
+		params.put("background", backgroundFile.getName());
 		params.put("file", name + ".app");
 		params.put("fileX", 20);
 		params.put("fileY", 20);
