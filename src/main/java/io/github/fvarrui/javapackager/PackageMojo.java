@@ -885,7 +885,7 @@ public class PackageMojo extends AbstractMojo {
 		String result = CommandUtils.execute("hdiutil", "attach", "-readwrite", "-noverify", "-noautoopen", tempDmgFile);
 		String deviceName = Arrays.asList(result.split("\n"))
 									.stream()
-									.filter(s -> s.endsWith(mountFolder.getAbsolutePath()))
+									.filter(s -> s.contains(mountFolder.getAbsolutePath()))
 									.map(s -> StringUtils.normalizeSpace(s))
 									.map(s -> s.split(" ")[0])
 									.findFirst().get();
