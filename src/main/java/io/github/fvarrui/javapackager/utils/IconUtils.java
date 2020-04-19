@@ -1,6 +1,6 @@
 package io.github.fvarrui.javapackager.utils;
 
-import io.github.fvarrui.javapackager.Platform;
+import io.github.fvarrui.javapackager.model.Platform;
 
 public class IconUtils {
 
