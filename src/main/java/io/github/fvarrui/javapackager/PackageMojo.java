@@ -878,7 +878,7 @@ public class PackageMojo extends AbstractMojo {
 		
 		// creates image
 		getLog().info("Creating image: " + tempDmgFile.getAbsolutePath());
-		CommandUtils.execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", volumeName, "-fs", "HFS+", "-fsargs", "-c c=64,a=16,e=16", "-format", "UDRW", tempDmgFile);
+		CommandUtils.execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", volumeName, "-fs", "HFS+", "-format", "UDRW", tempDmgFile);
 		
 		// mounts image
 		getLog().info("Mounting image: " + tempDmgFile.getAbsolutePath());
