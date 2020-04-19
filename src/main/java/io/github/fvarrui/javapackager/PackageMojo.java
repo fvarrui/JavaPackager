@@ -883,7 +883,12 @@ public class PackageMojo extends AbstractMojo {
 		// mounts image
 		getLog().info("Mounting image: " + tempDmgFile.getAbsolutePath());
 		String result = CommandUtils.execute("hdiutil", "attach", "-readwrite", "-noverify", "-noautoopen", tempDmgFile);
-		String deviceName = Arrays.asList(result.split("\n")).stream().filter(s -> s.startsWith("/dev/")).findFirst().get();
+		String deviceName = Arrays.asList(result.split("\n"))
+									.stream()
+									.filter(s -> s.endsWith(mountFolder.getAbsolutePath()))
+									.map(s -> StringUtils.normalizeSpace(s))
+									.map(s -> s.split(" ")[0])
+									.findFirst().get();
 		getLog().info("- Device name: " + deviceName);
 		
 		// rendering applescript 
@@ -925,7 +930,7 @@ public class PackageMojo extends AbstractMojo {
 		
 		// compress image
 		getLog().info("Compressing disk image...");
-		CommandUtils.execute("hdiutil", "convert", tempDmgFile, "-format", "UDZO", "zlib-level=9", "-o", dmgFile);
+		CommandUtils.execute("hdiutil", "convert", tempDmgFile, "-format", "UDZO zlib-level=9", "-o", dmgFile);
 		tempDmgFile.delete();
 		
 		getLog().info("DMG disk image file generated!");
