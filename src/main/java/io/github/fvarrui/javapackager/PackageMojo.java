@@ -870,7 +870,7 @@ public class PackageMojo extends AbstractMojo {
 		getLog().info("Copying background image");
 		File backgroundFolder = FileUtils.mkdir(appFolder, ".background");
 		File backgroundFile = new File(backgroundFolder, "background.png");
-		FileUtils.copyResourceToFile("/assets/mac/background.png", backgroundFile);
+		FileUtils.copyResourceToFile("/mac/background.png", backgroundFile);
 
 		// copies volume icon
 		getLog().info("Copying icon file: " + iconFile.getAbsolutePath());
