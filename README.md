@@ -15,7 +15,7 @@ Add the following `plugin` tag to your `pom.xml`:
 <plugin>
     <groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
-    <version>0.9.5|0.9.6-SNAPSHOT</version>    
+    <version>0.9.6|0.9.7-SNAPSHOT</version>
     <executions>
         <execution>
             <phase>package</phase>
@@ -103,19 +103,27 @@ And by default it will generate next artifacts in `target ` folder:
 | `runnableJar`           | :x:                | `null`                                                       | Defines your own JAR file to be bundled. If it's ommited, the plugin packages your code in a runnable JAR and bundle it with the app. |
 | `url`                   | :x:                | `null`                                                       | App website URL.                                             |
 | ` version`              | :x:                | `${project.version}`                                         | Project version.                                             |
-| `versionInfo`           | :x:                | `null`                                                       | [Version information](#version-information-property-example) for native Windows `.exe` file. |
+| `versionInfo`           | :x:                | `null`                                                       | Version information for native Windows `.exe` file. :warning: **Deprecated. Use `winConfig` instead**. |
 | `vmArgs`                | :x:                | `[]`                                                         | Adds VM arguments.                                           |
+
+**Platform specific properties**
+
+| Property    | Mandatory | Default | Description                                                  |
+| ----------- | --------- | ------- | ------------------------------------------------------------ |
+| `macConfig` | :x:       | `null`  | [Mac OS X specific configuration](#mac-os-x-config-property) properties. |
+| `winConfig` | :x:       | `null`  | [Windows specific configuration](#windows-config-property) properties. |
 
 > See [**Older documentation**](#older-documentation) for previous versions properties.
 
 > :warning: Be careful when using the `platform` property if your project uses platform dependent libraries, so the libraries of the current platform will be copied, not those required for the target platform. You can solve this problem using `classifiers`. Also, customized JRE generation will be ommited.
 
-#### Version information property example
+### Platform specific properties
 
-Using default values:
+#### Windows config property
 
 ```xml
-<versionInfo>
+<winConfig>
+	<!-- properties used in EXE generation by launch4j -->
 	<fileVersion>1.0.0.0</fileVersion>
 	<txtFileVersion>${version}</txtFileVersion>
 	<productVersion>1.0.0.0</productVersion>
@@ -125,7 +133,28 @@ Using default values:
 	<productName>${name}</productName>
 	<internalName>${name}</internalName>
 	<originalFilename>${name}.exe</originalFilename>
-</versionInfo>
+</winConfig>
+```
+
+#### Mac OS X config property
+
+```xml
+<macConfig>
+    <!-- properties used in DMG disk image generation -->
+	<backgroundImage>path/to/png</backgroundImage>
+    <windowX>x</windowX>
+    <windowY>y</windowY>
+	<windowWidth>width</windowWidth>
+    <windowHeight>height</windowHeight>
+	<iconSize>size</iconSize>
+	<textSize>size</textSize>
+	<iconX>x</iconX>
+    <iconY>y</iconY>
+	<appsLinkIconX>x</appsLinkIconX>
+	<appsLinkIconY>y</appsLinkIconY>
+	<volumeIcon>path/to/icns</volumeIcon>
+	<volumeName>${name}</volumeName>
+</macConfig>
 ```
 
 ### Plugin assets
@@ -169,16 +198,17 @@ It is possible to use your own customized templates. You just have to put one of
 <project>/
 └── assets/
 	├── linux/
-	|   ├── control.vtl        # DEB control template
-	|   ├── desktop.vtl        # Desktop template
-	│   └── startup.sh.vtl     # Startup script template
+	|   ├── control.vtl                         # DEB control template
+	|   ├── desktop.vtl                         # Desktop template
+	│   └── startup.sh.vtl                      # Startup script template
 	├── mac/
-	|   ├── Info.plist.vtl     # Info.plist template
-	│   └── startup.vtl        # Startup script template
+	|   ├── customize-dmg.applescript.vtl       # Applescript template
+	|   ├── Info.plist.vtl                      # Info.plist template
+	│   └── startup.vtl                         # Startup script template
 	├── windows/
-	|   ├── exe.manifest.vtl   # exe.manifest template
-	│   └── iss.vtl            # Inno Setup Script template
-	└── assembly.xml.vtl       # assembly.xml template for maven-assembly-plugin
+	|   ├── exe.manifest.vtl                    # exe.manifest template
+	│   └── iss.vtl                             # Inno Setup Script template
+	└── assembly.xml.vtl                        # template for maven-assembly-plugin
 ```
 
 > Use [default templates](https://github.com/fvarrui/JavaPackager/tree/master/src/main/resources) as examples.
@@ -240,6 +270,7 @@ Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column
 
 ## Older documentation
 
+- [v0.9.5](https://github.com/fvarrui/JavaPackager/blob/v0.9.5/README.md)
 - [v0.9.4](https://github.com/fvarrui/JavaPackager/blob/v0.9.4/README.md)
 - [v0.9.3](https://github.com/fvarrui/JavaPackager/blob/v0.9.3/README.md)
 - [v0.9.1](https://github.com/fvarrui/JavaPackager/blob/v0.9.1/README.md)
