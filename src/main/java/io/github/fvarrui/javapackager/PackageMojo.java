@@ -893,14 +893,14 @@ public class PackageMojo extends AbstractMojo {
 		
 		// rendering applescript 
 		Map<String, Object> params = new HashMap<>();
-		params.put("windowX", "value");
-		params.put("windowY", "value");
-		params.put("windowWidth", "value");
-		params.put("windowHeight", "value");
+		params.put("windowX", 10);
+		params.put("windowY", 60);
+		params.put("windowWidth", 540);
+		params.put("windowHeight", 360);
 		params.put("iconSize", 128);
 		params.put("textSize", 16);
 		params.put("background", backgroundFile.getParentFile().getName() + "/" + backgroundFile.getName());
-		params.put("file", name);
+		params.put("file", name + ".app");
 		params.put("fileX", 20);
 		params.put("fileY", 20);
 		params.put("appX", 100);
