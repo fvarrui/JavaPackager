@@ -35,6 +35,9 @@ import org.apache.maven.project.MavenProjectHelper;
 import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
+import io.github.fvarrui.javapackager.model.MacConfig;
+import io.github.fvarrui.javapackager.model.Platform;
+import io.github.fvarrui.javapackager.model.WinConfig;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.IconUtils;
@@ -43,6 +46,7 @@ import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+import static io.github.fvarrui.javapackager.utils.NumberUtils.defaultIfNull;
 
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.RUNTIME)
 public class PackageMojo extends AbstractMojo {
@@ -238,10 +242,23 @@ public class PackageMojo extends AbstractMojo {
 	private String jreDirectoryName;
 
 	/**
-	 * Launch4j version info
+	 * Mac OS X specific config
+	 */
+	@Parameter(property = "macConfig", required = false)
+	private MacConfig macConfig;
+	
+	/**
+	 * Windows specific config
+	 */
+	@Parameter(property = "winConfig", required = false)
+	private WinConfig winConfig;
+
+	/**
+	 * Old windows version information
+	 * @deprecated
 	 */
 	@Parameter(property = "versionInfo", required = false)
-	private VersionInfo versionInfo;
+	private WinConfig versionInfo;
 	
 	/**
 	 * Bundles app in a tarball file
@@ -674,12 +691,14 @@ public class PackageMojo extends AbstractMojo {
 		
 		// test version info
 		
-		if (versionInfo == null) {
-			getLog().warn("Version info not specified. Using defaults.");
-			versionInfo = new VersionInfo();
+		if (winConfig == null) {
+			if (versionInfo == null)
+				winConfig = new WinConfig();
+			else
+				winConfig = versionInfo;
 		}
-		versionInfo.setDefaults(info);
-		getLog().info(versionInfo.toString());
+		winConfig.setDefaults(info);
+		getLog().info(winConfig.toString());
 		
 		// prepares launch4j plugin configuration
 		
@@ -698,18 +717,18 @@ public class PackageMojo extends AbstractMojo {
 					)
 				);
 		config.add(element("versionInfo", 
-						element("fileVersion", versionInfo.getFileVersion()),
-						element("txtFileVersion", versionInfo.getTxtFileVersion()),
-						element("productVersion", versionInfo.getProductVersion()),
-						element("txtProductVersion", versionInfo.getTxtProductVersion()),
-						element("copyright", versionInfo.getCopyright()),
-						element("companyName", versionInfo.getCompanyName()),
-						element("fileDescription", versionInfo.getFileDescription()),
-						element("productName", versionInfo.getProductName()),
-						element("internalName", versionInfo.getInternalName()),
-						element("originalFilename", versionInfo.getOriginalFilename()),
-						element("trademarks", versionInfo.getTrademarks()),
-						element("language", versionInfo.getLanguage())
+						element("fileVersion", winConfig.getFileVersion()),
+						element("txtFileVersion", winConfig.getTxtFileVersion()),
+						element("productVersion", winConfig.getProductVersion()),
+						element("txtProductVersion", winConfig.getTxtProductVersion()),
+						element("copyright", winConfig.getCopyright()),
+						element("companyName", winConfig.getCompanyName()),
+						element("fileDescription", winConfig.getFileDescription()),
+						element("productName", winConfig.getProductName()),
+						element("internalName", winConfig.getInternalName()),
+						element("originalFilename", winConfig.getOriginalFilename()),
+						element("trademarks", winConfig.getTrademarks()),
+						element("language", winConfig.getLanguage())
 					)
 				);
 
@@ -848,20 +867,36 @@ public class PackageMojo extends AbstractMojo {
 		if (!generateInstaller || hostPlatform != Platform.mac) return;
 		
 		getLog().info("Generating DMG disk image file");
+		
+		// mac config
 
+		if (macConfig == null) {
+			macConfig = new MacConfig();
+		}
+
+		int windowX = defaultIfNull(macConfig.getWindowX(), 10);
+		int windowY = defaultIfNull(macConfig.getWindowY(), 60);
+		int windowWidth = defaultIfNull(macConfig.getWindowWidth(), 540);
+		int windowHeight = defaultIfNull(macConfig.getWindowHeight(), 360);
+		int iconSize = defaultIfNull(macConfig.getIconSize(), 128);
+		int textSize = defaultIfNull(macConfig.getIconSize(), 16);
+		int fileX = defaultIfNull(macConfig.getIconX(), 52);
+		int fileY = defaultIfNull(macConfig.getIconY(), 116);
+		int appX = defaultIfNull(macConfig.getAppsLinkIconX(), 360);
+		int appY = defaultIfNull(macConfig.getAppsLinkIconY(), 116);
+		String volumeName = defaultIfBlank(macConfig.getVolumeName(), name);
+		
 		// final dmg file
 		File dmgFile = new File(outputDirectory, name + "_" + version + ".dmg");
 		
 		// temp dmg file
 		File tempDmgFile = new File(assetsFolder, name + "_" + version + ".dmg");
 
-		// volumen name
-		String volumeName = name;
-		
 		// mount dir
 		File mountFolder = new File("/Volumes/" + volumeName);
 
 		// creates a symlink to Applications folder
+		getLog().info("Creating Applications link");
 		File targetFolder = new File("/Applications");
 		File linkFile = new File(appFolder, "Applications");
 		FileUtils.createSymlink(linkFile, targetFolder);
@@ -870,11 +905,15 @@ public class PackageMojo extends AbstractMojo {
 		getLog().info("Copying background image");
 		File backgroundFolder = FileUtils.mkdir(appFolder, ".background");
 		File backgroundFile = new File(backgroundFolder, "background.png");
-		FileUtils.copyResourceToFile("/mac/background.png", backgroundFile);
-
+		if (macConfig.getBackgroundImage() != null)
+			FileUtils.copyFileToFile(macConfig.getBackgroundImage(), backgroundFile);
+		else 
+			FileUtils.copyResourceToFile("/mac/background.png", backgroundFile);
+		
 		// copies volume icon
 		getLog().info("Copying icon file: " + iconFile.getAbsolutePath());
-		FileUtils.copyFileToFile(iconFile, new File(appFolder, ".VolumeIcon.icns"));
+		File volumeIcon = (macConfig.getVolumeIcon() != null) ? macConfig.getVolumeIcon() : iconFile;  
+		FileUtils.copyFileToFile(volumeIcon, new File(appFolder, ".VolumeIcon.icns"));
 		
 		// creates image
 		getLog().info("Creating image: " + tempDmgFile.getAbsolutePath());
@@ -893,18 +932,18 @@ public class PackageMojo extends AbstractMojo {
 		
 		// rendering applescript 
 		Map<String, Object> params = new HashMap<>();
-		params.put("windowX", 10);
-		params.put("windowY", 60);
-		params.put("windowWidth", 540);
-		params.put("windowHeight", 360);
-		params.put("iconSize", 128);
-		params.put("textSize", 16);
+		params.put("windowX", windowX);
+		params.put("windowY", windowY);
+		params.put("windowWidth", windowWidth);
+		params.put("windowHeight", windowHeight);
+		params.put("iconSize", iconSize);
+		params.put("textSize", textSize);
 		params.put("background", backgroundFile.getName());
 		params.put("file", name + ".app");
-		params.put("fileX", 52);
-		params.put("fileY", 116);
-		params.put("appX", 360);
-		params.put("appY", 116);
+		params.put("fileX", fileX);
+		params.put("fileY", fileY);
+		params.put("appX", appX);
+		params.put("appY", appY);
 		File applescript = new File(assetsFolder, "customize-dmg.applescript");
 		getLog().info("Rendering applescript: " + applescript.getAbsolutePath());
 		VelocityUtils.render("/mac/customize-dmg.applescript.vtl", applescript, params);

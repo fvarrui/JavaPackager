@@ -1,47 +1,22 @@
-package io.github.fvarrui.javapackager;
+package io.github.fvarrui.javapackager.model;
 
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 import java.util.Map;
 
-import org.apache.maven.plugins.annotations.Parameter;
+public class WinConfig {
 
-public class VersionInfo {
-
-	@Parameter(defaultValue = "${organizationName}", required = false)
 	private String companyName;
-
-	@Parameter(required = false)
 	private String copyright;
-
-	@Parameter(defaultValue = "${description}", required = false)
 	private String fileDescription;
-
-	@Parameter(required = false)
 	private String fileVersion;
-
-	@Parameter(defaultValue = "${name}", required = false)
 	private String internalName;
-
-	@Parameter(required = false)
 	private String language;
-
-	@Parameter(defaultValue = "${name}.exe", required = false)
 	private String originalFilename;
-
-	@Parameter(defaultValue = "${name}", required = false)
 	private String productName;
-
-	@Parameter(required = false)
 	private String productVersion;
-
-	@Parameter(required = false)
 	private String trademarks;
-
-	@Parameter(defaultValue = "${version}", required = false)
 	private String txtFileVersion;
-
-	@Parameter(defaultValue = "${version}", required = false)
 	private String txtProductVersion;
 
 	public String getCompanyName() {
