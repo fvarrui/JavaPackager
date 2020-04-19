@@ -901,12 +901,12 @@ public class PackageMojo extends AbstractMojo {
 		params.put("textSize", 16);
 		params.put("background", backgroundFile.getName());
 		params.put("file", name + ".app");
-		params.put("fileX", 20);
-		params.put("fileY", 20);
-		params.put("appX", 100);
-		params.put("appY", 20);
+		params.put("fileX", 52);
+		params.put("fileY", 116);
+		params.put("appX", 360);
+		params.put("appY", 116);
 		File applescript = new File(assetsFolder, "customize-dmg.applescript");
-		getLog().info("Rendering applescript: " + applescript.getAbsolutePath());		
+		getLog().info("Rendering applescript: " + applescript.getAbsolutePath());
 		VelocityUtils.render("/mac/customize-dmg.applescript.vtl", applescript, params);
 		
 		// rendering applescript 
