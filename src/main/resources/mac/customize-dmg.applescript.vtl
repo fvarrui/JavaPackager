@@ -3,10 +3,10 @@ on run (volumeName)
 		tell disk (volumeName as string)
 			open
 
-			set theXOrigin to ${windowX}
-			set theYOrigin to ${windowY}
-			set theWidth to ${windowWidth}
-			set theHeight to ${windowHeight}
+			set theXOrigin to ${info.windowX}
+			set theYOrigin to ${info.windowY}
+			set theWidth to ${info.windowWidth}
+			set theHeight to ${info.windowHeight}
 
 			set theBottomRightX to (theXOrigin + theWidth)
 			set theBottomRightY to (theYOrigin + theHeight)
@@ -23,20 +23,20 @@ on run (volumeName)
 
 			set opts to the icon view options of container window
 			tell opts
-				set icon size to ${iconSize}
-				set text size to ${textSize}
+				set icon size to ${info.iconSize}
+				set text size to ${info.textSize}
 				set arrangement to not arranged
 			end tell
-			set background picture of opts to file ".background:${background}"
+			set background picture of opts to file ".background:${info.background}"
 
 			-- Positioning
-			set position of item "${file}" to {${fileX}, ${fileY}}
+			set position of item "${info.file}" to {${info.fileX}, ${info.fileY}}
 
 			-- Hiding
-			set the extension hidden of item "${file}" to true
+			set the extension hidden of item "${info.file}" to true
 
 			-- Application
-			set position of item "Applications" to {${appX}, ${appY}}
+			set position of item "Applications" to {${info.appX}, ${info.appY}}
 
 			close
 			open

@@ -930,7 +930,7 @@ public class PackageMojo extends AbstractMojo {
 		
 		// compress image
 		getLog().info("Compressing disk image...");
-		CommandUtils.execute("hdiutil", "convert", tempDmgFile, "-format", "UDZO zlib-level=9", "-o", dmgFile);
+		CommandUtils.execute("hdiutil", "convert", tempDmgFile, "-format", "UDZO", "-imagekey", "zlib-level=9", "-o", dmgFile);
 		tempDmgFile.delete();
 		
 		getLog().info("DMG disk image file generated!");
