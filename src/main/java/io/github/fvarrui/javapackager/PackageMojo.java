@@ -498,6 +498,8 @@ public class PackageMojo extends AbstractMojo {
 						element("needarch", "true"),
 						element("defaultDirmode", "755"),
 						element("defaultFilemode", "644"),
+						element("defaultUsername", "root"),
+						element("defaultGroupname", "root"),
 						element("copyTo", rpmFile.getAbsolutePath()),
 						element("mappings",
 								/* app folder files, except executable file and jre/bin/java */
@@ -847,15 +849,86 @@ public class PackageMojo extends AbstractMojo {
 		
 		getLog().info("Generating DMG disk image file");
 
+		// final dmg file
+		File dmgFile = new File(outputDirectory, name + "_" + version + ".dmg");
+		
+		// temp dmg file
+		File tempDmgFile = new File(assetsFolder, name + "_" + version + ".dmg");
+
+		// volumen name
+		String volumeName = name;
+		
+		// mount dir
+		File mountFolder = new File("/Volumes/" + volumeName);
+
 		// creates a symlink to Applications folder
 		File targetFolder = new File("/Applications");
 		File linkFile = new File(appFolder, "Applications");
 		FileUtils.createSymlink(linkFile, targetFolder);
 
-		// creates the DMG file including app folder's content
-		getLog().info("Generating the Disk Image file");
-		File diskImageFile = new File(outputDirectory, name + "_" + version + ".dmg");
-		CommandUtils.execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", name, diskImageFile);
+		// copies background file
+		getLog().info("Copying background image");
+		File backgroundFolder = FileUtils.mkdir(appFolder, ".background");
+		File backgroundFile = new File(backgroundFolder, "background.png");
+		FileUtils.copyResourceToFile("/assets/mac/background.png", backgroundFile);
+
+		// copies volume icon
+		getLog().info("Copying icon file: " + iconFile.getAbsolutePath());
+		FileUtils.copyFileToFile(iconFile, new File(appFolder, ".VolumeIcon.icns"));
+		
+		// creates image
+		getLog().info("Creating image: " + tempDmgFile.getAbsolutePath());
+		CommandUtils.execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", volumeName, "-fs", "HFS+", "-fsargs", "-c c=64,a=16,e=16", "-format", "UDRW", tempDmgFile);
+		
+		// mounts image
+		getLog().info("Mounting image: " + tempDmgFile.getAbsolutePath());
+		String result = CommandUtils.execute("hdiutil", "attach", "-readwrite", "-noverify", "-noautoopen", tempDmgFile);
+		String deviceName = Arrays.asList(result.split("\n")).stream().filter(s -> s.startsWith("/dev/")).findFirst().get();
+		getLog().info("- Device name: " + deviceName);
+		
+		// rendering applescript 
+		Map<String, Object> params = new HashMap<>();
+		params.put("windowX", "value");
+		params.put("windowY", "value");
+		params.put("windowWidth", "value");
+		params.put("windowHeight", "value");
+		params.put("iconSize", 128);
+		params.put("textSize", 16);
+		params.put("background", backgroundFile.getParentFile().getName() + "/" + backgroundFile.getName());
+		params.put("file", name);
+		params.put("fileX", 20);
+		params.put("fileY", 20);
+		params.put("appX", 100);
+		params.put("appY", 20);
+		File applescript = new File(assetsFolder, "customize-dmg.applescript");
+		getLog().info("Rendering applescript: " + applescript.getAbsolutePath());		
+		VelocityUtils.render("/mac/customize-dmg.applescript.vtl", applescript, params);
+		
+		// rendering applescript 
+		getLog().info("Running applescript");
+		CommandUtils.execute("/usr/bin/osascript", applescript, volumeName);
+	
+		// make sure it's not world writeable
+		getLog().info("Fixing permissions...");
+		CommandUtils.execute("chmod", "-Rf", "go-w", mountFolder);
+		
+		// make the top window open itself on mount:
+		getLog().info("Blessing ...");
+		CommandUtils.execute("bless", "--folder", mountFolder, "--openfolder", mountFolder);
+
+		// tell the volume that it has a special file attribute
+		CommandUtils.execute("SetFile", "-a", "C", mountFolder);
+		
+		// unmount
+		getLog().info("Unmounting disk image...");
+		CommandUtils.execute("hdiutil", "detach", deviceName);
+		
+		// compress image
+		getLog().info("Compressing disk image...");
+		CommandUtils.execute("hdiutil", "convert", tempDmgFile, "-format", "UDZO", "zlib-level=9", "-o", dmgFile);
+		tempDmgFile.delete();
+		
+		getLog().info("DMG disk image file generated!");
 		
 	}
 

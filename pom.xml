@@ -35,7 +35,6 @@
 		<connection>scm:git:git://github.com/fvarrui/JavaPackager.git</connection>
 		<developerConnection>scm:git:git@github.com:fvarrui/fvarrui.git</developerConnection>
 		<url>https://github.com/fvarrui/JavaPackager</url>
-		<tag>v0.9.1</tag>
 	</scm>
 
 	<dependencies>
