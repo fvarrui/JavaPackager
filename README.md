@@ -110,8 +110,8 @@ And by default it will generate next artifacts in `target ` folder:
 
 | Property    | Mandatory | Default | Description                                                  |
 | ----------- | --------- | ------- | ------------------------------------------------------------ |
-| `macConfig` | :x:       | `null`  | [Mac OS X specific properties](docs/macosx-specific-properties). |
-| `winConfig` | :x:       | `null`  | [Windows specific properties](docs/windows-specific-properties). |
+| `macConfig` | :x:       | `null`  | [Mac OS X specific properties](docs/macosx-specific-properties.md). |
+| `winConfig` | :x:       | `null`  | [Windows specific properties](docs/windows-specific-properties.md). |
 
 > See [**Older documentation**](#older-documentation) for previous versions properties.
 
