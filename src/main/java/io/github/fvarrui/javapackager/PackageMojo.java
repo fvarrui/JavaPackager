@@ -254,9 +254,10 @@ public class PackageMojo extends AbstractMojo {
 	private WinConfig winConfig;
 
 	/**
-	 * Old windows version information
-	 * @deprecated
+	 * Windows version information
+	 * @deprecated use {@link #winConfig} instead.  
 	 */
+	@Deprecated
 	@Parameter(property = "versionInfo", required = false)
 	private WinConfig versionInfo;
 	
