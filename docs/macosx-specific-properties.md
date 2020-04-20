@@ -1,4 +1,4 @@
-# Windows specific properties
+# Mac OS X specific properties
 
 ```xml
 <macConfig>
