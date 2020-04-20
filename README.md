@@ -61,17 +61,17 @@ mvn package
 
 And by default it will generate next artifacts in `target ` folder:
 
-| Artifact                           | Description                                                  | Related property    |
-| ---------------------------------- | ------------------------------------------------------------ | ------------------- |
-| `${name}`                          | Directory with the native application and other needed assets. |                     |
-| `${name}-${version}-runnable.jar`  | Runnable JAR file.                                           |                     |
-| `${name}_${version}.deb`           | DEB package file if it's executed on GNU/Linux (requires **dpkg-deb**). | `generateInstaller` |
-| `${name}_${version}.rpm`           | RPM package file if it's executed on GNU/Linux (requires **rpm-build**). | `generateInstaller` |
-| `${name}_${version}.exe`           | Installer file if it's executed on Windows (requires [**Inno Setup**](http://www.jrsoftware.org/isinfo.php)). | `generateInstaller` |
-| `${name}_${version}.dmg`           | Disk image file if it's executed on Mac OS X (requires **hdiutil**). | `generateInstaller` |
-| `${name}-${version}-bundle.zip`    | Zipball containing generated directory `${name}`.            | `createZipball`     |
-| `${name}-${version}-bundle.tar`    | Tarball containing generated directory `${name}`.            | `createTarball`     |
-| `${name}-${version}-bundle.tar.gz` | Compressed tarball containing generated directory `${name}`. | `createTarball`     |
+| Artifact                           | Description                                                  | Condition                   |
+| ---------------------------------- | ------------------------------------------------------------ | --------------------------- |
+| `${name}`                          | Directory with the native application and other needed assets. |                             |
+| `${name}-${version}-runnable.jar`  | Runnable JAR file.                                           |                             |
+| `${name}_${version}.deb`           | DEB package file if it's executed on GNU/Linux (requires **dpkg-deb**). | `generateInstaller == true` |
+| `${name}_${version}.rpm`           | RPM package file if it's executed on GNU/Linux (requires **rpm-build**). | `generateInstaller == true` |
+| `${name}_${version}.exe`           | Installer file if it's executed on Windows (requires [**Inno Setup**](http://www.jrsoftware.org/isinfo.php)). | `generateInstaller == true` |
+| `${name}_${version}.dmg`           | Disk image file if it's executed on Mac OS X (requires **hdiutil**). | `generateInstaller == true` |
+| `${name}-${version}-bundle.zip`    | Zipball containing generated directory `${name}`.            | `createZipball == true`     |
+| `${name}-${version}-bundle.tar`    | Tarball containing generated directory `${name}`.            | `createTarball == true`     |
+| `${name}-${version}-bundle.tar.gz` | Compressed tarball containing generated directory `${name}`. | `createTarball == true`     |
 
 >  :warning: DEB, RPM, EXE installer and DMG files generation will be ommited if target platform is different from current platform (see `platform` property).
 
