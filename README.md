@@ -40,6 +40,8 @@ Add the following `plugin` tag to your `pom.xml`:
                     <param>module2</param>
                     <param>...</param>
                 </additionalModules>
+                <macConfig>...</macConfig>
+                <winConfig>...</winConfig>
                 [...]
             </configuration>
         </execution>
