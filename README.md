@@ -140,16 +140,16 @@ And by default it will generate next artifacts in `target ` folder:
 
 ```xml
 <macConfig>
-    <!-- properties used in DMG disk image generation -->
+	<!-- properties used in DMG disk image generation -->
 	<backgroundImage>path/to/png</backgroundImage>
-    <windowX>x</windowX>
-    <windowY>y</windowY>
+	<windowX>x</windowX>
+	<windowY>y</windowY>
 	<windowWidth>width</windowWidth>
-    <windowHeight>height</windowHeight>
+	<windowHeight>height</windowHeight>
 	<iconSize>size</iconSize>
 	<textSize>size</textSize>
 	<iconX>x</iconX>
-    <iconY>y</iconY>
+	<iconY>y</iconY>
 	<appsLinkIconX>x</appsLinkIconX>
 	<appsLinkIconY>y</appsLinkIconY>
 	<volumeIcon>path/to/icns</volumeIcon>
