@@ -110,52 +110,12 @@ And by default it will generate next artifacts in `target ` folder:
 
 | Property    | Mandatory | Default | Description                                                  |
 | ----------- | --------- | ------- | ------------------------------------------------------------ |
-| `macConfig` | :x:       | `null`  | [Mac OS X specific configuration](#mac-os-x-config-property) properties. |
-| `winConfig` | :x:       | `null`  | [Windows specific configuration](#windows-config-property) properties. |
+| `macConfig` | :x:       | `null`  | [Mac OS X specific properties](docs/macosx-specific-properties). |
+| `winConfig` | :x:       | `null`  | [Windows specific properties](docs/windows-specific-properties). |
 
 > See [**Older documentation**](#older-documentation) for previous versions properties.
 
 > :warning: Be careful when using the `platform` property if your project uses platform dependent libraries, so the libraries of the current platform will be copied, not those required for the target platform. You can solve this problem using `classifiers`. Also, customized JRE generation will be ommited.
-
-### Platform specific properties
-
-#### Windows config property
-
-```xml
-<winConfig>
-	<!-- properties used in EXE generation by launch4j -->
-	<fileVersion>1.0.0.0</fileVersion>
-	<txtFileVersion>${version}</txtFileVersion>
-	<productVersion>1.0.0.0</productVersion>
-	<txtProductVersion>${version}</txtProductVersion>
-	<fileDescription>${description}</fileDescription>
-	<copyright>${organizationName}</copyright>
-	<productName>${name}</productName>
-	<internalName>${name}</internalName>
-	<originalFilename>${name}.exe</originalFilename>
-</winConfig>
-```
-
-#### Mac OS X config property
-
-```xml
-<macConfig>
-	<!-- properties used in DMG disk image generation -->
-	<backgroundImage>path/to/png</backgroundImage>
-	<windowX>x</windowX>
-	<windowY>y</windowY>
-	<windowWidth>width</windowWidth>
-	<windowHeight>height</windowHeight>
-	<iconSize>size</iconSize>
-	<textSize>size</textSize>
-	<iconX>x</iconX>
-	<iconY>y</iconY>
-	<appsLinkIconX>x</appsLinkIconX>
-	<appsLinkIconY>y</appsLinkIconY>
-	<volumeIcon>path/to/icns</volumeIcon>
-	<volumeName>${name}</volumeName>
-</macConfig>
-```
 
 ### Plugin assets
 
