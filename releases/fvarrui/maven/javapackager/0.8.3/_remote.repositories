@@ -1,0 +1,4 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Thu Oct 24 01:31:25 BST 2019
+javapackager-0.8.3.jar>=
+javapackager-0.8.3.pom>=
