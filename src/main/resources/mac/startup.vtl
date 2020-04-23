@@ -6,10 +6,11 @@ JAVA=$SCRIPTPATH/../PlugIns/${info.jreDirectoryName}/Contents/Home/bin/java
 #else
 JAVA=`/usr/libexec/java_home`/bin/java
 #end
-BINARY=$SCRIPTPATH/../Resources/Java/${info.jarFile}
+BINARY=Java/${info.jarFile}
 #if($info.envPath)
 export PATH=${info.envPath}
 #end
+cd $SCRIPTPATH/../Resources 
 #if($info.administratorRequired)
 /usr/bin/osascript -e "do shell script \"$JAVA ${info.vmArgs} -Dapple.laf.useScreenMenuBar=true -Xdock:name='${info.displayName}' -Xdock:icon=$SCRIPTPATH/../Resources/${info.name}.icns -jar $BINARY $@\" with administrator privileges"
 #else
