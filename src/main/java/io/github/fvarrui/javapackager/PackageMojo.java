@@ -885,13 +885,13 @@ public class PackageMojo extends AbstractMojo {
 		int fileY = defaultIfNull(macConfig.getIconY(), 116);
 		int appX = defaultIfNull(macConfig.getAppsLinkIconX(), 360);
 		int appY = defaultIfNull(macConfig.getAppsLinkIconY(), 116);
-		String volumeName = defaultIfBlank(macConfig.getVolumeName(), name);
+		String volumeName = defaultIfBlank(macConfig.getVolumeName(), displayName);
 		
 		// final dmg file
 		File dmgFile = new File(outputDirectory, name + "_" + version + ".dmg");
 		
 		// temp dmg file
-		File tempDmgFile = new File(assetsFolder, name + "_" + version + ".dmg");
+		File tempDmgFile = new File(assetsFolder, dmgFile.getName());
 
 		// mount dir
 		File mountFolder = new File("/Volumes/" + volumeName);
@@ -945,13 +945,13 @@ public class PackageMojo extends AbstractMojo {
 		params.put("fileY", fileY);
 		params.put("appX", appX);
 		params.put("appY", appY);
-		File applescript = new File(assetsFolder, "customize-dmg.applescript");
-		getLog().info("Rendering applescript: " + applescript.getAbsolutePath());
-		VelocityUtils.render("/mac/customize-dmg.applescript.vtl", applescript, params);
+		File applescriptFile = new File(assetsFolder, "customize-dmg.applescript");
+		getLog().info("Rendering applescript: " + applescriptFile.getAbsolutePath());
+		VelocityUtils.render("/mac/customize-dmg.applescript.vtl", applescriptFile, params);
 		
 		// rendering applescript 
 		getLog().info("Running applescript");
-		CommandUtils.execute("/usr/bin/osascript", applescript, volumeName);
+		CommandUtils.execute("/usr/bin/osascript", applescriptFile, volumeName);
 	
 		// make sure it's not world writeable
 		getLog().info("Fixing permissions...");
