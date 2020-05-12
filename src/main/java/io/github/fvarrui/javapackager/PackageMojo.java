@@ -887,6 +887,12 @@ public class PackageMojo extends AbstractMojo {
 		int appY = defaultIfNull(macConfig.getAppsLinkIconY(), 116);
 		String volumeName = defaultIfBlank(macConfig.getVolumeName(), displayName);
 		
+		// removes whitespaces from volume name
+		if (StringUtils.containsWhitespace(volumeName)) {
+			volumeName = volumeName.replaceAll(" ", "");
+			getLog().warn("Whitespaces has been removed from volume name: " + volumeName);
+		}
+		
 		// final dmg file
 		File dmgFile = new File(outputDirectory, name + "_" + version + ".dmg");
 		
@@ -1231,5 +1237,5 @@ public class PackageMojo extends AbstractMojo {
 				),
 				env);
 	}
-
+	
 }
