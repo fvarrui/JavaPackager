@@ -706,7 +706,7 @@ public class PackageMojo extends AbstractMojo {
 		List<Element> optsElements = vmArgs.stream().map(arg -> element("opt", arg)).collect(Collectors.toList()); 
 		
 		List<Element> config = new ArrayList<>();
-		config.add(element("headerType", "gui"));
+		config.add(element("headerType", winConfig.getHeaderType().toString()));
 		config.add(element("jar", jarFile.getAbsolutePath()));
 		config.add(element("outfile", executable.getAbsolutePath() + ".exe"));
 		config.add(element("icon", iconFile.getAbsolutePath()));

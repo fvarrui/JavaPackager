@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class WinConfig {
 
+	private HeaderType headerType;
 	private String companyName;
 	private String copyright;
 	private String fileDescription;
@@ -18,6 +19,14 @@ public class WinConfig {
 	private String trademarks;
 	private String txtFileVersion;
 	private String txtProductVersion;
+
+	public HeaderType getHeaderType() {
+		return headerType;
+	}
+
+	public void setHeaderType(HeaderType headerType) {
+		this.headerType = headerType;
+	}
 
 	public String getCompanyName() {
 		return companyName;
@@ -117,33 +126,25 @@ public class WinConfig {
 
 	@Override
 	public String toString() {
-		return "VersionInfo ["
-				+ "companyName=" + companyName + ", "
-				+ "copyright=" + copyright + ", "
-				+ "fileDescription=" + fileDescription + ", "
-				+ "fileVersion=" + fileVersion + ", "
-				+ "internalName=" + internalName + ", "
-				+ "language=" + language + ", "
-				+ "originalFilename=" + originalFilename + ", "
-				+ "productName=" + productName + ", "
-				+ "productVersion=" + productVersion + ", "
-				+ "trademarks=" + trademarks + ", "
-				+ "txtFileVersion=" + txtFileVersion + ", "
-				+ "txtProductVersion=" + txtProductVersion + 
-			"]";
+		return "WinConfig [headerType=" + headerType + ", companyName=" + companyName + ", copyright=" + copyright
+				+ ", fileDescription=" + fileDescription + ", fileVersion=" + fileVersion + ", internalName="
+				+ internalName + ", language=" + language + ", originalFilename=" + originalFilename + ", productName="
+				+ productName + ", productVersion=" + productVersion + ", trademarks=" + trademarks
+				+ ", txtFileVersion=" + txtFileVersion + ", txtProductVersion=" + txtProductVersion + "]";
 	}
-	
+
 	public void setDefaults(Map<String, Object> info) {
-		fileVersion 		= defaultIfBlank(fileVersion, 		"1.0.0.0");
-		txtFileVersion 		= defaultIfBlank(txtFileVersion, 	"" + info.get("version"));
-		productVersion 		= defaultIfBlank(productVersion, 	"1.0.0.0");
-		txtProductVersion 	= defaultIfBlank(txtProductVersion, "" + info.get("version"));
-		companyName			= defaultIfBlank(companyName, 		"" + info.get("organizationName"));
-		copyright 			= defaultIfBlank(copyright, 		"" + info.get("organizationName"));
-		fileDescription 	= defaultIfBlank(fileDescription, 	"" + info.get("description"));
-		productName 		= defaultIfBlank(productName, 		"" + info.get("name"));
-		internalName 		= defaultIfBlank(internalName, 		"" + info.get("name"));
-		originalFilename 	= defaultIfBlank(originalFilename, 	info.get("name") + ".exe");
+		headerType = headerType == null ? HeaderType.gui : headerType;
+		fileVersion = defaultIfBlank(fileVersion, "1.0.0.0");
+		txtFileVersion = defaultIfBlank(txtFileVersion, "" + info.get("version"));
+		productVersion = defaultIfBlank(productVersion, "1.0.0.0");
+		txtProductVersion = defaultIfBlank(txtProductVersion, "" + info.get("version"));
+		companyName = defaultIfBlank(companyName, "" + info.get("organizationName"));
+		copyright = defaultIfBlank(copyright, "" + info.get("organizationName"));
+		fileDescription = defaultIfBlank(fileDescription, "" + info.get("description"));
+		productName = defaultIfBlank(productName, "" + info.get("name"));
+		internalName = defaultIfBlank(internalName, "" + info.get("name"));
+		originalFilename = defaultIfBlank(originalFilename, info.get("name") + ".exe");
 	}
-	
+
 }
