@@ -218,7 +218,7 @@ public class PackageMojo extends ParentMojo {
 	/**
 	 * Extra properties for customized Velocity templates, accesible through '$this.extra' map. 
 	 */
-	@Parameter(defaultValue = "false", property = "createZipball", required = false)
+	@Parameter(property = "extra", required = false)
 	private Map<String, String> extra;
 
 	public void execute() throws MojoExecutionException {
