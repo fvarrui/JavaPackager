@@ -26,7 +26,7 @@ on run (volumeName)
 				set text size to ${info.macConfig.textSize}
 				set arrangement to not arranged
 			end tell
-			set background picture of opts to file ".background:${info.macConfig.backgroundImage}"
+			set background picture of opts to file ".background:background.png"
 
 			-- Positioning
 			set position of item "${info.name}.app" to {${info.macConfig.iconX}, ${info.macConfig.iconY}}
