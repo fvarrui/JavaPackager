@@ -3,10 +3,10 @@ on run (volumeName)
 		tell disk (volumeName as string)
 			open
 
-			set theXOrigin to ${info.windowX}
-			set theYOrigin to ${info.windowY}
-			set theWidth to ${info.windowWidth}
-			set theHeight to ${info.windowHeight}
+			set theXOrigin to ${info.macConfig.windowX}
+			set theYOrigin to ${info.macConfig.windowY}
+			set theWidth to ${info.macConfig.windowWidth}
+			set theHeight to ${info.macConfig.windowHeight}
 
 			set theBottomRightX to (theXOrigin + theWidth)
 			set theBottomRightY to (theYOrigin + theHeight)
@@ -22,20 +22,20 @@ on run (volumeName)
 
 			set opts to the icon view options of container window
 			tell opts
-				set icon size to ${info.iconSize}
-				set text size to ${info.textSize}
+				set icon size to ${info.macConfig.iconSize}
+				set text size to ${info.macConfig.textSize}
 				set arrangement to not arranged
 			end tell
-			set background picture of opts to file ".background:${info.background}"
+			set background picture of opts to file ".background:${info.macConfig.background}"
 
 			-- Positioning
-			set position of item "${info.file}" to {${info.fileX}, ${info.fileY}}
+			set position of item "${info.macConfig.file}" to {${info.macConfig.fileX}, ${info.macConfig.fileY}}
 
 			-- Hiding
-			set the extension hidden of item "${info.file}" to true
+			set the extension hidden of item "${info.macConfig.file}" to true
 
 			-- Application
-			set position of item "Applications" to {${info.appX}, ${info.appY}}
+			set position of item "Applications" to {${info.macConfig.appX}, ${info.macConfig.appY}}
 
 			close
 			open
