@@ -26,16 +26,16 @@ on run (volumeName)
 				set text size to ${info.macConfig.textSize}
 				set arrangement to not arranged
 			end tell
-			set background picture of opts to file ".background:${info.macConfig.background}"
+			set background picture of opts to file ".background:${info.macConfig.backgroundImage}"
 
 			-- Positioning
-			set position of item "${info.macConfig.file}" to {${info.macConfig.fileX}, ${info.macConfig.fileY}}
+			set position of item "${info.name}.app" to {${info.macConfig.iconX}, ${info.macConfig.iconY}}
 
 			-- Hiding
-			set the extension hidden of item "${info.macConfig.file}" to true
+			set the extension hidden of item "${info.name}.app" to true
 
 			-- Application
-			set position of item "Applications" to {${info.macConfig.appX}, ${info.macConfig.appY}}
+			set position of item "Applications" to {${info.macConfig.appsLinkIconX}, ${info.macConfig.appsLinkIconY}}
 
 			close
 			open
