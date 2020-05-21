@@ -2,6 +2,9 @@
 
 ```xml
 <macConfig>
+    <!-- general properties -->
+    <generateDmg>true|false</generateDmg>
+    <generatePkg>true|false</generatePkg>
 	<!-- properties used in DMG disk image generation -->
 	<backgroundImage>path/to/png</backgroundImage>
 	<windowX>x</windowX>
@@ -18,6 +21,14 @@
 	<volumeName>${name}</volumeName>
 </macConfig>
 ```
+
+| Property      | Mandatory | Default value | Description                              |
+| ------------- | --------- | ------------- | ---------------------------------------- |
+| `generateDmg` | :x:       | `true`        | Enables DMG disk image file generation.  |
+| `generatePkg` | :x:       | `true`        | Enables installation package generation. |
+
+
+## DMG generation properties
 
 | Property          | Mandatory | Default value                   | Description                                                |
 | ----------------- | --------- | ------------------------------- | ---------------------------------------------------------- |
