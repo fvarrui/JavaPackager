@@ -5,8 +5,6 @@ JavaPackager is a Maven plugin which provides an easy way to package Java applic
 
 > SNAPSHOT versions are not pusblished at Maven Central, so you have to [install them manually](#how-to-build-and-install-the-plugin). 
 
-This documentation is about last SNAPSHOT version. To see older documentation follow this [link](#older-documentation).
-
 ## How to use the plugin
 
 ### Config your project
