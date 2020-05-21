@@ -91,6 +91,7 @@ And by default it will generate next artifacts in `target ` folder:
 | `description`           | :x:                | `${project.description}` or `${displayName}`                 | Project description.                                         |
 | `displayName`           | :x:                | `${project.name}` or `${name}`                               | App name to show.                                            |
 | `envPath`               | :x:                | `null`                                                       | Defines PATH environment variable in GNU/Linux and Mac OS X startup scripts. |
+| `extra`                 | :x:                | `null`                                                       | Map with extra properties to be used in customized Velocity templates, accesible through `$info.extra` variable. |
 | `generateInstaller`     | :x:                | `true`                                                       | Generates an installer for the app.                          |
 | `iconFile`              | :x:                | `null`                                                       | Path to the app icon file (PNG, XPM, ICO or ICNS).           |
 | `jreDirectoryName`      | :x:                | `"jre"`                                                      | Bundled JRE directory name.                                  |
@@ -118,7 +119,7 @@ And by default it will generate next artifacts in `target ` folder:
 
 > See [**Older documentation**](#older-documentation) for previous versions properties.
 
-> :warning: Be careful when using the `platform` property if your project uses platform dependent libraries, so the libraries of the current platform will be copied, not those required for the target platform. You can solve this problem using `classifiers`. Also, customized JRE generation will be ommited.
+> :warning: Be careful when using the `platform` property if your project uses platform dependent libraries, so the libraries of the current platform will be copied, not those required for the target platform. You can solve this problem using `classifiers`. Also, customized JRE and intallers generation will be ommited.
 
 ### Plugin assets
 

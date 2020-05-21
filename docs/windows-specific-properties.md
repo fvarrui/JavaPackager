@@ -3,8 +3,8 @@
 ```xml
 <winConfig>
     <!-- exe creation properties -->
-    <headerType>gui</headerType>
-    <companyName>${organizationName}</companyName>
+	<headerType>gui</headerType>
+	<companyName>${organizationName}</companyName>
 	<fileVersion>1.0.0.0</fileVersion>
 	<txtFileVersion>${version}</txtFileVersion>
 	<productVersion>1.0.0.0</productVersion>
@@ -14,11 +14,11 @@
 	<productName>${name}</productName>
 	<internalName>${name}</internalName>
 	<originalFilename>${name}.exe</originalFilename>
-    <!-- setup generation properties -->
-    <disableDirPage>true|false</disableDirPage>
-    <disableProgramGroupPage>true|false</disableProgramGroupPage>
-    <disableFinishedPage>true|false</disableFinishedPage>
-    <createDesktopIconTask>true|false</createDesktopIconTask>
+	<!-- setup generation properties -->
+	<disableDirPage>true|false</disableDirPage>
+	<disableProgramGroupPage>true|false</disableProgramGroupPage>
+	<disableFinishedPage>true|false</disableFinishedPage>
+	<createDesktopIconTask>true|false</createDesktopIconTask>
 </winConfig>
 ```
 
