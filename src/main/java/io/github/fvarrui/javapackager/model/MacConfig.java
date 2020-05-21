@@ -1,6 +1,10 @@
 package io.github.fvarrui.javapackager.model;
 
+import static io.github.fvarrui.javapackager.utils.NumberUtils.defaultIfNull;
+
 import java.io.File;
+
+import io.github.fvarrui.javapackager.packagers.Packager;
 
 public class MacConfig {
 
@@ -120,6 +124,32 @@ public class MacConfig {
 
 	public void setVolumeName(String volumeName) {
 		this.volumeName = volumeName;
+	}
+
+	@Override
+	public String toString() {
+		return "[backgroundImage=" + backgroundImage + ", windowWidth=" + windowWidth + ", windowHeight="
+				+ windowHeight + ", windowX=" + windowX + ", windowY=" + windowY + ", iconSize=" + iconSize
+				+ ", textSize=" + textSize + ", iconX=" + iconX + ", iconY=" + iconY + ", appsLinkIconX="
+				+ appsLinkIconX + ", appsLinkIconY=" + appsLinkIconY + ", volumeIcon=" + volumeIcon + ", volumeName="
+				+ volumeName + "]";
+	}
+
+	/**
+	 * Tests Mac OS X specific config and set defaults if not specified
+	 * @param packager
+	 */
+	public void setDefaults(Packager packager) {
+		this.setWindowX(defaultIfNull(this.getWindowX(), 10));
+		this.setWindowY(defaultIfNull(this.getWindowY(), 60));
+		this.setWindowWidth(defaultIfNull(this.getWindowWidth(), 540));
+		this.setWindowHeight(defaultIfNull(this.getWindowHeight(), 360));
+		this.setIconSize(defaultIfNull(this.getIconSize(), 128));
+		this.setTextSize(defaultIfNull(this.getIconSize(), 16));
+		this.setIconX(defaultIfNull(this.getIconX(), 52));
+		this.setIconY(defaultIfNull(this.getIconY(), 116));
+		this.setAppsLinkIconX(defaultIfNull(this.getAppsLinkIconX(), 360));
+		this.setAppsLinkIconY(defaultIfNull(this.getAppsLinkIconY(), 116));		
 	}
 
 }

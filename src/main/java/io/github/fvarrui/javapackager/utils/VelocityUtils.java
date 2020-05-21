@@ -4,8 +4,8 @@ import static org.apache.commons.io.FileUtils.writeStringToFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -35,7 +35,7 @@ public class VelocityUtils {
 		velocityEngine.init();
 	}
 
-	public static void render(String templatePath, File output, Map<String, Object> info) throws MojoExecutionException {
+	public static void render(String templatePath, File output, Object info) throws MojoExecutionException {
 		try {
 			String data = render(templatePath, info);
 			data = data.replaceAll("\\r\\n", "\n").replaceAll("\\r", "\n");
@@ -45,13 +45,14 @@ public class VelocityUtils {
 		}
 	}
 	
-	public static String render(String templatePath, Map<String, Object> info) throws MojoExecutionException {
+	public static String render(String templatePath, Object info) throws MojoExecutionException {
 		VelocityContext context = new VelocityContext();
+		context.put("StringUtils", StringUtils.class);
 		context.put("info", info);
 		Template template = velocityEngine.getTemplate(templatePath, "UTF-8");
 		StringBuilderWriter writer = new StringBuilderWriter();
 		template.merge(context, writer);		
 		return writer.toString();
 	}
-
+	
 }

@@ -1,10 +1,10 @@
 \#define MyAppName "${info.name}"
 \#define MyAppVersion "${info.version}"
 \#define MyAppPublisher "${info.organizationName}"
-\#define MyAppURL "${info.organizationUrl}"
+\#define MyAppURL "$!{info.organizationUrl}"
 \#define MyAppExeName "${info.name}.exe"
 \#define MyAppFolder "${info.name}"
-\#define MyAppLicense "${info.license}"
+\#define MyAppLicense "$!{info.licenseFile.absolutePath}"
 \#define MyAppIcon "${info.name}.ico"
 
 [Setup]
@@ -17,9 +17,22 @@ AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={commonpf}\{#MyAppFolder}
+#if ($info.winConfig.disableDirPage)
 DisableDirPage=yes
+#else
+DisableDirPage=no
+#end
+#if ($info.winConfig.disableProgramGroupPage)
 DisableProgramGroupPage=yes
+#else
+DefaultGroupName={#MyAppName}
+DisableProgramGroupPage=no
+#end
+#if ($info.winConfig.disableFinishedPage)
 DisableFinishedPage=yes
+#else
+DisableFinishedPage=no
+#end
 PrivilegesRequired=admin
 LicenseFile={#MyAppLicense}
 SetupIconFile={#MyAppIcon}
@@ -33,14 +46,18 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 
 [Tasks]
+#if ($info.winConfig.createDesktopIconTask)
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+#end
 
 [Files]
 Source: "..\\${info.name}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{commonprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
+#if ($info.winConfig.createDesktopIconTask)
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+#end
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent runascurrentuser

@@ -13,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
@@ -178,6 +179,11 @@ public class FileUtils {
 		return Arrays.asList(searchFolder.listFiles((dir, name) -> Pattern.matches(regex, name)))
 				.stream()
 				.map(f -> new File(f.getName())).findFirst().get();
+	}
+	
+	public static void downloadFromUrl(URL url, File file) throws IOException {
+		org.apache.commons.io.FileUtils.copyURLToFile(url, file);
+		Logger.info("File downloaded from [" + url + "] to [" + file.getAbsolutePath() + "]");
 	}
 
 }

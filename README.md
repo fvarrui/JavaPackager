@@ -15,7 +15,7 @@ Add the following `plugin` tag to your `pom.xml`:
 <plugin>
     <groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
-    <version>0.9.7|0.9.8-SNAPSHOT</version>
+    <version>0.9.7|1.0.0-SNAPSHOT</version>
     <executions>
         <execution>
             <phase>package</phase>
@@ -31,15 +31,16 @@ Add the following `plugin` tag to your `pom.xml`:
                 <administratorRequired>true|false</administratorRequired>
                 <platform>auto|linux|mac|windows</platform>
                 <additionalResources>
-                    <param>file path</param>
-                    <param>folder path</param>
-                    <param>...</param>
+                    <additionalResource>file path</additionalResource>
+                    <additionalResource>folder path</additionalResource>
+                    <additionalResource>...</additionalResource>
                 </additionalResources>
                 <additionalModules>
-                    <param>module1</param>
-                    <param>module2</param>
-                    <param>...</param>
+                    <additionalModule>module1</additionalModule>
+                    <additionalModule>module2</additionalModule>
+                    <additionalModule>...</additionalModule>
                 </additionalModules>
+                <linuxConfig>...</linuxConfig>
                 <macConfig>...</macConfig>
                 <winConfig>...</winConfig>
                 [...]
@@ -61,17 +62,17 @@ mvn package
 
 And by default it will generate next artifacts in `target ` folder:
 
-| Artifact                           | Description                                                  | Condition                   |
-| ---------------------------------- | ------------------------------------------------------------ | --------------------------- |
-| `${name}`                          | Directory with the native application and other needed assets. |                             |
-| `${name}-${version}-runnable.jar`  | Runnable JAR file.                                           |                             |
-| `${name}_${version}.deb`           | DEB package file if it's executed on GNU/Linux (requires **dpkg-deb**). | `generateInstaller == true` |
-| `${name}_${version}.rpm`           | RPM package file if it's executed on GNU/Linux (requires **rpm-build**). | `generateInstaller == true` |
-| `${name}_${version}.exe`           | Installer file if it's executed on Windows (requires [**Inno Setup**](http://www.jrsoftware.org/isinfo.php)). | `generateInstaller == true` |
-| `${name}_${version}.dmg`           | Disk image file if it's executed on Mac OS X (requires **hdiutil**). | `generateInstaller == true` |
-| `${name}-${version}-bundle.zip`    | Zipball containing generated directory `${name}`.            | `createZipball == true`     |
-| `${name}-${version}-bundle.tar`    | Tarball containing generated directory `${name}`.            | `createTarball == true`     |
-| `${name}-${version}-bundle.tar.gz` | Compressed tarball containing generated directory `${name}`. | `createTarball == true`     |
+| Artifact                                | Description                                                  |
+| --------------------------------------- | ------------------------------------------------------------ |
+| `${name}`                               | Directory with the native application and other needed assets. |
+| `${name}-${version}-runnable.jar`       | Runnable JAR file.                                           |
+| `${name}_${version}.deb`                | DEB package file if it's executed on GNU/Linux (requires **dpkg-deb**). |
+| `${name}_${version}.rpm`                | RPM package file if it's executed on GNU/Linux (requires **rpm-build**). |
+| `${name}_${version}.exe`                | Installer file if it's executed on Windows (requires [**Inno Setup**](http://www.jrsoftware.org/isinfo.php)). |
+| `${name}_${version}.dmg`                | Disk image file if it's executed on Mac OS X (requires **hdiutil**). |
+| `${name}-${version}-${platform}.zip`    | Zipball containing generated directory `${name}`.            |
+| `${name}-${version}-${platform}.tar`    | Tarball containing generated directory `${name}`.            |
+| `${name}-${version}-${platform}.tar.gz` | Compressed tarball containing generated directory `${name}`. |
 
 >  :warning: DEB, RPM, EXE installer and DMG files generation will be ommited if target platform is different from current platform (see `platform` property).
 
@@ -105,15 +106,15 @@ And by default it will generate next artifacts in `target ` folder:
 | `runnableJar`           | :x:                | `null`                                                       | Defines your own JAR file to be bundled. If it's ommited, the plugin packages your code in a runnable JAR and bundle it with the app. |
 | `url`                   | :x:                | `null`                                                       | App website URL.                                             |
 | ` version`              | :x:                | `${project.version}`                                         | Project version.                                             |
-| `versionInfo`           | :x:                | `null`                                                       | Version information for native Windows `.exe` file. :warning: **Deprecated. Use `winConfig` instead**. |
 | `vmArgs`                | :x:                | `[]`                                                         | Adds VM arguments.                                           |
 
 **Platform specific properties**
 
-| Property    | Mandatory | Default | Description                                                  |
-| ----------- | --------- | ------- | ------------------------------------------------------------ |
-| `macConfig` | :x:       | `null`  | [Mac OS X specific properties](docs/macosx-specific-properties.md). |
-| `winConfig` | :x:       | `null`  | [Windows specific properties](docs/windows-specific-properties.md). |
+| Property      | Mandatory | Default | Description                                                  |
+| ------------- | --------- | ------- | ------------------------------------------------------------ |
+| `linuxConfig` | :x:       | `null`  | [GNU/Linux specific properties](docs/linux-specific-properties.md). |
+| `macConfig`   | :x:       | `null`  | [Mac OS X specific properties](docs/macosx-specific-properties.md). |
+| `winConfig`   | :x:       | `null`  | [Windows specific properties](docs/windows-specific-properties.md). |
 
 > See [**Older documentation**](#older-documentation) for previous versions properties.
 
@@ -175,27 +176,7 @@ It is possible to use your own customized templates. You just have to put one of
 
 > Use [default templates](https://github.com/fvarrui/JavaPackager/tree/master/src/main/resources) as examples.
 
-A map called `info` is passed to all templates when they are rendered with next keys:
-
-| Key                             | Type    | Description                                      |
-| ------------------------------- | ------- | ------------------------------------------------ |
-| `${info.name}`                  | String  | Same as `name` plugin property.                  |
-| `${info.displayName}`           | String  | Same as `displayName` plugin property.           |
-| `${info.version}`               | String  | Same as `version` plugin property.               |
-| `${info.description}`           | String  | Same as `description` plugin property.           |
-| `${info.url}`                   | String  | Same as `url` plugin property.                   |
-| `${info.organizationName}`      | String  | Same as `organizationName` plugin property.      |
-| `${info.organizationUrl}`       | String  | Same as `organizationUrl` plugin property.       |
-| `${info.organizationEmail}`     | String  | Same as `organizationEmail` plugin property.     |
-| `${info.administratorRequired}` | Boolean | Same as `administratorRequired` plugin property. |
-| `${info.bundleJre}`             | Boolean | Same as `bundleJre` plugin property.             |
-| `${info.jarFile}`               | String  | Full path to runnable JAR file.                  |
-| `${info.jreDirectoryName}`      | String  | Same as `jreDirectoryName` plugin property.      |
-| `${info.license}`               | String  | Full path to license file.                       |
-| `${info.envPath}`               | String  | Same as `envPath` plugin property.               |
-| `${info.vmArgs}`                | String  | Same as `vmArgs` plugin property.                |
-| `${info.createTarball}`         | Boolean | Same as `createTarball` plugin property.         |
-| `${info.createZipball}`         | Boolean | Same as `createZipball` plugin property.         |
+An object called `info` is passed to all templates with all plugin properties.
 
 ## How to build and install the plugin
 
@@ -232,6 +213,8 @@ Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column
 
 ## Older documentation
 
+- [v0.9.7](https://github.com/fvarrui/JavaPackager/blob/v0.9.7/README.md)
+- [v0.9.6](https://github.com/fvarrui/JavaPackager/blob/v0.9.6/README.md)
 - [v0.9.5](https://github.com/fvarrui/JavaPackager/blob/v0.9.5/README.md)
 - [v0.9.4](https://github.com/fvarrui/JavaPackager/blob/v0.9.4/README.md)
 - [v0.9.3](https://github.com/fvarrui/JavaPackager/blob/v0.9.3/README.md)
