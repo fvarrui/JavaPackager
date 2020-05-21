@@ -145,7 +145,7 @@ public class MacConfig {
 		this.setWindowWidth(defaultIfNull(this.getWindowWidth(), 540));
 		this.setWindowHeight(defaultIfNull(this.getWindowHeight(), 360));
 		this.setIconSize(defaultIfNull(this.getIconSize(), 128));
-		this.setTextSize(defaultIfNull(this.getIconSize(), 16));
+		this.setTextSize(defaultIfNull(this.getTextSize(), 16));
 		this.setIconX(defaultIfNull(this.getIconX(), 52));
 		this.setIconY(defaultIfNull(this.getIconY(), 116));
 		this.setAppsLinkIconX(defaultIfNull(this.getAppsLinkIconX(), 360));
