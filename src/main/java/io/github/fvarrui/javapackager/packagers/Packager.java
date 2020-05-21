@@ -915,7 +915,7 @@ public abstract class Packager {
         }
         
 		// copies all dependencies to Java folder
-		File libsFolder = new File(resourcesDestinationFolder, "libs");
+		File libsFolder = new File(jarFileDestinationFolder, "libs");
 		copyAllDependencies(libsFolder);
 
 		// checks if JRE should be embedded
