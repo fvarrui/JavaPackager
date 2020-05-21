@@ -21,6 +21,8 @@ public class MacConfig {
 	private Integer appsLinkIconY;
 	private File volumeIcon;
 	private String volumeName;
+	private boolean generateDmg = true;
+	private boolean generatePkg = true;
 
 	public File getBackgroundImage() {
 		return backgroundImage;
@@ -126,17 +128,36 @@ public class MacConfig {
 		this.volumeName = volumeName;
 	}
 
+	public boolean isGenerateDmg() {
+		return generateDmg;
+	}
+
+	public void setGenerateDmg(boolean generateDmg) {
+		this.generateDmg = generateDmg;
+	}
+
+	public boolean isGeneratePkg() {
+		return generatePkg;
+	}
+
+	public void setGeneratePkg(boolean generatePkg) {
+		this.generatePkg = generatePkg;
+	}
+
+
+
 	@Override
 	public String toString() {
 		return "[backgroundImage=" + backgroundImage + ", windowWidth=" + windowWidth + ", windowHeight="
 				+ windowHeight + ", windowX=" + windowX + ", windowY=" + windowY + ", iconSize=" + iconSize
 				+ ", textSize=" + textSize + ", iconX=" + iconX + ", iconY=" + iconY + ", appsLinkIconX="
 				+ appsLinkIconX + ", appsLinkIconY=" + appsLinkIconY + ", volumeIcon=" + volumeIcon + ", volumeName="
-				+ volumeName + "]";
+				+ volumeName + ", generateDmg=" + generateDmg + ", generatePkg=" + generatePkg + "]";
 	}
 
 	/**
 	 * Tests Mac OS X specific config and set defaults if not specified
+	 * 
 	 * @param packager
 	 */
 	public void setDefaults(Packager packager) {
@@ -149,7 +170,7 @@ public class MacConfig {
 		this.setIconX(defaultIfNull(this.getIconX(), 52));
 		this.setIconY(defaultIfNull(this.getIconY(), 116));
 		this.setAppsLinkIconX(defaultIfNull(this.getAppsLinkIconX(), 360));
-		this.setAppsLinkIconY(defaultIfNull(this.getAppsLinkIconY(), 116));		
+		this.setAppsLinkIconY(defaultIfNull(this.getAppsLinkIconY(), 116));
 	}
 
 }

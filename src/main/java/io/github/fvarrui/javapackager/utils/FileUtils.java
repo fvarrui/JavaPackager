@@ -131,8 +131,7 @@ public class FileUtils {
 		}
 	}
 	
-	public static void copyStreamToFile(InputStream is, File dest) throws MojoExecutionException {
-		Logger.info("Copying stream to file [" + dest + "]");		
+	private static void copyStreamToFile(InputStream is, File dest) throws MojoExecutionException {
         try {
         	copyInputStreamToFile(is, dest);
         } catch (IOException ex) {

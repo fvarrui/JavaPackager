@@ -189,11 +189,15 @@ public class MacPackager extends Packager {
 	@Override
 	public void doGenerateInstallers(List<File> installers) throws MojoExecutionException {
 		
-		File dmgFile = generateDmg();
-		if (dmgFile != null) installers.add(dmgFile);
+		if (macConfig.isGenerateDmg()) {
+			File dmgFile = generateDmg();
+			if (dmgFile != null) installers.add(dmgFile);
+		}
 		
-		File pkgFile = generatePkg();
-		if (pkgFile != null) installers.add(pkgFile);
+		if (macConfig.isGeneratePkg()) {
+			File pkgFile = generatePkg();
+			if (pkgFile != null) installers.add(pkgFile);
+		}
 		
 	}
 

@@ -242,12 +242,12 @@ public class LinuxPackager extends Packager {
 	@Override
 	public void doGenerateInstallers(List<File> installers) throws MojoExecutionException {
 
-		if (linuxConfig == null || linuxConfig.isGenerateDeb()) {
+		if (linuxConfig.isGenerateDeb()) {
 			File debFile = generateDebPackage();
 			installers.add(debFile);			
 		}
 		
-		if (linuxConfig == null || linuxConfig.isGenerateRpm()) {
+		if (linuxConfig.isGenerateRpm()) {
 			File rpmFile = generateRpmPackage();
 			installers.add(rpmFile);
 		}
