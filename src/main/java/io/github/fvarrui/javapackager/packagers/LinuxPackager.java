@@ -29,7 +29,7 @@ public class LinuxPackager extends Packager {
 	 */
 	private File generateRpmPackage() throws MojoExecutionException {
 
-		Logger.info("Generating RPM package...");
+		Logger.append("Generating RPM package...");
 
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");
@@ -115,7 +115,7 @@ public class LinuxPackager extends Packager {
 				),
 				env);
 
-		Logger.info("RPM package generated! " + rpmFile.getAbsolutePath());
+		Logger.subtract("RPM package generated! " + rpmFile.getAbsolutePath());
 
 		return rpmFile;
 	}
@@ -128,7 +128,7 @@ public class LinuxPackager extends Packager {
 	 */
 	private File generateDebPackage() throws MojoExecutionException {
 
-		Logger.info("Generating DEB package ...");
+		Logger.append("Generating DEB package ...");
 
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");
@@ -207,7 +207,7 @@ public class LinuxPackager extends Packager {
 				),
 				env);
 		
-		Logger.info("DEB package generated! " + debFile.getAbsolutePath());
+		Logger.subtract("DEB package generated! " + debFile.getAbsolutePath());
 		
 		return debFile;
 	}
