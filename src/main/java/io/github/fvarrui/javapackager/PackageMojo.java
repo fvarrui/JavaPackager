@@ -220,6 +220,12 @@ public class PackageMojo extends ParentMojo {
 	 */
 	@Parameter(property = "extra", required = false)
 	private Map<String, String> extra;
+	
+	/**
+	 * Uses app resources folder as default working directory.
+	 */
+	@Parameter(defaultValue = "true", property = "useResourcesFolderAsWorkingDirectory", required = false)
+	private boolean useResourcesFolderAsWorkingDirectory;
 
 	public void execute() throws MojoExecutionException {
 		
@@ -256,6 +262,7 @@ public class PackageMojo extends ParentMojo {
 						.outputDirectory(outputDirectory)
 						.platform(platform)
 						.runnableJar(runnableJar)
+						.useResourcesFolderAsWorkingDirectory(useResourcesFolderAsWorkingDirectory)
 						.url(organizationUrl)
 						.vmArgs(vmArgs)
 						.winConfig(winConfig);

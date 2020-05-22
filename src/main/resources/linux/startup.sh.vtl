@@ -11,7 +11,9 @@ BINARY=$SCRIPTPATH/${info.name}
 #if($info.envPath)
 export PATH=${info.envPath}
 #end
+#if ($info.useResourcesFolderAsWorkingDirectory)
 cd $SCRIPTPATH
+#end
 #if($info.administratorRequired)
 pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY GDKBACKEND=x11 $JAVA ${vmArgs} -jar $BINARY $@
 #else
