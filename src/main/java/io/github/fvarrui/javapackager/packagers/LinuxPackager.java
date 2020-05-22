@@ -10,10 +10,12 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
@@ -48,6 +50,19 @@ public class LinuxPackager extends Packager {
 		// generated rpm file
 		File rpmFile = new File(outputDirectory, name + "_" + version + ".rpm");
 		
+		// creates plugin config
+		
+		List<Element> includes = new ArrayList<>();
+		includes.add(element("include", name));
+
+		List<Element> excludes = new ArrayList<>();
+		excludes.add(element("exclude", name));
+		
+		if (bundleJre) {
+			includes.add(element("include", jreDirectoryName + "/bin/java"));
+			excludes.add(element("exclude", jreDirectoryName + "/bin/java"));
+		}
+		
 		// invokes plugin to generate deb package
 		executeMojo(
 				plugin(
@@ -75,10 +90,7 @@ public class LinuxPackager extends Packager {
 										element("sources", 
 												element("source", 
 														element("location", appFolder.getAbsolutePath()),
-														element("excludes", 
-																element("exclude", name),
-																element("exclude", jreDirectoryName + "/bin/java")
-														)
+														element("excludes", excludes.toArray(new Element[excludes.size()]))
 												)
 										)
 								),
@@ -89,10 +101,7 @@ public class LinuxPackager extends Packager {
 										element("sources",
 												element("source", 
 														element("location", appFolder.getAbsolutePath()),
-														element("includes", 
-																element("include", name),
-																element("include", jreDirectoryName + "/bin/java")
-														)
+														element("includes", includes.toArray(new Element[includes.size()]))
 												)
 										)
 								),
@@ -145,7 +154,66 @@ public class LinuxPackager extends Packager {
 
 		// generated deb file
 		File debFile = new File(outputDirectory, name + "_" + version + ".deb");
-
+		
+		// creates plugin config
+		List<Element> dataSet = new ArrayList<>();
+		
+		/* app folder files, except executable file and jre/bin/java */
+		dataSet.add(element("data", 
+				element("type", "directory"),
+				element("src", appFolder.getAbsolutePath()),
+				element("mapper", 
+						element("type", "perm"),
+						element("prefix", "/opt/" + name)
+				),
+				element("excludes", executable.getName() + "," + "jre/bin/java")
+		));
+		
+		/* executable */
+		dataSet.add(element("data", 
+				element("type", "file"),
+				element("src", appFolder.getAbsolutePath() + "/" + name),
+				element("mapper", 
+						element("type", "perm"), 
+						element("filemode", "755"),
+						element("prefix", "/opt/" + name)
+				)
+		));
+		
+		/* desktop file */
+		dataSet.add(element("data", 
+				element("type", "file"),
+				element("src", desktopFile.getAbsolutePath()),
+				element("mapper", 
+						element("type", "perm"),
+						element("prefix", "/usr/share/applications")
+				)
+		));
+		
+		/* java binary file */
+		if (bundleJre)
+			dataSet.add(element("data", 
+					element("type", "file"),
+					element("src", appFolder.getAbsolutePath() + "/jre/bin/java"),
+					element("mapper", 
+							element("type", "perm"), 
+							element("filemode", "755"),
+							element("prefix", "/opt/" + name + "/jre/bin")
+					)
+			));
+		
+		/* symbolic link in /usr/local/bin to app binary */
+		dataSet.add(element("data", 
+				element("type", "link"),
+				element("linkTarget", "/opt/" + name + "/" + name),
+				element("linkName", "/usr/local/bin/" + name),
+				element("symlink", "true"), 
+				element("mapper", 
+						element("type", "perm"),
+						element("filemode", "777")
+				)
+		));
+		
 		// invokes plugin to generate deb package
 		executeMojo(
 				plugin(
@@ -157,58 +225,7 @@ public class LinuxPackager extends Packager {
 				configuration(
 						element("controlDir", controlFile.getParentFile().getAbsolutePath()),
 						element("deb", outputDirectory.getAbsolutePath() + "/" + debFile.getName()),
-						element("dataSet",
-								/* app folder files, except executable file and jre/bin/java */
-								element("data", 
-										element("type", "directory"),
-										element("src", appFolder.getAbsolutePath()),
-										element("mapper", 
-												element("type", "perm"),
-												element("prefix", "/opt/" + name)
-										),
-										element("excludes", executable.getName() + "," + "jre/bin/java")
-								),
-								/* executable */
-								element("data", 
-										element("type", "file"),
-										element("src", appFolder.getAbsolutePath() + "/" + name),
-										element("mapper", 
-												element("type", "perm"), 
-												element("filemode", "755"),
-												element("prefix", "/opt/" + name)
-										)
-								),
-								/* desktop file */
-								element("data", 
-										element("type", "file"),
-										element("src", desktopFile.getAbsolutePath()),
-										element("mapper", 
-												element("type", "perm"),
-												element("prefix", "/usr/share/applications")
-										)
-								),
-								/* java binary file */
-								element("data", 
-										element("type", "file"),
-										element("src", appFolder.getAbsolutePath() + "/jre/bin/java"),
-										element("mapper", 
-												element("type", "perm"), 
-												element("filemode", "755"),
-												element("prefix", "/opt/" + name + "/jre/bin")
-										)
-								),
-								/* symbolic link in /usr/local/bin to app binary */
-								element("data", 
-										element("type", "link"),
-										element("linkTarget", "/opt/" + name + "/" + name),
-										element("linkName", "/usr/local/bin/" + name),
-										element("symlink", "true"), 
-										element("mapper", 
-												element("type", "perm"),
-												element("filemode", "777")
-										)
-								)
-						)
+						element("dataSet", dataSet.toArray(new Element[dataSet.size()]))
 				),
 				env);
 		
