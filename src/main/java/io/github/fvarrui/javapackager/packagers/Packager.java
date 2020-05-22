@@ -641,7 +641,7 @@ public abstract class Packager {
 	 * 
 	 * @throws MojoExecutionException
 	 */
-	public File createRunnableJar(String name, String version, String mainClass, File outputDirectory) throws MojoExecutionException {
+	protected File createRunnableJar(String name, String version, String mainClass, File outputDirectory) throws MojoExecutionException {
 		Logger.append("Creating runnable JAR...");
 		
 		String classifier = "runnable";
@@ -975,7 +975,8 @@ public abstract class Packager {
 				+ envPath + ", vmArgs=" + vmArgs + ", runnableJar=" + runnableJar + ", copyDependencies="
 				+ copyDependencies + ", jreDirectoryName=" + jreDirectoryName + ", winConfig=" + winConfig
 				+ ", linuxConfig=" + linuxConfig + ", macConfig=" + macConfig + ", createTarball=" + createTarball
-				+ ", createZipball=" + createZipball + ", extra=" + extra + "]";
+				+ ", createZipball=" + createZipball + ", extra=" + extra + ", useResourcesAsWorkingDir="
+				+ useResourcesAsWorkingDir + "]";
 	}
 
 	protected abstract void createSpecificAppStructure() throws MojoExecutionException; 
