@@ -11,7 +11,7 @@ BINARY=$SCRIPTPATH/${info.name}
 #if($info.envPath)
 export PATH=${info.envPath}
 #end
-#if ($info.useResourcesFolderAsWorkingDirectory)
+#if ($info.useResourcesAsWorkingDir)
 cd $SCRIPTPATH
 #end
 #if($info.administratorRequired)

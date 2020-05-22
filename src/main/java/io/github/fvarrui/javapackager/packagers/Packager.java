@@ -87,7 +87,7 @@ public abstract class Packager {
 	protected Boolean createTarball;
 	protected Boolean createZipball;
 	protected Map<String, String> extra;
-	protected boolean useResourcesFolderAsWorkingDirectory;
+	protected boolean useResourcesAsWorkingDir;
 		
 	public File getAppFolder() {
 		return appFolder;
@@ -237,8 +237,8 @@ public abstract class Packager {
 		return extra;
 	}
 	
-	public boolean isUseResourcesFolderAsWorkingDirectory() {
-		return useResourcesFolderAsWorkingDirectory;
+	public boolean isUseResourcesAsWorkingDir() {
+		return useResourcesAsWorkingDir;
 	}
 	
 	// fluent api
@@ -408,8 +408,8 @@ public abstract class Packager {
 		return this;
 	}
 
-	public Packager useResourcesFolderAsWorkingDirectory(boolean useResourcesFolderAsWorkingDirectory) {
-		this.useResourcesFolderAsWorkingDirectory = useResourcesFolderAsWorkingDirectory;
+	public Packager useResourcesAsWorkingDir(boolean useResourcesAsWorkingDir) {
+		this.useResourcesAsWorkingDir = useResourcesAsWorkingDir;
 		return this;
 	}
 

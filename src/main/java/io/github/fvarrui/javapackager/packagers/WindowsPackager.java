@@ -52,7 +52,7 @@ public class WindowsPackager extends Packager {
 		pluginConfig.add(element("icon", iconFile.getAbsolutePath()));
 		pluginConfig.add(element("manifest", manifestFile.getAbsolutePath()));
 		pluginConfig.add(element("classPath",  element("mainClass", mainClass)));
-		pluginConfig.add(element("chdir", useResourcesFolderAsWorkingDirectory ? "." : ""));		
+		pluginConfig.add(element("chdir", useResourcesAsWorkingDir ? "." : ""));		
 		pluginConfig.add(
 					element("jre",
 						element("path", bundleJre ? jreDirectoryName : "%JAVA_HOME%"),

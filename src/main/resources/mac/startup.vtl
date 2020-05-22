@@ -11,7 +11,7 @@ BINARY=Java/${info.jarFile.name}
 #if($info.envPath)
 export PATH=${info.envPath}
 #end
-#if ($info.useResourcesFolderAsWorkingDirectory)
+#if ($info.useResourcesAsWorkingDir)
 cd $SCRIPTPATH/../Resources 
 #end
 #if($info.administratorRequired)
