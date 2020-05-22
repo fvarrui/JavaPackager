@@ -34,6 +34,9 @@ public class LinuxPackager extends Packager {
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");
 		VelocityUtils.render("linux/desktop.vtl", desktopFile, this);
+		Logger.info("Rendering desktop file to " + desktopFile.getAbsolutePath());
+		
+		// copies desktop file to app
 		FileUtils.copyFileToFolder(desktopFile, appFolder);
 
 		// determines xpm icon file location or takes default one
@@ -133,10 +136,12 @@ public class LinuxPackager extends Packager {
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");
 		VelocityUtils.render("linux/desktop.vtl", desktopFile, this);
+		Logger.info("Rendering desktop file to " + desktopFile.getAbsolutePath());
 
 		// generates deb control file from velocity template
 		File controlFile = new File(assetsFolder, "control");
 		VelocityUtils.render("linux/control.vtl", controlFile, this);
+		Logger.info("Rendering control file to " + desktopFile.getAbsolutePath());
 
 		// generated deb file
 		File debFile = new File(outputDirectory, name + "_" + version + ".deb");
