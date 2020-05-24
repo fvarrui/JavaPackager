@@ -40,8 +40,10 @@
 #end
 		<key>JavaX</key>
 		<dict>
+#if ($info.useResourcesAsWorkingDir)		
 			<key>WorkingDirectory</key>
 			<string>$APP_PACKAGE/Contents/Resources</string>
+#end
 			<key>ClassPath</key>
 			<string>Java/${info.jarFile.name}</string>
 			<key>MainClass</key>
@@ -60,6 +62,10 @@
 		<dict>
 			<key>JAVA_HOME</key>
 			<string>Contents/PlugIns/${info.jreDirectoryName}/Contents/Home</string>
+#if($info.envPath)
+			<key>PATH</key>
+			<string>${info.envPath}</string>
+#end
 		</dict>
 #end
 		<key>NSAppleEventsUsageDescription</key>
