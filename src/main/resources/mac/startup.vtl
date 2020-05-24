@@ -4,7 +4,7 @@ SCRIPTPATH=`cd "$(dirname "$0")" ; pwd`
 
 #if ($info.bundleJre)
 # necessary when startup script is directly executed from terminal  
-if [ -z ${JAVA_HOME+x} ]; then
+if [ -z \${JAVA_HOME+x} ]; then
 	JAVA_HOME=$SCRIPTPATH/../PlugIns/${info.jreDirectoryName}/Contents/Home/bin/java
 fi
 #end
