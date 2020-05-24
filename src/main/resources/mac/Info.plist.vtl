@@ -17,26 +17,57 @@
 		<key>CFBundleInfoDictionaryVersion</key>
 		<string>6.0</string>
 		<key>CFBundleName</key>
-		<string>${info.name}</string>
+		<string>${info.displayName}</string>
 		<key>CFBundlePackageType</key>
-		<string>APPL</string>
+		<string>BNDL</string>
 		<key>CFBundleShortVersionString</key>
 		<string>${info.version}</string>
 		<key>CFBundleSignature</key>
 		<string>????</string>
 		<key>CFBundleVersion</key>
-		<string>1.0</string>
+		<string>${info.version}</string>
 		<key>NSHumanReadableCopyright</key>
 		<string>${info.organizationName}</string>
 		<key>NSHighResolutionCapable</key>
 		<true />
 		<key>NSSupportsAutomaticGraphicsSwitching</key>
 		<true />
-		<key>JVMRuntime</key>
-		<key>${info.jreDirectoryName}</key>
-		<key>JVMMainClassName</key>
-		<string>${info.mainClass}</string>
-		<key>JVMOptions</key>
-		<array />
+		<key>AdministratorRequired</key>
+#if ($info.administratorRequired)		
+		<true />
+#else
+		<false />
+#end
+		<key>JavaX</key>
+		<dict>
+			<key>WorkingDirectory</key>
+			<string>$APP_PACKAGE/Contents/Resources</string>
+			<key>ClassPath</key>
+			<string>${info.jarFile.name}</string>
+			<key>MainClass</key>
+			<string>${info.mainClass}</string>
+			<key>StartOnMainThread</key>
+			<string>true</string>
+#if (!$info.vmArgs.empty)			
+			<key>JVMOptions</key>
+			<array>
+#foreach ($vmArg in $info.vmArgs)
+				<string>$vmArg</string>
+#end			
+			</array>
+#end
+		</dict>
+#if ($info.bundleJre)
+		<key>LSEnvironment</key>
+		<dict>
+			<key>JAVA_HOME</key>
+			<string>Contents/Resources/Java/${info.jreDirectoryName}</string>
+		</dict>
+#end
+		<key>NSAppleEventsUsageDescription</key>
+		<string>There was an error while launching the application. Please
+			click OK to display a dialog with more information or cancel and view
+			the syslog for details.</string>
 	</dict>
 </plist>
+		

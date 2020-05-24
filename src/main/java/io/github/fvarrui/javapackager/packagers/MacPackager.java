@@ -36,7 +36,7 @@ public class MacPackager extends Packager {
 
 		// creates startup file to boot java app
 		File startupFile = new File(macOSFolder, "startup");
-		VelocityUtils.render("mac/startup.vtl", startupFile, this);
+		FileUtils.copyResourceToFile("/mac/universalJavaApplicationStub", startupFile);
 		startupFile.setExecutable(true, false);
 		Logger.info("Startup script file created in " + startupFile.getAbsolutePath());
 
