@@ -803,10 +803,13 @@ AdministratorRequired=$(plist_get ':AdministratorRequired')
 # - main class arguments
 # - passthrough arguments from Terminal or Drag'n'Drop to Finder icon
 stub_logger "[Exec] \"$JAVACMD\" -cp \"${JVMClassPath}\" -splash:\"${ResourcesFolder}/${JVMSplashFile}\" -Xdock:icon=\"${ResourcesFolder}/${CFBundleIconFile}\" -Xdock:name=\"${CFBundleName}\" ${JVMOptionsArr:+$(printf "'%s' " "${JVMOptionsArr[@]}") }${JVMDefaultOptions:+$JVMDefaultOptions }${JVMMainClass}${MainArgsArr:+ $(printf "'%s' " "${MainArgsArr[@]}")}${ArgsPassthru:+ $(printf "'%s' " "${ArgsPassthru[@]}")}"
-
-CMD="\"${JAVACMD}\" -cp \"${JVMClassPath}\" -splash:\"${ResourcesFolder}/${JVMSplashFile}\" -Xdock:icon=\"${ResourcesFolder}/${CFBundleIconFile}\" -Xdock:name=\"${CFBundleName}\" ${JVMOptionsArr:+\"${JVMOptionsArr[@]}\"} ${JVMDefaultOptions:+$JVMDefaultOptions} \"${JVMMainClass}\" ${MainArgsArr:+\"${MainArgsArr[@]}\"} ${ArgsPassthru:+\"${ArgsPassthru[@]}\"}"
-if [ "${AdministratorRequired}" == "true" ]; then
-	/usr/bin/osascript -e "do shell script \"exec $CMD\" with administrator privileges"	
-else
-	exec $CMD
-fi
+exec "${JAVACMD}" \
+		-cp "${JVMClassPath}" \
+		-splash:"${ResourcesFolder}/${JVMSplashFile}" \
+		-Xdock:icon="${ResourcesFolder}/${CFBundleIconFile}" \
+		-Xdock:name="${CFBundleName}" \
+		${JVMOptionsArr:+"${JVMOptionsArr[@]}" }\
+		${JVMDefaultOptions:+$JVMDefaultOptions }\
+		"${JVMMainClass}"\
+		${MainArgsArr:+ "${MainArgsArr[@]}"}\
+		${ArgsPassthru:+ "${ArgsPassthru[@]}"}
