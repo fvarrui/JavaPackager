@@ -391,7 +391,7 @@ elif [[ $LANG == es* ]] ; then
 	MSG_JAVA_VERSION_MAX="superior a %s"
 	MSG_NO_SUITABLE_JAVA_CHECK="Asegúrese de instalar la versión Java requerida."
 	MSG_INSTALL_JAVA="¡Necesita tener JAVA instalado en su Mac!\nVisite java.com para consultar las instrucciones para su instalación..."
-	MSG_LATER="Posterior"
+	MSG_LATER="Más tarde"
 	MSG_VISIT_JAVA_DOT_COM="Java de Oracle"
 	MSG_VISIT_ADOPTOPENJDK="Java de AdoptOpenJDK"
 
