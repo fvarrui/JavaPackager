@@ -789,9 +789,6 @@ fi
 cd "${WorkingDirectory}" || exit 13
 stub_logger "[WorkingDirectory] ${WorkingDirectory}"
 
-# check if has to run as root
-AdministratorRequired=$(plist_get ':AdministratorRequired')
-
 # execute Java and set
 # - classpath
 # - splash image
@@ -803,9 +800,13 @@ AdministratorRequired=$(plist_get ':AdministratorRequired')
 # - main class arguments
 # - passthrough arguments from Terminal or Drag'n'Drop to Finder icon
 stub_logger "[Exec] \"$JAVACMD\" -cp \"${JVMClassPath}\" -splash:\"${ResourcesFolder}/${JVMSplashFile}\" -Xdock:icon=\"${ResourcesFolder}/${CFBundleIconFile}\" -Xdock:name=\"${CFBundleName}\" ${JVMOptionsArr:+$(printf "'%s' " "${JVMOptionsArr[@]}") }${JVMDefaultOptions:+$JVMDefaultOptions }${JVMMainClass}${MainArgsArr:+ $(printf "'%s' " "${MainArgsArr[@]}")}${ArgsPassthru:+ $(printf "'%s' " "${ArgsPassthru[@]}")}"
-COMMAND="\"${JAVACMD}\" -cp \"${JVMClassPath}\" -splash:\"${ResourcesFolder}/${JVMSplashFile}\" -Xdock:icon=\"${ResourcesFolder}/${CFBundleIconFile}\" -Xdock:name=\"${CFBundleName}\" ${JVMOptionsArr:+\"${JVMOptionsArr[@]}\" } ${JVMDefaultOptions:+$JVMDefaultOptions } \"${JVMMainClass}\" ${MainArgsArr:+ \"${MainArgsArr[@]}\"} ${ArgsPassthru:+ \"${ArgsPassthru[@]}\"}"
-if [ "$AdministratorRequired" == "false" ]; then
-	exec $COMMAND
-else
-	/usr/bin/osascript -e "do shell script \"exec $COMMAND\" with administrator privileges"
-fi
+exec "${JAVACMD}" \
+		-cp "${JVMClassPath}" \
+		-splash:"${ResourcesFolder}/${JVMSplashFile}" \
+		-Xdock:icon="${ResourcesFolder}/${CFBundleIconFile}" \
+		-Xdock:name="${CFBundleName}" \
+		${JVMOptionsArr:+"${JVMOptionsArr[@]}" }\
+		${JVMDefaultOptions:+$JVMDefaultOptions }\
+		"${JVMMainClass}"\
+		${MainArgsArr:+ "${MainArgsArr[@]}"}\
+		${ArgsPassthru:+ "${ArgsPassthru[@]}"}

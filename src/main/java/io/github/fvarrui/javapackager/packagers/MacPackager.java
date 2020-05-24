@@ -33,12 +33,18 @@ public class MacPackager extends Packager {
 		
 		// copies jarfile to Java folder
 		FileUtils.copyFileToFolder(jarFile, javaFolder);
-
+		
 		// creates startup file to boot java app
 		File startupFile = new File(macOSFolder, "startup");
-		FileUtils.copyResourceToFile("/mac/universalJavaApplicationStub", startupFile);
+		VelocityUtils.render("mac/startup.vtl", startupFile, this);
 		startupFile.setExecutable(true, false);
 		Logger.info("Startup script file created in " + startupFile.getAbsolutePath());
+
+		// copies universalJavaApplicationStub startup file to boot java app
+		File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
+		FileUtils.copyResourceToFile("/mac/universalJavaApplicationStub", appStubFile);
+		startupFile.setExecutable(true, false);
+		Logger.info("universalJavaApplicationStub copied to " + appStubFile.getAbsolutePath());
 
 		// creates and write the Info.plist file
 		File infoPlistFile = new File(contentsFolder, "Info.plist");
