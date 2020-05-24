@@ -43,7 +43,7 @@
 			<key>WorkingDirectory</key>
 			<string>$APP_PACKAGE/Contents/Resources</string>
 			<key>ClassPath</key>
-			<string>${info.jarFile.name}</string>
+			<string>Java/${info.jarFile.name}</string>
 			<key>MainClass</key>
 			<string>${info.mainClass}</string>
 #if (!$info.vmArgs.empty)			
@@ -59,7 +59,7 @@
 		<key>LSEnvironment</key>
 		<dict>
 			<key>JAVA_HOME</key>
-			<string>Contents/Resources/Java/${info.jreDirectoryName}</string>
+			<string>Contents/PlugIns/${info.jreDirectoryName}/Contents/Home</string>
 		</dict>
 #end
 		<key>NSAppleEventsUsageDescription</key>
@@ -68,4 +68,3 @@
 			the syslog for details.</string>
 	</dict>
 </plist>
-		
