@@ -118,6 +118,7 @@ public class WindowsPackager extends Packager {
 	 */
 	private File generateMsi() {
 		// TODO coming soon!
+		Logger.warn("MSI installer generation is still under development!");
 		return null;
 	}
 

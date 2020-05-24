@@ -14,13 +14,22 @@
 	<productName>${name}</productName>
 	<internalName>${name}</internalName>
 	<originalFilename>${name}.exe</originalFilename>
-	<!-- setup generation properties -->
+	<!-- installer generation properties -->
 	<disableDirPage>true|false</disableDirPage>
 	<disableProgramGroupPage>true|false</disableProgramGroupPage>
 	<disableFinishedPage>true|false</disableFinishedPage>
 	<createDesktopIconTask>true|false</createDesktopIconTask>
+    <!-- enables/disables installers generation -->
+    <generateSetup>true|false</generateSetup>
+    <generateMsi>true|false</generateMsi>
 </winConfig>
 ```
+
+| Property        | Mandatory | Default value | Description                |
+| --------------- | --------- | ------------- | -------------------------- |
+| `generateSetup` | :x:       | `true`        | Generates Setup installer. |
+| `generateMsi`   | :x:       | `true`        | Generates MSI installer.   |
+
 
 ## Exe creation properties
 
