@@ -1,4 +1,7 @@
 # JavaPackager
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.fvarrui/javapackager/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.fvarrui/javapackager)
+
 JavaPackager is a Maven plugin which provides an easy way to package Java applications in native Windows, Mac OS X, or GNU/Linux executables, and generates installers for them.
 
 > Plugin published at [Maven Central](https://search.maven.org/artifact/io.github.fvarrui/javapackager) since v0.9.0. See published versions at [releases](https://github.com/fvarrui/JavaPackager/releases) section.
