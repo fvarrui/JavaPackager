@@ -4,6 +4,8 @@ import static org.apache.commons.io.FileUtils.writeStringToFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -47,6 +49,8 @@ public class VelocityUtils {
 	
 	public static String render(String templatePath, Object info) throws MojoExecutionException {
 		VelocityContext context = new VelocityContext();
+		context.put("features", new ArrayList<String>());
+		context.put("GUID", UUID.class);
 		context.put("StringUtils", StringUtils.class);
 		context.put("info", info);
 		Template template = velocityEngine.getTemplate(templatePath, "UTF-8");

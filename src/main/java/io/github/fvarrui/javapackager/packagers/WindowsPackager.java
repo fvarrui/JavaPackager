@@ -41,14 +41,14 @@ public class WindowsPackager extends Packager {
 
 		// prepares launch4j plugin configuration
 		
-		String exeFile = executable.getAbsolutePath() + ".exe";
-	
+		executable = new File(executable.getParentFile(), executable.getName() + ".exe");
+		
 		List<Element> optsElements = vmArgs.stream().map(arg -> element("opt", arg)).collect(Collectors.toList());
 	
 		List<Element> pluginConfig = new ArrayList<>();
 		pluginConfig.add(element("headerType", "" + winConfig.getHeaderType()));
 		pluginConfig.add(element("jar", jarFile.getAbsolutePath()));
-		pluginConfig.add(element("outfile", exeFile));
+		pluginConfig.add(element("outfile", executable.getAbsolutePath()));
 		pluginConfig.add(element("icon", iconFile.getAbsolutePath()));
 		pluginConfig.add(element("manifest", manifestFile.getAbsolutePath()));
 		pluginConfig.add(element("classPath",  element("mainClass", mainClass)));
@@ -88,7 +88,7 @@ public class WindowsPackager extends Packager {
 				env
 			);
 
-		Logger.subtract("Windows EXE file created in " + exeFile + "!");		
+		Logger.subtract("Windows EXE file created in " + executable + "!");		
 		
 		return appFolder;
 	}
@@ -102,11 +102,15 @@ public class WindowsPackager extends Packager {
 	@Override
 	public void doGenerateInstallers(List<File> installers) throws MojoExecutionException {
 
-		File setupFile = generateSetup();
-		if (setupFile != null) installers.add(setupFile);
+		if (winConfig.isGenerateSetup()) {
+			File setupFile = generateSetup();
+			if (setupFile != null) installers.add(setupFile);
+		}
 
-		File msiFile = generateMsi();
-		if (msiFile != null) installers.add(msiFile);
+		if (winConfig.isGenerateMsi()) {
+			File msiFile = generateMsi();
+			if (msiFile != null) installers.add(msiFile);
+		}
 		
 	}
 
@@ -116,10 +120,29 @@ public class WindowsPackager extends Packager {
 	 * 
 	 * @throws MojoExecutionException
 	 */
-	private File generateMsi() {
-		// TODO coming soon!
-		Logger.warn("MSI installer generation is still under development!");
-		return null;
+	private File generateMsi() throws MojoExecutionException {
+
+		Logger.append("Generating MSI file ...");
+		
+		// generates WXS file from velocity template
+		File wxsFile = new File(assetsFolder, name + ".wxs");
+		VelocityUtils.render("windows/wxs.vtl", wxsFile, this);
+		Logger.info("WXS file generated in " + wxsFile + "!");
+		
+		// candle wxs file
+		Logger.info("Candling file " + wxsFile);
+		File wixobjFile = new File(assetsFolder, name + "wixobj");
+		CommandUtils.execute("candle", "-out", wixobjFile, wxsFile);
+		Logger.info("WIXOBJ file generated in " + wixobjFile +  "!");
+
+		// lighting wxs file
+		Logger.info("Lighting file " + wixobjFile);
+		File msiFile = new File(outputDirectory, name + ".msi");
+		CommandUtils.execute("light", "-out", msiFile, wixobjFile);
+
+		Logger.subtract("MSI file generated!");
+		
+		return msiFile;
 	}
 
 	private File generateSetup() throws MojoExecutionException {

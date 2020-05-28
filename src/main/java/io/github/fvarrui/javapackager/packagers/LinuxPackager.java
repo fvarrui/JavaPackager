@@ -266,12 +266,12 @@ public class LinuxPackager extends Packager {
 
 		if (linuxConfig.isGenerateDeb()) {
 			File debFile = generateDebPackage();
-			installers.add(debFile);			
+			if (debFile != null && debFile.exists()) installers.add(debFile);			
 		}
 		
 		if (linuxConfig.isGenerateRpm()) {
 			File rpmFile = generateRpmPackage();
-			installers.add(rpmFile);
+			if (rpmFile != null && rpmFile.exists()) installers.add(rpmFile);
 		}
 		
 	}

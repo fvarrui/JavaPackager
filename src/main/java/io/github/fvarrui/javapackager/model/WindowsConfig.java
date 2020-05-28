@@ -23,6 +23,8 @@ public class WindowsConfig {
 	private boolean disableProgramGroupPage = true;
 	private boolean disableFinishedPage = true;
 	private boolean createDesktopIconTask = true;
+	private boolean generateSetup = true;
+	private boolean generateMsi = true;
 
 	public HeaderType getHeaderType() {
 		return headerType;
@@ -160,6 +162,24 @@ public class WindowsConfig {
 		this.createDesktopIconTask = createDesktopIconTask;
 	}
 
+	public boolean isGenerateSetup() {
+		return generateSetup;
+	}
+
+	public void setGenerateSetup(boolean generateSetup) {
+		this.generateSetup = generateSetup;
+	}
+
+	public boolean isGenerateMsi() {
+		return generateMsi;
+	}
+
+	public void setGenerateMsi(boolean generateMsi) {
+		this.generateMsi = generateMsi;
+	}
+
+
+
 	@Override
 	public String toString() {
 		return "[headerType=" + headerType + ", companyName=" + companyName + ", copyright=" + copyright
@@ -169,11 +189,12 @@ public class WindowsConfig {
 				+ ", txtFileVersion=" + txtFileVersion + ", txtProductVersion=" + txtProductVersion
 				+ ", disableDirPage=" + disableDirPage + ", disableProgramGroupPage=" + disableProgramGroupPage
 				+ ", disableFinishedPage=" + disableFinishedPage + ", createDesktopIconTask=" + createDesktopIconTask
-				+ "]";
+				+ ", generateSetup=" + generateSetup + ", generateMsi=" + generateMsi + "]";
 	}
 
 	/**
 	 * Tests Windows specific config and set defaults if not specified
+	 * 
 	 * @param packager
 	 */
 	public void setDefaults(Packager packager) {
