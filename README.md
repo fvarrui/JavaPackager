@@ -71,8 +71,10 @@ And by default it will generate next artifacts in `target ` folder:
 | `${name}-${version}-runnable.jar`       | Runnable JAR file.                                           |
 | `${name}_${version}.deb`                | DEB package file if it's executed on GNU/Linux (requires **dpkg-deb**). |
 | `${name}_${version}.rpm`                | RPM package file if it's executed on GNU/Linux (requires **rpm-build**). |
-| `${name}_${version}.exe`                | Installer file if it's executed on Windows (requires [**Inno Setup**](http://www.jrsoftware.org/isinfo.php)). |
+| `${name}_${version}.exe`                | Setup file if it's executed on Windows (requires [**Inno Setup**](http://www.jrsoftware.org/isinfo.php)). |
+| `${name}_${version}.msi`                | MSI installer file if it's executed on Windows (requires **[WiX Toolset](https://wixtoolset.org/)**). |
 | `${name}_${version}.dmg`                | Disk image file if it's executed on Mac OS X (requires **hdiutil**). |
+| `${name}_${version}.pkg`                | PKG installer file if it's executed on Mac OS X (requires **pkgbuild**) |
 | `${name}-${version}-${platform}.zip`    | Zipball containing generated directory `${name}`.            |
 | `${name}-${version}-${platform}.tar`    | Tarball containing generated directory `${name}`.            |
 | `${name}-${version}-${platform}.tar.gz` | Compressed tarball containing generated directory `${name}`. |
