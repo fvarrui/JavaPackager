@@ -137,7 +137,7 @@ public class WindowsPackager extends Packager {
 
 		// lighting wxs file
 		Logger.info("Lighting file " + wixobjFile);
-		File msiFile = new File(outputDirectory, name + ".msi");
+		File msiFile = new File(outputDirectory, name + "_" + version + ".msi");
 		CommandUtils.execute("light", "-out", msiFile, wixobjFile);
 
 		Logger.subtract("MSI file generated!");
