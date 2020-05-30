@@ -9,6 +9,8 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.groupId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
+import static org.apache.commons.collections4.CollectionUtils.addIgnoreNull;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,64 @@ import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
 public class LinuxPackager extends Packager {
 	
+
+	@Override
+	public void doInit() throws MojoExecutionException {
+
+		// sets linux config default values
+		this.linuxConfig.setDefaults(this);
+		
+	}
+	
+	@Override
+	protected void doCreateAppStructure() throws MojoExecutionException {
+
+		// sets common folders
+		this.executableDestinationFolder = appFolder;
+		this.jarFileDestinationFolder = appFolder;
+		this.jreDestinationFolder = new File(appFolder, jreDirectoryName);
+		this.resourcesDestinationFolder = appFolder;
+	
+	}
+	
+	/**
+	 * Creates a GNU/Linux app file structure with native executable
+	 * 
+	 * @throws MojoExecutionException
+	 */	
+	@Override
+	public File doCreateApp() throws MojoExecutionException {
+		
+		Logger.infoIndent("Creating GNU/Linux executable ...");
+
+		// sets executable file
+		this.executable = new File(appFolder, name);
+		
+		// generates startup.sh script to boot java app
+		File startupFile = new File(assetsFolder, "startup.sh");
+		VelocityUtils.render("linux/startup.sh.vtl", startupFile, this);
+		Logger.info("Startup script generated in " + startupFile.getAbsolutePath());
+
+		// concats linux startup.sh script + generated jar in executable (binary)
+		FileUtils.concat(executable, startupFile, jarFile);
+
+		// sets execution permissions
+		executable.setExecutable(true, false);
+		
+		Logger.infoUnindent("GNU/Linux executable created in " + executable.getAbsolutePath() + "!");
+		
+		return appFolder;
+	}
+
+	@Override
+	public void doGenerateInstallers(List<File> installers) throws MojoExecutionException {
+
+		addIgnoreNull(installers, generateDebPackage());
+
+		addIgnoreNull(installers, generateRpmPackage());
+		
+	}
+
 	/**
 	 * Creates a RPM package file including all app folder's content only for 
 	 * GNU/Linux so app could be easily distributed
@@ -30,8 +90,9 @@ public class LinuxPackager extends Packager {
 	 * @throws MojoExecutionException
 	 */
 	private File generateRpmPackage() throws MojoExecutionException {
+		if (!linuxConfig.isGenerateRpm()) return null;
 
-		Logger.append("Generating RPM package...");
+		Logger.infoIndent("Generating RPM package...");
 
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");
@@ -127,7 +188,7 @@ public class LinuxPackager extends Packager {
 				),
 				env);
 
-		Logger.subtract("RPM package generated! " + rpmFile.getAbsolutePath());
+		Logger.infoUnindent("RPM package generated! " + rpmFile.getAbsolutePath());
 
 		return rpmFile;
 	}
@@ -139,8 +200,9 @@ public class LinuxPackager extends Packager {
 	 * @throws MojoExecutionException
 	 */
 	private File generateDebPackage() throws MojoExecutionException {
+		if (!linuxConfig.isGenerateDeb()) return null;
 
-		Logger.append("Generating DEB package ...");
+		Logger.infoIndent("Generating DEB package ...");
 
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");
@@ -229,61 +291,9 @@ public class LinuxPackager extends Packager {
 				),
 				env);
 		
-		Logger.subtract("DEB package generated! " + debFile.getAbsolutePath());
+		Logger.infoUnindent("DEB package generated! " + debFile.getAbsolutePath());
 		
 		return debFile;
-	}
-
-
-	/**
-	 * Creates a GNU/Linux app file structure with native executable
-	 * 
-	 * @throws MojoExecutionException
-	 */	
-	@Override
-	public File doCreateApp() throws MojoExecutionException {
-		
-		Logger.append("Creating GNU/Linux executable ...");
-
-		// generates startup.sh script to boot java app
-		File startupFile = new File(assetsFolder, "startup.sh");
-		VelocityUtils.render("linux/startup.sh.vtl", startupFile, this);
-		Logger.info("Startup script generated in " + startupFile.getAbsolutePath());
-
-		// concats linux startup.sh script + generated jar in executable (binary)
-		FileUtils.concat(executable, startupFile, jarFile);
-
-		// sets execution permissions
-		executable.setExecutable(true, false);
-		
-		Logger.subtract("GNU/Linux executable created in " + executable.getAbsolutePath() + "!");
-		
-		return appFolder;
-	}
-
-	@Override
-	public void doGenerateInstallers(List<File> installers) throws MojoExecutionException {
-
-		if (linuxConfig.isGenerateDeb()) {
-			File debFile = generateDebPackage();
-			if (debFile != null && debFile.exists()) installers.add(debFile);			
-		}
-		
-		if (linuxConfig.isGenerateRpm()) {
-			File rpmFile = generateRpmPackage();
-			if (rpmFile != null && rpmFile.exists()) installers.add(rpmFile);
-		}
-		
-	}
-
-	@Override
-	protected void createSpecificAppStructure() throws MojoExecutionException {
-
-		this.executableDestinationFolder = appFolder;
-		this.jarFileDestinationFolder = appFolder;
-		this.jreDestinationFolder = new File(appFolder, jreDirectoryName);
-		this.resourcesDestinationFolder = appFolder;
-		
 	}
 	
 }

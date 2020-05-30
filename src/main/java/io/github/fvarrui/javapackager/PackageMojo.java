@@ -263,7 +263,7 @@ public class PackageMojo extends ParentMojo {
 						.platform(platform)
 						.runnableJar(runnableJar)
 						.useResourcesAsWorkingDir(useResourcesAsWorkingDir)
-						.url(organizationUrl)
+						.url(url)
 						.vmArgs(vmArgs)
 						.winConfig(winConfig);
 						

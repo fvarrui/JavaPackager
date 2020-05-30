@@ -29,6 +29,7 @@ public class CommandUtils {
 	public static String execute(File workingDirectory, String executable, Object... arguments)
 			throws MojoExecutionException {
 		StringBuffer outputBuffer = new StringBuffer();
+		StringBuffer errorBuffer = new StringBuffer();
 		try {
 
 			Commandline command = new Commandline();
@@ -53,11 +54,15 @@ public class CommandUtils {
 				if (output.ready())
 					outputBuffer.append(Logger.info(output.readLine()) + "\n");
 				if (error.ready())
-					Logger.error(error.readLine());
+					errorBuffer.append(Logger.error(error.readLine()) + "\n");
 			}
 
 			output.close();
 			error.close();
+			
+			if (process.exitValue() != 0) {
+				throw new CommandLineException("Command execution failed: " + executable + " " + StringUtils.join(arguments, " "));
+			}
 
 		} catch (IOException | CommandLineException e) {
 			throw new MojoExecutionException(e.getMessage(), e);

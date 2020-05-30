@@ -2,6 +2,8 @@ package io.github.fvarrui.javapackager.model;
 
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
+import java.util.UUID;
+
 import io.github.fvarrui.javapackager.packagers.Packager;
 
 public class WindowsConfig {
@@ -25,6 +27,7 @@ public class WindowsConfig {
 	private boolean createDesktopIconTask = true;
 	private boolean generateSetup = true;
 	private boolean generateMsi = true;
+	private String msiUpgradeCode;
 
 	public HeaderType getHeaderType() {
 		return headerType;
@@ -178,7 +181,13 @@ public class WindowsConfig {
 		this.generateMsi = generateMsi;
 	}
 
+	public String getMsiUpgradeCode() {
+		return msiUpgradeCode;
+	}
 
+	public void setMsiUpgradeCode(String msiUpgradeCode) {
+		this.msiUpgradeCode = msiUpgradeCode;
+	}
 
 	@Override
 	public String toString() {
@@ -189,7 +198,8 @@ public class WindowsConfig {
 				+ ", txtFileVersion=" + txtFileVersion + ", txtProductVersion=" + txtProductVersion
 				+ ", disableDirPage=" + disableDirPage + ", disableProgramGroupPage=" + disableProgramGroupPage
 				+ ", disableFinishedPage=" + disableFinishedPage + ", createDesktopIconTask=" + createDesktopIconTask
-				+ ", generateSetup=" + generateSetup + ", generateMsi=" + generateMsi + "]";
+				+ ", generateSetup=" + generateSetup + ", generateMsi=" + generateMsi + ", msiUpgradeCode="
+				+ msiUpgradeCode + "]";
 	}
 
 	/**
@@ -209,6 +219,7 @@ public class WindowsConfig {
 		this.setProductName(defaultIfBlank(this.getProductName(), packager.getName()));
 		this.setInternalName(defaultIfBlank(this.getInternalName(), packager.getName()));
 		this.setOriginalFilename(defaultIfBlank(this.getOriginalFilename(), packager.getName() + ".exe"));
+		this.setMsiUpgradeCode(defaultIfBlank(this.getMsiUpgradeCode(), UUID.randomUUID().toString()));
 	}
 
 }

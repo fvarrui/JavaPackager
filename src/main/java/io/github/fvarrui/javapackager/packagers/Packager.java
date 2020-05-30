@@ -412,6 +412,11 @@ public abstract class Packager {
 		this.useResourcesAsWorkingDir = useResourcesAsWorkingDir;
 		return this;
 	}
+	
+	public Packager appFolder(File appFolder) {
+		this.appFolder = appFolder;
+		return this;
+	}
 
 	// ===============================================
 	
@@ -422,7 +427,7 @@ public abstract class Packager {
 	
 	private void init() throws MojoExecutionException {
 		
-		Logger.append("Initializing packager ...");
+		Logger.infoIndent("Initializing packager ...");
 
 		// using artifactId as name, if it's not specified
 		name = defaultIfBlank(name, env.getMavenProject().getArtifactId());
@@ -440,50 +445,36 @@ public abstract class Packager {
 		organizationUrl = defaultIfBlank(organizationUrl, "");
 
 		// determines target platform if not specified 
-		if (platform == Platform.auto) {
+		if (platform == null || platform == Platform.auto) {
 			platform = Platform.getCurrentPlatform();
 		}
 		
-		switch (platform) {
-		case windows: 
-			macConfig = null; 
-			linuxConfig = null;
-			winConfig.setDefaults(this);
-			break;
-		case linux:
-			macConfig = null;
-			linuxConfig.setDefaults(this);
-			winConfig = null;
-			break;
-		case mac: 
-			macConfig.setDefaults(this);
-			linuxConfig = null; 
-			winConfig = null; 
-			break;
-		default:
-		}
+		doInit();
 		
 		Logger.info("Effective packager configuration " + this);		
 				
-		Logger.subtract("Packager initialized!");
+		Logger.infoUnindent("Packager initialized!");
 
 	}
 
-	private void resolveResources() throws MojoExecutionException {
+	public void resolveResources() throws MojoExecutionException {
 		
-		Logger.append("Resolving resources ...");
+		Logger.infoIndent("Resolving resources ...");
 		
 		// locates license file
 		licenseFile = resolveLicense(licenseFile, env.getMavenProject().getLicenses());
-		if (licenseFile != null) additionalResources.add(licenseFile);
 		
 		// locates icon file
 		iconFile = resolveIcon(iconFile, name, assetsFolder);
-		additionalResources.add(iconFile);
 		
-		Logger.info("Effective additional resources " + additionalResources);
+		// adds to additional resources
+		if (additionalResources != null) {
+			if (licenseFile != null) additionalResources.add(licenseFile);
+			additionalResources.add(iconFile);
+			Logger.info("Effective additional resources " + additionalResources);			
+		}		
 		
-		Logger.subtract("Resources resolved!");
+		Logger.infoUnindent("Resources resolved!");
 		
 	}
 	
@@ -501,7 +492,7 @@ public abstract class Packager {
 	protected void copyAllDependencies(File libsFolder) throws MojoExecutionException {
 		if (!copyDependencies) return;
 
-		Logger.append("Copying all dependencies to " + libsFolder.getName() + " folder ...");		
+		Logger.infoIndent("Copying all dependencies to " + libsFolder.getName() + " folder ...");		
 		
 		// invokes plugin to copy dependecies to app libs folder
 		executeMojo(
@@ -516,7 +507,7 @@ public abstract class Packager {
 				),
 				env);
 
-		Logger.subtract("All dependencies copied!");		
+		Logger.infoUnindent("All dependencies copied!");		
 		
 	}
 	
@@ -530,7 +521,7 @@ public abstract class Packager {
 	 */
 	protected void copyAdditionalResources(List<File> resources, File destination) {
 
-		Logger.append("Copying additional resources");
+		Logger.infoIndent("Copying additional resources");
 		
 		resources.stream().forEach(r -> {
 			if (!r.exists()) {
@@ -548,7 +539,7 @@ public abstract class Packager {
 			}
 		});
 		
-		Logger.subtract("All additional resources copied!");
+		Logger.infoUnindent("All additional resources copied!");
 		
 	}
 	
@@ -566,7 +557,7 @@ public abstract class Packager {
 			return;
 		}
 		
-		Logger.append("Bundling JRE ... with " + System.getProperty("java.home"));
+		Logger.infoIndent("Bundling JRE ... with " + System.getProperty("java.home"));
 		
 		if (specificJreFolder != null) {
 			
@@ -629,9 +620,9 @@ public abstract class Packager {
 		}
 	
 		if (bundleJre) {
-			Logger.subtract("JRE bundled in " + destinationFolder.getAbsolutePath() + "!");
+			Logger.infoUnindent("JRE bundled in " + destinationFolder.getAbsolutePath() + "!");
 		} else {
-			Logger.subtract("JRE bundling skipped!");
+			Logger.infoUnindent("JRE bundling skipped!");
 		}
 		
 	}
@@ -642,7 +633,7 @@ public abstract class Packager {
 	 * @throws MojoExecutionException
 	 */
 	protected File createRunnableJar(String name, String version, String mainClass, File outputDirectory) throws MojoExecutionException {
-		Logger.append("Creating runnable JAR...");
+		Logger.infoIndent("Creating runnable JAR...");
 		
 		String classifier = "runnable";
 
@@ -669,7 +660,7 @@ public abstract class Packager {
 				),
 				env);
 		
-		Logger.subtract("Runnable jar created in " + jarFile.getAbsolutePath() + "!");
+		Logger.infoUnindent("Runnable jar created in " + jarFile.getAbsolutePath() + "!");
 		
 		return jarFile;
 	}
@@ -687,7 +678,7 @@ public abstract class Packager {
 	 */
 	protected String getRequiredModules(File libsFolder, boolean customizedJre, File jarFile, List<String> defaultModules, List<String> additionalModules) throws MojoExecutionException {
 		
-		Logger.append("Getting required modules ... ");
+		Logger.infoIndent("Getting required modules ... ");
 		
 		File jdeps = new File(System.getProperty("java.home"), "/bin/jdeps");
 
@@ -762,7 +753,7 @@ public abstract class Packager {
 			modulesList.add("ALL-MODULE-PATH");
 		}
 		
-		Logger.subtract("Required modules found: " + modulesList);
+		Logger.infoUnindent("Required modules found: " + modulesList);
 		
 		return StringUtils.join(modulesList, ",");
 	}
@@ -844,7 +835,7 @@ public abstract class Packager {
 	public void createBundles() throws MojoExecutionException {
 		if (!createTarball && !createZipball) return;
 
-		Logger.append("Bundling app in tarball/zipball ...");
+		Logger.infoIndent("Bundling app in tarball/zipball ...");
 		
 		// generate assembly.xml file 
 		File assemblyFile = new File(assetsFolder, "assembly.xml");
@@ -865,13 +856,13 @@ public abstract class Packager {
 				),
 				env);
 		
-		Logger.subtract("Bundles created!");
+		Logger.infoUnindent("Bundles created!");
 		
 	}
 	
 	private void createAppStructure() throws MojoExecutionException {
 		
-		Logger.append("Creating app structure ...");
+		Logger.infoIndent("Creating app structure ...");
 		
 		// creates output directory if it doesn't exist
 		if (!outputDirectory.exists()) {
@@ -891,19 +882,16 @@ public abstract class Packager {
 		assetsFolder = FileUtils.mkdir(outputDirectory, "assets");
 		Logger.info("Assets folder created: " + assetsFolder.getAbsolutePath());
 
-		// sets app's main executable file
-		executable = new File(appFolder, name);
-		
 		// create the rest of the structure
-		createSpecificAppStructure();
+		doCreateAppStructure();
 
-		Logger.subtract("App structure created!");
+		Logger.infoUnindent("App structure created!");
 		
 	}
 
 	public File createApp() throws MojoExecutionException {
 		
-		Logger.append("Creating app ...");
+		Logger.infoIndent("Creating app ...");
 
 		init();
 
@@ -933,7 +921,7 @@ public abstract class Packager {
         
         File appFile = doCreateApp();
 
-		Logger.subtract("App created in " + appFolder.getAbsolutePath() + "!");
+		Logger.infoUnindent("App created in " + appFolder.getAbsolutePath() + "!");
 		        
 		return appFile;
 	}
@@ -950,13 +938,16 @@ public abstract class Packager {
 			return installers;
 		}
 		
-		Logger.append("Generating installers ...");
+		Logger.infoIndent("Generating installers ...");
 
 		init();
 		
+		// creates folder for intermmediate assets if it doesn't exist  
+		assetsFolder = FileUtils.mkdir(outputDirectory, "assets");
+		
 		doGenerateInstallers(installers);
 		
-		Logger.subtract("Installers generated! " + installers);
+		Logger.infoUnindent("Installers generated! " + installers);
 		
 		return installers;		
 	}
@@ -979,10 +970,12 @@ public abstract class Packager {
 				+ useResourcesAsWorkingDir + "]";
 	}
 
-	protected abstract void createSpecificAppStructure() throws MojoExecutionException; 
+	protected abstract void doCreateAppStructure() throws MojoExecutionException; 
 
 	public abstract File doCreateApp() throws MojoExecutionException;
 	
 	public abstract void doGenerateInstallers(List<File> installers) throws MojoExecutionException;
+	
+	public abstract void doInit() throws MojoExecutionException;
 	
 }

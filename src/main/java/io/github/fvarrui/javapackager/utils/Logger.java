@@ -29,12 +29,12 @@ public class Logger {
 		return info;
 	}
 
-	public static void append(String info) {
+	public static void infoIndent(String info) {
 		info(info);
 		tabs++;
 	}
 	
-	public static void subtract(String info) {
+	public static void infoUnindent(String info) {
 		tabs--;
 		info(info);
 		info("");

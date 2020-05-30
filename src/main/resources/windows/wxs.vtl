@@ -1,44 +1,42 @@
-#set($exeId = "")
 #macro(list $file)
 	#set($guid = $GUID.randomUUID())
 	#set($id = $guid.toString().replaceAll('-','_'))
 	#if($file.isDirectory())
-	<Directory Id="_${id}" Name="${file.name}">
+		#if($file.equals($info.appFolder))
+		<Directory Id="INSTALLDIR" Name="${file.name}">
+		#else
+		<Directory Id="_${id}" Name="${file.name}">
+		#end
 		#foreach($child in $file.listFiles())
 			#list($child)
 		#end
-	</Directory>
+		</Directory>
 	#else
-	#set($added = $features.add($id))
-	<Component Id="_${id}" Guid="${guid}" Win64="yes">
-		#set($idFile = $GUID.randomUUID().toString().replaceAll('-','_'))
-	    <File Id="_${idFile}" Name="${file.name}" KeyPath="yes" DiskId="1" Source="${file}"/>
-	    #if(${file.name.equals(${info.executable.name})})
-	    #set($exeId = ${idFile})
+		#set($added = $features.add($id))
+		<Component Id="_${id}" Guid="${guid}" Win64="yes">
+	    #if($file.equals(${info.executable}))
+	    	<File Id="exeFile" Name="${file.name}" KeyPath="yes" DiskId="1" Source="${file}"/>
+	    #else
+			<File Id="_${GUID.randomUUID().toString().replaceAll('-','_')}" Name="${file.name}" KeyPath="yes" DiskId="1" Source="${file}"/>			  
 	    #end
-	</Component>
+		</Component>
 	#end
 #end
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Product Id="ca504fa7-8385-4289-bab5-81a198ea4733" Codepage="1252" Language="1033" Manufacturer="ACME" Name="HelloWorld" UpgradeCode="d2478cf4-2af0-49c5-b57e-5c14ce8fca01" Version="${info.winConfig.fileVersion}">
+    <Product Id="*" Codepage="1252" Language="1033" Manufacturer="${info.organizationName}" Name="${info.name}" UpgradeCode="${info.winConfig.msiUpgradeCode}" Version="${info.winConfig.productVersion}">
         <Package Compressed="yes" InstallScope="perMachine" InstallerVersion="200" Languages="1033" Platform="x64" SummaryCodepage="1252"/>
         <Media Id="1" Cabinet="Application.cab" EmbedCab="yes"/>
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFiles64Folder">
-	            <Directory Id="INSTALLDIR" Name="${info.name}">
-	            	#list(${info.appFolder})
-	            </Directory>
+            	#list(${info.appFolder})
             </Directory>
 			<Directory Id="ProgramMenuFolder">
 				<Directory Id="ApplicationProgramsFolder" Name="${info.name}">
-					<Component Id="ApplicationShortcut" Guid="7afc8aed-902e-4975-bce3-50017f4ab03f">
-						<Shortcut Id="ApplicationStartMenuShortcut"
-							Name="${info.name}" Description="${info.description}"
-							Target="[#_${exeId}]"
-							WorkingDirectory="INSTALLDIR" />
+					<Component Id="ApplicationShortcut" Guid="${GUID.randomUUID()}">
+						<Shortcut Id="ApplicationStartMenuShortcut" Name="${info.name}" Description="${info.description}" Target="[#exeFile]" WorkingDirectory="INSTALLDIR" />
 						<RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
-						<RegistryValue Root="HKCU" Key="Software\${info.organizationName}\${info.name}" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+						<RegistryValue Root="HKCU" Key="Software\\${info.organizationName}\\${info.name}" Name="installed" Type="integer" Value="1" KeyPath="yes" />
 					</Component>
 				</Directory>
 			</Directory>
@@ -49,10 +47,11 @@
 #end
             <ComponentRef Id="ApplicationShortcut"/>
         </Feature>
-        #set($iconId = $GUID.randomUUID().toString().replaceAll('-','_'))	
-        <Icon Id="_${iconId}" SourceFile="${info.iconFile}"/>
-        <Property Id="ARPPRODUCTICON" Value="_${iconId}"/>
+        <Icon Id="ICONFILE" SourceFile="${info.iconFile.getAbsolutePath()}"/>
+        <Property Id="ARPPRODUCTICON" Value="ICONFILE"/>
+#if($info.licenseFile)        
         <WixVariable Id="WixUILicenseRtf" Value="LICENSE"/>
+#end
         <MajorUpgrade AllowDowngrades="no" AllowSameVersionUpgrades="yes" DowngradeErrorMessage="A later version of ${info.winConfig.productName} is already installed. Setup will now exit." IgnoreRemoveFailure="no"/>
     </Product>
 </Wix>

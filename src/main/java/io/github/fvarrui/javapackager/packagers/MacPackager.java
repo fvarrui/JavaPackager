@@ -1,6 +1,7 @@
 package io.github.fvarrui.javapackager.packagers;
 
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+import static org.apache.commons.collections4.CollectionUtils.addIgnoreNull;
 
 import java.io.File;
 import java.util.Arrays;
@@ -22,6 +23,48 @@ public class MacPackager extends Packager {
 	private File resourcesFolder;
 	private File javaFolder;
 	private File macOSFolder;
+
+	@Override
+	public void doInit() throws MojoExecutionException {
+
+		this.macConfig.setDefaults(this);
+		
+	}
+
+	@Override
+	protected void doCreateAppStructure() throws MojoExecutionException {
+		
+		// initializes the references to the app structure folders
+		this.appFile = new File(appFolder, name + ".app");
+		this.contentsFolder = new File(appFile, "Contents");
+		this.resourcesFolder = new File(contentsFolder, "Resources");
+		this.javaFolder = new File(resourcesFolder, "Java");
+		this.macOSFolder = new File(contentsFolder, "MacOS");
+
+		// makes dirs
+		
+		FileUtils.mkdir(this.appFile);
+		Logger.info("App file folder created: " + appFile.getAbsolutePath());
+		
+		FileUtils.mkdir(this.contentsFolder);
+		Logger.info("Contents folder created: " + contentsFolder.getAbsolutePath());
+		
+		FileUtils.mkdir(this.resourcesFolder);
+		Logger.info("Resources folder created: " + resourcesFolder.getAbsolutePath());
+		
+		FileUtils.mkdir(this.javaFolder);
+		Logger.info("Java folder created: " + javaFolder.getAbsolutePath());
+		
+		FileUtils.mkdir(this.macOSFolder);
+		Logger.info("MacOS folder created: " + macOSFolder.getAbsolutePath());
+
+		// sets common folders
+		this.executableDestinationFolder = macOSFolder;
+		this.jarFileDestinationFolder = javaFolder;
+		this.jreDestinationFolder = new File(contentsFolder, "PlugIns/" + jreDirectoryName + "/Contents/Home");
+		this.resourcesDestinationFolder = resourcesFolder;
+
+	}
 	
 	/**
 	 * Creates a native MacOS app bundle
@@ -31,14 +74,16 @@ public class MacPackager extends Packager {
 	@Override
 	public File doCreateApp() throws MojoExecutionException {
 		
+		// sets startup file
+		this.executable = new File(macOSFolder, "startup");			
+
 		// copies jarfile to Java folder
 		FileUtils.copyFileToFolder(jarFile, javaFolder);
 		
 		// creates startup file to boot java app
-		File startupFile = new File(macOSFolder, "startup");
-		VelocityUtils.render("mac/startup.vtl", startupFile, this);
-		startupFile.setExecutable(true);
-		Logger.info("Startup script file created in " + startupFile.getAbsolutePath());
+		VelocityUtils.render("mac/startup.vtl", executable, this);
+		executable.setExecutable(true);
+		Logger.info("Startup script file created in " + executable.getAbsolutePath());
 
 		// copies universalJavaApplicationStub startup file to boot java app
 		File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
@@ -60,6 +105,16 @@ public class MacPackager extends Packager {
 		return appFile;
 	}
 
+	@Override
+	public void doGenerateInstallers(List<File> installers) throws MojoExecutionException {
+
+		addIgnoreNull(installers, generateDmg());
+
+		addIgnoreNull(installers, generatePkg());
+		
+	}
+
+
 	/**
 	 * Creates a DMG image file including all app folder's content only for MacOS so
 	 * app could be easily distributed
@@ -67,8 +122,9 @@ public class MacPackager extends Packager {
 	 * @throws MojoExecutionException
 	 */
 	private File generateDmg() throws MojoExecutionException {
+		if (!macConfig.isGenerateDmg()) return null;
 		
-		Logger.append("Generating DMG disk image file ...");
+		Logger.infoIndent("Generating DMG disk image file ...");
 		
 		String volumeName = defaultIfBlank(macConfig.getVolumeName(), name);
 		
@@ -154,10 +210,10 @@ public class MacPackager extends Packager {
 		// checks if dmg file was created
 		if (!dmgFile.exists()) {
 			Logger.error("DMG disk image file " + dmgFile.getAbsolutePath() + " cannot be generated!");
-			Logger.subtract("DMG disk image file not generated!");
+			Logger.infoUnindent("DMG disk image file not generated!");
 			dmgFile = null;
 		} else {
-			Logger.subtract("DMG disk image file generated in " + dmgFile.getAbsolutePath() + "!");
+			Logger.infoUnindent("DMG disk image file generated in " + dmgFile.getAbsolutePath() + "!");
 		}
 		
 		return dmgFile;
@@ -170,8 +226,9 @@ public class MacPackager extends Packager {
 	 * @throws MojoExecutionException
 	 */
 	private File generatePkg() throws MojoExecutionException {
+		if (!macConfig.isGeneratePkg()) return null; 
 
-		Logger.append("Generating Mac OS X installer package ...");
+		Logger.infoIndent("Generating Mac OS X installer package ...");
 		
 		File pkgFile = new File(outputDirectory, name + "_" + version + ".pkg");
 		
@@ -181,54 +238,13 @@ public class MacPackager extends Packager {
 		// checks if pkg file was created
 		if (!pkgFile.exists()) {
 			Logger.error("Installation package " + pkgFile.getAbsolutePath() + " cannot be generated!");
-			Logger.subtract("Mac OS X installer package not generated!");
+			Logger.infoUnindent("Mac OS X installer package not generated!");
 			pkgFile = null;
 		} else {
-			Logger.subtract("Mac OS X installer package generated in " + pkgFile.getAbsolutePath() + "!");
+			Logger.infoUnindent("Mac OS X installer package generated in " + pkgFile.getAbsolutePath() + "!");
 		}
 		
 		return pkgFile;
 	}
 
-
-	@Override
-	public void doGenerateInstallers(List<File> installers) throws MojoExecutionException {
-		
-		if (macConfig.isGenerateDmg()) {
-			File dmgFile = generateDmg();
-			if (dmgFile != null) installers.add(dmgFile);
-		}
-		
-		if (macConfig.isGeneratePkg()) {
-			File pkgFile = generatePkg();
-			if (pkgFile != null) installers.add(pkgFile);
-		}
-		
-	}
-
-	@Override
-	protected void createSpecificAppStructure() throws MojoExecutionException {
-		
-		appFile 			= FileUtils.mkdir(appFolder, name + ".app");
-		Logger.info("App file folder created: " + appFile.getAbsolutePath());
-		
-		contentsFolder 		= FileUtils.mkdir(appFile, "Contents");
-		Logger.info("Contents folder created: " + contentsFolder.getAbsolutePath());
-		
-		resourcesFolder 	= FileUtils.mkdir(contentsFolder, "Resources");
-		Logger.info("Resources folder created: " + resourcesFolder.getAbsolutePath());
-		
-		javaFolder 			= FileUtils.mkdir(resourcesFolder, "Java");
-		Logger.info("Java folder created: " + javaFolder.getAbsolutePath());
-		
-		macOSFolder 		= FileUtils.mkdir(contentsFolder, "MacOS");
-		Logger.info("MacOS folder created: " + macOSFolder.getAbsolutePath());
-
-		this.executableDestinationFolder = macOSFolder;
-		this.jarFileDestinationFolder = javaFolder;
-		this.jreDestinationFolder = new File(contentsFolder, "PlugIns/" + jreDirectoryName + "/Contents/Home");
-		this.resourcesDestinationFolder = resourcesFolder;
-		
-	}
-	
 }
