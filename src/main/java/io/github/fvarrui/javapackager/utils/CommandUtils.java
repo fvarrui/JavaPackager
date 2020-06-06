@@ -21,7 +21,7 @@ public class CommandUtils {
 			if (argument == null)
 				continue;
 			if (argument instanceof File)
-				command.createArg().setFile((File) argument);
+				command.createArg().setValue("\"" + ((File) argument).getAbsolutePath() + "\"");
 			else if (argument.getClass().isArray())
 				createArguments(command, argument);
 			else
