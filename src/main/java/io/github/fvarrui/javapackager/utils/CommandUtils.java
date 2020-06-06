@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -39,8 +42,12 @@ public class CommandUtils {
 				command.setExecutable(executable);
 				createArguments(command, arguments);
 			} else {
+				List<Object> argList = new ArrayList<>();
+				argList.add("-c");
+				argList.add(executable);
+				argList.addAll(Arrays.asList(arguments));
 				command.setExecutable("/bin/bash");
-				createArguments(command, new Object[] { "-c", executable, arguments } );
+				createArguments(command, argList.toArray(new Object[argList.size()]));
 			}
 
 			Logger.info("Executing command: " + StringUtils.join(command.getCommandline(), " "));
