@@ -64,7 +64,7 @@ public class CommandUtils {
 				createArguments(bash, arguments);
 				command.setExecutable("/bin/bash");
 				command.createArg().setValue("-c");
-				command.createArg().setLine(org.codehaus.plexus.util.StringUtils.quoteAndEscape(StringUtils.join(bash.getCommandline(), " "), '\"'));
+				command.createArg().setValue("\"" + StringUtils.join(bash.getCommandline(), " ") + "\"");
 			}
 
 			Logger.info("Executing command: " + StringUtils.join(command.getCommandline(), " "));
