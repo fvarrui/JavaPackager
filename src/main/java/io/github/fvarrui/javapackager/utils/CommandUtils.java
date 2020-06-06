@@ -56,8 +56,6 @@ public class CommandUtils {
 
 			if (SystemUtils.IS_OS_WINDOWS) {
 				command.getShell().setShellArgs(new String[] { "/s", "/c" } );
-			} else {
-				command.getShell().setShellArgs(new String[] { "-c" } );
 			}
 		
 			createArguments(command, arguments);
