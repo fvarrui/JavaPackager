@@ -487,7 +487,7 @@ public abstract class Packager {
 	 * Copies all dependencies to app folder
 	 * 
 	 * @param libsFolder folder containing all dependencies
-	 * @throws MojoExecutionException
+	 * @throws MojoExecutionException Process failed
 	 */
 	protected void copyAllDependencies(File libsFolder) throws MojoExecutionException {
 		if (!copyDependencies) return;
@@ -545,11 +545,7 @@ public abstract class Packager {
 	
 	/**
 	 * Bundle a Java Runtime Enrironment with the app.
-	 *
-	 * Next link explains the process:
-	 * {@link https://medium.com/azulsystems/using-jlink-to-build-java-runtimes-for-non-modular-applications-9568c5e70ef4}
-	 *
-	 * @throws MojoExecutionException
+	 * @throws MojoExecutionException Process failed
 	 */
 	protected void bundleJre(File destinationFolder, File jarFile, File libsFolder, File specificJreFolder, boolean customizedJre, List<String> defaultModules, List<String> additionalModules, Platform platform) throws MojoExecutionException {
 		if (!bundleJre) {
@@ -630,7 +626,7 @@ public abstract class Packager {
 	/**
 	 * Creates a runnable jar file from sources
 	 * 
-	 * @throws MojoExecutionException
+	 * @throws MojoExecutionException Process failed
 	 */
 	protected File createRunnableJar(String name, String version, String mainClass, File outputDirectory) throws MojoExecutionException {
 		Logger.infoIndent("Creating runnable JAR...");
@@ -674,7 +670,7 @@ public abstract class Packager {
 	 * @param defaultModules Additional files and folders to include in the bundled app.
 	 * @param additionalModules Defines modules to customize the bundled JRE. Don't use jdeps to get module dependencies.
 	 * @return strign containing a comma separated list with all needed modules
-	 * @throws MojoExecutionException
+	 * @throws MojoExecutionException Process failed
 	 */
 	protected String getRequiredModules(File libsFolder, boolean customizedJre, File jarFile, List<String> defaultModules, List<String> additionalModules) throws MojoExecutionException {
 		
@@ -806,7 +802,7 @@ public abstract class Packager {
 	 * Locates assets or default icon file if the specified one doesn't exist or
 	 * isn't specified
 	 * 
-	 * @throws MojoExecutionException
+	 * @throws MojoExecutionException Process failed
 	 */
 	protected File resolveIcon(File iconFile, String name, File assetsFolder) throws MojoExecutionException {
 		
@@ -830,7 +826,7 @@ public abstract class Packager {
 	/**
 	 * Bundling app folder in tarball and/or zipball 
 	 * @param appFolder Folder to be bundled
-	 * @throws MojoExecutionException 
+	 * @throws MojoExecutionException Process failed
 	 */
 	public void createBundles() throws MojoExecutionException {
 		if (!createTarball && !createZipball) return;
