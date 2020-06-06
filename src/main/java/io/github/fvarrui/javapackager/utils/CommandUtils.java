@@ -55,7 +55,8 @@ public class CommandUtils {
 				bash.setExecutable(executable);
 				createArguments(bash, arguments);
 				command.setExecutable("/bin/bash");
-				createArguments(command, "-c", StringUtils.join(bash.getCommandline(), " "));
+				command.createArg().setValue("-c");
+				command.createArg().setLine(StringUtils.join(bash.getCommandline(), " "));
 			}
 
 			Logger.info("Executing command: " + StringUtils.join(command.getCommandline(), " "));
@@ -64,14 +65,10 @@ public class CommandUtils {
 
 			BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream()));
 			BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-
 			while (process.isAlive()) {
-				if (output.ready())
-					outputBuffer.append(Logger.info(output.readLine()) + "\n");
-				if (error.ready())
-					errorBuffer.append(Logger.error(error.readLine()) + "\n");
+				if (output.ready()) outputBuffer.append(Logger.info(output.readLine()) + "\n");
+				if (error.ready()) errorBuffer.append(Logger.error(error.readLine()) + "\n");
 			}
-
 			output.close();
 			error.close();
 			
