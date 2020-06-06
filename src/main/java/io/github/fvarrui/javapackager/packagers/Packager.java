@@ -682,9 +682,9 @@ public abstract class Packager {
 		
 		File jdeps = new File(System.getProperty("java.home"), "/bin/jdeps");
 
-		File jarLibs = null;
+		String jarLibs = null;
 		if (libsFolder.exists()) 
-			jarLibs = new File(libsFolder, "*.jar");
+			jarLibs = "\"" + libsFolder.getAbsolutePath() + "\"\\*.jar";
 		else
 			Logger.warn("No dependencies found!");
 		

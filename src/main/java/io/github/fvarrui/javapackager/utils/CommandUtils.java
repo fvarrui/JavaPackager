@@ -15,14 +15,24 @@ public class CommandUtils {
 
 	private static void createArguments(Commandline command, Object... arguments) {
 		for (Object argument : arguments) {
+			
 			if (argument == null)
 				continue;
-			if (argument instanceof File)
-				command.createArg().setFile((File) argument);
-			else if (argument.getClass().isArray())
+			
+			if (argument.getClass().isArray()) {
 				createArguments(command, argument);
-			else
-				command.createArg().setValue(argument.toString().trim());
+				continue;
+			}
+			
+			if (argument instanceof File)
+				argument = ((File) argument).getAbsolutePath();
+
+			String arg = argument.toString().trim(); 
+			if (!arg.contains("\"") && StringUtils.containsWhitespace(arg)) {
+				arg = org.codehaus.plexus.util.StringUtils.quoteAndEscape(arg, '\"');
+			}
+			command.createArg().setValue(arg);
+
 		}
 	}
 
@@ -37,6 +47,8 @@ public class CommandUtils {
 
 			if (SystemUtils.IS_OS_WINDOWS) {
 				command.setExecutable(executable);
+				command.getShell().setShellArgs(new String[] { "/s", "/c" } );
+				command.getShell().setQuotedArgumentsEnabled(false);
 				createArguments(command, arguments);
 			} else {
 				command.setExecutable("/bin/bash");
