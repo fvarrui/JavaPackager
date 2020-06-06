@@ -228,7 +228,7 @@ public class LinuxPackager extends Packager {
 						element("type", "perm"),
 						element("prefix", "/opt/" + name)
 				),
-				element("excludes", executable.getName() + "," + "jre/bin/java")
+				element("excludes", executable.getName() + (bundleJre ? "," + jreDirectoryName + "/bin/java" : ""))
 		));
 		
 		/* executable */
@@ -256,11 +256,11 @@ public class LinuxPackager extends Packager {
 		if (bundleJre)
 			dataSet.add(element("data", 
 					element("type", "file"),
-					element("src", appFolder.getAbsolutePath() + "/jre/bin/java"),
+					element("src", appFolder.getAbsolutePath() + "/" + jreDirectoryName + "/bin/java"),
 					element("mapper", 
 							element("type", "perm"), 
 							element("filemode", "755"),
-							element("prefix", "/opt/" + name + "/jre/bin")
+							element("prefix", "/opt/" + name + "/" + jreDirectoryName + "/bin")
 					)
 			));
 		
