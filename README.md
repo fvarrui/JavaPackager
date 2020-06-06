@@ -4,9 +4,7 @@
 
 JavaPackager is a Maven plugin which provides an easy way to package Java applications in native Windows, Mac OS X, or GNU/Linux executables, and generates installers for them.
 
-> Plugin published at [Maven Central](https://search.maven.org/artifact/io.github.fvarrui/javapackager) since v0.9.0. See published versions at [releases](https://github.com/fvarrui/JavaPackager/releases) section.
-
-> SNAPSHOT versions are not pusblished at Maven Central, so you have to [install them manually](#how-to-build-and-install-the-plugin). 
+> SNAPSHOT versions are not published at Maven Central, so you have to [install them manually](#how-to-build-and-install-the-plugin). 
 
 ## How to use this plugin
 
@@ -38,11 +36,6 @@ Add the following `plugin` tag to your `pom.xml`:
                     <additionalResource>folder path</additionalResource>
                     <additionalResource>...</additionalResource>
                 </additionalResources>
-                <additionalModules>
-                    <additionalModule>module1</additionalModule>
-                    <additionalModule>module2</additionalModule>
-                    <additionalModule>...</additionalModule>
-                </additionalModules>
                 <linuxConfig>...</linuxConfig>
                 <macConfig>...</macConfig>
                 <winConfig>...</winConfig>
@@ -220,6 +213,7 @@ Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column
 
 ## Older documentation
 
+- [v1.0.0](https://github.com/fvarrui/JavaPackager/blob/v1.0.0/README.md)
 - [v0.9.7](https://github.com/fvarrui/JavaPackager/blob/v0.9.7/README.md)
 - [v0.9.6](https://github.com/fvarrui/JavaPackager/blob/v0.9.6/README.md)
 - [v0.9.5](https://github.com/fvarrui/JavaPackager/blob/v0.9.5/README.md)
