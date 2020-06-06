@@ -49,11 +49,14 @@ public class CommandUtils {
 				command.setExecutable(executable);
 				command.getShell().setShellArgs(new String[] { "/s", "/c" } );
 				command.getShell().setQuotedArgumentsEnabled(false);
+				createArguments(command, arguments);
 			} else {
+				Commandline bash = new Commandline();
+				bash.setExecutable(executable);
+				createArguments(bash, arguments);
 				command.setExecutable("/bin/bash");
-				createArguments(command, "-c", executable);
+				createArguments(command, "-c", StringUtils.join(bash.getCommandline(), " "));
 			}
-			createArguments(command, arguments);
 
 			Logger.info("Executing command: " + StringUtils.join(command.getCommandline(), " "));
 
