@@ -52,7 +52,7 @@ public class CommandUtils {
 				createArguments(command, arguments);
 			} else {
 				command.setExecutable("/bin/bash");
-				createArguments(command, "-c", executable + " " + StringUtils.join(arguments, " "));
+				createArguments(command, "-c", executable, arguments);
 			}
 
 			Logger.info("Executing command: " + StringUtils.join(command.getCommandline(), " "));
