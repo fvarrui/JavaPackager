@@ -47,8 +47,6 @@ public class LinuxPackager extends Packager {
 	
 	/**
 	 * Creates a GNU/Linux app file structure with native executable
-	 * 
-	 * @throws MojoExecutionException
 	 */	
 	@Override
 	public File doCreateApp() throws MojoExecutionException {
@@ -86,8 +84,6 @@ public class LinuxPackager extends Packager {
 	/**
 	 * Creates a RPM package file including all app folder's content only for 
 	 * GNU/Linux so app could be easily distributed
-	 * 
-	 * @throws MojoExecutionException
 	 */
 	private File generateRpmPackage() throws MojoExecutionException {
 		if (!linuxConfig.isGenerateRpm()) return null;
@@ -196,8 +192,6 @@ public class LinuxPackager extends Packager {
 	/**
 	 * Creates a DEB package file including all app folder's content only for 
 	 * GNU/Linux so app could be easily distributed
-	 * 
-	 * @throws MojoExecutionException
 	 */
 	private File generateDebPackage() throws MojoExecutionException {
 		if (!linuxConfig.isGenerateDeb()) return null;

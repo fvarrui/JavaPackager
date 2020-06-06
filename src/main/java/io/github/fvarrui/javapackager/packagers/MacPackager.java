@@ -68,8 +68,6 @@ public class MacPackager extends Packager {
 	
 	/**
 	 * Creates a native MacOS app bundle
-	 * 
-	 * @throws MojoExecutionException
 	 */
 	@Override
 	public File doCreateApp() throws MojoExecutionException {
@@ -118,8 +116,6 @@ public class MacPackager extends Packager {
 	/**
 	 * Creates a DMG image file including all app folder's content only for MacOS so
 	 * app could be easily distributed
-	 * 
-	 * @throws MojoExecutionException
 	 */
 	private File generateDmg() throws MojoExecutionException {
 		if (!macConfig.isGenerateDmg()) return null;
@@ -222,8 +218,6 @@ public class MacPackager extends Packager {
 	/**
 	 * Creates a DMG image file including all app folder's content only for MacOS so
 	 * app could be easily distributed
-	 * 
-	 * @throws MojoExecutionException
 	 */
 	private File generatePkg() throws MojoExecutionException {
 		if (!macConfig.isGeneratePkg()) return null; 

@@ -205,7 +205,7 @@ public class WindowsConfig {
 	/**
 	 * Tests Windows specific config and set defaults if not specified
 	 * 
-	 * @param packager
+	 * @param packager Packager
 	 */
 	public void setDefaults(Packager packager) {
 		this.setHeaderType(this.getHeaderType() == null ? HeaderType.gui : this.getHeaderType());

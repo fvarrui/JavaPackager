@@ -669,7 +669,7 @@ public abstract class Packager {
 	 * @param jarFile Runnable jar file reference
 	 * @param defaultModules Additional files and folders to include in the bundled app.
 	 * @param additionalModules Defines modules to customize the bundled JRE. Don't use jdeps to get module dependencies.
-	 * @return strign containing a comma separated list with all needed modules
+	 * @return string containing a comma separated list with all needed modules
 	 * @throws MojoExecutionException Process failed
 	 */
 	protected String getRequiredModules(File libsFolder, boolean customizedJre, File jarFile, List<String> defaultModules, List<String> additionalModules) throws MojoExecutionException {
@@ -825,7 +825,6 @@ public abstract class Packager {
 	
 	/**
 	 * Bundling app folder in tarball and/or zipball 
-	 * @param appFolder Folder to be bundled
 	 * @throws MojoExecutionException Process failed
 	 */
 	public void createBundles() throws MojoExecutionException {

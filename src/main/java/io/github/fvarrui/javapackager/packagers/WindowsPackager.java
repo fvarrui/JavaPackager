@@ -47,8 +47,6 @@ public class WindowsPackager extends Packager {
 	
 	/**
 	 * Creates a Windows app file structure with native executable
-	 * 
-	 * @throws MojoExecutionException
 	 */
 	@Override
 	public File doCreateApp() throws MojoExecutionException {
@@ -118,8 +116,6 @@ public class WindowsPackager extends Packager {
 	/**
 	 * Creates a Setup installer file including all app folder's content only for
 	 * Windows so app could be easily distributed
-	 * 
-	 * @throws MojoExecutionException
 	 */
 	@Override
 	public void doGenerateInstallers(List<File> installers) throws MojoExecutionException {
@@ -133,8 +129,6 @@ public class WindowsPackager extends Packager {
 	/**
 	 * Creates a MSI file including all app folder's content only for
 	 * Windows so app could be easily distributed
-	 * 
-	 * @throws MojoExecutionException
 	 */
 	private File generateMsi() throws MojoExecutionException {
 		if (!winConfig.isGenerateMsi()) return null;

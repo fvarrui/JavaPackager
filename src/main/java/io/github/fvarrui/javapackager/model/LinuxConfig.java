@@ -30,7 +30,7 @@ public class LinuxConfig {
 
 	/**
 	 * Tests GNU/Linux specific config and set defaults if not specified
-	 * @param packager
+	 * @param packager Packager
 	 */
 	public void setDefaults(Packager packager) {
 		// nothing
