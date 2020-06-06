@@ -60,7 +60,6 @@ public class CommandUtils {
 		
 			createArguments(command, arguments);
 
-			Logger.info("Shell: " + command.getShell().getShellCommand());
 			Logger.info("Executing command: " + StringUtils.join(command.getCommandline(), " "));
 
 			Process process = command.execute();
