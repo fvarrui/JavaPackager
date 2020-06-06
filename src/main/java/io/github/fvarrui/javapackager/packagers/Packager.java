@@ -684,7 +684,7 @@ public abstract class Packager {
 
 		String jarLibs = null;
 		if (libsFolder.exists()) 
-			jarLibs = "\"" + libsFolder.getAbsolutePath() + "\"\\*.jar";
+			jarLibs = "\"" + libsFolder.getAbsolutePath() + "\"" + File.pathSeparator + "*.jar";
 		else
 			Logger.warn("No dependencies found!");
 		
