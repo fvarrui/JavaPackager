@@ -50,7 +50,7 @@ public class CommandUtils {
 				createArguments(command, argList.toArray(new Object[argList.size()]));
 			}
 
-			Logger.info("Executing command: " + StringUtils.join(command.getCommandline(), " "));
+			Logger.info("Executing command: " + command.getCommandline());
 
 			Process process = command.execute();
 
