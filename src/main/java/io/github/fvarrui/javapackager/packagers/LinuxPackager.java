@@ -207,12 +207,12 @@ public class LinuxPackager extends Packager {
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");
 		VelocityUtils.render("linux/desktop.vtl", desktopFile, this);
-		Logger.info("Rendering desktop file to " + desktopFile.getAbsolutePath());
+		Logger.info("Desktop file rendered in " + desktopFile.getAbsolutePath());
 
 		// generates deb control file from velocity template
 		File controlFile = new File(assetsFolder, "control");
 		VelocityUtils.render("linux/control.vtl", controlFile, this);
-		Logger.info("Rendering control file to " + desktopFile.getAbsolutePath());
+		Logger.info("Control file rendered in " + controlFile.getAbsolutePath());
 
 		// generated deb file
 		File debFile = new File(outputDirectory, name + "_" + version + ".deb");
