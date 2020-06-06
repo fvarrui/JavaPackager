@@ -10,6 +10,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.Commandline;
+import org.codehaus.plexus.util.cli.shell.BourneShell;
 
 public class CommandUtils {
 
@@ -49,11 +50,11 @@ public class CommandUtils {
 				command.setExecutable(executable);
 				command.getShell().setShellArgs(new String[] { "/s", "/c" } );
 				command.getShell().setQuotedArgumentsEnabled(false);
-				createArguments(command, arguments);
 			} else {
-				command.setExecutable("/bin/bash");
-				createArguments(command, "-c", executable, arguments);
+				command.setExecutable(executable);
+				command.setShell(new BourneShell());
 			}
+			createArguments(command, arguments);
 
 			Logger.info("Executing command: " + StringUtils.join(command.getCommandline(), " "));
 
