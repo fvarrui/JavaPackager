@@ -24,8 +24,16 @@ public class CommandUtils {
 				continue;
 			}
 			
-			if (argument instanceof File)
-				argument = ((File) argument).getAbsolutePath();
+			if (argument instanceof File) {
+				
+				File argFile = (File) argument;
+				if (argFile.getName().contains("*")) {
+					argument = org.codehaus.plexus.util.StringUtils.quoteAndEscape(argFile.getParentFile().getAbsolutePath(), '\"') + File.separator + argFile.getName();
+				} else {
+					argument = ((File) argument).getAbsolutePath();
+				}
+				
+			}
 
 			String arg = argument.toString().trim(); 
 			if (!arg.contains("\"") && StringUtils.containsWhitespace(arg)) {
