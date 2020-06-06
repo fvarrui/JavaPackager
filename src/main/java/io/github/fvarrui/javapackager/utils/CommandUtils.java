@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.plexus.util.cli.CommandLineException;
-import org.codehaus.plexus.util.cli.Commandline;
 
 public class CommandUtils {
 
@@ -52,21 +51,18 @@ public class CommandUtils {
 
 			Commandline command = new Commandline();
 			command.setWorkingDirectory(workingDirectory);
+			command.setExecutable(executable);
+			command.getShell().setQuotedArgumentsEnabled(false);
 
 			if (SystemUtils.IS_OS_WINDOWS) {
-				command.setExecutable(executable);
 				command.getShell().setShellArgs(new String[] { "/s", "/c" } );
-				command.getShell().setQuotedArgumentsEnabled(false);
-				createArguments(command, arguments);
 			} else {
-				Commandline bash = new Commandline();
-				bash.setExecutable(executable);
-				createArguments(bash, arguments);
-				command.setExecutable("/bin/bash");
-				command.createArg().setValue("-c");
-				command.createArg().setValue("\"" + StringUtils.join(bash.getCommandline(), " ") + "\"");
+				command.getShell().setShellArgs(new String[] { "-c" } );
 			}
+		
+			createArguments(command, arguments);
 
+			Logger.info("Shell: " + command.getShell().getShellCommand());
 			Logger.info("Executing command: " + StringUtils.join(command.getCommandline(), " "));
 
 			Process process = command.execute();
