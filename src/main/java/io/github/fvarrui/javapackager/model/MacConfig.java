@@ -1,6 +1,6 @@
 package io.github.fvarrui.javapackager.model;
 
-import static io.github.fvarrui.javapackager.utils.NumberUtils.defaultIfNull;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 import java.io.File;
 

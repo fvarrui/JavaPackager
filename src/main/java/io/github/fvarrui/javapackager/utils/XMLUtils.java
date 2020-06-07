@@ -17,6 +17,11 @@ import org.w3c.dom.NodeList;
 
 public class XMLUtils {
 
+	/**
+	 * Pretiffy an XML file
+	 * @param file Xml file
+	 * @throws MojoExecutionException Something went wrong
+	 */
 	public static final void prettify(File file) throws MojoExecutionException {
 		try {
 
@@ -39,6 +44,10 @@ public class XMLUtils {
 		}
 	}
 	
+	/**
+	 * Removes whitespaces from nodes
+	 * @param node Root node
+	 */
 	public static void trimWhitespace(Node node) {
 	    NodeList children = node.getChildNodes();
 	    for(int i = 0; i < children.getLength(); ++i) {
