@@ -46,7 +46,7 @@ public class LinuxPackager extends Packager {
 	}
 	
 	/**
-	 * Creates a GNU/Linux app file structure with native executable
+	 * Creates a GNU/Linux app folder with native executable
 	 */	
 	@Override
 	public File doCreateApp() throws MojoExecutionException {
