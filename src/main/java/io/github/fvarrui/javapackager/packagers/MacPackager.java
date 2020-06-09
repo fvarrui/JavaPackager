@@ -80,13 +80,13 @@ public class MacPackager extends Packager {
 		
 		// creates startup file to boot java app
 		VelocityUtils.render("mac/startup.vtl", executable, this);
-		executable.setExecutable(true);
+		executable.setExecutable(true, false);
 		Logger.info("Startup script file created in " + executable.getAbsolutePath());
 
 		// copies universalJavaApplicationStub startup file to boot java app
 		File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
 		FileUtils.copyResourceToFile("/mac/universalJavaApplicationStub", appStubFile, true);
-		appStubFile.setExecutable(true);
+		appStubFile.setExecutable(true, false);
 
 		// creates and write the Info.plist file
 		File infoPlistFile = new File(contentsFolder, "Info.plist");
