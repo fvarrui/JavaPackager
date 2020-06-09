@@ -14,9 +14,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -143,10 +145,28 @@ public class FileUtils {
         }
 	}
 	
+	public static void copyResourceToFile(String resource, File dest, boolean unixStyleNewLines) throws MojoExecutionException  {
+		copyResourceToFile(resource, dest);
+		if (unixStyleNewLines) {
+			try {
+				processFileContent(dest, c -> c.replaceAll("\\r\\n", "\n").replaceAll("\\r", "\n"));
+			} catch (IOException e) {
+				throw new MojoExecutionException(e.getMessage(), e);
+			}
+		}
+	}
+	
+	public static void processFileContent(File dest, Function<String, String> function) throws IOException {
+		String content = org.apache.commons.io.FileUtils.readFileToString(dest, Charset.forName("UTF-8"));
+		content = function.apply(content);
+		org.apache.commons.io.FileUtils.writeStringToFile(dest, content, Charset.forName("UTF-8"));
+	}
+	
 	public static void copyResourceToFile(String resource, File dest) throws MojoExecutionException  {
 		Logger.info("Copying resource [" + resource + "] to file [" + dest + "]");		
 		copyStreamToFile(FileUtils.class.getResourceAsStream(resource), dest);
 	}
+
 	
 	public static void createSymlink(File link, File target) throws MojoExecutionException {
 		Logger.info("Creating symbolic link [" + link + "] to [" + target + "]");		

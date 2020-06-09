@@ -47,7 +47,7 @@ public class VelocityUtils {
 		}
 	}
 	
-	public static String render(String templatePath, Object info) throws MojoExecutionException {
+	private static String render(String templatePath, Object info) throws MojoExecutionException {
 		VelocityContext context = new VelocityContext();
 		context.put("features", new ArrayList<String>());
 		context.put("GUID", UUID.class);

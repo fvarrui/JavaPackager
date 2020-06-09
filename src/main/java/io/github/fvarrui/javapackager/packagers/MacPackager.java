@@ -85,7 +85,7 @@ public class MacPackager extends Packager {
 
 		// copies universalJavaApplicationStub startup file to boot java app
 		File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
-		FileUtils.copyResourceToFile("/mac/universalJavaApplicationStub", appStubFile);
+		FileUtils.copyResourceToFile("/mac/universalJavaApplicationStub", appStubFile, true);
 		appStubFile.setExecutable(true);
 
 		// creates and write the Info.plist file
