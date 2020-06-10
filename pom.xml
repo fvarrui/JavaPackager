@@ -3,7 +3,7 @@
 
 	<groupId>io.github.fvarrui</groupId>
 	<artifactId>javapackager</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>JavaPackager Maven Plugin</name>
