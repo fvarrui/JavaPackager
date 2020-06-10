@@ -205,7 +205,13 @@ mvn release:prepare
 mvn release:perform
 ```
 
-:warning: On **Windows** it is necessary to use **PowerShell** and include next parameter ``-Dline.separator=`n`` in last two commands to avoid [this issue](https://stackoverflow.com/questions/11868590/maven-release-plugin-and-windows-line-breaks).
+:warning: On **Windows** it is necessary to use **PowerShell** and include next parameter ``"-Dline.separator=`n"`` in last two commands to avoid [this issue](https://stackoverflow.com/questions/11868590/maven-release-plugin-and-windows-line-breaks).
+
+```bash
+mvn clean release:clean
+mvn release:prepare "-Dline.separator=`n"
+mvn release:perform "-Dline.separator=`n"
+```
 
 > Related [guide](https://dzone.com/articles/publish-your-artifacts-to-maven-central).
 
