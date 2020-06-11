@@ -16,7 +16,7 @@ Add the following `plugin` tag to your `pom.xml`:
 <plugin>
     <groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
-    <version>1.0.1|1.0.2-SNAPSHOT</version>
+    <version>1.0.2|1.0.3-SNAPSHOT</version>
     <executions>
         <execution>
             <phase>package</phase>
@@ -205,14 +205,6 @@ mvn release:prepare
 mvn release:perform
 ```
 
-:warning: On **Windows** it is necessary to use **PowerShell** and include next parameter ``"-Dline.separator=`n"`` in last two commands to avoid [this issue](https://stackoverflow.com/questions/11868590/maven-release-plugin-and-windows-line-breaks).
-
-```bash
-mvn clean release:clean
-mvn release:prepare "-Dline.separator=`n"
-mvn release:perform "-Dline.separator=`n"
-```
-
 > Related [guide](https://dzone.com/articles/publish-your-artifacts-to-maven-central).
 
 ## Future features
@@ -221,6 +213,7 @@ Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column
 
 ## Older documentation
 
+- [v1.0.1](https://github.com/fvarrui/JavaPackager/blob/v1.0.1/README.md)
 - [v1.0.0](https://github.com/fvarrui/JavaPackager/blob/v1.0.0/README.md)
 - [v0.9.7](https://github.com/fvarrui/JavaPackager/blob/v0.9.7/README.md)
 - [v0.9.6](https://github.com/fvarrui/JavaPackager/blob/v0.9.6/README.md)
@@ -229,10 +222,3 @@ Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column
 - [v0.9.3](https://github.com/fvarrui/JavaPackager/blob/v0.9.3/README.md)
 - [v0.9.1](https://github.com/fvarrui/JavaPackager/blob/v0.9.1/README.md)
 - [v0.9.0](https://github.com/fvarrui/JavaPackager/blob/v0.9.0/README.md)
-- [v0.8.9](https://github.com/fvarrui/JavaPackager/blob/v0.8.9/README.md)
-- [v0.8.8](https://github.com/fvarrui/JavaPackager/blob/v0.8.8/README.md)
-- [v0.8.7](https://github.com/fvarrui/JavaPackager/blob/v0.8.7/README.md)
-- [v0.8.6](https://github.com/fvarrui/JavaPackager/blob/v0.8.6/README.md)
-- [v0.8.5](https://github.com/fvarrui/JavaPackager/blob/v0.8.5/README.md)
-- [v0.8.4](https://github.com/fvarrui/JavaPackager/blob/v0.8.4/README.md)
-- [v0.8.3](https://github.com/fvarrui/JavaPackager/blob/v0.8.3/README.md)
