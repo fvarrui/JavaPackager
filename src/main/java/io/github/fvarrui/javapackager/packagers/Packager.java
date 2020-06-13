@@ -47,7 +47,7 @@ public abstract class Packager {
 	protected File executable;
 	protected File jarFile;
 	
-	// internal packager specific properties (setted in "createSpecificAppStructure")
+	// internal packager specific properties (setted in "doCreateAppStructure")
 	protected File executableDestinationFolder;
 	protected File jarFileDestinationFolder;
 	protected File jreDestinationFolder;
