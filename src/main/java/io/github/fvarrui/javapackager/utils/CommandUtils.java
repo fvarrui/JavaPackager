@@ -66,7 +66,7 @@ public class CommandUtils {
 
 			BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream()));
 			BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-			while (process.isAlive()) {
+			while (process.isAlive() || output.ready() || error.ready()) {
 				if (output.ready()) outputBuffer.append(Logger.info(output.readLine()) + "\n");
 				if (error.ready()) errorBuffer.append(Logger.error(error.readLine()) + "\n");
 			}
