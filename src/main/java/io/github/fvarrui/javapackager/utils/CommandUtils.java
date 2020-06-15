@@ -67,8 +67,16 @@ public class CommandUtils {
 			BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream()));
 			BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 			while (process.isAlive() || output.ready() || error.ready()) {
-				if (output.ready()) outputBuffer.append(Logger.info(output.readLine()) + "\n");
-				if (error.ready()) errorBuffer.append(Logger.error(error.readLine()) + "\n");
+				if (output.ready()) {
+					String outputLine = output.readLine();
+					Logger.info(outputLine);
+					outputBuffer.append(outputLine + "\n");
+				}
+				if (error.ready()) {
+					String errorLine = error.readLine();
+					Logger.error(errorLine);
+					errorBuffer.append(errorLine + "\n");
+				}
 			}
 			output.close();
 			error.close();
