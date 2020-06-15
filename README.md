@@ -81,7 +81,7 @@ And by default it will generate next artifacts in `target ` folder:
 | `additionalModules`        | :x:                | `[]`                                                         | Additional modules to the ones identified by `jdeps` or the specified with `modules` property. |
 | `additionalResources`      | :x:                | `[]`                                                         | Additional files and folders to include in the bundled app.  |
 | `administratorRequired`    | :x:                | `false`                                                      | App will run as administrator (with elevated privileges).    |
-| `assetsDir`                | :x:                | `${basedir}/assets`                                          | Assets location.                                             |
+| `assetsDir`                | :x:                | `${basedir}/assets`                                          | Assets location (icons and custom Velocity templates).       |
 | `bundleJre`                | :x:                | `false`                                                      | Embeds a customized JRE with the app.                        |
 | `copyDependencies`         | :x:                | `true`                                                       | Bundles all dependencies (JAR files) with the app.           |
 | `createTarball`            | :x:                | `false`                                                      | Bundles app folder in tarball.                               |
@@ -126,11 +126,10 @@ And by default it will generate next artifacts in `target ` folder:
 Some assets, such as application icons and Velocity templates, could be placed in `${assetsDir}` folder organized by platform.
 
 ```
-<project>/
-└── ${assetsDir}/
-	├── linux/
-	├── mac/
-	└── windows/
+${assetsDir}/
+├── linux/
+├── mac/
+└── windows/
 ```
 
 #### Icons
@@ -138,15 +137,14 @@ Some assets, such as application icons and Velocity templates, could be placed i
 If icons are located in `${assetsDir}` folders, it would not be necessary to specify the `iconFile` property:
 
 ```
-<project>/
-└── ${assetsDir}/
-	├── linux/
-	│   ├── ${name}.png     # on GNU/Linux it has to be a PNG file for DEB package
-	│   └── ${name}.xpm     # and XPM file for RPM package
-	├── mac/
-	│   └── ${name}.icns    # on Mac OS X it has to be a ICNS file
-	└── windows/
-	    └── ${name}.ico     # on Windows it has to be a ICO file
+${assetsDir}/
+├── linux/
+│   ├── ${name}.png     # on GNU/Linux it has to be a PNG file for DEB package
+│   └── ${name}.xpm     # and XPM file for RPM package
+├── mac/
+│   └── ${name}.icns    # on Mac OS X it has to be a ICNS file
+└── windows/
+    └── ${name}.ico     # on Windows it has to be a ICO file
 ```
 
 > :warning: If `iconFile` plugin property is not specified and it can't find the correct icon in `assets` folder, it will use an [icon by default](https://raw.githubusercontent.com/fvarrui/JavaPackager/master/src/main/resources/linux/default-icon.png) for all platforms.
@@ -159,21 +157,20 @@ If icons are located in `${assetsDir}` folders, it would not be necessary to spe
 It is possible to use your own customized templates. You just have to put one of the following templates in the `assets` folder organized by platform, and the plugin will use these templates instead of default ones:
 
 ```
-<project>/
-└── ${assetsDir}/
-	├── linux/
-	|   ├── control.vtl                         # DEB control template
-	|   ├── desktop.vtl                         # Desktop template
-	│   └── startup.sh.vtl                      # Startup script template
-	├── mac/
-	|   ├── customize-dmg.applescript.vtl       # Applescript template
-	|   ├── Info.plist.vtl                      # Info.plist template
-	│   └── startup.vtl                         # Startup script template
-	├── windows/
-	|   ├── exe.manifest.vtl                    # exe.manifest template
-	|   ├── iss.vtl                             # Inno Setup Script template
-	│   └── wxs.vtl                             # WiX Toolset WXS template
-	└── assembly.xml.vtl                        # template for maven-assembly-plugin
+${assetsDir}/
+├── linux/
+|   ├── control.vtl                         # DEB control template
+|   ├── desktop.vtl                         # Desktop template
+│   └── startup.sh.vtl                      # Startup script template
+├── mac/
+|   ├── customize-dmg.applescript.vtl       # Applescript template
+|   ├── Info.plist.vtl                      # Info.plist template
+│   └── startup.vtl                         # Startup script template
+├── windows/
+|   ├── exe.manifest.vtl                    # exe.manifest template
+|   ├── iss.vtl                             # Inno Setup Script template
+│   └── wxs.vtl                             # WiX Toolset WXS template
+└── assembly.xml.vtl                        # template for maven-assembly-plugin
 ```
 
 > Use [default templates](https://github.com/fvarrui/JavaPackager/tree/master/src/main/resources) as examples.
