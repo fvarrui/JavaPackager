@@ -59,4 +59,8 @@ public class VelocityUtils {
 		return writer.toString();
 	}
 	
+	public static void setFileResourceLoaderPath(File assetsDir) {
+		velocityEngine.setProperty("file.resource.loader.path", assetsDir.getAbsolutePath());		
+	}
+	
 }

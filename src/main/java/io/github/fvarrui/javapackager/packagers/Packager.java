@@ -88,6 +88,7 @@ public abstract class Packager {
 	protected Boolean createZipball;
 	protected Map<String, String> extra;
 	protected boolean useResourcesAsWorkingDir;
+	protected File assetsDir;
 		
 	public File getAppFolder() {
 		return appFolder;
@@ -239,6 +240,10 @@ public abstract class Packager {
 	
 	public boolean isUseResourcesAsWorkingDir() {
 		return useResourcesAsWorkingDir;
+	}
+	
+	public File getAssetsDir() {
+		return assetsDir;
 	}
 	
 	// fluent api
@@ -418,6 +423,11 @@ public abstract class Packager {
 		return this;
 	}
 
+	public Packager assetsDir(File assetsDir) {
+		this.assetsDir = assetsDir;
+		return this;
+	}
+	
 	// ===============================================
 	
 	public Packager() {
@@ -428,6 +438,9 @@ public abstract class Packager {
 	private void init() throws MojoExecutionException {
 		
 		Logger.infoIndent("Initializing packager ...");
+		
+		// sets assetsDir for velocity to locate custom velocity templates 
+		VelocityUtils.setFileResourceLoaderPath(assetsDir);
 
 		// using artifactId as name, if it's not specified
 		name = defaultIfBlank(name, env.getMavenProject().getArtifactId());
@@ -450,6 +463,14 @@ public abstract class Packager {
 		}
 		
 		doInit();
+		
+		// removes not necessary platform specific configs 
+		switch (platform) {
+		case linux: macConfig = null; winConfig = null; break;
+		case mac: winConfig = null; linuxConfig = null; break;
+		case windows: linuxConfig = null; macConfig = null; break;
+		default:
+		}
 		
 		Logger.info("Effective packager configuration " + this);		
 				
@@ -785,7 +806,7 @@ public abstract class Packager {
 		}
 		// if license is still null, looks for LICENSE file
 		if (licenseFile == null || !licenseFile.exists()) {
-			licenseFile = new File("LICENSE");
+			licenseFile = new File(this.getEnv().getMavenProject().getBasedir(), "LICENSE");
 			if (!licenseFile.exists()) licenseFile = null;
 		}
 		
@@ -809,7 +830,7 @@ public abstract class Packager {
 		String iconExtension = IconUtils.getIconFileExtensionByPlatform(platform);
 		
 		if (iconFile == null) {
-			iconFile = new File("assets/" + platform + "/", name + iconExtension);
+			iconFile = new File(assetsDir, platform + "/" + name + iconExtension);
 		}
 		
 		if (!iconFile.exists()) {
@@ -950,19 +971,21 @@ public abstract class Packager {
 	@Override
 	public String toString() {
 		return "[appFolder=" + appFolder + ", assetsFolder=" + assetsFolder + ", executable=" + executable
-				+ ", jarFile=" + jarFile + ", outputDirectory=" + outputDirectory + ", licenseFile=" + licenseFile
-				+ ", iconFile=" + iconFile + ", generateInstaller=" + generateInstaller + ", mainClass=" + mainClass
-				+ ", name=" + name + ", displayName=" + displayName + ", version=" + version + ", description="
-				+ description + ", url=" + url + ", administratorRequired=" + administratorRequired
-				+ ", organizationName=" + organizationName + ", organizationUrl=" + organizationUrl
-				+ ", organizationEmail=" + organizationEmail + ", bundleJre=" + bundleJre + ", customizedJre="
-				+ customizedJre + ", jrePath=" + jrePath + ", additionalResources=" + additionalResources + ", modules="
-				+ modules + ", additionalModules=" + additionalModules + ", platform=" + platform + ", envPath="
-				+ envPath + ", vmArgs=" + vmArgs + ", runnableJar=" + runnableJar + ", copyDependencies="
-				+ copyDependencies + ", jreDirectoryName=" + jreDirectoryName + ", winConfig=" + winConfig
-				+ ", linuxConfig=" + linuxConfig + ", macConfig=" + macConfig + ", createTarball=" + createTarball
-				+ ", createZipball=" + createZipball + ", extra=" + extra + ", useResourcesAsWorkingDir="
-				+ useResourcesAsWorkingDir + "]";
+				+ ", jarFile=" + jarFile + ", executableDestinationFolder=" + executableDestinationFolder
+				+ ", jarFileDestinationFolder=" + jarFileDestinationFolder + ", jreDestinationFolder="
+				+ jreDestinationFolder + ", resourcesDestinationFolder=" + resourcesDestinationFolder + ", env=" + env
+				+ ", outputDirectory=" + outputDirectory + ", licenseFile=" + licenseFile + ", iconFile=" + iconFile
+				+ ", generateInstaller=" + generateInstaller + ", mainClass=" + mainClass + ", name=" + name
+				+ ", displayName=" + displayName + ", version=" + version + ", description=" + description + ", url="
+				+ url + ", administratorRequired=" + administratorRequired + ", organizationName=" + organizationName
+				+ ", organizationUrl=" + organizationUrl + ", organizationEmail=" + organizationEmail + ", bundleJre="
+				+ bundleJre + ", customizedJre=" + customizedJre + ", jrePath=" + jrePath + ", additionalResources="
+				+ additionalResources + ", modules=" + modules + ", additionalModules=" + additionalModules
+				+ ", platform=" + platform + ", envPath=" + envPath + ", vmArgs=" + vmArgs + ", runnableJar="
+				+ runnableJar + ", copyDependencies=" + copyDependencies + ", jreDirectoryName=" + jreDirectoryName
+				+ ", winConfig=" + winConfig + ", linuxConfig=" + linuxConfig + ", macConfig=" + macConfig
+				+ ", createTarball=" + createTarball + ", createZipball=" + createZipball + ", extra=" + extra
+				+ ", useResourcesAsWorkingDir=" + useResourcesAsWorkingDir + ", assetsDir=" + assetsDir + "]";
 	}
 
 	protected abstract void doCreateAppStructure() throws MojoExecutionException; 

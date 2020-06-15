@@ -226,6 +226,12 @@ public class PackageMojo extends ParentMojo {
 	 */
 	@Parameter(defaultValue = "true", property = "useResourcesAsWorkingDir", required = false)
 	private boolean useResourcesAsWorkingDir;
+	
+	/**
+	 * Assets directory
+	 */
+	@Parameter(defaultValue = "${project.basedir}/assets", property = "assetsDir", required = false)
+	private File assetsDir;
 
 	public void execute() throws MojoExecutionException {
 		
@@ -236,6 +242,7 @@ public class PackageMojo extends ParentMojo {
 						.additionalResources(additionalResources)
 						.administratorRequired(administratorRequired)
 						.appVersion(version)
+						.assetsDir(assetsDir)
 						.bundleJre(bundleJre)
 						.copyDependencies(copyDependencies)
 						.createTarball(createTarball)

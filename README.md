@@ -81,6 +81,7 @@ And by default it will generate next artifacts in `target ` folder:
 | `additionalModules`        | :x:                | `[]`                                                         | Additional modules to the ones identified by `jdeps` or the specified with `modules` property. |
 | `additionalResources`      | :x:                | `[]`                                                         | Additional files and folders to include in the bundled app.  |
 | `administratorRequired`    | :x:                | `false`                                                      | App will run as administrator (with elevated privileges).    |
+| `assetsDir`                | :x:                | `${basedir}/assets`                                          | Assets location.                                             |
 | `bundleJre`                | :x:                | `false`                                                      | Embeds a customized JRE with the app.                        |
 | `copyDependencies`         | :x:                | `true`                                                       | Bundles all dependencies (JAR files) with the app.           |
 | `createTarball`            | :x:                | `false`                                                      | Bundles app folder in tarball.                               |
@@ -122,11 +123,11 @@ And by default it will generate next artifacts in `target ` folder:
 
 ### Plugin assets
 
-Some assets, such as application icons and Velocity templates, could be placed in `assets` folder organized by platform.
+Some assets, such as application icons and Velocity templates, could be placed in `${assetsDir}` folder organized by platform.
 
 ```
 <project>/
-└── assets/
+└── ${assetsDir}/
 	├── linux/
 	├── mac/
 	└── windows/
@@ -134,11 +135,11 @@ Some assets, such as application icons and Velocity templates, could be placed i
 
 #### Icons
 
-If icons are located in `assets` folders, it would not be necessary to specify the `iconFile` property:
+If icons are located in `${assetsDir}` folders, it would not be necessary to specify the `iconFile` property:
 
 ```
 <project>/
-└── assets/
+└── ${assetsDir}/
 	├── linux/
 	│   ├── ${name}.png     # on GNU/Linux it has to be a PNG file for DEB package
 	│   └── ${name}.xpm     # and XPM file for RPM package
@@ -159,7 +160,7 @@ It is possible to use your own customized templates. You just have to put one of
 
 ```
 <project>/
-└── assets/
+└── ${assetsDir}/
 	├── linux/
 	|   ├── control.vtl                         # DEB control template
 	|   ├── desktop.vtl                         # Desktop template
@@ -170,7 +171,8 @@ It is possible to use your own customized templates. You just have to put one of
 	│   └── startup.vtl                         # Startup script template
 	├── windows/
 	|   ├── exe.manifest.vtl                    # exe.manifest template
-	│   └── iss.vtl                             # Inno Setup Script template
+	|   ├── iss.vtl                             # Inno Setup Script template
+	│   └── wxs.vtl                             # WiX Toolset WXS template
 	└── assembly.xml.vtl                        # template for maven-assembly-plugin
 ```
 
