@@ -8,12 +8,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
+import io.github.fvarrui.javapackager.utils.ThreadUtils;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
 public class MacPackager extends Packager {
@@ -173,6 +175,10 @@ public class MacPackager extends Packager {
 									.map(s -> s.split(" ")[0])
 									.findFirst().get();
 		Logger.info("- Device name: " + deviceName);
+		
+		// pause to prevent occasional "Can't get disk" (-1728) issues 
+		// https://github.com/seltzered/create-dmg/commit/5fe7802917bb85b40c0630b026d33e421db914ea
+		ThreadUtils.sleep(2000L);
 		
 		// renders applescript 
 		File applescriptFile = new File(assetsFolder, "customize-dmg.applescript");
