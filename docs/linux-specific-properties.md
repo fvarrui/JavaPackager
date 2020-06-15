@@ -2,7 +2,7 @@
 
 ```xml
 <linuxConfig>
-	<generateDeb>trye|false</generateDeb>
+	<generateDeb>true|false</generateDeb>
 	<generateRpm>true|false</generateRpm>
 </linuxConfig>
 ```
