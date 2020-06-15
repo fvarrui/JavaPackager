@@ -439,8 +439,8 @@ public abstract class Packager {
 		
 		Logger.infoIndent("Initializing packager ...");
 		
-		// sets assetsDir for velocity to locate custom velocity templates 
-		VelocityUtils.setFileResourceLoaderPath(assetsDir);
+		// sets assetsDir for velocity to locate custom velocity templates
+		VelocityUtils.setAssetsDir(assetsDir);
 
 		// using artifactId as name, if it's not specified
 		name = defaultIfBlank(name, env.getMavenProject().getArtifactId());

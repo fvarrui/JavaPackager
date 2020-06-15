@@ -19,22 +19,46 @@ import org.apache.velocity.util.StringBuilderWriter;
 
 public class VelocityUtils {
 
-	private static VelocityEngine velocityEngine;
+	private static File assetsDir = new File("assets");
+	private static VelocityEngine velocityEngine = null;
 
-	static {
-		velocityEngine = new VelocityEngine();
+	private static VelocityEngine getVelocityEngine() {
 		
-		// specify resource loaders to use
-		velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "file,class");
+		if (velocityEngine == null) {
+			
+			velocityEngine = new VelocityEngine();
+			
+			// specify resource loaders to use
+			velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "file,class");
+			
+			// for the loader 'file', set the FileResourceLoader as the class to use and use 'assets' directory for templates
+			velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
+			velocityEngine.setProperty("file.resource.loader.path", assetsDir.getAbsolutePath());
+			
+			// for the loader 'class', set the ClasspathResourceLoader as the class to use
+			velocityEngine.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
+			
+			velocityEngine.init();
+			
+		}
 		
-		// for the loader 'file', set the FileResourceLoader as the class to use and use 'assets' directory for templates
-		velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
-		velocityEngine.setProperty("file.resource.loader.path", "assets");
-		
-		// for the loader 'class', set the ClasspathResourceLoader as the class to use
-		velocityEngine.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
-		
-		velocityEngine.init();
+		return velocityEngine;
+	}
+	
+	private static String render(String templatePath, Object info) throws MojoExecutionException {
+		VelocityContext context = new VelocityContext();
+		context.put("features", new ArrayList<String>());
+		context.put("GUID", UUID.class);
+		context.put("StringUtils", StringUtils.class);
+		context.put("info", info);
+		Template template = getVelocityEngine().getTemplate(templatePath, "UTF-8");
+		StringBuilderWriter writer = new StringBuilderWriter();
+		template.merge(context, writer);		
+		return writer.toString();
+	}
+
+	public static void setAssetsDir(File assetsDir) {
+		VelocityUtils.assetsDir = assetsDir;
 	}
 
 	public static void render(String templatePath, File output, Object info) throws MojoExecutionException {
@@ -45,22 +69,6 @@ public class VelocityUtils {
 		} catch (IOException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
-	}
-	
-	private static String render(String templatePath, Object info) throws MojoExecutionException {
-		VelocityContext context = new VelocityContext();
-		context.put("features", new ArrayList<String>());
-		context.put("GUID", UUID.class);
-		context.put("StringUtils", StringUtils.class);
-		context.put("info", info);
-		Template template = velocityEngine.getTemplate(templatePath, "UTF-8");
-		StringBuilderWriter writer = new StringBuilderWriter();
-		template.merge(context, writer);		
-		return writer.toString();
-	}
-	
-	public static void setFileResourceLoaderPath(File assetsDir) {
-		velocityEngine.setProperty("file.resource.loader.path", assetsDir.getAbsolutePath());		
 	}
 	
 }
