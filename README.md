@@ -212,6 +212,7 @@ Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column
 
 ## Older documentation
 
+- [v1.0.2](https://github.com/fvarrui/JavaPackager/blob/v1.0.2/README.md)
 - [v1.0.1](https://github.com/fvarrui/JavaPackager/blob/v1.0.1/README.md)
 - [v1.0.0](https://github.com/fvarrui/JavaPackager/blob/v1.0.0/README.md)
 - [v0.9.7](https://github.com/fvarrui/JavaPackager/blob/v0.9.7/README.md)
