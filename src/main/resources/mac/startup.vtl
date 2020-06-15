@@ -8,7 +8,7 @@ export JAVA_HOME="$SCRIPTPATH/../PlugIns/${info.jreDirectoryName}/Contents/Home"
 export PATH=${info.envPath}
 #end
 #if ($info.administratorRequired)
-osascript -e "do shell script \"$SCRIPTPATH/universalJavaApplicationStub $@\" with administrator privileges"
+osascript -e "do shell script '\"$SCRIPTPATH/universalJavaApplicationStub\" $@' with administrator privileges"
 #else
-$SCRIPTPATH/universalJavaApplicationStub $@
+"$SCRIPTPATH/universalJavaApplicationStub" $@
 #end
