@@ -16,7 +16,7 @@ Add the following `plugin` tag to your `pom.xml`:
 <plugin>
     <groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
-    <version>1.0.2|1.0.3-SNAPSHOT</version>
+    <version>1.0.3|1.0.4-SNAPSHOT</version>
     <executions>
         <execution>
             <phase>package</phase>
