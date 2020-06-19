@@ -1,14 +1,13 @@
 package io.github.fvarrui.javapackager.packagers;
 
-import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static org.apache.commons.collections4.CollectionUtils.addIgnoreNull;
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 
 import io.github.fvarrui.javapackager.model.Platform;
