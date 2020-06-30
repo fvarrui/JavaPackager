@@ -1,4 +1,7 @@
 /bin/
-/target/ 
+/target/
+/build/
+/.gradle/
+/gradle/
 release.properties
 pom.xml.releaseBackup

@@ -16,7 +16,7 @@ Add the following `plugin` tag to your `pom.xml`:
 <plugin>
     <groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
-    <version>1.0.3|1.0.4-SNAPSHOT</version>
+    <version>1.1.0|1.1.1-SNAPSHOT</version>
     <executions>
         <execution>
             <phase>package</phase>
@@ -72,7 +72,7 @@ And by default it will generate next artifacts in `target ` folder:
 | `${name}-${version}-${platform}.tar`    | Tarball containing generated directory `${name}`.            |
 | `${name}-${version}-${platform}.tar.gz` | Compressed tarball containing generated directory `${name}`. |
 
->  :warning: DEB, RPM, EXE installer and DMG files generation will be ommited if target platform is different from current platform (see `platform` property).
+>  :warning: Installers generation will be ommited if target platform is different from current platform (see `platform` property).
 
 ### Plugin configutation properties
 
@@ -147,14 +147,14 @@ ${assetsDir}/
     └── ${name}.ico     # on Windows it has to be a ICO file
 ```
 
-> :warning: If `iconFile` plugin property is not specified and it can't find the correct icon in `assets` folder, it will use an [icon by default](https://raw.githubusercontent.com/fvarrui/JavaPackager/master/src/main/resources/linux/default-icon.png) for all platforms.
+> :warning: If `iconFile` plugin property is not specified and it can't find the correct icon in `${assetsDir}` folder, it will use an [icon by default](https://raw.githubusercontent.com/fvarrui/JavaPackager/master/src/main/resources/linux/default-icon.png) for all platforms.
 >
 
 #### Velocity templates
 
 [Velocity](https://velocity.apache.org/engine/2.0/user-guide.html) templates (.vtl files) are used to generate some artifacts which have to be bundled with the app.
 
-It is possible to use your own customized templates. You just have to put one of the following templates in the `assets` folder organized by platform, and the plugin will use these templates instead of default ones:
+It is possible to use your own customized templates. You just have to put one of the following templates in the `${assetsDir}` folder organized by platform, and the plugin will use these templates instead of default ones:
 
 ```
 ${assetsDir}/
@@ -163,7 +163,7 @@ ${assetsDir}/
 |   ├── desktop.vtl                         # Desktop template
 │   └── startup.sh.vtl                      # Startup script template
 ├── mac/
-|   ├── customize-dmg.applescript.vtl       # Applescript template
+|   ├── customize-dmg.applescript.vtl       # DMG customization Applescript template
 |   ├── Info.plist.vtl                      # Info.plist template
 │   └── startup.vtl                         # Startup script template
 ├── windows/
@@ -190,21 +190,21 @@ git clone https://github.com/fvarrui/JavaPackager.git
 cd JavaPackager
 ```
 
-2. Compile, package and install the plugin in your local repository:
+2. Compile, package and install the plugin in your local repository (ommit `./` on Windows):
 
 ```bash
-mvn install
+./gradlew clean
+./gradlew build
+./gradlew publishMavenToLocal
 ```
 
 ## How to publish the plugin on Maven Central
 
 ```bash
-mvn clean release:clean
-mvn release:prepare
-mvn release:perform
+./gradlew -Prelease uploadArchives closeAndPromoteRepository
 ```
 
-> Related [guide](https://dzone.com/articles/publish-your-artifacts-to-maven-central).
+> Related [guide](https://nemerosa.ghost.io/2015/07/01/publishing-to-the-maven-central-using-gradle/).
 
 ## Future features
 
@@ -212,6 +212,7 @@ Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column
 
 ## Older documentation
 
+- [v1.0.3](https://github.com/fvarrui/JavaPackager/blob/v1.0.3/README.md)
 - [v1.0.2](https://github.com/fvarrui/JavaPackager/blob/v1.0.2/README.md)
 - [v1.0.1](https://github.com/fvarrui/JavaPackager/blob/v1.0.1/README.md)
 - [v1.0.0](https://github.com/fvarrui/JavaPackager/blob/v1.0.0/README.md)

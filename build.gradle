@@ -1,0 +1,190 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'maven'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2')
+    }
+}
+
+configurations {
+    mavenEmbedder
+}
+
+dependencies {
+    implementation 'org.apache.maven:maven-plugin-api:3.6.0'
+    implementation 'org.codehaus.plexus:plexus-utils:3.1.1'
+    implementation 'org.twdata.maven:mojo-executor:2.3.0'
+    implementation 'org.apache.commons:commons-lang3:3.9'
+    implementation 'commons-io:commons-io:2.6'
+    implementation 'org.apache.commons:commons-collections4:4.1'
+    implementation 'org.apache.velocity:velocity-engine-core:2.0'
+    
+    testImplementation 'junit:junit:4.12'
+    
+    compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
+	
+	mavenEmbedder 'org.apache.maven:maven-embedder:3.6.3'
+	mavenEmbedder 'org.apache.maven:maven-compat:3.6.3'	
+    mavenEmbedder 'org.slf4j:slf4j-simple:1.7.5'
+}
+
+group = 'io.github.fvarrui'
+version = '1.1.1-SNAPSHOT'
+description = 'JavaPackager Plugin'
+sourceCompatibility = '1.8'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+install.repositories.mavenInstaller.pom.with {
+    groupId = project.group
+    artifactId = project.name
+    version = project.version
+    packaging = 'maven-plugin'
+}
+
+// runs the plugin description generator
+task generatePluginDescriptor(type: JavaExec, dependsOn: compileJava) {
+    def pomFile = file("$buildDir/pom.xml")
+    def pluginDescriptorFile = new File(project.compileJava.destinationDir, 'META-INF/maven/plugin.xml')
+    def directory = buildDir.canonicalPath
+    def outputDirectory = compileJava.destinationDir.canonicalPath
+
+    // FIXME: this does not seem to be working
+    inputs.files project.compileJava.outputs.files
+    outputs.file pluginDescriptorFile
+
+    classpath = configurations.mavenEmbedder
+    main = 'org.apache.maven.cli.MavenCli'
+    systemProperties['maven.multiModuleProjectDirectory'] = projectDir
+    args = [
+            '--errors',
+            '--batch-mode',
+            '--file', "${buildDir}/pom.xml",
+            'org.apache.maven.plugins:maven-plugin-plugin:3.4:descriptor'
+    ]
+
+    doFirst {
+        install.repositories
+               .mavenInstaller
+               .pom
+               .withXml {
+                    asNode().appendNode('build')
+                            .with {
+                                appendNode('directory', directory)
+                                appendNode('outputDirectory', outputDirectory)
+                            }
+               }
+               .writeTo(pomFile)
+
+        assert pomFile.file, "${pomFile.canonicalPath}: was not generated"
+        logger.info("POM is generated in ${pomFile.canonicalPath}")
+    }
+
+    doLast {
+        assert pluginDescriptorFile.file, "${pluginDescriptorFile.canonicalPath}: was not generated"
+        logger.info("Plugin descriptor is generated in ${pluginDescriptorFile.canonicalPath}")
+    }
+}
+
+project.jar.dependsOn(generatePluginDescriptor)
+
+apply plugin: 'io.codearte.nexus-staging'
+    
+if (project.hasProperty('release')) {
+
+	task javadocJar(type: Jar) {
+	    classifier = 'javadoc'
+	    from javadoc
+	}
+	
+	task sourcesJar(type: Jar) {
+	    classifier = 'sources'
+	    from sourceSets.main.allSource
+	}
+	
+	artifacts {
+	    archives javadocJar, sourcesJar
+	}
+
+    allprojects {
+        apply plugin: 'signing'
+        apply plugin: 'maven'
+
+        // Signature of artifacts
+        signing {
+            sign configurations.archives
+        }
+
+        // OSSRH publication
+        uploadArchives {
+            repositories {
+                mavenDeployer {
+                    // POM signature
+                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                    // Target repository
+                    repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                        authentication(userName: ossrhUser, password: ossrhPassword)
+                    }
+                    pom.project {
+                        name project.name
+                        description project.description
+                        packaging 'jar'
+                        url 'https://github.com/fvarrui/JavaPackager'
+
+                        scm {
+                            connection 'scm:git:git://github.com/fvarrui/JavaPackager.git'
+                            developerConnection 'scm:git:git@github.com:fvarrui/fvarrui.git'
+                            url 'https://github.com/fvarrui/JavaPackager'
+                        }
+
+                        licenses {
+                            license {
+                                name 'GPL-v3.0'
+                                url 'http://www.gnu.org/licenses/gpl-3.0.txt'
+                                distribution 'repo'
+                            }
+                        }
+
+                        developers {
+                            developer {
+                                id = 'fvarrui'
+                                name = 'Francisco Vargas Ruiz'
+                                url = 'https://github.com/fvarrui'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+nexusStaging {
+    username = ossrhUser
+    password = ossrhPassword
+}
