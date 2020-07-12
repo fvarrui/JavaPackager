@@ -1,4 +1,4 @@
-package io.github.fvarrui.javapackager;
+package io.github.fvarrui.javapackager.maven;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
 

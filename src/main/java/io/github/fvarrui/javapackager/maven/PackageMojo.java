@@ -1,4 +1,4 @@
-package io.github.fvarrui.javapackager;
+package io.github.fvarrui.javapackager.maven;
 
 import java.io.File;
 import java.util.List;
