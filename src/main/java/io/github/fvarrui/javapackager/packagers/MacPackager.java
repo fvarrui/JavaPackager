@@ -180,9 +180,10 @@ public class MacPackager extends Packager {
 		ThreadUtils.sleep(2000L);
 		
 		// renders applescript 
+		Logger.info("Rendering DMG customization applescript ... ");
 		File applescriptFile = new File(assetsFolder, "customize-dmg.applescript");
 		VelocityUtils.render("/mac/customize-dmg.applescript.vtl", applescriptFile, this);
-		Logger.info("Rendering applescript: " + applescriptFile.getAbsolutePath());
+		Logger.info("Applescript rendered in " + applescriptFile.getAbsolutePath() + "!");
 		
 		// runs applescript 
 		Logger.info("Running applescript");
