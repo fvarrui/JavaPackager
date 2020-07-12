@@ -200,6 +200,8 @@ cd JavaPackager
 
 ## How to publish the plugin on Maven Central
 
+Run next command after build and publish the plugin locally:
+
 ```bash
 ./gradlew -Prelease uploadArchives closeAndPromoteRepository
 ```
