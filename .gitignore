@@ -1,7 +1,8 @@
-/bin/
-/target/
-/build/
-/.gradle/
-/gradle/
-release.properties
-pom.xml.releaseBackup
+.gradle
+**/build/
+
+bin
+target
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
