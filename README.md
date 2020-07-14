@@ -152,7 +152,7 @@ ${assetsDir}/
 
 #### Velocity templates
 
-[Velocity](https://velocity.apache.org/engine/2.0/user-guide.html) templates (.vtl files) are used to generate some artifacts which have to be bundled with the app.
+[Velocity](https://velocity.apache.org/engine/2.0/user-guide.html) templates (`.vtl` files) are used to generate some artifacts which have to be bundled with the app.
 
 It is possible to use your own customized templates. You just have to put one of the following templates in the `${assetsDir}` folder organized by platform, and the plugin will use these templates instead of default ones:
 
