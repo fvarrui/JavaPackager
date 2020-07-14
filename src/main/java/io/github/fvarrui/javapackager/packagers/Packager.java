@@ -468,6 +468,8 @@ public abstract class Packager {
 		// check if name is valid as filename
 		try {
 			Paths.get(name);
+			if (name.contains("/")) throw new InvalidPathException(name, "Illegal char </>");
+			if (name.contains("\\")) throw new InvalidPathException(name, "Illegal char <\\>");
 		} catch (InvalidPathException e) {
 			throw new MojoExecutionException("Invalid name specified: " + name, e);
 		}
