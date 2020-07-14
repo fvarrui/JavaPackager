@@ -4,7 +4,7 @@
 
 JavaPackager is a Maven plugin which provides an easy way to package Java applications in native Windows, Mac OS X, or GNU/Linux executables, and generates installers for them.
 
-> SNAPSHOT versions are not published at Maven Central, so you have to [install them manually](#how-to-build-and-install-the-plugin). 
+> SNAPSHOT versions are not released to Maven Central, so you have to [install them manually](#how-to-build-and-install-the-plugin). 
 
 ## How to use this plugin
 
@@ -193,14 +193,12 @@ cd JavaPackager
 2. Compile, package and install the plugin in your local repository (ommit `./` on Windows):
 
 ```bash
-./gradlew clean
-./gradlew build
-./gradlew publishMavenToLocal
+./gradlew clean build publishToMavenLocal
 ```
 
-## How to publish the plugin on Maven Central
+## How to release the plugin to Maven Central
 
-Run next command after build and publish the plugin locally:
+Run next command after [build and publish the plugin locally](#how-to-build-and-install-the-plugin)  (ommit `./` on Windows):
 
 ```bash
 ./gradlew -Prelease uploadArchives closeAndPromoteRepository
