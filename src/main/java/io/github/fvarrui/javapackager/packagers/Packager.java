@@ -14,6 +14,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -460,6 +463,13 @@ public abstract class Packager {
 		// determines target platform if not specified 
 		if (platform == null || platform == Platform.auto) {
 			platform = Platform.getCurrentPlatform();
+		}
+		
+		// check if name is valid as filename
+		try {
+			Paths.get(name);
+		} catch (InvalidPathException e) {
+			throw new MojoExecutionException("Invalid name specified: " + name, e);
 		}
 		
 		doInit();
