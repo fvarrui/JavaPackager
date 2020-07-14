@@ -170,7 +170,7 @@ ${assetsDir}/
 |   ├── exe.manifest.vtl                    # exe.manifest template
 |   ├── iss.vtl                             # Inno Setup Script template
 │   └── wxs.vtl                             # WiX Toolset WXS template
-└── assembly.xml.vtl                        # template for maven-assembly-plugin
+└── assembly.xml.vtl                        # maven-assembly-plugin template used to generate ZIP/TGZ bundles
 ```
 
 > Use [default templates](https://github.com/fvarrui/JavaPackager/tree/master/src/main/resources) as examples.
