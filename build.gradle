@@ -39,7 +39,11 @@ dependencies {
 	
 	mavenEmbedder 'org.apache.maven:maven-embedder:3.6.0'
 	mavenEmbedder 'org.apache.maven:maven-compat:3.6.0'	
-    mavenEmbedder 'org.slf4j:slf4j-simple:1.7.5'
+    mavenEmbedder 'org.slf4j:slf4j-simple:1.7.30'
+    mavenEmbedder 'org.eclipse.aether:aether-connector-basic:1.1.0'
+    mavenEmbedder 'org.eclipse.aether:aether-transport-wagon:1.1.0'
+    mavenEmbedder 'org.apache.maven.wagon:wagon-http:3.4.1'
+    mavenEmbedder 'org.apache.maven.wagon:wagon-provider-api:3.4.1'    
 }
 
 group = 'io.github.fvarrui'
