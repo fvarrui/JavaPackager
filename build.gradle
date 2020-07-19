@@ -32,6 +32,7 @@ dependencies {
     implementation 'commons-io:commons-io:2.6'
     implementation 'org.apache.commons:commons-collections4:4.1'
     implementation 'org.apache.velocity:velocity-engine-core:2.0'
+    implementation 'org.apache.maven:maven-plugin-plugin:3.4'
     
     testImplementation 'junit:junit:4.12'
     
