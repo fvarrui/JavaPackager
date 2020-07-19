@@ -32,14 +32,13 @@ dependencies {
     implementation 'commons-io:commons-io:2.6'
     implementation 'org.apache.commons:commons-collections4:4.1'
     implementation 'org.apache.velocity:velocity-engine-core:2.0'
-    implementation 'org.apache.maven.plugins:maven-plugin-plugin:3.4'
     
     testImplementation 'junit:junit:4.12'
     
     compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
 	
-	mavenEmbedder 'org.apache.maven:maven-embedder:3.6.3'
-	//mavenEmbedder 'org.apache.maven:maven-compat:3.6.3'	
+	mavenEmbedder 'org.apache.maven:maven-embedder:3.6.0'
+	mavenEmbedder 'org.apache.maven:maven-compat:3.6.0'	
     mavenEmbedder 'org.slf4j:slf4j-simple:1.7.5'
 }
 
