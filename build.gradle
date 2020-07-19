@@ -186,6 +186,6 @@ if (project.hasProperty('release')) {
 }
 
 nexusStaging {
-    username = ossrhUser
-    password = ossrhPassword
+    username = project.findProperty('ossrhUser') ?: ''
+    password = project.findProperty('ossrhPassword') ?: ''
 }
