@@ -39,7 +39,7 @@ dependencies {
     compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
 	
 	mavenEmbedder 'org.apache.maven:maven-embedder:3.6.3'
-	mavenEmbedder 'org.apache.maven:maven-compat:3.6.3'	
+	//mavenEmbedder 'org.apache.maven:maven-compat:3.6.3'	
     mavenEmbedder 'org.slf4j:slf4j-simple:1.7.5'
 }
 
