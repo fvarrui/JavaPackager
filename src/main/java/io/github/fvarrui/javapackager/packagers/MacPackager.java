@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.plugin.MojoExecutionException;
 
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
@@ -26,14 +25,14 @@ public class MacPackager extends Packager {
 	private File macOSFolder;
 
 	@Override
-	public void doInit() throws MojoExecutionException {
+	public void doInit() throws Exception {
 
 		this.macConfig.setDefaults(this);
 		
 	}
 
 	@Override
-	protected void doCreateAppStructure() throws MojoExecutionException {
+	protected void doCreateAppStructure() throws Exception {
 		
 		// initializes the references to the app structure folders
 		this.appFile = new File(appFolder, name + ".app");
@@ -71,7 +70,7 @@ public class MacPackager extends Packager {
 	 * Creates a native MacOS app bundle
 	 */
 	@Override
-	public File doCreateApp() throws MojoExecutionException {
+	public File doCreateApp() throws Exception {
 		
 		// sets startup file
 		this.executable = new File(macOSFolder, "startup");			
@@ -105,7 +104,7 @@ public class MacPackager extends Packager {
 	}
 
 	@Override
-	public void doGenerateInstallers(List<File> installers) throws MojoExecutionException {
+	public void doGenerateInstallers(List<File> installers) throws Exception {
 
 		addIgnoreNull(installers, generateDmg());
 
@@ -118,7 +117,7 @@ public class MacPackager extends Packager {
 	 * Creates a DMG image file including all app folder's content only for MacOS so
 	 * app could be easily distributed
 	 */
-	private File generateDmg() throws MojoExecutionException {
+	private File generateDmg() throws Exception {
 		if (!macConfig.isGenerateDmg()) return null;
 		
 		Logger.infoIndent("Generating DMG disk image file ...");
@@ -225,7 +224,7 @@ public class MacPackager extends Packager {
 	 * Creates a DMG image file including all app folder's content only for MacOS so
 	 * app could be easily distributed
 	 */
-	private File generatePkg() throws MojoExecutionException {
+	private File generatePkg() throws Exception {
 		if (!macConfig.isGeneratePkg()) return null; 
 
 		Logger.infoIndent("Generating Mac OS X installer package ...");

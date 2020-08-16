@@ -19,19 +19,15 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.model.License;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
-import io.github.fvarrui.javapackager.model.LinuxConfig;
-import io.github.fvarrui.javapackager.model.MacConfig;
+import io.github.fvarrui.javapackager.maven.MavenContext;
 import io.github.fvarrui.javapackager.model.Platform;
-import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.IconUtils;
@@ -39,7 +35,7 @@ import io.github.fvarrui.javapackager.utils.JavaUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
-public abstract class Packager {
+public abstract class Packager extends PackagerSettings {
 	
 	private static final String DEFAULT_ORGANIZATION_NAME = "ACME";
 
@@ -55,43 +51,8 @@ public abstract class Packager {
 	protected File jreDestinationFolder;
 	protected File resourcesDestinationFolder;
 
-	// external properties
-	protected ExecutionEnvironment env;
-	protected File outputDirectory;
-	protected File licenseFile;
-	protected File iconFile;
-	protected Boolean generateInstaller;
-	protected String mainClass;
-	protected String name;
-	protected String displayName;
-	protected String version;
-	protected String description;
-	protected String url;
-	protected Boolean administratorRequired;
-	protected String organizationName;
-	protected String organizationUrl;
-	protected String organizationEmail;
-	protected Boolean bundleJre;
-	protected Boolean customizedJre;
-	protected File jrePath;
-	protected List<File> additionalResources;
-	protected List<String> modules;
-	protected List<String> additionalModules;
-	protected Platform platform;
-	protected String envPath;
-	protected List<String> vmArgs;
-	protected File runnableJar;
-	protected Boolean copyDependencies;
-	protected String jreDirectoryName;
-	protected WindowsConfig winConfig;
-	protected LinuxConfig linuxConfig;
-	protected MacConfig macConfig;
-	protected Boolean createTarball;
-	protected Boolean createZipball;
-	protected Map<String, String> extra;
-	protected boolean useResourcesAsWorkingDir;
-	protected File assetsDir;
-		
+	// ===============================================	
+	
 	public File getAppFolder() {
 		return appFolder;
 	}
@@ -108,328 +69,22 @@ public abstract class Packager {
 		return jarFile;
 	}
 
-	public ExecutionEnvironment getEnv() {
-		return env;
-	}
+	// ===============================================
+	// Functions
+	// ===============================================	
 
-	public File getOutputDirectory() {
-		return outputDirectory;
-	}
-
-	public File getLicenseFile() {
-		return licenseFile;
-	}
-
-	public File getIconFile() {
-		return iconFile;
-	}
-
-	public Boolean getGenerateInstaller() {
-		return generateInstaller;
-	}
-
-	public String getMainClass() {
-		return mainClass;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getDisplayName() {
-		return displayName;
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	public Boolean getAdministratorRequired() {
-		return administratorRequired;
-	}
-
-	public String getOrganizationName() {
-		return organizationName;
-	}
-
-	public String getOrganizationUrl() {
-		return organizationUrl;
-	}
-
-	public String getOrganizationEmail() {
-		return organizationEmail;
-	}
-
-	public Boolean getBundleJre() {
-		return bundleJre;
-	}
-
-	public Boolean getCustomizedJre() {
-		return customizedJre;
-	}
-
-	public File getJrePath() {
-		return jrePath;
-	}
-
-	public List<File> getAdditionalResources() {
-		return additionalResources;
-	}
-
-	public List<String> getModules() {
-		return modules;
-	}
-
-	public List<String> getAdditionalModules() {
-		return additionalModules;
-	}
-
-	public Platform getPlatform() {
-		return platform;
-	}
-
-	public String getEnvPath() {
-		return envPath;
+	// create runnable JAR function
+	
+	protected Function<Packager, File> createRunnableJarFunction;
+	
+	public void setCreateRunnableJar(Function<Packager, File> createRunnableJarFunction) {
+		this.createRunnableJarFunction = createRunnableJarFunction;
 	}
 	
-	public List<String> getVmArgs() {
-		return vmArgs;
-	}
-	
-	public File getRunnableJar() {
-		return runnableJar;
+	public File createRunnableJar() {
+		return createRunnableJarFunction.apply(this);
 	}
 
-	public Boolean getCopyDependencies() {
-		return copyDependencies;
-	}
-
-	public String getJreDirectoryName() {
-		return jreDirectoryName;
-	}
-
-	public WindowsConfig getWinConfig() {
-		return winConfig;
-	}
-
-	public LinuxConfig getLinuxConfig() {
-		return linuxConfig;
-	}
-
-	public MacConfig getMacConfig() {
-		return macConfig;
-	}
-
-	public Boolean getCreateTarball() {
-		return createTarball;
-	}
-
-	public Boolean getCreateZipball() {
-		return createZipball;
-	}
-	
-	public Map<String, String> getExtra() {
-		return extra;
-	}
-	
-	public boolean isUseResourcesAsWorkingDir() {
-		return useResourcesAsWorkingDir;
-	}
-	
-	public File getAssetsDir() {
-		return assetsDir;
-	}
-	
-	// fluent api
-
-	public Packager env(ExecutionEnvironment env) {
-		this.env = env;
-		return this;
-	}
-
-	public Packager outputDirectory(File outputDirectory) {
-		this.outputDirectory = outputDirectory;
-		return this;
-	}
-
-	public Packager licenseFile(File licenseFile) {
-		this.licenseFile = licenseFile;
-		return this;
-	}
-
-	public Packager iconFile(File iconFile) {
-		this.iconFile = iconFile;
-		return this;
-	}
-
-	public Packager generateInstaller(Boolean generateInstaller) {
-		this.generateInstaller = generateInstaller;
-		return this;
-	}
-
-	public Packager mainClass(String mainClass) {
-		this.mainClass = mainClass;
-		return this;
-	}
-
-	public Packager name(String name) {
-		this.name = name;
-		return this;
-	}
-
-	public Packager displayName(String displayName) {
-		this.displayName = displayName;
-		return this;
-	}
-
-	public Packager appVersion(String version) {
-		this.version = version;
-		return this;
-	}
-
-	public Packager description(String description) {
-		this.description = description;
-		return this;
-	}
-
-	public Packager url(String url) {
-		this.url = url;
-		return this;
-	}
-
-	public Packager administratorRequired(Boolean administratorRequired) {
-		this.administratorRequired = administratorRequired;
-		return this;
-	}
-
-	public Packager organizationName(String organizationName) {
-		this.organizationName = organizationName;
-		return this;
-	}
-
-	public Packager organizationUrl(String organizationUrl) {
-		this.organizationUrl = organizationUrl;
-		return this;
-	}
-
-	public Packager organizationEmail(String organizationEmail) {
-		this.organizationEmail = organizationEmail;
-		return this;
-	}
-
-	public Packager bundleJre(Boolean bundleJre) {
-		this.bundleJre = bundleJre;
-		return this;
-	}
-
-	public Packager customizedJre(Boolean customizedJre) {
-		this.customizedJre = customizedJre;
-		return this;
-	}
-
-	public Packager jrePath(File jrePath) {
-		this.jrePath = jrePath;
-		return this;
-	}
-
-	public Packager additionalResources(List<File> additionalResources) {
-		this.additionalResources = additionalResources;
-		return this;
-	}
-
-	public Packager modules(List<String> modules) {
-		this.modules = modules;
-		return this;
-	}
-
-	public Packager additionalModules(List<String> additionalModules) {
-		this.additionalModules = additionalModules;
-		return this;
-	}
-
-	public Packager platform(Platform platform) {
-		this.platform = platform;
-		return this;
-	}
-
-	public Packager envPath(String envPath) {
-		this.envPath = envPath;
-		return this;
-	}
-
-	public Packager vmArgs(List<String> vmArgs) {
-		this.vmArgs = vmArgs;
-		return this;
-	}
-
-	public Packager runnableJar(File runnableJar) {
-		this.runnableJar = runnableJar;
-		return this;
-	}
-
-	public Packager copyDependencies(Boolean copyDependencies) {
-		this.copyDependencies = copyDependencies;
-		return this;
-	}
-
-	public Packager jreDirectoryName(String jreDirectoryName) {
-		this.jreDirectoryName = jreDirectoryName;
-		return this;
-	}
-
-	public Packager winConfig(WindowsConfig winConfig) {
-		this.winConfig = winConfig;
-		return this;
-	}
-
-	public Packager linuxConfig(LinuxConfig linuxConfig) {
-		this.linuxConfig = linuxConfig;
-		return this;
-	}
-
-	public Packager macConfig(MacConfig macConfig) {
-		this.macConfig = macConfig;
-		return this;
-	}
-
-	public Packager createTarball(Boolean createTarball) {
-		this.createTarball = createTarball;
-		return this;
-	}
-
-	public Packager createZipball(Boolean createZipball) {
-		this.createZipball = createZipball;
-		return this;
-	}
-	
-	public Packager extra(Map<String, String> extra) {
-		this.extra = extra;
-		return this;
-	}
-
-	public Packager useResourcesAsWorkingDir(boolean useResourcesAsWorkingDir) {
-		this.useResourcesAsWorkingDir = useResourcesAsWorkingDir;
-		return this;
-	}
-	
-	public Packager appFolder(File appFolder) {
-		this.appFolder = appFolder;
-		return this;
-	}
-
-	public Packager assetsDir(File assetsDir) {
-		this.assetsDir = assetsDir;
-		return this;
-	}
-	
 	// ===============================================
 	
 	public Packager() {
@@ -437,16 +92,13 @@ public abstract class Packager {
 		Logger.info("Using packager " + this.getClass().getName());
 	}
 	
-	private void init() throws MojoExecutionException {
+	private void init() throws Exception {
 		
 		Logger.infoIndent("Initializing packager ...");
 		
 		// sets assetsDir for velocity to locate custom velocity templates
 		VelocityUtils.setAssetsDir(assetsDir);
 
-		// using artifactId as name, if it's not specified
-		name = defaultIfBlank(name, env.getMavenProject().getArtifactId());
-		
 		// using name as displayName, if it's not specified
 		displayName = defaultIfBlank(displayName, name);
 		
@@ -464,13 +116,21 @@ public abstract class Packager {
 			platform = Platform.getCurrentPlatform();
 		}
 		
+		// sets jdkPath by default if not specified
+		if (jdkPath == null) {
+			jdkPath = new File(System.getProperty("java.home"));
+		}
+		if (!jdkPath.exists()) {
+			throw new Exception("JDK path doesn't exist: " + jdkPath);
+		}
+		
 		// check if name is valid as filename
 		try {
 			Paths.get(name);
 			if (name.contains("/")) throw new InvalidPathException(name, "Illegal char </>");
 			if (name.contains("\\")) throw new InvalidPathException(name, "Illegal char <\\>");
 		} catch (InvalidPathException e) {
-			throw new MojoExecutionException("Invalid name specified: " + name, e);
+			throw new Exception("Invalid name specified: " + name, e);
 		}
 		
 		doInit();
@@ -489,12 +149,12 @@ public abstract class Packager {
 
 	}
 
-	public void resolveResources() throws MojoExecutionException {
+	public void resolveResources() throws Exception {
 		
 		Logger.infoIndent("Resolving resources ...");
 		
 		// locates license file
-		licenseFile = resolveLicense(licenseFile, env.getMavenProject().getLicenses());
+		licenseFile = resolveLicense(licenseFile, MavenContext.getEnv().getMavenProject().getLicenses());
 		
 		// locates icon file
 		iconFile = resolveIcon(iconFile, name, assetsFolder);
@@ -511,7 +171,7 @@ public abstract class Packager {
 	}
 	
 	protected String getLicenseName() {
-		List<License> licenses = env.getMavenProject().getLicenses();
+		List<License> licenses = MavenContext.getEnv().getMavenProject().getLicenses();
 		return licenses != null && !licenses.isEmpty() && licenses.get(0) != null ? licenses.get(0).getName() : "";
 	}
 
@@ -519,9 +179,9 @@ public abstract class Packager {
 	 * Copies all dependencies to app folder
 	 * 
 	 * @param libsFolder folder containing all dependencies
-	 * @throws MojoExecutionException Process failed
+	 * @throws Exception Process failed
 	 */
-	protected void copyAllDependencies(File libsFolder) throws MojoExecutionException {
+	protected void copyAllDependencies(File libsFolder) throws Exception {
 		if (!copyDependencies) return;
 
 		Logger.infoIndent("Copying all dependencies to " + libsFolder.getName() + " folder ...");		
@@ -537,7 +197,7 @@ public abstract class Packager {
 				configuration(
 						element("outputDirectory", libsFolder.getAbsolutePath())
 				),
-				env);
+				MavenContext.getEnv());
 
 		Logger.infoUnindent("All dependencies copied!");		
 		
@@ -566,7 +226,7 @@ public abstract class Packager {
 				} else if (r.isFile()) {
 					FileUtils.copyFileToFolder(r, destination);
 				}
-			} catch (MojoExecutionException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		});
@@ -574,12 +234,20 @@ public abstract class Packager {
 		Logger.infoUnindent("All additional resources copied!");
 		
 	}
-	
+
 	/**
 	 * Bundle a Java Runtime Enrironment with the app.
-	 * @throws MojoExecutionException Process failed
+	 * @param destinationFolder Destination folder
+	 * @param jarFile Runnable jar file
+	 * @param libsFolder Libs folder
+	 * @param specificJreFolder Specific JRE folder to be used
+	 * @param customizedJre Creates a reduced JRE
+	 * @param defaultModules Default modules
+	 * @param additionalModules Additional modules
+	 * @param platform Target platform
+	 * @throws Exception Process failed
 	 */
-	protected void bundleJre(File destinationFolder, File jarFile, File libsFolder, File specificJreFolder, boolean customizedJre, List<String> defaultModules, List<String> additionalModules, Platform platform) throws MojoExecutionException {
+	protected void bundleJre(File destinationFolder, File jarFile, File libsFolder, File specificJreFolder, boolean customizedJre, List<String> defaultModules, List<String> additionalModules, Platform platform) throws Exception {
 		if (!bundleJre) {
 			Logger.warn("Bundling JRE disabled by property 'bundleJre'!\n");
 			return;
@@ -592,9 +260,9 @@ public abstract class Packager {
 			Logger.info("Embedding JRE from " + specificJreFolder);
 			
 			if (!specificJreFolder.exists()) {
-				throw new MojoExecutionException("JRE path specified does not exist: " + specificJreFolder.getAbsolutePath());
+				throw new Exception("JRE path specified does not exist: " + specificJreFolder.getAbsolutePath());
 			} else if (!specificJreFolder.isDirectory()) {
-				throw new MojoExecutionException("JRE path specified is not a folder: " + specificJreFolder.getAbsolutePath());
+				throw new Exception("JRE path specified is not a folder: " + specificJreFolder.getAbsolutePath());
 			}
 			
 			// removes old jre folder from bundle
@@ -606,13 +274,13 @@ public abstract class Packager {
 			// sets execution permissions on executables in jre
 			File binFolder = new File(destinationFolder, "bin");
 			if (!binFolder.exists()) {
-				throw new MojoExecutionException("Could not embed JRE from " + specificJreFolder.getAbsolutePath() + ": " + binFolder.getAbsolutePath() + " doesn't exist");
+				throw new Exception("Could not embed JRE from " + specificJreFolder.getAbsolutePath() + ": " + binFolder.getAbsolutePath() + " doesn't exist");
 			}
 			Arrays.asList(binFolder.listFiles()).forEach(f -> f.setExecutable(true, false));
 
 		} else if (JavaUtils.getJavaMajorVersion() <= 8) {
 			
-			throw new MojoExecutionException("Could not create a customized JRE due to JDK version is " + SystemUtils.JAVA_VERSION + ". Must use jrePath property to specify JRE location to be embedded");
+			throw new Exception("Could not create a customized JRE due to JDK version is " + SystemUtils.JAVA_VERSION + ". Must use jrePath property to specify JRE location to be embedded");
 			
 		} else if (!platform.isCurrentPlatform()) {
 			
@@ -626,9 +294,12 @@ public abstract class Packager {
 
 			Logger.info("Creating JRE with next modules included: " + modules);
 
-			File modulesDir = new File(System.getProperty("java.home"), "jmods");
+			File modulesDir = new File(jdkPath, "jmods");
+			if (!modulesDir.exists()) {
+				throw new Exception("jmods folder doesn't exist: " + modulesDir);
+			}
 	
-			File jlink = new File(System.getProperty("java.home"), "/bin/jlink");
+			File jlink = new File(jdkPath, "/bin/jlink");
 	
 			if (destinationFolder.exists()) FileUtils.removeFolder(destinationFolder);
 			
@@ -654,44 +325,48 @@ public abstract class Packager {
 		}
 		
 	}
-	
-	/**
-	 * Creates a runnable jar file from sources
-	 * 
-	 * @throws MojoExecutionException Process failed
-	 */
-	protected File createRunnableJar(String name, String version, String mainClass, File outputDirectory) throws MojoExecutionException {
-		Logger.infoIndent("Creating runnable JAR...");
-		
-		String classifier = "runnable";
 
-		File jarFile = new File(outputDirectory, name + "-" + version + "-" + classifier + ".jar");
-
-		executeMojo(
-				plugin(
-						groupId("org.apache.maven.plugins"),
-						artifactId("maven-jar-plugin"), 
-						version("3.1.1")
-				),
-				goal("jar"),
-				configuration(
-						element("classifier", classifier),
-						element("archive", 
-								element("manifest", 
-										element("addClasspath", "true"),
-										element("classpathPrefix", "libs/"),
-										element("mainClass", mainClass)
-								)
-						),
-						element("outputDirectory", jarFile.getParentFile().getAbsolutePath()),
-						element("finalName", name + "-" + version)
-				),
-				env);
-		
-		Logger.infoUnindent("Runnable jar created in " + jarFile.getAbsolutePath() + "!");
-		
-		return jarFile;
-	}
+//	/**
+//	 * Creates a runnable jar file from sources
+//	 * @param name Name
+//	 * @param version Version
+//	 * @param mainClass Main class 
+//	 * @param outputDirectory Output directory
+//	 * @return Generated JAR file
+//	 * @throws Exception Process failed
+//	 */
+//	protected File createRunnableJar(String name, String version, String mainClass, File outputDirectory) throws Exception {
+//		Logger.infoIndent("Creating runnable JAR...");
+//		
+//		String classifier = "runnable";
+//
+//		File jarFile = new File(outputDirectory, name + "-" + version + "-" + classifier + ".jar");
+//
+//		executeMojo(
+//				plugin(
+//						groupId("org.apache.maven.plugins"),
+//						artifactId("maven-jar-plugin"), 
+//						version("3.1.1")
+//				),
+//				goal("jar"),
+//				configuration(
+//						element("classifier", classifier),
+//						element("archive", 
+//								element("manifest", 
+//										element("addClasspath", "true"),
+//										element("classpathPrefix", "libs/"),
+//										element("mainClass", mainClass)
+//								)
+//						),
+//						element("outputDirectory", jarFile.getParentFile().getAbsolutePath()),
+//						element("finalName", name + "-" + version)
+//				),
+//				env);
+//		
+//		Logger.infoUnindent("Runnable jar created in " + jarFile.getAbsolutePath() + "!");
+//		
+//		return jarFile;
+//	}
 	
 	/**
 	 * Uses jdeps command tool to determine which modules all used jar files depend on
@@ -702,9 +377,9 @@ public abstract class Packager {
 	 * @param defaultModules Additional files and folders to include in the bundled app.
 	 * @param additionalModules Defines modules to customize the bundled JRE. Don't use jdeps to get module dependencies.
 	 * @return string containing a comma separated list with all needed modules
-	 * @throws MojoExecutionException Process failed
+	 * @throws Exception Process failed
 	 */
-	protected String getRequiredModules(File libsFolder, boolean customizedJre, File jarFile, List<String> defaultModules, List<String> additionalModules) throws MojoExecutionException {
+	protected String getRequiredModules(File libsFolder, boolean customizedJre, File jarFile, List<String> defaultModules, List<String> additionalModules) throws Exception {
 		
 		Logger.infoIndent("Getting required modules ... ");
 		
@@ -788,6 +463,9 @@ public abstract class Packager {
 
 	/**
 	 * Locates license file
+	 * @param licenseFile Specified license file
+	 * @param licenses Licenses list from POM
+	 * @return Resolved license file
 	 */
 	protected File resolveLicense(File licenseFile, List<License> licenses) {
 		
@@ -817,7 +495,7 @@ public abstract class Packager {
 		}
 		// if license is still null, looks for LICENSE file
 		if (licenseFile == null || !licenseFile.exists()) {
-			licenseFile = new File(this.getEnv().getMavenProject().getBasedir(), "LICENSE");
+			licenseFile = new File(MavenContext.getEnv().getMavenProject().getBasedir(), "LICENSE");
 			if (!licenseFile.exists()) licenseFile = null;
 		}
 		
@@ -829,14 +507,16 @@ public abstract class Packager {
 		
 		return licenseFile;
 	}
-	
+
 	/**
-	 * Locates assets or default icon file if the specified one doesn't exist or
-	 * isn't specified
-	 * 
-	 * @throws MojoExecutionException Process failed
+	 * Locates assets or default icon file if the specified one doesn't exist or isn't specified
+	 * @param iconFile Specified icon file
+	 * @param name Name
+	 * @param assetsFolder Assets folder
+	 * @return Resolved icon file
+	 * @throws Exception Process failed
 	 */
-	protected File resolveIcon(File iconFile, String name, File assetsFolder) throws MojoExecutionException {
+	protected File resolveIcon(File iconFile, String name, File assetsFolder) throws Exception {
 		
 		String iconExtension = IconUtils.getIconFileExtensionByPlatform(platform);
 		
@@ -857,9 +537,9 @@ public abstract class Packager {
 	
 	/**
 	 * Bundling app folder in tarball and/or zipball 
-	 * @throws MojoExecutionException Process failed
+	 * @throws Exception Process failed
 	 */
-	public void createBundles() throws MojoExecutionException {
+	public void createBundles() throws Exception {
 		if (!createTarball && !createZipball) return;
 
 		Logger.infoIndent("Bundling app in tarball/zipball ...");
@@ -881,13 +561,13 @@ public abstract class Packager {
 						element("finalName", name + "-" + version + "-" + platform),
 						element("appendAssemblyId", "false")
 				),
-				env);
+				MavenContext.getEnv());
 		
 		Logger.infoUnindent("Bundles created!");
 		
 	}
 	
-	private void createAppStructure() throws MojoExecutionException {
+	private void createAppStructure() throws Exception {
 		
 		Logger.infoIndent("Creating app structure ...");
 		
@@ -916,7 +596,7 @@ public abstract class Packager {
 		
 	}
 
-	public File createApp() throws MojoExecutionException {
+	public File createApp() throws Exception {
 		
 		Logger.infoIndent("Creating app ...");
 
@@ -936,7 +616,7 @@ public abstract class Packager {
         	Logger.info("Using runnable JAR: " + runnableJar);
             jarFile = runnableJar;
         } else {
-            jarFile = createRunnableJar(name, version, mainClass, outputDirectory);
+            jarFile = createRunnableJar();
         }
         
 		// copies all dependencies to Java folder
@@ -953,7 +633,7 @@ public abstract class Packager {
 		return appFile;
 	}
 
-	public List<File> generateInstallers() throws MojoExecutionException {
+	public List<File> generateInstallers() throws Exception {
 		List<File> installers = new ArrayList<>();
 		
 		if (!generateInstaller) {
@@ -984,7 +664,7 @@ public abstract class Packager {
 		return "[appFolder=" + appFolder + ", assetsFolder=" + assetsFolder + ", executable=" + executable
 				+ ", jarFile=" + jarFile + ", executableDestinationFolder=" + executableDestinationFolder
 				+ ", jarFileDestinationFolder=" + jarFileDestinationFolder + ", jreDestinationFolder="
-				+ jreDestinationFolder + ", resourcesDestinationFolder=" + resourcesDestinationFolder + ", env=" + env
+				+ jreDestinationFolder + ", resourcesDestinationFolder=" + resourcesDestinationFolder
 				+ ", outputDirectory=" + outputDirectory + ", licenseFile=" + licenseFile + ", iconFile=" + iconFile
 				+ ", generateInstaller=" + generateInstaller + ", mainClass=" + mainClass + ", name=" + name
 				+ ", displayName=" + displayName + ", version=" + version + ", description=" + description + ", url="
@@ -999,12 +679,12 @@ public abstract class Packager {
 				+ ", useResourcesAsWorkingDir=" + useResourcesAsWorkingDir + ", assetsDir=" + assetsDir + "]";
 	}
 
-	protected abstract void doCreateAppStructure() throws MojoExecutionException; 
+	protected abstract void doCreateAppStructure() throws Exception; 
 
-	public abstract File doCreateApp() throws MojoExecutionException;
+	public abstract File doCreateApp() throws Exception;
 	
-	public abstract void doGenerateInstallers(List<File> installers) throws MojoExecutionException;
+	public abstract void doGenerateInstallers(List<File> installers) throws Exception;
 	
-	public abstract void doInit() throws MojoExecutionException;
+	public abstract void doInit() throws Exception;
 	
 }

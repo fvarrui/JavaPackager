@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.maven.plugin.MojoExecutionException;
 import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 
+import io.github.fvarrui.javapackager.maven.MavenContext;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
@@ -27,7 +27,7 @@ import io.github.fvarrui.javapackager.utils.XMLUtils;
 public class WindowsPackager extends Packager {
 	
 	@Override
-	public void doInit() throws MojoExecutionException {
+	public void doInit() throws Exception {
 		
 		// sets windows config default values
 		this.winConfig.setDefaults(this);
@@ -35,7 +35,7 @@ public class WindowsPackager extends Packager {
 	}
 
 	@Override
-	protected void doCreateAppStructure() throws MojoExecutionException {
+	protected void doCreateAppStructure() throws Exception {
 
 		// sets common folders
 		this.executableDestinationFolder = appFolder;
@@ -49,9 +49,16 @@ public class WindowsPackager extends Packager {
 	 * Creates a Windows app file structure with native executable
 	 */
 	@Override
-	public File doCreateApp() throws MojoExecutionException {
+	public File doCreateApp() throws Exception {
 		
-		Logger.infoIndent("Creating windows EXE ...");		
+		Logger.infoIndent("Creating windows EXE ...");
+
+		// copies JAR to app folder
+		String jarPath = jarFile.getAbsolutePath();
+		if (!winConfig.isWrapJar()) {
+			FileUtils.copyFileToFolder(jarFile, appFolder);
+			jarPath = jarFile.getName();
+		}
 		
 		// generates manifest file to require administrator privileges from velocity template
 		File manifestFile = new File(assetsFolder, name + ".exe.manifest");
@@ -67,14 +74,17 @@ public class WindowsPackager extends Packager {
 	
 		List<Element> pluginConfig = new ArrayList<>();
 		pluginConfig.add(element("headerType", "" + winConfig.getHeaderType()));
-		pluginConfig.add(element("jar", jarFile.getAbsolutePath()));
+		pluginConfig.add(element("jar", jarPath));
+		pluginConfig.add(element("dontWrapJar", "" + !winConfig.isWrapJar()));
 		pluginConfig.add(element("outfile", executable.getAbsolutePath()));
 		pluginConfig.add(element("icon", iconFile.getAbsolutePath()));
 		pluginConfig.add(element("manifest", manifestFile.getAbsolutePath()));
-		pluginConfig.add(element("classPath",  
-				element("mainClass", mainClass),
-				element("postCp", "%classpath " + mainClass)
-				));
+		pluginConfig.add(
+				element("classPath",
+						element("mainClass", mainClass),
+						element("postCp", "%classpath " + mainClass)
+					)
+				);
 		pluginConfig.add(element("chdir", useResourcesAsWorkingDir ? "." : ""));		
 		pluginConfig.add(
 					element("jre",
@@ -108,7 +118,7 @@ public class WindowsPackager extends Packager {
 				),
 				goal("launch4j"),
 				configuration(pluginConfig.toArray(new Element[pluginConfig.size()])),
-				env
+				MavenContext.getEnv()
 			);
 
 		Logger.infoUnindent("Windows EXE file created in " + executable + "!");		
@@ -121,7 +131,7 @@ public class WindowsPackager extends Packager {
 	 * Windows so app could be easily distributed
 	 */
 	@Override
-	public void doGenerateInstallers(List<File> installers) throws MojoExecutionException {
+	public void doGenerateInstallers(List<File> installers) throws Exception {
 
 		addIgnoreNull(installers, generateSetup());
 
@@ -133,7 +143,7 @@ public class WindowsPackager extends Packager {
 	 * Creates a MSI file including all app folder's content only for
 	 * Windows so app could be easily distributed
 	 */
-	private File generateMsi() throws MojoExecutionException {
+	private File generateMsi() throws Exception {
 		if (!winConfig.isGenerateMsi()) return null;
 
 		Logger.infoIndent("Generating MSI file ...");
@@ -147,19 +157,19 @@ public class WindowsPackager extends Packager {
 		XMLUtils.prettify(wxsFile);
 	
 		// candle wxs file
-		Logger.info("Candling file " + wxsFile);
+		Logger.info("Compiling file " + wxsFile);
 		File wixobjFile = new File(assetsFolder, name + ".wixobj");
 		CommandUtils.execute("candle", "-out", wixobjFile, wxsFile);
 		Logger.info("WIXOBJ file generated in " + wixobjFile +  "!");
 
 		// lighting wxs file
-		Logger.info("Lighting file " + wixobjFile);
+		Logger.info("Linking file " + wixobjFile);
 		File msiFile = new File(outputDirectory, name + "_" + version + ".msi");
 		CommandUtils.execute("light", "-spdb", "-out", msiFile, wixobjFile);
 
 		// setup file
 		if (!msiFile.exists()) {
-			throw new MojoExecutionException("MSI installer file generation failed!");
+			throw new Exception("MSI installer file generation failed!");
 		}
 		
 		Logger.infoUnindent("MSI file generated!");
@@ -167,7 +177,7 @@ public class WindowsPackager extends Packager {
 		return msiFile;
 	}
 
-	private File generateSetup() throws MojoExecutionException {
+	private File generateSetup() throws Exception {
 		if (!winConfig.isGenerateSetup()) return null;
 		
 		Logger.infoIndent("Generating setup file ...");
@@ -185,7 +195,7 @@ public class WindowsPackager extends Packager {
 		// setup file
 		File setupFile = new File(outputDirectory, name + "_" + version + ".exe");
 		if (!setupFile.exists()) {
-			throw new MojoExecutionException("Windows setup file generation failed!");
+			throw new Exception("Windows setup file generation failed!");
 		}
 		
 		Logger.infoUnindent("Setup file generated!");

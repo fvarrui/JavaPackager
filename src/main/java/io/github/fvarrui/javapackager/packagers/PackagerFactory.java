@@ -1,13 +1,12 @@
 package io.github.fvarrui.javapackager.packagers;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.maven.plugin.MojoExecutionException;
 
 import io.github.fvarrui.javapackager.model.Platform;
 
 public class PackagerFactory {
 	
-	public static Packager createPackager(Platform platform) throws MojoExecutionException {
+	public static Packager createPackager(Platform platform) throws Exception {
 		if (platform == Platform.auto) platform = Platform.getCurrentPlatform();
 		switch (platform) {
 		case mac:
@@ -17,7 +16,7 @@ public class PackagerFactory {
 		case windows:
 			return new WindowsPackager();
 		default:
-			throw new MojoExecutionException("Unsupported operating system: " + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION + " " + SystemUtils.OS_ARCH);
+			throw new Exception("Unsupported operating system: " + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION + " " + SystemUtils.OS_ARCH);
 		}
 	}
 

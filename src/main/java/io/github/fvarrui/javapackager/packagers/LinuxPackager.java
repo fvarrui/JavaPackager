@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 
+import io.github.fvarrui.javapackager.maven.MavenContext;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
@@ -27,7 +27,7 @@ public class LinuxPackager extends Packager {
 	
 
 	@Override
-	public void doInit() throws MojoExecutionException {
+	public void doInit() throws Exception {
 
 		// sets linux config default values
 		this.linuxConfig.setDefaults(this);
@@ -35,7 +35,7 @@ public class LinuxPackager extends Packager {
 	}
 	
 	@Override
-	protected void doCreateAppStructure() throws MojoExecutionException {
+	protected void doCreateAppStructure() throws Exception {
 
 		// sets common folders
 		this.executableDestinationFolder = appFolder;
@@ -49,7 +49,7 @@ public class LinuxPackager extends Packager {
 	 * Creates a GNU/Linux app folder with native executable
 	 */	
 	@Override
-	public File doCreateApp() throws MojoExecutionException {
+	public File doCreateApp() throws Exception {
 		
 		Logger.infoIndent("Creating GNU/Linux executable ...");
 
@@ -73,7 +73,7 @@ public class LinuxPackager extends Packager {
 	}
 
 	@Override
-	public void doGenerateInstallers(List<File> installers) throws MojoExecutionException {
+	public void doGenerateInstallers(List<File> installers) throws Exception {
 
 		addIgnoreNull(installers, generateDebPackage());
 
@@ -85,7 +85,7 @@ public class LinuxPackager extends Packager {
 	 * Creates a RPM package file including all app folder's content only for 
 	 * GNU/Linux so app could be easily distributed
 	 */
-	private File generateRpmPackage() throws MojoExecutionException {
+	private File generateRpmPackage() throws Exception {
 		if (!linuxConfig.isGenerateRpm()) return null;
 
 		Logger.infoIndent("Generating RPM package...");
@@ -182,7 +182,7 @@ public class LinuxPackager extends Packager {
 								)
 						)
 				),
-				env);
+				MavenContext.getEnv());
 
 		Logger.infoUnindent("RPM package generated! " + rpmFile.getAbsolutePath());
 
@@ -193,7 +193,7 @@ public class LinuxPackager extends Packager {
 	 * Creates a DEB package file including all app folder's content only for 
 	 * GNU/Linux so app could be easily distributed
 	 */
-	private File generateDebPackage() throws MojoExecutionException {
+	private File generateDebPackage() throws Exception {
 		if (!linuxConfig.isGenerateDeb()) return null;
 
 		Logger.infoIndent("Generating DEB package ...");
@@ -283,7 +283,7 @@ public class LinuxPackager extends Packager {
 						element("deb", outputDirectory.getAbsolutePath() + "/" + debFile.getName()),
 						element("dataSet", dataSet.toArray(new Element[dataSet.size()]))
 				),
-				env);
+				MavenContext.getEnv());
 		
 		Logger.infoUnindent("DEB package generated! " + debFile.getAbsolutePath());
 		
