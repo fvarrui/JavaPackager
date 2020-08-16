@@ -3,21 +3,43 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"
+        classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
     }
 }
 
 plugins {
-    id 'java'
+    id 'java'    
     id 'maven'
     id 'maven-publish'
+    id 'java-gradle-plugin'
+	id 'com.gradle.plugin-publish' version '0.12.0'
+    id 'io.codearte.nexus-staging' version '0.21.2'
 }
 
 repositories {
+	mavenCentral()
     mavenLocal()
-    maven {
-        url = uri('https://repo.maven.apache.org/maven2')
+}
+
+gradlePlugin {
+    plugins {
+        packagePlugin {
+            id = 'io.github.fvarrui.javapackager.plugin'
+            implementationClass = 'io.github.fvarrui.javapackager.gradle.PackagePlugin'
+        }
     }
+}
+
+pluginBundle {
+	website = 'http://github.com/fvarrui/JavaPackager'
+	vcsUrl = 'http://github.com/fvarrui/JavaPackager.git'
+	description = 'Hybrid Maven/Gradle plugin to package Java applications as native Windows, Mac OS X, or GNU/Linux executables and create installers for them'
+	tags = ['java', 'packager', 'gradle-plugin', 'maven-plugin', 'native', 'installer', 'debian-packages', 'rpm-packages', 'dmg', 'maven', 'distribution', 'javapackager', 'linux-executables', 'deb', 'rpm', 'native-windows', 'java-applications', 'pkg', 'msi']
+	plugins {
+		packagePlugin {
+			displayName = 'JavaPackager plugin'
+		}
+	}
 }
 
 configurations {
@@ -47,7 +69,7 @@ dependencies {
 }
 
 group = 'io.github.fvarrui'
-version = '1.1.1-SNAPSHOT'
+version = '1.2.0-SNAPSHOT'
 description = 'JavaPackager Plugin'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -117,7 +139,7 @@ task generatePluginDescriptor(type: JavaExec, dependsOn: compileJava) {
 
 project.jar.dependsOn(generatePluginDescriptor)
 
-apply plugin: 'io.codearte.nexus-staging'
+// apply plugin: 'io.codearte.nexus-staging'
     
 if (project.hasProperty('release')) {
 
