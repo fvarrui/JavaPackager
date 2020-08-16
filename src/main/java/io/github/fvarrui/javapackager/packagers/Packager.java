@@ -253,7 +253,9 @@ public abstract class Packager extends PackagerSettings {
 			return;
 		}
 		
-		Logger.infoIndent("Bundling JRE ... with " + System.getProperty("java.home"));
+		File currentJdk = new File(System.getProperty("java.home"));
+		
+		Logger.infoIndent("Bundling JRE ... with " + currentJdk.getAbsolutePath());
 		
 		if (specificJreFolder != null) {
 			
@@ -282,9 +284,9 @@ public abstract class Packager extends PackagerSettings {
 			
 			throw new Exception("Could not create a customized JRE due to JDK version is " + SystemUtils.JAVA_VERSION + ". Must use jrePath property to specify JRE location to be embedded");
 			
-		} else if (!platform.isCurrentPlatform()) {
+		} else if (!platform.isCurrentPlatform() && jdkPath.equals(currentJdk)) {
 			
-			Logger.warn("Cannot create a customized JRE ... target platform (" + platform + ") is different than execution platform (" + Platform.getCurrentPlatform() + ")");
+			Logger.warn("Cannot create a customized JRE ... target platform (" + platform + ") is different than execution platform (" + Platform.getCurrentPlatform() + "). Use jdkPath property.");
 			
 			bundleJre = false;
 			
@@ -298,8 +300,10 @@ public abstract class Packager extends PackagerSettings {
 			if (!modulesDir.exists()) {
 				throw new Exception("jmods folder doesn't exist: " + modulesDir);
 			}
+			
+			Logger.info("Using " + modulesDir + " modules directory");
 	
-			File jlink = new File(jdkPath, "/bin/jlink");
+			File jlink = new File(currentJdk, "/bin/jlink");
 	
 			if (destinationFolder.exists()) FileUtils.removeFolder(destinationFolder);
 			
