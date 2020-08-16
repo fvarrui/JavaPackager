@@ -1,14 +1,22 @@
 package io.github.fvarrui.javapackager.maven;
 
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
+
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
 
 import io.github.fvarrui.javapackager.model.LinuxConfig;
 import io.github.fvarrui.javapackager.model.MacConfig;
@@ -16,9 +24,23 @@ import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.packagers.PackagerFactory;
+import io.github.fvarrui.javapackager.utils.Logger;
 
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.RUNTIME)
-public class PackageMojo extends ParentMojo {
+public class PackageMojo extends AbstractMojo {
+	
+	// maven components
+	
+	@Parameter(defaultValue = "${project}", readonly = true)
+	private MavenProject mavenProject;
+
+	@Parameter(defaultValue = "${session}", readonly = true)
+	private MavenSession mavenSession;
+
+	@Component
+	private BuildPluginManager pluginManager;
+	
+	// plugin parameters
 	
 	/**
 	 * Output directory.
@@ -121,6 +143,12 @@ public class PackageMojo extends ParentMojo {
 	 */
 	@Parameter(property = "jrePath", required = false)
 	private File jrePath;
+
+	/**
+	 * Path to JDK folder. If specified, it will use this JDK modules to generate a customized JRE. Allows generating JREs for different platforms.
+	 */
+	@Parameter(property = "jdkPath", required = false)
+	private File jdkPath;
 
 	/**
 	 * Additional files and folders to include in the bundled app.
@@ -232,11 +260,20 @@ public class PackageMojo extends ParentMojo {
 	 */
 	@Parameter(defaultValue = "${project.basedir}/assets", property = "assetsDir", required = false)
 	private File assetsDir;
+	
+	public PackageMojo() {
+		super();
+		Logger.init(getLog()); // sets Mojo's logger to Logger class, so it could be used from static methods
+	}
 
 	public void execute() throws MojoExecutionException {
 		
-		Packager packager = 
-				PackagerFactory
+		MavenContext.setEnv(executionEnvironment(mavenProject, mavenSession, pluginManager));
+		
+		try {
+
+			Packager packager = 
+				(Packager) PackagerFactory
 					.createPackager(platform)
 						.additionalModules(additionalModules)
 						.additionalResources(additionalResources)
@@ -250,11 +287,11 @@ public class PackageMojo extends ParentMojo {
 						.customizedJre(customizedJre)
 						.description(description)
 						.displayName(displayName)
-						.env(getEnv())
 						.envPath(envPath)
 						.extra(extra)
 						.generateInstaller(generateInstaller)
 						.iconFile(iconFile)
+						.jdkPath(jdkPath)
 						.jreDirectoryName(jreDirectoryName)
 						.jrePath(jrePath)
 						.licenseFile(licenseFile)
@@ -262,7 +299,7 @@ public class PackageMojo extends ParentMojo {
 						.macConfig(macConfig)
 						.mainClass(mainClass)
 						.modules(modules)
-						.name(name)
+						.name(defaultIfBlank(name, MavenContext.getEnv().getMavenProject().getArtifactId()))
 						.organizationEmail(organizationEmail)
 						.organizationName(organizationName)
 						.organizationUrl(organizationUrl)
@@ -273,12 +310,21 @@ public class PackageMojo extends ParentMojo {
 						.url(url)
 						.vmArgs(vmArgs)
 						.winConfig(winConfig);
-						
-		packager.createApp();
+			
+			packager.setCreateRunnableJar(new CreateRunnableJar());
+			
+			packager.createApp();
+			
+			packager.generateInstallers();
+			
+			packager.createBundles();
+			
+		} catch (Exception e) {
+
+			throw new MojoExecutionException(e.getMessage(), e);
+			
+		}
 		
-		packager.generateInstallers();
-		
-		packager.createBundles();
 
 	}
 

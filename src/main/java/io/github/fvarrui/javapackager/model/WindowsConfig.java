@@ -28,6 +28,7 @@ public class WindowsConfig {
 	private boolean generateSetup = true;
 	private boolean generateMsi = true;
 	private String msiUpgradeCode;
+	private boolean wrapJar = true;
 
 	public HeaderType getHeaderType() {
 		return headerType;
@@ -188,6 +189,16 @@ public class WindowsConfig {
 	public void setMsiUpgradeCode(String msiUpgradeCode) {
 		this.msiUpgradeCode = msiUpgradeCode;
 	}
+	
+	public boolean isWrapJar() {
+		return wrapJar;
+	}
+
+	public void setWrapJar(boolean wrapJar) {
+		this.wrapJar = wrapJar;
+	}
+
+
 
 	@Override
 	public String toString() {
@@ -199,7 +210,7 @@ public class WindowsConfig {
 				+ ", disableDirPage=" + disableDirPage + ", disableProgramGroupPage=" + disableProgramGroupPage
 				+ ", disableFinishedPage=" + disableFinishedPage + ", createDesktopIconTask=" + createDesktopIconTask
 				+ ", generateSetup=" + generateSetup + ", generateMsi=" + generateMsi + ", msiUpgradeCode="
-				+ msiUpgradeCode + "]";
+				+ msiUpgradeCode + ", wrapJar=" + wrapJar + "]";
 	}
 
 	/**
