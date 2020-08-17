@@ -1,8 +1,12 @@
 .gradle
 **/build/
 
+# Package Files #
 bin
 target
+.settings/
+.classpath
+.project
 
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
