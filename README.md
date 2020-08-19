@@ -50,7 +50,7 @@ Add the following `plugin` tag to your `pom.xml`:
 
 ### Package your app
 
-Execute next command in project's root folder:
+Execute the next  command in project's root folder:
 
 ```bash
 mvn package
