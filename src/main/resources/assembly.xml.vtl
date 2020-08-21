@@ -9,7 +9,6 @@
 		<format>zip</format>
 #end
 #if($info.createTarball)
-		<format>tar</format>
 		<format>tar.gz</format>
 #end
 	</formats>
@@ -18,6 +17,23 @@
 		<fileSet>
 			<outputDirectory>${info.name}</outputDirectory>
 			<directory>${project.build.directory}/${info.name}</directory>
+			<excludes>
+				<exclude>${info.executable.name}</exclude>
+#if ($info.bundleJre)				
+				<exclude>${info.jreDirectoryName}/bin/*</exclude>
+#end
+			</excludes>
+		</fileSet>
+		<fileSet>
+			<outputDirectory>${info.name}</outputDirectory>
+			<directory>${project.build.directory}/${info.name}</directory>
+			<includes>
+				<include>${info.executable.name}</include>
+#if ($info.bundleJre)				
+				<include>${info.jreDirectoryName}/bin/*</include>
+#end
+			</includes>
+			<fileMode>0755</fileMode>
 		</fileSet>
 	</fileSets>
 </assembly>
