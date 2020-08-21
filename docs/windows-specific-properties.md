@@ -2,8 +2,14 @@
 
 ```xml
 <winConfig>
-    <!-- exe creation properties -->
+    <!-- general properties -->
+    <icoFile>path/to/icon.ico</icoFile>
+	<generateSetup>true|false</generateSetup>
+	<generateMsi>true|false</generateMsi>
+	<generateMsm>true|false</generateMsm>
+	<!-- exe creation properties -->
 	<headerType>gui</headerType>
+	<wrapJar>true|false</wrapJar>
 	<companyName>${organizationName}</companyName>
 	<fileVersion>1.0.0.0</fileVersion>
 	<txtFileVersion>${version}</txtFileVersion>
@@ -19,35 +25,35 @@
 	<disableProgramGroupPage>true|false</disableProgramGroupPage>
 	<disableFinishedPage>true|false</disableFinishedPage>
 	<createDesktopIconTask>true|false</createDesktopIconTask>
-    <!-- enables/disables installers generation -->
-    <generateSetup>true|false</generateSetup>
-    <generateMsi>true|false</generateMsi>
 </winConfig>
 ```
 
-| Property        | Mandatory | Default value | Description                |
-| --------------- | --------- | ------------- | -------------------------- |
-| `generateSetup` | :x:       | `true`        | Generates Setup installer. |
-| `generateMsi`   | :x:       | `true`        | Generates MSI installer.   |
+| Property        | Mandatory | Default value | Description                                  |
+| --------------- | --------- | ------------- | -------------------------------------------- |
+| `icoFile`       | :x:       | `null`        | Icon file.                                   |
+| `generateSetup` | :x:       | `true`        | Generates Setup installer.                   |
+| `generateMsi`   | :x:       | `true`        | Generates MSI installer.                     |
+| `generateMsm`   | :x:       | `false`       | Generates MSI merge module. **Coming soon!** |
 
 
 ## Exe creation properties
 
-| Property                  | Mandatory | Default value         | Description                                                  |
-| ------------------------- | --------- | --------------------- | ------------------------------------------------------------ |
-| `headerType`              | :x:       | `"gui"`               | EXE header type: `console` or `gui`.                         |
-| `companyName`             | :x:       | `${organizationName}` | EXE company name.                                            |
-| `fileVersion`             | :x:       | `"1.0.0.0"`           | EXE file version.                                            |
-| `txtFileVersion`          | :x:       | `${version}`          | EXE txt file version.                                        |
-| `productVersion`          | :x:       | `"1.0.0.0"`           | EXE product version.                                         |
-| `txtProductVersion`       | :x:       | `${version}`          | EXE txt product version.                                     |
-| `fileDescription`         | :x:       | `${description}`      | EXE file description.                                        |
-| `copyright`               | :x:       | `${organizationName}` | EXE copyright.                                               |
-| `productName`             | :x:       | `${name}`             | EXE product name.                                            |
-| `internalName`            | :x:       | `${name}`             | EXE internal name.                                           |
-| `originalFilename`        | :x:       | `${name}.exe`         | EXE original filename.                                       |
-| `trademark`               | :x:       | `null`                | EXE trademark.                                               |
-| `language`                | :x:       | `null`                | EXE language.                                                |
+| Property            | Mandatory | Default value         | Description                          |
+| ------------------- | --------- | --------------------- | ------------------------------------ |
+| `headerType`        | :x:       | `"gui"`               | EXE header type: `console` or `gui`. |
+| `wrapJar`           | :x:       | `true`                | Wrap JAR file in native EXE.         |
+| `companyName`       | :x:       | `${organizationName}` | EXE company name.                    |
+| `fileVersion`       | :x:       | `"1.0.0.0"`           | EXE file version.                    |
+| `txtFileVersion`    | :x:       | `${version}`          | EXE txt file version.                |
+| `productVersion`    | :x:       | `"1.0.0.0"`           | EXE product version.                 |
+| `txtProductVersion` | :x:       | `${version}`          | EXE txt product version.             |
+| `fileDescription`   | :x:       | `${description}`      | EXE file description.                |
+| `copyright`         | :x:       | `${organizationName}` | EXE copyright.                       |
+| `productName`       | :x:       | `${name}`             | EXE product name.                    |
+| `internalName`      | :x:       | `${name}`             | EXE internal name.                   |
+| `originalFilename`  | :x:       | `${name}.exe`         | EXE original filename.               |
+| `trademark`         | :x:       | `null`                | EXE trademark.                       |
+| `language`          | :x:       | `null`                | EXE language.                        |
 
 ## Setup generation properties
 

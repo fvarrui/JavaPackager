@@ -92,11 +92,11 @@ And by default it will generate next artifacts in `target ` folder:
 | `envPath`                  | :x:                | `null`                                                       | Defines PATH environment variable in GNU/Linux and Mac OS X startup scripts. |
 | `extra`                    | :x:                | `null`                                                       | Map with extra properties to be used in customized Velocity templates, accesible through `$info.extra` variable. |
 | `generateInstaller`        | :x:                | `true`                                                       | Generates an installer for the app.                          |
-| `iconFile`                 | :x:                | `null`                                                       | Path to the app icon file (PNG, XPM, ICO or ICNS).           |
+| `iconFile`                 | :x:                | `null`                                                       | Path to the app icon file (PNG, XPM, ICO or ICNS). **:warning: Deprecated (see platform specific properties).** |
 | `jdkPath`                  | :x:                | `${java.home}`                                               | JDK used to generate a customized JRE. It allows to bundle customized JREs for different platforms. |
 | `jreDirectoryName`         | :x:                | `"jre"`                                                      | Bundled JRE directory name.                                  |
 | `jrePath`                  | :x:                | `""`                                                         | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least. |
-| `licenseFile`              | :x:                | `${project.licenses[0].url}` or `${project.basedir}/LICENSE` | Path to project license file.                                |
+| `licenseFile`              | :x:                | `${project.licenses[0].url}`  or `${project.basedir}/LICENSE` | Path to project license file.                                |
 | `mainClass`                | :heavy_check_mark: | `${exec.mainClass}`                                          | Full path to your app main class.                            |
 | `modules`                  | :x:                | `[]`                                                         | Defines modules to customize the bundled JRE. Don't use `jdeps` to get module dependencies. |
 | `name`                     | :x:                | `${project.name}` or `${project.artifactId}`                 | App name.                                                    |

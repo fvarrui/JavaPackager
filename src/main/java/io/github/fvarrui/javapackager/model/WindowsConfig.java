@@ -2,12 +2,14 @@ package io.github.fvarrui.javapackager.model;
 
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
+import java.io.File;
 import java.util.UUID;
 
 import io.github.fvarrui.javapackager.packagers.Packager;
 
 public class WindowsConfig {
 
+	private File icoFile;
 	private HeaderType headerType;
 	private String companyName;
 	private String copyright;
@@ -29,6 +31,14 @@ public class WindowsConfig {
 	private boolean generateMsi = true;
 	private String msiUpgradeCode;
 	private boolean wrapJar = true;
+
+	public File getIcoFile() {
+		return icoFile;
+	}
+
+	public void setIcoFile(File icoFile) {
+		this.icoFile = icoFile;
+	}
 
 	public HeaderType getHeaderType() {
 		return headerType;
@@ -189,7 +199,7 @@ public class WindowsConfig {
 	public void setMsiUpgradeCode(String msiUpgradeCode) {
 		this.msiUpgradeCode = msiUpgradeCode;
 	}
-	
+
 	public boolean isWrapJar() {
 		return wrapJar;
 	}
@@ -198,14 +208,12 @@ public class WindowsConfig {
 		this.wrapJar = wrapJar;
 	}
 
-
-
 	@Override
 	public String toString() {
-		return "[headerType=" + headerType + ", companyName=" + companyName + ", copyright=" + copyright
-				+ ", fileDescription=" + fileDescription + ", fileVersion=" + fileVersion + ", internalName="
-				+ internalName + ", language=" + language + ", originalFilename=" + originalFilename + ", productName="
-				+ productName + ", productVersion=" + productVersion + ", trademarks=" + trademarks
+		return "WindowsConfig [icoFile=" + icoFile + ", headerType=" + headerType + ", companyName=" + companyName
+				+ ", copyright=" + copyright + ", fileDescription=" + fileDescription + ", fileVersion=" + fileVersion
+				+ ", internalName=" + internalName + ", language=" + language + ", originalFilename=" + originalFilename
+				+ ", productName=" + productName + ", productVersion=" + productVersion + ", trademarks=" + trademarks
 				+ ", txtFileVersion=" + txtFileVersion + ", txtProductVersion=" + txtProductVersion
 				+ ", disableDirPage=" + disableDirPage + ", disableProgramGroupPage=" + disableProgramGroupPage
 				+ ", disableFinishedPage=" + disableFinishedPage + ", createDesktopIconTask=" + createDesktopIconTask

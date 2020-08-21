@@ -3,6 +3,7 @@
 ```xml
 <macConfig>
     <!-- general properties -->
+    <icnsFile>path/to/icon.icns</icnsFile>
     <generateDmg>true|false</generateDmg>
     <generatePkg>true|false</generatePkg>
 	<!-- properties used in DMG disk image generation -->
@@ -24,6 +25,7 @@
 
 | Property      | Mandatory | Default value | Description                              |
 | ------------- | --------- | ------------- | ---------------------------------------- |
+| `icnsFile`    | :x:       | `null`        | Icon file.                               |
 | `generateDmg` | :x:       | `true`        | Enables DMG disk image file generation.  |
 | `generatePkg` | :x:       | `true`        | Enables installation package generation. |
 

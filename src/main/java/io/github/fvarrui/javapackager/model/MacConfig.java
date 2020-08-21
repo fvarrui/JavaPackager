@@ -8,6 +8,7 @@ import io.github.fvarrui.javapackager.packagers.Packager;
 
 public class MacConfig {
 
+	private File icnsFile;
 	private File backgroundImage;
 	private Integer windowWidth;
 	private Integer windowHeight;
@@ -23,6 +24,14 @@ public class MacConfig {
 	private String volumeName;
 	private boolean generateDmg = true;
 	private boolean generatePkg = true;
+
+	public File getIcnsFile() {
+		return icnsFile;
+	}
+
+	public void setIcnsFile(File icnsFile) {
+		this.icnsFile = icnsFile;
+	}
 
 	public File getBackgroundImage() {
 		return backgroundImage;
@@ -144,15 +153,13 @@ public class MacConfig {
 		this.generatePkg = generatePkg;
 	}
 
-
-
 	@Override
 	public String toString() {
-		return "[backgroundImage=" + backgroundImage + ", windowWidth=" + windowWidth + ", windowHeight="
-				+ windowHeight + ", windowX=" + windowX + ", windowY=" + windowY + ", iconSize=" + iconSize
-				+ ", textSize=" + textSize + ", iconX=" + iconX + ", iconY=" + iconY + ", appsLinkIconX="
-				+ appsLinkIconX + ", appsLinkIconY=" + appsLinkIconY + ", volumeIcon=" + volumeIcon + ", volumeName="
-				+ volumeName + ", generateDmg=" + generateDmg + ", generatePkg=" + generatePkg + "]";
+		return "MacConfig [icnsFile=" + icnsFile + ", backgroundImage=" + backgroundImage + ", windowWidth="
+				+ windowWidth + ", windowHeight=" + windowHeight + ", windowX=" + windowX + ", windowY=" + windowY
+				+ ", iconSize=" + iconSize + ", textSize=" + textSize + ", iconX=" + iconX + ", iconY=" + iconY
+				+ ", appsLinkIconX=" + appsLinkIconX + ", appsLinkIconY=" + appsLinkIconY + ", volumeIcon=" + volumeIcon
+				+ ", volumeName=" + volumeName + ", generateDmg=" + generateDmg + ", generatePkg=" + generatePkg + "]";
 	}
 
 	/**

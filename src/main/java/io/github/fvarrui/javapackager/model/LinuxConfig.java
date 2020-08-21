@@ -1,11 +1,15 @@
 package io.github.fvarrui.javapackager.model;
 
+import java.io.File;
+
 import io.github.fvarrui.javapackager.packagers.Packager;
 
 public class LinuxConfig {
 
 	private boolean generateDeb = true;
 	private boolean generateRpm = true;
+	private File pngFile;
+	private File xpmFile;
 
 	public boolean isGenerateDeb() {
 		return generateDeb;
@@ -23,17 +27,35 @@ public class LinuxConfig {
 		this.generateRpm = generateRpm;
 	}
 
+	public File getPngFile() {
+		return pngFile;
+	}
+
+	public void setPngFile(File pngFile) {
+		this.pngFile = pngFile;
+	}
+
+	public File getXpmFile() {
+		return xpmFile;
+	}
+
+	public void setXpmFile(File xpmFile) {
+		this.xpmFile = xpmFile;
+	}
+
 	@Override
 	public String toString() {
-		return "[generateDeb=" + generateDeb + ", generateRpm=" + generateRpm + "]";
+		return "LinuxConfig [generateDeb=" + generateDeb + ", generateRpm=" + generateRpm + ", pngFile=" + pngFile
+				+ ", xpmFile=" + xpmFile + "]";
 	}
 
 	/**
 	 * Tests GNU/Linux specific config and set defaults if not specified
+	 * 
 	 * @param packager Packager
 	 */
 	public void setDefaults(Packager packager) {
 		// nothing
 	}
-	
+
 }
