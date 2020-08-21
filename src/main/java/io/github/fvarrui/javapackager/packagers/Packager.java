@@ -11,9 +11,6 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -24,7 +21,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.maven.model.License;
 
 import io.github.fvarrui.javapackager.maven.MavenContext;
 import io.github.fvarrui.javapackager.model.Platform;
@@ -85,6 +81,18 @@ public abstract class Packager extends PackagerSettings {
 		return createRunnableJarFunction.apply(this);
 	}
 
+	// resolve license
+	
+	protected Function<Packager, File> resolveLicenseFunction;
+
+	public Function<Packager, File> getResolveLicenseFunction() {
+		return resolveLicenseFunction;
+	}
+
+	public void setResolveLicenseFunction(Function<Packager, File> resolveLicenseFunction) {
+		this.resolveLicenseFunction = resolveLicenseFunction;
+	}
+	
 	// ===============================================
 	
 	public Packager() {
@@ -154,7 +162,7 @@ public abstract class Packager extends PackagerSettings {
 		Logger.infoIndent("Resolving resources ...");
 		
 		// locates license file
-		licenseFile = resolveLicense(licenseFile, MavenContext.getEnv().getMavenProject().getLicenses());
+		licenseFile = resolveLicense(licenseFile);
 		
 		// locates icon file
 		iconFile = resolveIcon(iconFile, name, assetsFolder);
@@ -168,11 +176,6 @@ public abstract class Packager extends PackagerSettings {
 		
 		Logger.infoUnindent("Resources resolved!");
 		
-	}
-	
-	protected String getLicenseName() {
-		List<License> licenses = MavenContext.getEnv().getMavenProject().getLicenses();
-		return licenses != null && !licenses.isEmpty() && licenses.get(0) != null ? licenses.get(0).getName() : "";
 	}
 
 	/**
@@ -468,35 +471,21 @@ public abstract class Packager extends PackagerSettings {
 	/**
 	 * Locates license file
 	 * @param licenseFile Specified license file
-	 * @param licenses Licenses list from POM
 	 * @return Resolved license file
 	 */
-	protected File resolveLicense(File licenseFile, List<License> licenses) {
+	protected File resolveLicense(File licenseFile) {
 		
-		// if default license file doesn't exist and there's a license specified in
-		// pom.xml file, gets this last one
+		// if default license file doesn't exist 
 		if (licenseFile != null && !licenseFile.exists()) {
 			Logger.warn("Specified license file doesn't exist: " + licenseFile.getAbsolutePath());
 			licenseFile = null;
 		}
-		// if license not specified, gets from pom
-		if (licenseFile == null && !licenses.isEmpty()) {
-			
-			String urlStr = null; 
-			try {
-				urlStr = licenses.get(0).getUrl(); 
-				URL licenseUrl = new URL(urlStr);
-				licenseFile = new File(assetsFolder, "LICENSE");
-				FileUtils.downloadFromUrl(licenseUrl, licenseFile);
-			} catch (MalformedURLException e) {
-				Logger.error("Invalid license URL specified: " + urlStr);
-				licenseFile = null;
-			} catch (IOException e) {
-				Logger.error("Cannot download license from " + urlStr);
-				licenseFile = null;
-			}
-			
+		
+		// invokes custom license resolver if exists
+		if (resolveLicenseFunction != null) {
+			licenseFile = resolveLicenseFunction.apply(this);
 		}
+		
 		// if license is still null, looks for LICENSE file
 		if (licenseFile == null || !licenseFile.exists()) {
 			licenseFile = new File(MavenContext.getEnv().getMavenProject().getBasedir(), "LICENSE");
@@ -521,13 +510,23 @@ public abstract class Packager extends PackagerSettings {
 	 * @throws Exception Process failed
 	 */
 	protected File resolveIcon(File iconFile, String name, File assetsFolder) throws Exception {
+
+		// searchs for specific icons 
+		switch (platform) {
+		case linux: 	iconFile = FileUtils.exists(linuxConfig.getPngFile())	? linuxConfig.getPngFile() 	: null; break; 
+		case mac: 		iconFile = FileUtils.exists(macConfig.getIcnsFile())	? macConfig.getIcnsFile() 	: null; break; 
+		case windows: 	iconFile = FileUtils.exists(winConfig.getIcoFile())		? winConfig.getIcoFile() 	: null; break; 
+		default:
+		}
 		
-		String iconExtension = IconUtils.getIconFileExtensionByPlatform(platform);
+		String iconExtension = IconUtils.getIconFileExtensionByPlatform(platform);		
 		
+		// if not specific icon specified for target platform, searchs for an icon in "${assetsDir}" folder  
 		if (iconFile == null) {
 			iconFile = new File(assetsDir, platform + "/" + name + iconExtension);
 		}
 		
+		// if there's no icon yet, uses default one
 		if (!iconFile.exists()) {
 			iconFile = new File(assetsFolder, iconFile.getName());
 			FileUtils.copyResourceToFile("/" + platform + "/default-icon" + iconExtension, iconFile);
@@ -537,7 +536,6 @@ public abstract class Packager extends PackagerSettings {
 		
 		return iconFile;
 	}
-	
 	
 	/**
 	 * Bundling app folder in tarball and/or zipball 

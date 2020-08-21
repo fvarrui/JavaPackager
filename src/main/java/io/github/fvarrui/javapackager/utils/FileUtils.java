@@ -208,5 +208,9 @@ public class FileUtils {
 		org.apache.commons.io.FileUtils.copyURLToFile(url, file);
 		Logger.info("File downloaded from [" + url + "] to [" + file.getAbsolutePath() + "]");
 	}
+	
+	public static boolean exists(File file) {
+		return file != null && file.exists();
+	}
 
 }

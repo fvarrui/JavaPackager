@@ -129,7 +129,6 @@ public class LinuxPackager extends Packager {
 				),
 				goal("rpm"), 
 				configuration(
-						element("license", getLicenseName()),
 						element("packager", organizationName),
 						element("group", "Application"),
 						element("icon", xpmIcon.getAbsolutePath()),

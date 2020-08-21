@@ -311,12 +311,13 @@ public class PackageMojo extends AbstractMojo {
 						.vmArgs(vmArgs)
 						.winConfig(winConfig);
 			
+			// sets Maven specific functions
 			packager.setCreateRunnableJar(new CreateRunnableJar());
+			packager.setResolveLicenseFunction(new ResolveLicenseFromPOM());
 			
+			// generate app, installers and bundles
 			packager.createApp();
-			
 			packager.generateInstallers();
-			
 			packager.createBundles();
 			
 		} catch (Exception e) {
