@@ -3,6 +3,7 @@ package io.github.fvarrui.javapackager.model;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 import java.io.File;
+import java.util.LinkedHashMap;
 import java.util.UUID;
 
 import io.github.fvarrui.javapackager.packagers.Packager;
@@ -31,6 +32,7 @@ public class WindowsConfig {
 	private boolean generateMsi = true;
 	private String msiUpgradeCode;
 	private boolean wrapJar = true;
+	private LinkedHashMap<String, String> setupLanguages = new LinkedHashMap<>();
 
 	public File getIcoFile() {
 		return icoFile;
@@ -208,6 +210,14 @@ public class WindowsConfig {
 		this.wrapJar = wrapJar;
 	}
 
+	public LinkedHashMap<String, String> getSetupLanguages() {
+		return setupLanguages;
+	}
+
+	public void setSetupLanguages(LinkedHashMap<String, String> setupLanguages) {
+		this.setupLanguages = setupLanguages;
+	}
+
 	@Override
 	public String toString() {
 		return "WindowsConfig [icoFile=" + icoFile + ", headerType=" + headerType + ", companyName=" + companyName
@@ -218,7 +228,7 @@ public class WindowsConfig {
 				+ ", disableDirPage=" + disableDirPage + ", disableProgramGroupPage=" + disableProgramGroupPage
 				+ ", disableFinishedPage=" + disableFinishedPage + ", createDesktopIconTask=" + createDesktopIconTask
 				+ ", generateSetup=" + generateSetup + ", generateMsi=" + generateMsi + ", msiUpgradeCode="
-				+ msiUpgradeCode + ", wrapJar=" + wrapJar + "]";
+				+ msiUpgradeCode + ", wrapJar=" + wrapJar + ", setupLanguages=" + setupLanguages + "]";
 	}
 
 	/**

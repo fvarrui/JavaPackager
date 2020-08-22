@@ -5,7 +5,7 @@
 \#define MyAppExeName "${info.name}.exe"
 \#define MyAppFolder "${info.name}"
 \#define MyAppLicense "$!{info.licenseFile.absolutePath}"
-\#define MyAppIcon "${info.name}.ico"
+\#define MyAppIcon "${info.iconFile.absolutePath}"
 
 [Setup]
 AppId={{{#MyAppName}}}
@@ -42,8 +42,9 @@ SolidCompression=yes
 ArchitecturesInstallIn64BitMode=x64
 
 [Languages]
-Name: "english"; MessagesFile: "compiler:Default.isl"
-Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
+#foreach ($language in $info.winConfig.setupLanguages.entrySet())
+Name: "${language.key}"; MessagesFile: "${language.value}"
+#end
 
 [Tasks]
 #if ($info.winConfig.createDesktopIconTask)

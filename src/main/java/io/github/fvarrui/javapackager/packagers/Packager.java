@@ -142,6 +142,12 @@ public abstract class Packager extends PackagerSettings {
 			throw new Exception("Invalid name specified: " + name, e);
 		}
 		
+		// init setup languages
+		if (platform.equals(Platform.windows) && (winConfig.getSetupLanguages() == null || winConfig.getSetupLanguages().isEmpty())) {
+			winConfig.getSetupLanguages().put("english", "compiler:Default.isl");
+			winConfig.getSetupLanguages().put("spanish", "compiler:Languages\\Spanish.isl");
+		}
+		
 		doInit();
 		
 		// removes not necessary platform specific configs 
