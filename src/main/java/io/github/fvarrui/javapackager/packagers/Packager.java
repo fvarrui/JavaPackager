@@ -27,6 +27,7 @@ import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.IconUtils;
+import io.github.fvarrui.javapackager.utils.JDKUtils;
 import io.github.fvarrui.javapackager.utils.JavaUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
@@ -292,8 +293,14 @@ public abstract class Packager extends PackagerSettings {
 			Logger.warn("Cannot create a customized JRE ... target platform (" + platform + ") is different than execution platform (" + Platform.getCurrentPlatform() + "). Use jdkPath property.");
 			
 			bundleJre = false;
-			
+
 		} else {
+			
+			// tests if specified JDK is for the same platform than target platform
+			if (!JDKUtils.isValidJdk(platform, jdkPath)) {
+				throw new Exception("Invalid JDK: '" + jdkPath + "' for platform: " + platform);
+			}
+			
 
 			String modules = getRequiredModules(libsFolder, customizedJre, jarFile, defaultModules, additionalModules);
 
