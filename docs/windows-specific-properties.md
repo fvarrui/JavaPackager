@@ -20,7 +20,12 @@
 	<productName>${name}</productName>
 	<internalName>${name}</internalName>
 	<originalFilename>${name}.exe</originalFilename>
-	<!-- installer generation properties -->
+    <!-- setup generation properties -->
+    <setupLanguages>
+        <english>compiler:Default.isl</english>
+        <spanish>compiler:Languages\Spanish.isl</english>
+        [...]
+    </setupLanguages>
 	<disableDirPage>true|false</disableDirPage>
 	<disableProgramGroupPage>true|false</disableProgramGroupPage>
 	<disableFinishedPage>true|false</disableFinishedPage>
@@ -57,9 +62,10 @@
 
 ## Setup generation properties
 
-| Property                  | Mandatory | Default value         | Description                                                  |
-| ------------------------- | --------- | --------------------- | ------------------------------------------------------------ |
-| `disableDirPage`          | :x:       | `true`                | If this is set to `yes`, Setup will not show the **Select Destination Location** wizard page. |
-| `disableProgramGroupPage` | :x:       | `true`                | If this is set to `yes`, Setup will not show the **Select Start Menu Folder** wizard page. |
-| `disableFinishedPage`     | :x:       | `true`                | If this is set to `yes`, Setup will not show the **Setup Completed** wizard page. |
-| `createDesktopIconTask`   | :x:       | `true`                | If this is set to `yes`, Setup will not ask for **desktop icon creation**. |
+| Property                  | Mandatory | Default value                                                | Description                                                  |
+| ------------------------- | --------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `setupLanguages`          | :x:       | `<english>compiler:Default.isl</english><spanish>compiler:Languages\Spanish.isl</spanish>` | Map with setup languages.                                    |
+| `disableDirPage`          | :x:       | `true`                                                       | If this is set to `yes`, Setup will not show the **Select Destination Location** wizard page. |
+| `disableProgramGroupPage` | :x:       | `true`                                                       | If this is set to `yes`, Setup will not show the **Select Start Menu Folder** wizard page. |
+| `disableFinishedPage`     | :x:       | `true`                                                       | If this is set to `yes`, Setup will not show the **Setup Completed** wizard page. |
+| `createDesktopIconTask`   | :x:       | `true`                                                       | If this is set to `yes`, Setup will not ask for **desktop icon creation**. |
