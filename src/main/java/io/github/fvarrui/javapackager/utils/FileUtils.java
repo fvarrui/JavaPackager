@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.plugin.MojoExecutionException;
 
 
 public class FileUtils {
@@ -41,26 +40,26 @@ public class FileUtils {
 		return mkdir(dir);
 	}
 	
-	public static void copyFileToFile(File source, File dest) throws MojoExecutionException {
+	public static void copyFileToFile(File source, File dest) throws Exception {
 		Logger.info("Copying file [" + source + "] to folder [" + dest + "]");			
 		try {
 			copyFile(source, dest);
 		} catch (IOException e) {
-			throw new MojoExecutionException(e.getMessage(), e);
+			throw new Exception(e.getMessage(), e);
 		}
 	}
 	
-	public static void copyFileToFolder(File source, File destFolder) throws MojoExecutionException {
+	public static void copyFileToFolder(File source, File destFolder) throws Exception {
 		Logger.info("Copying file [" + source + "] to folder [" + destFolder + "]");
 		if (new File(destFolder, source.getName()).exists()) return;
 		try {
 			copyFileToDirectory(source, destFolder);
 		} catch (IOException e) {
-			throw new MojoExecutionException(e.getMessage(), e);
+			throw new Exception(e.getMessage(), e);
 		}
 	}
 	
-	public static void concat(File dest, File ... sources) throws MojoExecutionException {
+	public static void concat(File dest, File ... sources) throws Exception {
 		Logger.info("Concatenating files [" + StringUtils.join(sources, ",") + "] into file [" + dest + "]");
 		try {
 			FileOutputStream fos = new FileOutputStream(dest);
@@ -72,25 +71,25 @@ public class FileUtils {
 			fos.flush();
 			fos.close();
 		} catch (IOException e) {
-			throw new MojoExecutionException("Error concatenating streams", e);
+			throw new Exception("Error concatenating streams", e);
 		}
 	}
 	
-	public static void copyFolderToFolder(File from, File to) throws MojoExecutionException {
+	public static void copyFolderToFolder(File from, File to) throws Exception {
 		Logger.info("Copying folder [" + from + "] to folder [" + to + "]");
-		if (!from.isDirectory()) throw new MojoExecutionException("Source folder " + from + " is not a directory");
+		if (!from.isDirectory()) throw new Exception("Source folder " + from + " is not a directory");
 		try {
 			copyDirectoryToDirectory(from, to);
 		} catch (IOException e) {
-			throw new MojoExecutionException(e.getMessage(), e);
+			throw new Exception(e.getMessage(), e);
 		}
 	}
 	
-	public static void copyFolderContentToFolder(File from, File to) throws MojoExecutionException {
+	public static void copyFolderContentToFolder(File from, File to) throws Exception {
 		Logger.info("Copying folder content [" + from + "] to folder [" + to + "]");
-		if (!from.isDirectory()) throw new MojoExecutionException("Source folder " + from + " is not a directory");
+		if (!from.isDirectory()) throw new Exception("Source folder " + from + " is not a directory");
 		if (!to.exists()) to.mkdirs();
-		else if (!to.isDirectory()) throw new MojoExecutionException("Destination folder " + to + " is not a directory");
+		else if (!to.isDirectory()) throw new Exception("Destination folder " + to + " is not a directory");
 		for (File file : from.listFiles()) {
 			if (file.isDirectory())
 				copyFolderToFolder(file, to);
@@ -99,21 +98,21 @@ public class FileUtils {
 		}
 	}
 
-	public static void moveFolderToFolder(File from, File to) throws MojoExecutionException {
+	public static void moveFolderToFolder(File from, File to) throws Exception {
 		Logger.info("Moving folder [" + from + "] to folder [" + to + "]");
-		if (!from.isDirectory()) throw new MojoExecutionException("Source folder " + from + " is not a directory");
-		else if (to.exists() && !to.isDirectory()) throw new MojoExecutionException("Destination folder " + to + " is not a directory");
+		if (!from.isDirectory()) throw new Exception("Source folder " + from + " is not a directory");
+		else if (to.exists() && !to.isDirectory()) throw new Exception("Destination folder " + to + " is not a directory");
 		try {
 			moveDirectoryToDirectory(from, to, true);
 		} catch (IOException e) {
-			throw new MojoExecutionException(e.getMessage(), e);
+			throw new Exception(e.getMessage(), e);
 		}
 	}
 	
-	public static void moveFolderContentToFolder(File from, File to) throws MojoExecutionException {
+	public static void moveFolderContentToFolder(File from, File to) throws Exception {
 		Logger.info("Moving folder content [" + from + "] to folder [" + to + "]");
-		if (!from.isDirectory()) throw new MojoExecutionException("Source folder " + from + " is not a directory");
-		else if (!to.isDirectory()) throw new MojoExecutionException("Destination folder " + to + " is not a directory");
+		if (!from.isDirectory()) throw new Exception("Source folder " + from + " is not a directory");
+		else if (!to.isDirectory()) throw new Exception("Destination folder " + to + " is not a directory");
 		try {
 			for (File file : from.listFiles()) {
 				if (file.isDirectory())
@@ -122,36 +121,36 @@ public class FileUtils {
 					moveFileToDirectory(file, to, true);
 			}
 		} catch (IOException e) {
-			throw new MojoExecutionException(e.getMessage(), e);
+			throw new Exception(e.getMessage(), e);
 		}
 	}
 
-	public static void moveFileToFolder(File from, File to) throws MojoExecutionException {
+	public static void moveFileToFolder(File from, File to) throws Exception {
 		Logger.info("Moving file [" + from + "] to folder [" + to + "]");		
-		if (!from.isFile()) throw new MojoExecutionException("Source file " + from + " is not a file");
+		if (!from.isFile()) throw new Exception("Source file " + from + " is not a file");
 		if (!to.exists()) to.mkdirs();
 		try {
 			moveFileToDirectory(from, to, true);
 		} catch (IOException e) {
-			throw new MojoExecutionException(e.getMessage(), e);
+			throw new Exception(e.getMessage(), e);
 		}
 	}
 	
-	private static void copyStreamToFile(InputStream is, File dest) throws MojoExecutionException {
+	private static void copyStreamToFile(InputStream is, File dest) throws Exception {
         try {
         	copyInputStreamToFile(is, dest);
         } catch (IOException ex) {
-            throw new MojoExecutionException("Could not copy input stream to " + dest, ex);
+            throw new Exception("Could not copy input stream to " + dest, ex);
         }
 	}
 	
-	public static void copyResourceToFile(String resource, File dest, boolean unixStyleNewLines) throws MojoExecutionException  {
+	public static void copyResourceToFile(String resource, File dest, boolean unixStyleNewLines) throws Exception  {
 		copyResourceToFile(resource, dest);
 		if (unixStyleNewLines) {
 			try {
 				processFileContent(dest, c -> c.replaceAll("\\r\\n", "\n").replaceAll("\\r", "\n"));
 			} catch (IOException e) {
-				throw new MojoExecutionException(e.getMessage(), e);
+				throw new Exception(e.getMessage(), e);
 			}
 		}
 	}
@@ -162,27 +161,27 @@ public class FileUtils {
 		org.apache.commons.io.FileUtils.writeStringToFile(dest, content, Charset.forName("UTF-8"));
 	}
 	
-	public static void copyResourceToFile(String resource, File dest) throws MojoExecutionException  {
+	public static void copyResourceToFile(String resource, File dest) throws Exception  {
 		Logger.info("Copying resource [" + resource + "] to file [" + dest + "]");		
 		copyStreamToFile(FileUtils.class.getResourceAsStream(resource), dest);
 	}
 
 	
-	public static void createSymlink(File link, File target) throws MojoExecutionException {
+	public static void createSymlink(File link, File target) throws Exception {
 		Logger.info("Creating symbolic link [" + link + "] to [" + target + "]");		
         try {
 			Files.createSymbolicLink(link.toPath(), target.toPath());
 		} catch (IOException e) {
-			throw new MojoExecutionException("Could not create symlink " + link + " to " + target, e);
+			throw new Exception("Could not create symlink " + link + " to " + target, e);
 		}
 	}
 	
-	public static void removeFolder(File folder) throws MojoExecutionException {
+	public static void removeFolder(File folder) throws Exception {
 		Logger.info("Removing folder [" + folder + "]");		
 		try {
 			deleteDirectory(folder);
 		} catch (IOException e) {
-            throw new MojoExecutionException("Could not remove folder " + folder, e);
+            throw new Exception("Could not remove folder " + folder, e);
 		}
 	}
 	

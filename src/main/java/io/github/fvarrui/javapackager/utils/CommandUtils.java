@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.plexus.util.cli.CommandLineException;
 
 public class CommandUtils {
@@ -43,8 +42,7 @@ public class CommandUtils {
 		}
 	}
 
-	public static String execute(File workingDirectory, String executable, Object... arguments)
-			throws MojoExecutionException {
+	public static String execute(File workingDirectory, String executable, Object... arguments) throws Exception {
 		StringBuffer outputBuffer = new StringBuffer();
 		StringBuffer errorBuffer = new StringBuffer();
 		try {
@@ -86,13 +84,13 @@ public class CommandUtils {
 			}
 
 		} catch (IOException | CommandLineException e) {
-			throw new MojoExecutionException(e.getMessage(), e);
+			throw new Exception(e.getMessage(), e);
 		}
 
 		return outputBuffer.toString();
 	}
 
-	public static String execute(String executable, Object... arguments) throws MojoExecutionException {
+	public static String execute(String executable, Object... arguments) throws Exception {
 		return execute(new File("."), executable, arguments);
 	}
 

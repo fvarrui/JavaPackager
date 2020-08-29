@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -45,7 +44,7 @@ public class VelocityUtils {
 		return velocityEngine;
 	}
 	
-	private static String render(String templatePath, Object info) throws MojoExecutionException {
+	private static String render(String templatePath, Object info) throws Exception {
 		VelocityContext context = new VelocityContext();
 		context.put("features", new ArrayList<String>());
 		context.put("GUID", UUID.class);
@@ -61,13 +60,13 @@ public class VelocityUtils {
 		VelocityUtils.assetsDir = assetsDir;
 	}
 
-	public static void render(String templatePath, File output, Object info) throws MojoExecutionException {
+	public static void render(String templatePath, File output, Object info) throws Exception {
 		try {
 			String data = render(templatePath, info);
 			data = data.replaceAll("\\r\\n", "\n").replaceAll("\\r", "\n");
 			writeStringToFile(output, data, "UTF-8");
 		} catch (IOException e) {
-			throw new MojoExecutionException(e.getMessage(), e);
+			throw new Exception(e.getMessage(), e);
 		}
 	}
 	

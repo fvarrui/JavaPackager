@@ -19,44 +19,39 @@ public class JDKUtils {
 	 * @throws FileNotFoundException release file not found
 	 * @throws IOException release file could not be read
 	 */
-	public static Map<String, String> getRelease(File jdkPath) throws FileNotFoundException, IOException {
+	private static Map<String, String> getRelease(File jdkPath) throws FileNotFoundException, IOException {
 		Map<String, String> propertiesMap = new HashMap<>();
-		
 		File releaseFile = new File(jdkPath, "release");
-		
-		if (!releaseFile.exists()) {
-			releaseFile = new File(jdkPath, "Contents/Home/release");
-		}
-		
 		if (!releaseFile.exists()) {
 			throw new FileNotFoundException("release file not found"); 
 		}
-		
 		Properties properties = new Properties();
 		properties.load(new FileInputStream(releaseFile));
 		properties.forEach((key, value) -> propertiesMap.put(key.toString(), value.toString().replaceAll("^\"|\"$", "")));
-		
 		return propertiesMap;
 	}
 	
-	public static boolean isValidJdk(Platform platform, File jdkPath) throws Exception {
-		
-		try {
-			Map<String, String> releaseMap = getRelease(jdkPath);
-			String osName = releaseMap.get("OS_NAME");
-			switch (platform) {
-			case linux:		return "Linux".equalsIgnoreCase(osName);
-			case mac:		return "Darwin".equalsIgnoreCase(osName);
-			case windows:	return "Windows".equalsIgnoreCase(osName);
-			default:
-			}
-		} catch (FileNotFoundException e) {
-			throw new Exception(e.getMessage(), e);
-		} catch (IOException e) {
-			throw new Exception(e.getMessage(), e);
+	private static boolean checkPlatform(Platform platform, File jdkPath) throws FileNotFoundException, IOException {
+		Map<String, String> releaseMap = getRelease(jdkPath);
+		String osName = releaseMap.get("OS_NAME");
+		switch (platform) {
+		case linux:		return "Linux".equalsIgnoreCase(osName);
+		case mac:		return "Darwin".equalsIgnoreCase(osName);
+		case windows:	return "Windows".equalsIgnoreCase(osName);
+		default:		return false;
 		}
-		
-		return false;
+	}
+	
+	public static boolean isValidJDK(Platform platform, File jdkPath) throws FileNotFoundException, IOException {
+		return checkPlatform(platform, jdkPath);
+	}
+	
+	public static boolean isValidJRE(Platform platform, File jrePath) throws IOException {
+		try {
+			return checkPlatform(platform, jrePath);
+		} catch (FileNotFoundException e) {
+			return new File(jrePath, "bin/java").exists() || new File(jrePath, "bin/java.exe").exists();
+		}
 	}
 
 }
