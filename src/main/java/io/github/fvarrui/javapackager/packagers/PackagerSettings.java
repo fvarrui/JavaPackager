@@ -118,7 +118,7 @@ public class PackagerSettings {
 	public File getJdkPath() {
 		return jdkPath;
 	}
-	
+
 	public List<File> getAdditionalResources() {
 		return additionalResources;
 	}
@@ -273,7 +273,7 @@ public class PackagerSettings {
 		this.jrePath = jrePath;
 		return this;
 	}
-	
+
 	public PackagerSettings jdkPath(File jdkPath) {
 		this.jdkPath = jdkPath;
 		return this;
@@ -366,19 +366,18 @@ public class PackagerSettings {
 
 	@Override
 	public String toString() {
-		return "PackagerSettings [outputDirectory=" + outputDirectory + ", licenseFile=" + licenseFile
-				+ ", iconFile=" + iconFile + ", generateInstaller=" + generateInstaller + ", mainClass=" + mainClass
-				+ ", name=" + name + ", displayName=" + displayName + ", version=" + version + ", description="
-				+ description + ", url=" + url + ", administratorRequired=" + administratorRequired
-				+ ", organizationName=" + organizationName + ", organizationUrl=" + organizationUrl
-				+ ", organizationEmail=" + organizationEmail + ", bundleJre=" + bundleJre + ", customizedJre="
-				+ customizedJre + ", jrePath=" + jrePath + ", additionalResources=" + additionalResources + ", modules="
-				+ modules + ", additionalModules=" + additionalModules + ", platform=" + platform + ", envPath="
-				+ envPath + ", vmArgs=" + vmArgs + ", runnableJar=" + runnableJar + ", copyDependencies="
-				+ copyDependencies + ", jreDirectoryName=" + jreDirectoryName + ", winConfig=" + winConfig
-				+ ", linuxConfig=" + linuxConfig + ", macConfig=" + macConfig + ", createTarball=" + createTarball
-				+ ", createZipball=" + createZipball + ", extra=" + extra + ", useResourcesAsWorkingDir="
-				+ useResourcesAsWorkingDir + ", assetsDir=" + assetsDir + "]";
+		return "PackagerSettings [outputDirectory=" + outputDirectory + ", licenseFile=" + licenseFile + ", iconFile="
+				+ iconFile + ", generateInstaller=" + generateInstaller + ", mainClass=" + mainClass + ", name=" + name
+				+ ", displayName=" + displayName + ", version=" + version + ", description=" + description + ", url="
+				+ url + ", administratorRequired=" + administratorRequired + ", organizationName=" + organizationName
+				+ ", organizationUrl=" + organizationUrl + ", organizationEmail=" + organizationEmail + ", bundleJre="
+				+ bundleJre + ", customizedJre=" + customizedJre + ", jrePath=" + jrePath + ", jdkPath=" + jdkPath
+				+ ", additionalResources=" + additionalResources + ", modules=" + modules + ", additionalModules="
+				+ additionalModules + ", platform=" + platform + ", envPath=" + envPath + ", vmArgs=" + vmArgs
+				+ ", runnableJar=" + runnableJar + ", copyDependencies=" + copyDependencies + ", jreDirectoryName="
+				+ jreDirectoryName + ", winConfig=" + winConfig + ", linuxConfig=" + linuxConfig + ", macConfig="
+				+ macConfig + ", createTarball=" + createTarball + ", createZipball=" + createZipball + ", extra="
+				+ extra + ", useResourcesAsWorkingDir=" + useResourcesAsWorkingDir + ", assetsDir=" + assetsDir + "]";
 	}
 
 }
