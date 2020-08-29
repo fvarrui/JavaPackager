@@ -81,8 +81,7 @@ public class WindowsPackager extends Packager {
 		pluginConfig.add(element("manifest", manifestFile.getAbsolutePath()));
 		pluginConfig.add(
 				element("classPath",
-						element("mainClass", mainClass),
-						element("postCp", "%classpath " + mainClass)
+						element("mainClass", mainClass)
 					)
 				);
 		pluginConfig.add(element("chdir", useResourcesAsWorkingDir ? "." : ""));		
