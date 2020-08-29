@@ -265,16 +265,19 @@ public abstract class Packager extends PackagerSettings {
 		
 		File currentJdk = new File(System.getProperty("java.home"));
 		
-		Logger.infoIndent("Bundling JRE ... with " + currentJdk.getAbsolutePath());
+		Logger.infoIndent("Bundling JRE ... with " + currentJdk);
 		
 		if (specificJreFolder != null) {
 			
 			Logger.info("Embedding JRE from " + specificJreFolder);
 			
-			if (!specificJreFolder.exists()) {
-				throw new Exception("JRE path specified does not exist: " + specificJreFolder.getAbsolutePath());
-			} else if (!specificJreFolder.isDirectory()) {
-				throw new Exception("JRE path specified is not a folder: " + specificJreFolder.getAbsolutePath());
+			if (platform.equals(Platform.mac)) {
+				specificJreFolder = new File(specificJreFolder, "Contents/Home");
+			}
+			
+			// checks if valid jre specified
+			if (!JDKUtils.isValidJRE(platform, specificJreFolder)) {
+				throw new Exception("Invalid JRE specified for '" + platform + "' platform: " + jrePath);
 			}
 			
 			// removes old jre folder from bundle
@@ -285,9 +288,6 @@ public abstract class Packager extends PackagerSettings {
 
 			// sets execution permissions on executables in jre
 			File binFolder = new File(destinationFolder, "bin");
-			if (!binFolder.exists()) {
-				throw new Exception("Could not embed JRE from " + specificJreFolder.getAbsolutePath() + ": " + binFolder.getAbsolutePath() + " doesn't exist");
-			}
 			Arrays.asList(binFolder.listFiles()).forEach(f -> f.setExecutable(true, false));
 
 		} else if (JavaUtils.getJavaMajorVersion() <= 8) {
@@ -302,12 +302,13 @@ public abstract class Packager extends PackagerSettings {
 
 		} else {
 			
+			Logger.info("Creating customized JRE ...");
+			
 			// tests if specified JDK is for the same platform than target platform
-			if (!JDKUtils.isValidJdk(platform, jdkPath)) {
-				throw new Exception("Invalid JDK: '" + jdkPath + "' for platform: " + platform);
+			if (!JDKUtils.isValidJDK(platform, jdkPath)) {
+				throw new Exception("Invalid JDK for platform '" + platform + "': " + jdkPath);
 			}
 			
-
 			String modules = getRequiredModules(libsFolder, customizedJre, jarFile, defaultModules, additionalModules);
 
 			Logger.info("Creating JRE with next modules included: " + modules);
