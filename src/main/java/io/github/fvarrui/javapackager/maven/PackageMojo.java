@@ -24,7 +24,6 @@ import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.packagers.PackagerFactory;
-import io.github.fvarrui.javapackager.utils.Logger;
 
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.RUNTIME)
 public class PackageMojo extends AbstractMojo {
@@ -261,13 +260,9 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${project.basedir}/assets", property = "assetsDir", required = false)
 	private File assetsDir;
 	
-	public PackageMojo() {
-		super();
-		Logger.init(getLog()); // sets Mojo's logger to Logger class, so it could be used from static methods
-	}
-
 	public void execute() throws MojoExecutionException {
 		
+		MavenContext.setLogger(getLog());
 		MavenContext.setEnv(executionEnvironment(mavenProject, mavenSession, pluginManager));
 		
 		try {
