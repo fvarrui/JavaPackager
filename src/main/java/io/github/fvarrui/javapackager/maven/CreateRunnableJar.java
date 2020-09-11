@@ -10,29 +10,29 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.io.File;
-import java.util.function.Function;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
+import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
+import io.github.fvarrui.javapackager.packagers.PackagerFunction;
 import io.github.fvarrui.javapackager.utils.Logger;
 
 /**
  * Creates a runnable jar file from sources
  */
-public class CreateRunnableJar implements Function<Packager, File> {
+public class CreateRunnableJar implements PackagerFunction {
 	
 	@Override
 	public File apply(Packager packager) {
-		Logger.infoIndent("Creating runnable JAR...");
 		
 		String classifier = "runnable";
 		String name = packager.getName();
 		String version = packager.getVersion();
 		String mainClass = packager.getMainClass();
 		File outputDirectory = packager.getOutputDirectory();
-		ExecutionEnvironment env = MavenContext.getEnv();
+		ExecutionEnvironment env = Context.getMavenContext().getEnv();
 
 		File jarFile = new File(outputDirectory, name + "-" + version + "-" + classifier + ".jar");
 
@@ -58,8 +58,6 @@ public class CreateRunnableJar implements Function<Packager, File> {
 							element("finalName", name + "-" + version)
 					),
 					env);
-
-			Logger.infoUnindent("Runnable jar created in " + jarFile.getAbsolutePath() + "!");
 
 		} catch (MojoExecutionException e) {
 

@@ -22,6 +22,7 @@ import io.github.fvarrui.javapackager.model.LinuxConfig;
 import io.github.fvarrui.javapackager.model.MacConfig;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
+import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.packagers.PackagerFactory;
 
@@ -262,9 +263,16 @@ public class PackageMojo extends AbstractMojo {
 	
 	public void execute() throws MojoExecutionException {
 		
-		MavenContext.setLogger(getLog());
-		MavenContext.setEnv(executionEnvironment(mavenProject, mavenSession, pluginManager));
+		System.out.println(mavenProject.getDependencies());
+
+		Context.setContext(
+				new MavenContext(
+						executionEnvironment(mavenProject, mavenSession, pluginManager), 
+						getLog()
+						)
+				);
 		
+
 		try {
 
 			Packager packager = 
@@ -294,21 +302,16 @@ public class PackageMojo extends AbstractMojo {
 						.macConfig(macConfig)
 						.mainClass(mainClass)
 						.modules(modules)
-						.name(defaultIfBlank(name, MavenContext.getEnv().getMavenProject().getArtifactId()))
+						.name(defaultIfBlank(name, Context.getMavenContext().getEnv().getMavenProject().getArtifactId()))
 						.organizationEmail(organizationEmail)
 						.organizationName(organizationName)
 						.organizationUrl(organizationUrl)
 						.outputDirectory(outputDirectory)
-						.platform(platform)
 						.runnableJar(runnableJar)
 						.useResourcesAsWorkingDir(useResourcesAsWorkingDir)
 						.url(url)
 						.vmArgs(vmArgs)
 						.winConfig(winConfig);
-			
-			// sets Maven specific functions
-			packager.setCreateRunnableJar(new CreateRunnableJar());
-			packager.setResolveLicenseFunction(new ResolveLicenseFromPOM());
 			
 			// generate app, installers and bundles
 			packager.createApp();

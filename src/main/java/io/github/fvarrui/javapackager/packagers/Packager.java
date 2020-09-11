@@ -1,14 +1,6 @@
 package io.github.fvarrui.javapackager.packagers;
 
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.groupId;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.io.File;
 import java.nio.file.InvalidPathException;
@@ -16,13 +8,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
-import io.github.fvarrui.javapackager.maven.MavenContext;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
@@ -35,14 +25,15 @@ import io.github.fvarrui.javapackager.utils.VelocityUtils;
 public abstract class Packager extends PackagerSettings {
 	
 	private static final String DEFAULT_ORGANIZATION_NAME = "ACME";
-
-	// internal generic properties (setted in "createAppStructure")
+	
+	// internal generic properties (setted in "createAppStructure/createApp")
 	protected File appFolder;
 	protected File assetsFolder;
 	protected File executable;
 	protected File jarFile;
+	protected File libsFolder;
 	
-	// internal packager specific properties (setted in "doCreateAppStructure")
+	// internal specific properties (setted in "doCreateAppStructure")
 	protected File executableDestinationFolder;
 	protected File jarFileDestinationFolder;
 	protected File jreDestinationFolder;
@@ -65,35 +56,15 @@ public abstract class Packager extends PackagerSettings {
 	public File getJarFile() {
 		return jarFile;
 	}
-
-	// ===============================================
-	// Functions
-	// ===============================================	
-
-	// create runnable JAR function
 	
-	protected Function<Packager, File> createRunnableJarFunction;
-	
-	public void setCreateRunnableJar(Function<Packager, File> createRunnableJarFunction) {
-		this.createRunnableJarFunction = createRunnableJarFunction;
+	public File getJarFileDestinationFolder() {
+		return jarFileDestinationFolder;
 	}
 	
-	public File createRunnableJar() {
-		return createRunnableJarFunction.apply(this);
+	public File getLibsFolder() {
+		return libsFolder;
 	}
 
-	// resolve license
-	
-	protected Function<Packager, File> resolveLicenseFunction;
-
-	public Function<Packager, File> getResolveLicenseFunction() {
-		return resolveLicenseFunction;
-	}
-
-	public void setResolveLicenseFunction(Function<Packager, File> resolveLicenseFunction) {
-		this.resolveLicenseFunction = resolveLicenseFunction;
-	}
-	
 	// ===============================================
 	
 	public Packager() {
@@ -172,7 +143,7 @@ public abstract class Packager extends PackagerSettings {
 		licenseFile = resolveLicense(licenseFile);
 		
 		// locates icon file
-		iconFile = resolveIcon(iconFile, name, assetsFolder);
+		iconFile = resolveIcon(iconFile, name, assetsDir);
 		
 		// adds to additional resources
 		if (additionalResources != null) {
@@ -183,36 +154,7 @@ public abstract class Packager extends PackagerSettings {
 		
 		Logger.infoUnindent("Resources resolved!");
 		
-	}
-
-	/**
-	 * Copies all dependencies to app folder
-	 * 
-	 * @param libsFolder folder containing all dependencies
-	 * @throws Exception Process failed
-	 */
-	protected void copyAllDependencies(File libsFolder) throws Exception {
-		if (!copyDependencies) return;
-
-		Logger.infoIndent("Copying all dependencies to " + libsFolder.getName() + " folder ...");		
-		
-		// invokes plugin to copy dependecies to app libs folder
-		executeMojo(
-				plugin(
-						groupId("org.apache.maven.plugins"), 
-						artifactId("maven-dependency-plugin"), 
-						version("3.1.1")
-				),
-				goal("copy-dependencies"),
-				configuration(
-						element("outputDirectory", libsFolder.getAbsolutePath())
-				),
-				MavenContext.getEnv());
-
-		Logger.infoUnindent("All dependencies copied!");		
-		
-	}
-	
+	}	
 	
 	/**
 	 * Copy a list of resources to a folder
@@ -271,6 +213,7 @@ public abstract class Packager extends PackagerSettings {
 			
 			Logger.info("Embedding JRE from " + specificJreFolder);
 			
+			// fixes the path to the JRE on MacOS			
 			if (platform.equals(Platform.mac)) {
 				specificJreFolder = new File(specificJreFolder, "Contents/Home");
 			}
@@ -303,6 +246,11 @@ public abstract class Packager extends PackagerSettings {
 		} else {
 			
 			Logger.info("Creating customized JRE ...");
+			
+			// fixes the path to the JDK on MacOS
+			if (platform.equals(Platform.mac)) {
+				jdkPath = new File(jdkPath, "Contents/Home");
+			}
 			
 			// tests if specified JDK is for the same platform than target platform
 			if (!JDKUtils.isValidJDK(platform, jdkPath)) {
@@ -346,48 +294,6 @@ public abstract class Packager extends PackagerSettings {
 		}
 		
 	}
-
-//	/**
-//	 * Creates a runnable jar file from sources
-//	 * @param name Name
-//	 * @param version Version
-//	 * @param mainClass Main class 
-//	 * @param outputDirectory Output directory
-//	 * @return Generated JAR file
-//	 * @throws Exception Process failed
-//	 */
-//	protected File createRunnableJar(String name, String version, String mainClass, File outputDirectory) throws Exception {
-//		Logger.infoIndent("Creating runnable JAR...");
-//		
-//		String classifier = "runnable";
-//
-//		File jarFile = new File(outputDirectory, name + "-" + version + "-" + classifier + ".jar");
-//
-//		executeMojo(
-//				plugin(
-//						groupId("org.apache.maven.plugins"),
-//						artifactId("maven-jar-plugin"), 
-//						version("3.1.1")
-//				),
-//				goal("jar"),
-//				configuration(
-//						element("classifier", classifier),
-//						element("archive", 
-//								element("manifest", 
-//										element("addClasspath", "true"),
-//										element("classpathPrefix", "libs/"),
-//										element("mainClass", mainClass)
-//								)
-//						),
-//						element("outputDirectory", jarFile.getParentFile().getAbsolutePath()),
-//						element("finalName", name + "-" + version)
-//				),
-//				env);
-//		
-//		Logger.infoUnindent("Runnable jar created in " + jarFile.getAbsolutePath() + "!");
-//		
-//		return jarFile;
-//	}
 	
 	/**
 	 * Uses jdeps command tool to determine which modules all used jar files depend on
@@ -496,13 +402,13 @@ public abstract class Packager extends PackagerSettings {
 		}
 		
 		// invokes custom license resolver if exists
-		if (resolveLicenseFunction != null) {
-			licenseFile = resolveLicenseFunction.apply(this);
+		if (licenseFile == null) {
+			licenseFile = Context.getContext().resolveLicense(this);
 		}
 		
 		// if license is still null, looks for LICENSE file
 		if (licenseFile == null || !licenseFile.exists()) {
-			licenseFile = new File(MavenContext.getEnv().getMavenProject().getBasedir(), "LICENSE");
+			licenseFile = new File(Context.getContext().getRootDir(), "LICENSE");
 			if (!licenseFile.exists()) licenseFile = null;
 		}
 		
@@ -556,28 +462,18 @@ public abstract class Packager extends PackagerSettings {
 	 * @throws Exception Process failed
 	 */
 	public void createBundles() throws Exception {
-		if (!createTarball && !createZipball) return;
 
-		Logger.infoIndent("Bundling app in tarball/zipball ...");
+		Logger.infoIndent("Creating bundles ...");
 		
-		// generate assembly.xml file 
-		File assemblyFile = new File(assetsFolder, "assembly.xml");
-		VelocityUtils.render("assembly.xml.vtl", assemblyFile, this);
-		
-		// invokes plugin to assemble zipball and/or tarball
-		executeMojo(
-				plugin(
-						groupId("org.apache.maven.plugins"), 
-						artifactId("maven-assembly-plugin"), 
-						version("3.1.1")
-				),
-				goal("single"),
-				configuration(
-						element("descriptors", element("descriptor", assemblyFile.getAbsolutePath())),
-						element("finalName", name + "-" + version + "-" + platform),
-						element("appendAssemblyId", "false")
-				),
-				MavenContext.getEnv());
+		if (createZipball) {
+			File zipball = Context.getContext().createZipball(this);
+			Logger.info("Zipball created: " + zipball);
+		}
+
+		if (createTarball) {
+			File tarball = Context.getContext().createTarball(this);
+			Logger.info("Tarball created: " + tarball);
+		}
 		
 		Logger.infoUnindent("Bundles created!");
 		
@@ -626,18 +522,21 @@ public abstract class Packager extends PackagerSettings {
 
 		// copies additional resources
 		copyAdditionalResources(additionalResources, resourcesDestinationFolder);
-				
+        
+		// copies all dependencies to Java folder
+		Logger.infoIndent("Copying all dependencies ...");		
+		libsFolder = copyDependencies ? Context.getContext().copyDependencies(this) : null;
+		Logger.infoUnindent("Dependencies copied to " + libsFolder + "!");		
+
 		// creates a runnable jar file
         if (runnableJar != null && runnableJar.exists()) {
         	Logger.info("Using runnable JAR: " + runnableJar);
             jarFile = runnableJar;
         } else {
-            jarFile = createRunnableJar();
+    		Logger.infoIndent("Creating runnable JAR...");
+            jarFile = Context.getContext().createRunnableJar(this);
+    		Logger.infoUnindent("Runnable jar created in " + jarFile + "!");
         }
-        
-		// copies all dependencies to Java folder
-		File libsFolder = new File(jarFileDestinationFolder, "libs");
-		copyAllDependencies(libsFolder);
 
 		// checks if JRE should be embedded
 		bundleJre(jreDestinationFolder, jarFile, libsFolder, jrePath, customizedJre, modules, additionalModules, platform);

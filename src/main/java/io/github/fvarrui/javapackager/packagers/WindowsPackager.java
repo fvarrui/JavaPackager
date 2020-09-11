@@ -1,23 +1,10 @@
 package io.github.fvarrui.javapackager.packagers;
 
 import static org.apache.commons.collections4.CollectionUtils.addIgnoreNull;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.groupId;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
-
-import io.github.fvarrui.javapackager.maven.MavenContext;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
@@ -25,6 +12,17 @@ import io.github.fvarrui.javapackager.utils.VelocityUtils;
 import io.github.fvarrui.javapackager.utils.XMLUtils;
 
 public class WindowsPackager extends Packager {
+	
+	private String jarPath;
+	private File manifestFile;
+	
+	public String getJarPath() {
+		return jarPath;
+	}
+	
+	public File getManifestFile() {
+		return manifestFile;
+	}
 	
 	@Override
 	public void doInit() throws Exception {
@@ -54,71 +52,23 @@ public class WindowsPackager extends Packager {
 		Logger.infoIndent("Creating windows EXE ...");
 
 		// copies JAR to app folder
-		String jarPath = jarFile.getAbsolutePath();
+		jarPath = jarFile.getAbsolutePath();
 		if (!winConfig.isWrapJar()) {
 			FileUtils.copyFileToFolder(jarFile, appFolder);
 			jarPath = jarFile.getName();
 		}
 		
 		// generates manifest file to require administrator privileges from velocity template
-		File manifestFile = new File(assetsFolder, name + ".exe.manifest");
+		manifestFile = new File(assetsFolder, name + ".exe.manifest");
 		VelocityUtils.render("windows/exe.manifest.vtl", manifestFile, this);
 		Logger.info("Exe manifest file generated in " + manifestFile.getAbsolutePath() + "!");
 
 		// sets executable file
-		this.executable = new File(appFolder, name + ".exe");
+		executable = new File(appFolder, name + ".exe");
 
-		// prepares launch4j plugin configuration
+		// invokes launch4j to generate windows executable
 		
-		List<Element> optsElements = vmArgs.stream().map(arg -> element("opt", arg)).collect(Collectors.toList());
-	
-		List<Element> pluginConfig = new ArrayList<>();
-		pluginConfig.add(element("headerType", "" + winConfig.getHeaderType()));
-		pluginConfig.add(element("jar", jarPath));
-		pluginConfig.add(element("dontWrapJar", "" + !winConfig.isWrapJar()));
-		pluginConfig.add(element("outfile", executable.getAbsolutePath()));
-		pluginConfig.add(element("icon", iconFile.getAbsolutePath()));
-		pluginConfig.add(element("manifest", manifestFile.getAbsolutePath()));
-		pluginConfig.add(
-				element("classPath",
-						element("mainClass", mainClass)
-					)
-				);
-		pluginConfig.add(element("chdir", useResourcesAsWorkingDir ? "." : ""));		
-		pluginConfig.add(
-					element("jre",
-						element("path", bundleJre ? jreDirectoryName : "%JAVA_HOME%"),
-						element("opts", optsElements.toArray(new Element[optsElements.size()]))
-					)
-				);
-		pluginConfig.add(
-					element("versionInfo", 
-						element("fileVersion", winConfig.getFileVersion()),
-						element("txtFileVersion", winConfig.getTxtFileVersion()),
-						element("productVersion", winConfig.getProductVersion()),
-						element("txtProductVersion", winConfig.getTxtProductVersion()),
-						element("copyright", winConfig.getCopyright()),
-						element("companyName", winConfig.getCompanyName()),
-						element("fileDescription", winConfig.getFileDescription()),
-						element("productName", winConfig.getProductName()),
-						element("internalName", winConfig.getInternalName()),
-						element("originalFilename", winConfig.getOriginalFilename()),
-						element("trademarks", winConfig.getTrademarks()),
-						element("language", winConfig.getLanguage())
-					)
-				);
-
-		// invokes launch4j plugin to generate windows executable
-		executeMojo(
-				plugin(
-						groupId("com.akathist.maven.plugins.launch4j"), 
-						artifactId("launch4j-maven-plugin"),
-						version("1.7.25")
-				),
-				goal("launch4j"),
-				configuration(pluginConfig.toArray(new Element[pluginConfig.size()])),
-				MavenContext.getEnv()
-			);
+		executable = Context.getContext().createWindowsExe(this);
 
 		Logger.infoUnindent("Windows EXE file created in " + executable + "!");		
 		

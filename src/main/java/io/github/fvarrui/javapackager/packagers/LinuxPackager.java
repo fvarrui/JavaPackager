@@ -1,5 +1,6 @@
 package io.github.fvarrui.javapackager.packagers;
 
+import static org.apache.commons.collections4.CollectionUtils.addIgnoreNull;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
@@ -9,8 +10,6 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.groupId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
-import static org.apache.commons.collections4.CollectionUtils.addIgnoreNull;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.List;
 import org.apache.commons.io.FilenameUtils;
 import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 
-import io.github.fvarrui.javapackager.maven.MavenContext;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
@@ -181,7 +179,8 @@ public class LinuxPackager extends Packager {
 								)
 						)
 				),
-				MavenContext.getEnv());
+				Context.getMavenContext().getEnv()
+			);
 
 		Logger.infoUnindent("RPM package generated! " + rpmFile.getAbsolutePath());
 
@@ -282,7 +281,8 @@ public class LinuxPackager extends Packager {
 						element("deb", outputDirectory.getAbsolutePath() + "/" + debFile.getName()),
 						element("dataSet", dataSet.toArray(new Element[dataSet.size()]))
 				),
-				MavenContext.getEnv());
+				Context.getMavenContext().getEnv()
+			);
 		
 		Logger.infoUnindent("DEB package generated! " + debFile.getAbsolutePath());
 		

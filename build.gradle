@@ -17,13 +17,13 @@ plugins {
 }
 
 repositories {
+	mavenLocal()
 	mavenCentral()
-    mavenLocal()
 }
 
 gradlePlugin {
     plugins {
-        packagePlugin {
+        javaPackagerPlugin {
             id = 'io.github.fvarrui.javapackager.plugin'
             implementationClass = 'io.github.fvarrui.javapackager.gradle.PackagePlugin'
         }
@@ -36,7 +36,7 @@ pluginBundle {
 	description = 'Hybrid Maven/Gradle plugin to package Java applications as native Windows, Mac OS X, or GNU/Linux executables and create installers for them'
 	tags = ['java', 'packager', 'gradle-plugin', 'maven-plugin', 'native', 'installer', 'debian-packages', 'rpm-packages', 'dmg', 'maven', 'distribution', 'javapackager', 'linux-executables', 'deb', 'rpm', 'native-windows', 'java-applications', 'pkg', 'msi']
 	plugins {
-		packagePlugin {
+		javaPackagerPlugin {
 			displayName = 'JavaPackager plugin'
 		}
 	}
@@ -54,6 +54,7 @@ dependencies {
     implementation 'commons-io:commons-io:2.6'
     implementation 'org.apache.commons:commons-collections4:4.1'
     implementation 'org.apache.velocity:velocity-engine-core:2.0'
+	implementation 'io.github.fvarrui:gradle-launch4j:2.4.7'
     
     testImplementation 'junit:junit:4.12'
     
@@ -79,9 +80,9 @@ compileJava.options.encoding = 'UTF-8'
 
 publishing {
     publications {
-        maven(MavenPublication) {
+        mavenJava(MavenPublication) {
             from(components.java)
-        }
+		}
     }
 }
 
@@ -138,8 +139,6 @@ task generatePluginDescriptor(type: JavaExec, dependsOn: compileJava) {
 }
 
 project.jar.dependsOn(generatePluginDescriptor)
-
-// apply plugin: 'io.codearte.nexus-staging'
     
 if (project.hasProperty('release')) {
 

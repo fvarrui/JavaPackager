@@ -5,25 +5,26 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.function.Function;
 
 import org.apache.maven.model.License;
 
+import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
+import io.github.fvarrui.javapackager.packagers.PackagerFunction;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 
 /**
  * Creates a runnable jar file from sources
  */
-public class ResolveLicenseFromPOM implements Function<Packager, File> {
+public class ResolveLicenseFromPOM implements PackagerFunction {
 	
 	@Override
 	public File apply(Packager packager) {
 		Logger.infoIndent("Resolving license from POM ...");
 		
 		File licenseFile = packager.getLicenseFile();
-		List<License> licenses = MavenContext.getEnv().getMavenProject().getLicenses();
+		List<License> licenses = Context.getMavenContext().getEnv().getMavenProject().getLicenses();
 		File assetsFolder = packager.getAssetsFolder();
 		
 		// if license not specified, gets from pom
