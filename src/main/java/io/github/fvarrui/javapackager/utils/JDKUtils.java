@@ -23,7 +23,7 @@ public class JDKUtils {
 		Map<String, String> propertiesMap = new HashMap<>();
 		File releaseFile = new File(jdkPath, "release");
 		if (!releaseFile.exists()) {
-			throw new FileNotFoundException("release file not found"); 
+			throw new FileNotFoundException("release file not found: " + releaseFile); 
 		}
 		Properties properties = new Properties();
 		properties.load(new FileInputStream(releaseFile));
