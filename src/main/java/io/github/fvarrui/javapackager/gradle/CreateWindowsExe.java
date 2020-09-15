@@ -7,34 +7,37 @@ import org.gradle.api.Project;
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
+import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
-import io.github.fvarrui.javapackager.packagers.PackagerFunction;
 import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 
 /**
- * Copies all dependencies to app folder
- * 
+ * Creates Windows native executable on Gradle context
  */
-public class CreateWindowsExe implements PackagerFunction {
+public class CreateWindowsExe extends ArtifactGenerator {
+	
+	public CreateWindowsExe() {
+		super("Windows EXE");
+	}
 
 	@Override
-	public File apply(Packager packager) {
+	public File apply(Packager packager) throws Exception {
 		
-		WindowsPackager windowsPackager = (WindowsPackager) packager;
+		WindowsPackager WindowsPackager = (WindowsPackager) packager;
 		
 		Project project = Context.getGradleContext().getProject();
-		List<String> vmArgs = windowsPackager.getVmArgs();
-		WindowsConfig winConfig = windowsPackager.getWinConfig();
-		String jarPath = windowsPackager.getJarPath();
-		File executable = windowsPackager.getExecutable();
-		File iconFile = windowsPackager.getIconFile();
-		File manifestFile = windowsPackager.getManifestFile();
-		String mainClass = windowsPackager.getMainClass();
-		boolean useResourcesAsWorkingDir = windowsPackager.isUseResourcesAsWorkingDir();
-		boolean bundleJre = windowsPackager.getBundleJre();
-		String jreDirectoryName = windowsPackager.getJreDirectoryName();
+		List<String> vmArgs = WindowsPackager.getVmArgs();
+		WindowsConfig winConfig = WindowsPackager.getWinConfig();
+		String jarPath = WindowsPackager.getJarPath();
+		File executable = WindowsPackager.getExecutable();
+		File iconFile = WindowsPackager.getIconFile();
+		File manifestFile = WindowsPackager.getManifestFile();
+		String mainClass = WindowsPackager.getMainClass();
+		boolean useResourcesAsWorkingDir = WindowsPackager.isUseResourcesAsWorkingDir();
+		boolean bundleJre = WindowsPackager.getBundleJre();
+		String jreDirectoryName = WindowsPackager.getJreDirectoryName();
 		
 		Launch4jLibraryTask l4jTask = project.getTasks().create("jplaunch4j", Launch4jLibraryTask.class);
 		l4jTask.setHeaderType(winConfig.getHeaderType().toString());
@@ -61,11 +64,7 @@ public class CreateWindowsExe implements PackagerFunction {
 
 		File generatedExe = new File(project.getBuildDir(), "launch4j/" + executable.getName());
 		
-		try {
-			FileUtils.copyFileToFile(generatedExe, executable);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		FileUtils.copyFileToFile(generatedExe, executable);
 		
 		return executable;
 	}

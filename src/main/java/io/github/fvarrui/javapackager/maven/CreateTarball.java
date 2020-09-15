@@ -14,10 +14,17 @@ import java.io.File;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
-import io.github.fvarrui.javapackager.packagers.PackagerFunction;
+import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
-public class CreateTarball implements PackagerFunction {
+/**
+ * Creates tarball (tar.gz file) on Maven context 
+ */
+public class CreateTarball extends ArtifactGenerator {
+	
+	public CreateTarball() {
+		super("Tarball");
+	}
 
 	@Override
 	public File apply(Packager packager) {

@@ -1,20 +1,20 @@
 package io.github.fvarrui.javapackager.packagers;
 
-import static org.apache.commons.collections4.CollectionUtils.addIgnoreNull;
-
 import java.io.File;
-import java.util.List;
 
-import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
-import io.github.fvarrui.javapackager.utils.XMLUtils;
 
 public class WindowsPackager extends Packager {
 	
 	private String jarPath;
 	private File manifestFile;
+	
+	public WindowsPackager() {
+		super();
+		installerGenerators.addAll(Context.getContext().getWindowsInstallerGenerators());
+	}
 	
 	public String getJarPath() {
 		return jarPath;
@@ -75,81 +75,5 @@ public class WindowsPackager extends Packager {
 		return appFolder;
 	}
 
-	/**
-	 * Creates a Setup installer file including all app folder's content only for
-	 * Windows so app could be easily distributed
-	 */
-	@Override
-	public void doGenerateInstallers(List<File> installers) throws Exception {
-
-		addIgnoreNull(installers, generateSetup());
-
-		addIgnoreNull(installers, generateMsi());
-		
-	}
-
-	/**
-	 * Creates a MSI file including all app folder's content only for
-	 * Windows so app could be easily distributed
-	 */
-	private File generateMsi() throws Exception {
-		if (!winConfig.isGenerateMsi()) return null;
-
-		Logger.infoIndent("Generating MSI file ...");
-		
-		// generates WXS file from velocity template
-		File wxsFile = new File(assetsFolder, name + ".wxs");
-		VelocityUtils.render("windows/wxs.vtl", wxsFile, this);
-		Logger.info("WXS file generated in " + wxsFile + "!");
-
-		// pretiffy wxs
-		XMLUtils.prettify(wxsFile);
-	
-		// candle wxs file
-		Logger.info("Compiling file " + wxsFile);
-		File wixobjFile = new File(assetsFolder, name + ".wixobj");
-		CommandUtils.execute("candle", "-out", wixobjFile, wxsFile);
-		Logger.info("WIXOBJ file generated in " + wixobjFile +  "!");
-
-		// lighting wxs file
-		Logger.info("Linking file " + wixobjFile);
-		File msiFile = new File(outputDirectory, name + "_" + version + ".msi");
-		CommandUtils.execute("light", "-spdb", "-out", msiFile, wixobjFile);
-
-		// setup file
-		if (!msiFile.exists()) {
-			throw new Exception("MSI installer file generation failed!");
-		}
-		
-		Logger.infoUnindent("MSI file generated!");
-		
-		return msiFile;
-	}
-
-	private File generateSetup() throws Exception {
-		if (!winConfig.isGenerateSetup()) return null;
-		
-		Logger.infoIndent("Generating setup file ...");
-		
-		// copies ico file to assets folder
-		FileUtils.copyFileToFolder(iconFile, assetsFolder);
-		
-		// generates iss file from velocity template
-		File issFile = new File(assetsFolder, name + ".iss");
-		VelocityUtils.render("windows/iss.vtl", issFile, this);
-
-		// generates windows installer with inno setup command line compiler
-		CommandUtils.execute("iscc", "/O" + outputDirectory.getAbsolutePath(), "/F" + name + "_" + version, issFile);
-		
-		// setup file
-		File setupFile = new File(outputDirectory, name + "_" + version + ".exe");
-		if (!setupFile.exists()) {
-			throw new Exception("Windows setup file generation failed!");
-		}
-		
-		Logger.infoUnindent("Setup file generated!");
-		
-		return setupFile;
-	}
 	
 }

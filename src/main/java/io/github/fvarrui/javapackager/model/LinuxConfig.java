@@ -1,11 +1,13 @@
 package io.github.fvarrui.javapackager.model;
 
 import java.io.File;
+import java.io.Serializable;
 
 import io.github.fvarrui.javapackager.packagers.Packager;
 
-public class LinuxConfig {
-
+public class LinuxConfig implements Serializable {
+	private static final long serialVersionUID = -1238166997019141904L;
+	
 	private boolean generateDeb = true;
 	private boolean generateRpm = true;
 	private File pngFile;

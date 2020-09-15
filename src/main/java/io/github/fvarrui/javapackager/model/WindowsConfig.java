@@ -3,13 +3,15 @@ package io.github.fvarrui.javapackager.model;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
 import io.github.fvarrui.javapackager.packagers.Packager;
 
-public class WindowsConfig {
-
+public class WindowsConfig implements Serializable {
+	private static final long serialVersionUID = 2106752412224694318L;
+	
 	private File icoFile;
 	private HeaderType headerType;
 	private String companyName;

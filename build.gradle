@@ -14,6 +14,7 @@ plugins {
     id 'java-gradle-plugin'
 	id 'com.gradle.plugin-publish' version '0.12.0'
     id 'io.codearte.nexus-staging' version '0.21.2'
+    id 'eclipse'
 }
 
 repositories {
@@ -139,6 +140,7 @@ task generatePluginDescriptor(type: JavaExec, dependsOn: compileJava) {
 }
 
 project.jar.dependsOn(generatePluginDescriptor)
+publishToMavenLocal.dependsOn(build)
     
 if (project.hasProperty('release')) {
 
