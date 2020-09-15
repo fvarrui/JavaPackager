@@ -3,6 +3,7 @@ package io.github.fvarrui.javapackager.gradle;
 import java.io.File;
 import java.util.UUID;
 
+import org.gradle.api.tasks.bundling.Compression;
 import org.gradle.api.tasks.bundling.Tar;
 
 import io.github.fvarrui.javapackager.model.Platform;
@@ -36,6 +37,7 @@ public class CreateTarball extends ArtifactGenerator {
 		Tar tarTask = createTarTask();
 		tarTask.setProperty("archiveFileName", tarFile.getName());
 		tarTask.setProperty("destinationDirectory", outputDirectory);
+		tarTask.setCompression(Compression.GZIP);
 		
 		// if zipball is for windows platform
 		if (Platform.windows.equals(platform)) {
