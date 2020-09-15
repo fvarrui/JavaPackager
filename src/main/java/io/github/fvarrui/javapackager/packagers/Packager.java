@@ -251,11 +251,6 @@ public abstract class Packager extends PackagerSettings {
 			
 			Logger.info("Creating customized JRE ...");
 			
-			// fixes the path to the JDK on MacOS
-//			if (platform.equals(Platform.mac) && !platform.isCurrentPlatform()) {
-//				jdkPath = new File(jdkPath, "Contents/Home");
-//			}
-			
 			// tests if specified JDK is for the same platform than target platform
 			if (!JDKUtils.isValidJDK(platform, jdkPath)) {
 				throw new Exception("Invalid JDK for platform '" + platform + "': " + jdkPath);
