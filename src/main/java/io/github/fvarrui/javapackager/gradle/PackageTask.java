@@ -1,8 +1,5 @@
 package io.github.fvarrui.javapackager.gradle;
 
-import static io.github.fvarrui.javapackager.utils.ObjectUtils.defaultIfBlank;
-import static io.github.fvarrui.javapackager.utils.ObjectUtils.defaultIfNull;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,8 +26,6 @@ import io.github.fvarrui.javapackager.packagers.PackagerFactory;
 public class PackageTask extends DefaultTask {
 	
 	public static final String PACKAGE_TASK_NAME = "package";	
-	
-	private PackagePluginExtension settings;
 	
 	// ===============
 	// task parameters
@@ -489,11 +484,8 @@ public class PackageTask extends DefaultTask {
 	// task action
 	// ===========
 	
-	@SuppressWarnings("unchecked")
 	@TaskAction
 	public void doPackage() {
-		
-//		settings = (PackagePluginExtension) getProject().getExtensions().findByName(PackagePlugin.SETTINGS_EXT_NAME);
 		
 		try {
 			
