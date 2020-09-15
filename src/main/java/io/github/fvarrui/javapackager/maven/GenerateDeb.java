@@ -52,12 +52,12 @@ public class GenerateDeb extends ArtifactGenerator {
 
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");
-		VelocityUtils.render("linux/desktop.vtl", desktopFile, this);
+		VelocityUtils.render("linux/desktop.vtl", desktopFile, linuxPackager);
 		Logger.info("Desktop file rendered in " + desktopFile.getAbsolutePath());
 
 		// generates deb control file from velocity template
 		File controlFile = new File(assetsFolder, "control");
-		VelocityUtils.render("linux/control.vtl", controlFile, this);
+		VelocityUtils.render("linux/control.vtl", controlFile, linuxPackager);
 		Logger.info("Control file rendered in " + controlFile.getAbsolutePath());
 
 		// generated deb file

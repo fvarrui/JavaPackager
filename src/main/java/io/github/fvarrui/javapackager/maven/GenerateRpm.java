@@ -55,7 +55,7 @@ public class GenerateRpm extends ArtifactGenerator {
 		
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");
-		VelocityUtils.render("linux/desktop.vtl", desktopFile, this);
+		VelocityUtils.render("linux/desktop.vtl", desktopFile, linuxPackager);
 		Logger.info("Rendering desktop file to " + desktopFile.getAbsolutePath());
 		
 		// copies desktop file to app
