@@ -14,35 +14,34 @@ Add the following `plugin` tag to your `pom.xml`:
 
 ```xml
 <plugin>
-    <groupId>io.github.fvarrui</groupId>
-    <artifactId>javapackager</artifactId>
-    <version>1.2.0|1.2.1-SNAPSHOT</version>
-    <executions>
-        <execution>
-            <phase>package</phase>
-            <goals>
-                <goal>package</goal>
-            </goals>
-            <configuration>
-                <!-- mandatory -->
-                <mainClass>path.to.your.mainClass</mainClass>
-                <!-- optional -->
-                <bundleJre>true|false</bundleJre>
-                <generateInstaller>true|false</generateInstaller>        
-                <administratorRequired>true|false</administratorRequired>
-                <platform>auto|linux|mac|windows</platform>
-                <additionalResources>
-                    <additionalResource>file path</additionalResource>
-                    <additionalResource>folder path</additionalResource>
-                    <additionalResource>...</additionalResource>
-                </additionalResources>
-                <linuxConfig>...</linuxConfig>
-                <macConfig>...</macConfig>
-                <winConfig>...</winConfig>
-                [...]
-            </configuration>
-        </execution>
-    </executions>
+	<groupId>io.github.fvarrui</groupId>
+	<artifactId>javapackager</artifactId>
+	<version>1.2.0|1.2.1-SNAPSHOT</version>
+	<executions>
+		<execution>
+			<phase>package</phase>
+			<goals>
+				<goal>package</goal>
+			</goals>
+			<configuration>
+				<!-- mandatory -->
+				<mainClass>path.to.your.mainClass</mainClass>
+				<!-- optional -->
+				<bundleJre>true|false</bundleJre>
+				<generateInstaller>true|false</generateInstaller>       				<administratorRequired>true|false</administratorRequired>
+				<platform>auto|linux|mac|windows</platform>
+				<additionalResources>
+					<additionalResource>file path</additionalResource>
+					<additionalResource>folder path</additionalResource>
+					<additionalResource>...</additionalResource>
+				</additionalResources>
+				<linuxConfig>...</linuxConfig>
+				<macConfig>...</macConfig>
+				<winConfig>...</winConfig>
+				[...]
+			</configuration>
+		</execution>
+	</executions>
 </plugin>
 ```
 
@@ -61,7 +60,7 @@ Apply JavaPackager plugin in `build.gradle` in legacy mode, because it's only av
 ```groovy
 buildscript {
 	repositories {
-        mavenCentral()
+		mavenCentral()
 	}
 	dependencies {
 		classpath 'io.github.fvarrui:javapackager:1.2.0'
@@ -75,14 +74,14 @@ Create your packaging task:
 
 ```groovy
 task packageMyApp(type: io.github.fvarrui.javapackager.gradle.PackageTask, dependsOn: build) {
-    // mandatory
+	// mandatory
 	mainClass = 'path.to.your.mainClass'
-    // optional
-    bundleJre = true|false
-    generateInstaller = true|false
-    administratorRequired = true|false
-    platform = auto|linux|mac|windows
-    additionalResources = [ file('file path'), file('folder path'), ... ]
+	// optional
+	bundleJre = true|false
+	generateInstaller = true|false
+	administratorRequired = true|false
+	platform = auto|linux|mac|windows
+	additionalResources = [ file('file path'), file('folder path'), ... ]
 	linuxConfig {
 		...
 	}
@@ -92,7 +91,7 @@ task packageMyApp(type: io.github.fvarrui.javapackager.gradle.PackageTask, depen
 	winConfig {
 		...
 	}
-    ...
+	...
 }
 ```
 
