@@ -262,6 +262,16 @@ Run next command after [build and publish the plugin locally](#how-to-build-and-
 
 > Related [guide](https://nemerosa.ghost.io/2015/07/01/publishing-to-the-maven-central-using-gradle/).
 
+## How to release the plugin to Gradle plugin portal
+
+Run next command after [build and publish the plugin locally](#how-to-build-and-install-the-plugin)  (ommit `./` on Windows):
+
+```bash
+./gradlew publishPlugins
+```
+
+> Related [guide](https://plugins.gradle.org/docs/submit).
+
 ## Future features
 
 Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column-7704117) to know the features we plan to add to JavaPackager.
