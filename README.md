@@ -56,7 +56,7 @@ mvn package
 
 ### Config your project and package your app with Gradle
 
-Apply JavaPackager plugin in `build.gradle` in legacy mode, :
+Apply JavaPackager plugin in `build.gradle` in legacy mode, because it's only available in Maven Central repository:
 
 ```groovy
 buildscript {
@@ -106,7 +106,7 @@ gradle packageMyApp
 
 ### Generated artifacts
 
-By default it will generate next artifacts in `target ` folder:
+By default it will generate next artifacts in `${outputDirectory} ` folder:
 
 | Artifact                                | Description                                                  |
 | --------------------------------------- | ------------------------------------------------------------ |
@@ -122,6 +122,8 @@ By default it will generate next artifacts in `target ` folder:
 | `${name}-${version}-${platform}.tar.gz` | Compressed tarball containing generated directory `${name}`. |
 
 >  :warning: Installers generation will be ommited if target platform is different from current platform (see `platform` property).
+
+> :warning: **DEB and RPM package generation in Gradle is not yet available. Coming soon!**
 
 ### Plugin configutation properties
 
@@ -152,12 +154,15 @@ By default it will generate next artifacts in `target ` folder:
 | `organizationName`         | :x:                | `${project.organization.name}` or `"ACME"`                   | Organization name.                                           |
 | `organizationUrl`          | :x:                | `${project.organization.url}`                                | Organization website URL.                                    |
 | `organizationEmail`        | :x:                | `null`                                                       | Organization email.                                          |
+| `outputDirectory`          | :x:                | `${project.build.directory}` or `${project.builddir}`        | Output directory (where the artifacts will be generated).    |
 | `platform`                 | :x:                | `auto`                                                       | Defines the target platform, which could be different to the execution platform. Possible values:  `auto`, `mac`, `linux`, `windows`. Use `auto`  for using execution platform as target. |
 | `runnableJar`              | :x:                | `null`                                                       | Defines your own JAR file to be bundled. If it's ommited, the plugin packages your code in a runnable JAR and bundle it with the app. |
 | `url`                      | :x:                | `null`                                                       | App website URL.                                             |
 | `useResourcesAsWorkingDir` | :x:                | `true`                                                       | Uses app resources folder as default working directory.      |
 | ` version`                 | :x:                | `${project.version}`                                         | Project version.                                             |
 | `vmArgs`                   | :x:                | `[]`                                                         | Adds VM arguments.                                           |
+
+> Some default values depends on the used building tool.
 
 **Platform specific properties**
 
