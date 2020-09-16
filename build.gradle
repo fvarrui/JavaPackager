@@ -1,12 +1,3 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
-    }
-}
-
 plugins {
     id 'java'    
     id 'maven'
@@ -71,7 +62,7 @@ dependencies {
 }
 
 group = 'io.github.fvarrui'
-version = '1.2.0-SNAPSHOT'
+version = '1.2.1-SNAPSHOT'
 description = 'JavaPackager Plugin'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -180,7 +171,7 @@ if (project.hasProperty('release')) {
                     pom.project {
                         name project.name
                         description project.description
-                        packaging project.packaging
+                        packaging = 'maven-plugin'
                         url 'https://github.com/fvarrui/JavaPackager'
 
                         scm {
