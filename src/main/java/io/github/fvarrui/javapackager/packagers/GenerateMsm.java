@@ -21,7 +21,7 @@ public class GenerateMsm extends ArtifactGenerator {
 	public File apply(Packager packager) throws Exception {
 		WindowsPackager windowsPackager = (WindowsPackager) packager;
 		
-		if (windowsPackager.getMsmFile() != null) return null;
+		if (windowsPackager.getMsmFile() != null) return windowsPackager.getMsmFile();
 		
 		if (!windowsPackager.getWinConfig().isGenerateMsm() && !windowsPackager.getWinConfig().isGenerateMsi()) {
 			Logger.warn(getArtifactName() + " generation skipped by 'winConfig.generateMsm' property!");
