@@ -11,23 +11,22 @@ import io.github.fvarrui.javapackager.utils.XMLUtils;
  * Creates a MSI file including all app folder's content only for
  * Windows so app could be easily distributed
  */
-public class GenerateMsi extends ArtifactGenerator {
+public class GenerateMsm extends ArtifactGenerator {
 
-	public GenerateMsi() {
-		super("MSI installer");
+	public GenerateMsm() {
+		super("MSI merge module");
 	}
 	
 	@Override
 	public File apply(Packager packager) throws Exception {
 		WindowsPackager windowsPackager = (WindowsPackager) packager;
 		
-		if (!windowsPackager.getWinConfig().isGenerateMsi()) {
-			Logger.warn(getArtifactName() + " generation skipped by 'winConfig.generateMsi' property!");
+		if (windowsPackager.getMsmFile() != null) return null;
+		
+		if (!windowsPackager.getWinConfig().isGenerateMsm() && !windowsPackager.getWinConfig().isGenerateMsi()) {
+			Logger.warn(getArtifactName() + " generation skipped by 'winConfig.generateMsm' property!");
 			return null;
 		}
-		
-		File msmFile = new GenerateMsm().apply(windowsPackager);
-		Logger.info("MSM file generated in " + msmFile);
 
 		File assetsFolder = windowsPackager.getAssetsFolder();
 		String name = windowsPackager.getName();
@@ -35,8 +34,8 @@ public class GenerateMsi extends ArtifactGenerator {
 		String version = windowsPackager.getVersion();
 		
 		// generates WXS file from velocity template
-		File wxsFile = new File(assetsFolder, name + ".wxs");
-		VelocityUtils.render("windows/wxs.vtl", wxsFile, windowsPackager);
+		File wxsFile = new File(assetsFolder, name + ".msm.wxs");
+		VelocityUtils.render("windows/msm.wxs.vtl", wxsFile, windowsPackager);
 		Logger.info("WXS file generated in " + wxsFile + "!");
 
 		// pretiffy wxs
@@ -44,21 +43,23 @@ public class GenerateMsi extends ArtifactGenerator {
 	
 		// candle wxs file
 		Logger.info("Compiling file " + wxsFile);
-		File wixobjFile = new File(assetsFolder, name + ".wixobj");
+		File wixobjFile = new File(assetsFolder, name + ".msm.wixobj");
 		CommandUtils.execute("candle", "-out", wixobjFile, wxsFile);
 		Logger.info("WIXOBJ file generated in " + wixobjFile +  "!");
 
 		// lighting wxs file
 		Logger.info("Linking file " + wixobjFile);
-		File msiFile = new File(outputDirectory, name + "_" + version + ".msi");
-		CommandUtils.execute("light", "-spdb", "-out", msiFile, wixobjFile);
+		File msmFile = new File(outputDirectory, name + "_" + version + ".msm");
+		CommandUtils.execute("light", "-spdb", "-out", msmFile, wixobjFile);
 
 		// setup file
-		if (!msiFile.exists()) {
+		if (!msmFile.exists()) {
 			throw new Exception("MSI installer file generation failed!");
 		}
 		
-		return msiFile;
+		windowsPackager.setMsmFile(msmFile);
+		
+		return msmFile;
 	}
 	
 }

@@ -21,7 +21,7 @@ public class GenerateSetup extends ArtifactGenerator {
 	public File apply(Packager packager) throws Exception {
 		WindowsPackager windowsPackager = (WindowsPackager) packager;
 		
-		if (!windowsPackager.getWinConfig().isGenerateMsi()) {
+		if (!windowsPackager.getWinConfig().isGenerateSetup()) {
 			Logger.warn(getArtifactName() + " generation skipped by 'winConfig.generateSetup' property!");
 			return null;
 		}

@@ -32,6 +32,7 @@ public class WindowsConfig implements Serializable {
 	private boolean createDesktopIconTask = true;
 	private boolean generateSetup = true;
 	private boolean generateMsi = true;
+	private boolean generateMsm = false;
 	private String msiUpgradeCode;
 	private boolean wrapJar = true;
 	private LinkedHashMap<String, String> setupLanguages = new LinkedHashMap<>();
@@ -195,6 +196,14 @@ public class WindowsConfig implements Serializable {
 	public void setGenerateMsi(boolean generateMsi) {
 		this.generateMsi = generateMsi;
 	}
+	
+	public boolean isGenerateMsm() {
+		return generateMsm;
+	}
+
+	public void setGenerateMsm(boolean generateMsm) {
+		this.generateMsm = generateMsm;
+	}
 
 	public String getMsiUpgradeCode() {
 		return msiUpgradeCode;
@@ -229,8 +238,9 @@ public class WindowsConfig implements Serializable {
 				+ ", txtFileVersion=" + txtFileVersion + ", txtProductVersion=" + txtProductVersion
 				+ ", disableDirPage=" + disableDirPage + ", disableProgramGroupPage=" + disableProgramGroupPage
 				+ ", disableFinishedPage=" + disableFinishedPage + ", createDesktopIconTask=" + createDesktopIconTask
-				+ ", generateSetup=" + generateSetup + ", generateMsi=" + generateMsi + ", msiUpgradeCode="
-				+ msiUpgradeCode + ", wrapJar=" + wrapJar + ", setupLanguages=" + setupLanguages + "]";
+				+ ", generateSetup=" + generateSetup + ", generateMsi=" + generateMsi + ", generateMsm=" + generateMsm
+				+ ", msiUpgradeCode=" + msiUpgradeCode + ", wrapJar=" + wrapJar + ", setupLanguages=" + setupLanguages
+				+ "]";
 	}
 
 	/**

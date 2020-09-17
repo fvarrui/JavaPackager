@@ -10,6 +10,7 @@ public class WindowsPackager extends Packager {
 	
 	private String jarPath;
 	private File manifestFile;
+	private File msmFile;
 	
 	public WindowsPackager() {
 		super();
@@ -24,6 +25,14 @@ public class WindowsPackager extends Packager {
 		return manifestFile;
 	}
 	
+	public File getMsmFile() {
+		return msmFile;
+	}
+
+	public void setMsmFile(File msmFile) {
+		this.msmFile = msmFile;
+	}
+
 	@Override
 	public void doInit() throws Exception {
 		

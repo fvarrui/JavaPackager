@@ -18,9 +18,9 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 
 import io.github.fvarrui.javapackager.model.WindowsConfig;
+import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
-import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 
 /**
