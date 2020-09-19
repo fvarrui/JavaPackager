@@ -14,8 +14,8 @@ public abstract class Context<T> {
 		macInstallerGenerators.add(new GenerateDmg());
 		macInstallerGenerators.add(new GeneratePkg());
 		windowsInstallerGenerators.add(new GenerateSetup());
-		windowsInstallerGenerators.add(new GenerateMsi());
 		windowsInstallerGenerators.add(new GenerateMsm());
+		windowsInstallerGenerators.add(new GenerateMsi());
 	}
 	
 	// common properties
