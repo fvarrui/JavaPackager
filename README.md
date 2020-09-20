@@ -55,7 +55,7 @@ mvn package
 
 ### Config your project and package your app with Gradle
 
-Apply JavaPackager plugin in `build.gradle` in legacy mode, because it's only available in Maven Central repository:
+Apply JavaPackager plugin in `build.gradle` using legacy mode (because at the moment it's only available in Maven Central repository):
 
 ```groovy
 buildscript {
