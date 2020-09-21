@@ -6,7 +6,7 @@ JavaPackager is a hybrid plugin for **Maven** and **Gradle** which provides an e
 
 > SNAPSHOT version are not released to Maven Central, so you have to [install them manually](#how-to-build-and-install-the-plugin).
 
-> :eyes: See [JavaPackager changes and fixes](https://github.com/fvarrui/JavaPackager/releases/latest).
+> :eyes: See [JavaPackager changes and fixes](https://github.com/fvarrui/JavaPackager/releases).
 
 ## How to use this plugin
 
