@@ -80,6 +80,10 @@ public abstract class Packager extends PackagerSettings {
 		
 		Logger.infoIndent("Initializing packager ...");
 		
+		if (mainClass == null || mainClass.isEmpty()) {
+			throw new Exception("'mainClass' cannot be null");
+		}
+		
 		// sets assetsDir for velocity to locate custom velocity templates
 		VelocityUtils.setAssetsDir(assetsDir);
 

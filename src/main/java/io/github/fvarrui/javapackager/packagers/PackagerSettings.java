@@ -224,7 +224,7 @@ public class PackagerSettings {
 		return this;
 	}
 
-	public PackagerSettings appVersion(String version) {
+	public PackagerSettings version(String version) {
 		this.version = version;
 		return this;
 	}

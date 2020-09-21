@@ -1,19 +1,17 @@
 package io.github.fvarrui.javapackager.gradle;
 
+import static io.github.fvarrui.javapackager.utils.ObjectUtils.defaultIfBlank;
+import static io.github.fvarrui.javapackager.utils.ObjectUtils.defaultIfNull;
+
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
-import org.gradle.api.tasks.OutputFiles;
-import org.gradle.api.tasks.TaskAction;
 
 import groovy.lang.Closure;
 import io.github.fvarrui.javapackager.model.LinuxConfig;
@@ -23,16 +21,15 @@ import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.packagers.PackagerFactory;
 
-public class PackageTask extends DefaultTask {
-	
-	public static final String PACKAGE_TASK_NAME = "package";	
-	
+public class PackageTask extends AbstractPackageTask {
+		
 	// ===============
 	// task parameters
 	// ===============
 	
 	@Input
-	private Platform platform = Platform.auto;
+	@Optional
+	private Platform platform;
 	
 	public Platform getPlatform() {
 		return platform;
@@ -44,7 +41,7 @@ public class PackageTask extends DefaultTask {
 
 	@Input
 	@Optional
-	private List<String> additionalModules = new ArrayList<>();
+	private List<String> additionalModules;
 	
 	public List<String> getAdditionalModules() {
 		return additionalModules;
@@ -56,7 +53,7 @@ public class PackageTask extends DefaultTask {
 
 	@Input
 	@Optional
-	private List<File> additionalResources = new ArrayList<>();
+	private List<File> additionalResources;
 	
 	public List<File> getAdditionalResources() {
 		return additionalResources;
@@ -68,7 +65,7 @@ public class PackageTask extends DefaultTask {
 	
 	@Input
 	@Optional
-	private Boolean administratorRequired = false;
+	private Boolean administratorRequired;
 	
 	public Boolean isAdministratorRequired() {
 		return administratorRequired;
@@ -80,7 +77,7 @@ public class PackageTask extends DefaultTask {
 
 	@InputDirectory
 	@Optional 
-	private File assetsDir = new File(getProject().getProjectDir(), "assets");
+	private File assetsDir;
 
 	public File getAssetsDir() {
 		return assetsDir;
@@ -92,7 +89,7 @@ public class PackageTask extends DefaultTask {
 	
 	@Input
 	@Optional
-	private Boolean bundleJre = true;
+	private Boolean bundleJre;
 	
 	public Boolean isBundleJre() {
 		return bundleJre;
@@ -104,7 +101,7 @@ public class PackageTask extends DefaultTask {
 	
 	@Input
 	@Optional
-	private Boolean copyDependencies = true;
+	private Boolean copyDependencies;
 	
 	public Boolean isCopyDependencies() {
 		return copyDependencies;
@@ -116,7 +113,7 @@ public class PackageTask extends DefaultTask {
 
 	@Input
 	@Optional
-	private Boolean createTarball = false;
+	private Boolean createTarball;
 	
 	public Boolean isCreateTarball() {
 		return createTarball;
@@ -128,7 +125,7 @@ public class PackageTask extends DefaultTask {
 
 	@Input
 	@Optional
-	private Boolean createZipball = false;
+	private Boolean createZipball;
 	
 	public Boolean isCreateZipball() {
 		return createZipball;
@@ -140,7 +137,7 @@ public class PackageTask extends DefaultTask {
 	
 	@Input
 	@Optional
-	private Boolean customizedJre = true;
+	private Boolean customizedJre;
 	
 	public Boolean isCustomizedJre() {
 		return customizedJre;
@@ -152,7 +149,7 @@ public class PackageTask extends DefaultTask {
 	
 	@Input
 	@Optional
-	private String appDescription = getProject().getDescription();
+	private String appDescription;
 	
 	public String getAppDescription() {
 		return appDescription;
@@ -164,7 +161,7 @@ public class PackageTask extends DefaultTask {
 	
 	@Input
 	@Optional
-	private String displayName = getProject().getDisplayName();
+	private String displayName;
 
 	public String getDisplayName() {
 		return displayName;
@@ -188,7 +185,7 @@ public class PackageTask extends DefaultTask {
 	
 	@Input
 	@Optional
-	private Map<String, String> extra = new HashMap<>();
+	private Map<String, String> extra;
 	
 	public Map<String, String> getExtra() {
 		return extra;
@@ -200,7 +197,7 @@ public class PackageTask extends DefaultTask {
 	
 	@Input
 	@Optional
-	private Boolean generateInstaller = true;
+	private Boolean generateInstaller;
 	
 	public Boolean isGenerateInstaller() {
 		return generateInstaller;
@@ -236,7 +233,7 @@ public class PackageTask extends DefaultTask {
 	
 	@Input
 	@Optional
-	private String jreDirectoryName = "jre";
+	private String jreDirectoryName;
 	
 	public String getJreDirectoryName() {
 		return jreDirectoryName;
@@ -272,7 +269,7 @@ public class PackageTask extends DefaultTask {
 	
 	@Input
 	@Optional
-	private LinuxConfig linuxConfig = new LinuxConfig();
+	private LinuxConfig linuxConfig;
 	
 	public LinuxConfig getLinuxConfig() {
 		return linuxConfig;
@@ -290,7 +287,7 @@ public class PackageTask extends DefaultTask {
 	
 	@Input
 	@Optional
-	private MacConfig macConfig = new MacConfig();
+	private MacConfig macConfig;
 	
 	public MacConfig getMacConfig() {
 		return macConfig;
@@ -307,6 +304,7 @@ public class PackageTask extends DefaultTask {
     }
 	
 	@Input
+	@Optional	
 	private String mainClass;
 	
 	public String getMainClass() {
@@ -319,7 +317,7 @@ public class PackageTask extends DefaultTask {
 	
 	@Input
 	@Optional
-	private List<String> modules = new ArrayList<>();
+	private List<String> modules;
 	
 	public List<String> getModules() {
 		return modules;
@@ -331,7 +329,7 @@ public class PackageTask extends DefaultTask {
 	
 	@Input 
 	@Optional
-	private String appName = getProject().getName();
+	private String appName;
 	
 	public String getAppName() {
 		return appName;
@@ -343,7 +341,7 @@ public class PackageTask extends DefaultTask {
 
 	@Input 
 	@Optional
-	private String organizationEmail = "";
+	private String organizationEmail;
 	
 	public String getOrganizationEmail() {
 		return organizationEmail;
@@ -391,7 +389,7 @@ public class PackageTask extends DefaultTask {
 	
 	@Input
 	@Optional
-	private Boolean useResourcesAsWorkingDir = true;
+	private Boolean useResourcesAsWorkingDir;
 	
 	public Boolean isUseResourcesAsWorkingDir() {
 		return useResourcesAsWorkingDir;
@@ -415,7 +413,7 @@ public class PackageTask extends DefaultTask {
 	
 	@Input
 	@Optional
-	private List<String> vmArgs = new ArrayList<>();
+	private List<String> vmArgs;
 
 	public List<String> getVmArgs() {
 		return vmArgs;
@@ -427,7 +425,7 @@ public class PackageTask extends DefaultTask {
 
 	@Input
 	@Optional
-	private WindowsConfig winConfig = new WindowsConfig();
+	private WindowsConfig winConfig;
 	
 	public WindowsConfig getWinConfig() {
 		return winConfig;
@@ -441,7 +439,7 @@ public class PackageTask extends DefaultTask {
 	
 	@Input
 	@Optional
-	private String version = getProject().getVersion().toString();
+	private String version;
 	
 	public String getVersion() {
 		return version;
@@ -453,7 +451,7 @@ public class PackageTask extends DefaultTask {
 	
 	@OutputDirectory
 	@Optional
-	private File outputDirectory = getProject().getBuildDir();
+	private File outputDirectory;
 	
 	public File getOutputDirectory() {
 		return outputDirectory;
@@ -463,87 +461,53 @@ public class PackageTask extends DefaultTask {
 		this.outputDirectory = outputDirectory;
 	}
 	
-	@OutputFiles
-	private List<File> outputFiles;
+	// ===============
+	// create packager
+	// ===============
 	
-	public List<File> getOutputFiles() {
-		return outputFiles != null ? outputFiles : new ArrayList<>();
-	}
-	
-	// ================
-	// task constructor
-	// ================
-	
-	public PackageTask() {
-		super();
-		setGroup(PackagePlugin.GROUP_NAME);
-		setDescription("Packages the application as a native Windows, Mac OS X or GNU/Linux executable and creates an installer");
-	}
-	
-	// ===========
-	// task action
-	// ===========
-	
-	@TaskAction
-	public void doPackage() {
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Packager createPackager() throws Exception {
+
+		PackagePluginExtension extension = getProject().getExtensions().findByType(PackagePluginExtension.class);
 		
-		try {
-			
-			Packager packager = 
-				(Packager) PackagerFactory
-					.createPackager(platform)
-						.additionalModules(additionalModules)
-						.additionalResources(additionalResources)
-						.administratorRequired(administratorRequired)
-						.appVersion(version)
-						.assetsDir(assetsDir)
-						.bundleJre(bundleJre)
-						.copyDependencies(copyDependencies)
-						.createTarball(createTarball)
-						.createZipball(createZipball)
-						.customizedJre(customizedJre)
-						.description(appDescription)
-						.displayName(displayName)
-						.envPath(envPath)
-						.extra(extra)
-						.generateInstaller(generateInstaller)
-						.iconFile(iconFile)
-						.jdkPath(jdkPath)
-						.jreDirectoryName(jreDirectoryName)
-						.jrePath(jrePath)
-						.licenseFile(licenseFile)
-						.linuxConfig(linuxConfig)
-						.macConfig(macConfig)
-						.mainClass(mainClass)
-						.modules(modules)
-						.name(appName)
-						.organizationEmail(organizationEmail)
-						.organizationName(organizationName)
-						.organizationUrl(organizationUrl)
-						.outputDirectory(outputDirectory)
-						.runnableJar(runnableJar)
-						.useResourcesAsWorkingDir(useResourcesAsWorkingDir)
-						.url(url)
-						.vmArgs(vmArgs)
-						.winConfig(winConfig);
-			
-			// generates app, installers and bundles
-			File app = packager.createApp();
-			List<File> installers = packager.generateInstallers();
-			List<File> bundles = packager.createBundles();
-			
-			// sets generated files as output
-			outputFiles = new ArrayList<>();
-			outputFiles.add(app);
-			outputFiles.addAll(installers);
-			outputFiles.addAll(bundles);
-			
-		} catch (Exception e) {
-
-			throw new RuntimeException(e.getMessage(), e);
-			
-		}
-
+		return
+			(Packager) PackagerFactory
+				.createPackager(defaultIfNull(platform, extension.getPlatform()))
+				.additionalModules(defaultIfNull(additionalModules, extension.getAdditionalModules()))
+				.additionalResources(defaultIfNull(additionalResources, extension.getAdditionalResources()))
+				.administratorRequired(defaultIfNull(administratorRequired, extension.getAdministratorRequired()))
+				.version(defaultIfNull(version, extension.getVersion(), getProject().getVersion().toString()))
+				.assetsDir(defaultIfNull(assetsDir, extension.getAssetsDir()))
+				.bundleJre(defaultIfNull(bundleJre, extension.getBundleJre()))
+				.copyDependencies(defaultIfNull(copyDependencies, extension.getCopyDependencies()))
+				.createTarball(defaultIfNull(createTarball, extension.getCreateTarball()))
+				.createZipball(defaultIfNull(createZipball, extension.getCreateZipball()))
+				.customizedJre(defaultIfNull(customizedJre, extension.getCustomizedJre()))
+				.description(defaultIfNull(appDescription, extension.getDescription()))
+				.displayName(defaultIfNull(displayName, extension.getDisplayName()))
+				.envPath(defaultIfNull(envPath, extension.getEnvPath()))
+				.extra(defaultIfNull(extra, extension.getExtra()))
+				.generateInstaller(defaultIfNull(generateInstaller, extension.getGenerateInstaller()))
+				.iconFile(defaultIfNull(iconFile, extension.getIconFile()))
+				.jdkPath(defaultIfNull(jdkPath, extension.getJdkPath()))
+				.jreDirectoryName(defaultIfBlank(jreDirectoryName, extension.getJreDirectoryName()))
+				.jrePath(defaultIfNull(jrePath, extension.getJrePath()))
+				.licenseFile(defaultIfNull(licenseFile, extension.getLicenseFile()))
+				.linuxConfig(defaultIfNull(linuxConfig, extension.getLinuxConfig()))
+				.macConfig(defaultIfNull(macConfig, extension.getMacConfig()))
+				.mainClass(defaultIfNull(mainClass, extension.getMainClass()))
+				.modules(defaultIfNull(modules, extension.getModules()))
+				.name(defaultIfNull(appName, extension.getName()))
+				.organizationEmail(defaultIfNull(organizationEmail, extension.getOrganizationEmail()))
+				.organizationName(defaultIfNull(organizationName, extension.getOrganizationName()))
+				.organizationUrl(defaultIfNull(organizationUrl, extension.getOrganizationUrl()))
+				.outputDirectory(defaultIfNull(outputDirectory, extension.getOutputDirectory()))
+				.runnableJar(defaultIfNull(runnableJar, extension.getRunnableJar()))
+				.useResourcesAsWorkingDir(defaultIfNull(useResourcesAsWorkingDir, extension.isUseResourcesAsWorkingDir()))
+				.url(defaultIfNull(url, extension.getUrl()))
+				.vmArgs(defaultIfNull(vmArgs, extension.getVmArgs()))
+				.winConfig(defaultIfNull(winConfig, extension.getWinConfig()));
 
 	}
 	
