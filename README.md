@@ -4,7 +4,9 @@
 
 JavaPackager is a hybrid plugin for **Maven** and **Gradle** which provides an easy way to package Java applications in native Windows, Mac OS X or GNU/Linux executables, and generates installers for them.
 
-> SNAPSHOT versions are not released to Maven Central, so you have to [install them manually](#how-to-build-and-install-the-plugin). 
+> SNAPSHOT version are not released to Maven Central, so you have to [install them manually](#how-to-build-and-install-the-plugin).
+
+> :eyes: See [JavaPackager changes and fixes](https://github.com/fvarrui/JavaPackager/releases/latest).
 
 ## How to use this plugin
 
@@ -16,7 +18,7 @@ Add the following `plugin` tag to your `pom.xml`:
 <plugin>
 	<groupId>io.github.fvarrui</groupId>
 	<artifactId>javapackager</artifactId>
-	<version>1.2.0|1.2.1-SNAPSHOT</version>
+	<version>1.2.0</version>
 	<executions>
 		<execution>
 			<phase>package</phase>
