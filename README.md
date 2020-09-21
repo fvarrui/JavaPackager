@@ -264,6 +264,12 @@ Run next command after [build and publish the plugin locally](#how-to-build-and-
 
 ## How to release the plugin to Gradle plugin portal
 
+First time, you have to run next command:
+
+```bash
+./gradlew login
+```
+
 Run next command after [build and publish the plugin locally](#how-to-build-and-install-the-plugin)  (ommit `./` on Windows):
 
 ```bash
