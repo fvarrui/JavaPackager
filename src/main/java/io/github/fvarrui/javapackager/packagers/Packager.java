@@ -143,7 +143,7 @@ public abstract class Packager extends PackagerSettings {
 		licenseFile = resolveLicense(licenseFile);
 		
 		// locates icon file
-		iconFile = resolveIcon(iconFile, name, assetsDir);
+		iconFile = resolveIcon(iconFile, name, assetsFolder);
 		
 		// adds to additional resources
 		if (additionalResources != null) {
