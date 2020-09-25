@@ -3,11 +3,13 @@ package io.github.fvarrui.javapackager.model;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 import java.io.File;
+import java.io.Serializable;
 
 import io.github.fvarrui.javapackager.packagers.Packager;
 
-public class MacConfig {
-
+public class MacConfig implements Serializable {
+	private static final long serialVersionUID = -2268944961932941577L;
+	
 	private File icnsFile;
 	private File backgroundImage;
 	private Integer windowWidth;

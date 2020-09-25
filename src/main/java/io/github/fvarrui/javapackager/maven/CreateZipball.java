@@ -14,10 +14,17 @@ import java.io.File;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
-import io.github.fvarrui.javapackager.packagers.PackagerFunction;
+import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
-public class CreateZipball implements PackagerFunction {
+/**
+ * Creates zipball (zip file) on Maven context 
+ */
+public class CreateZipball extends ArtifactGenerator {
+	
+	public CreateZipball() {
+		super("Zipball");
+	}
 
 	@Override
 	public File apply(Packager packager) {

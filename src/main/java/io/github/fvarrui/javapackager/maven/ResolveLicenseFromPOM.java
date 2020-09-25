@@ -10,18 +10,22 @@ import org.apache.maven.model.License;
 
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
-import io.github.fvarrui.javapackager.packagers.PackagerFunction;
+import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 
 /**
- * Creates a runnable jar file from sources
+ * Creates a runnable jar file from sources on Maven context
  */
-public class ResolveLicenseFromPOM implements PackagerFunction {
+public class ResolveLicenseFromPOM extends ArtifactGenerator {
+	
+	public ResolveLicenseFromPOM() {
+		super("LICENSE");
+	}
 	
 	@Override
 	public File apply(Packager packager) {
-		Logger.infoIndent("Resolving license from POM ...");
+		Logger.infoIndent("Trying to resolve license from POM ...");
 		
 		File licenseFile = packager.getLicenseFile();
 		List<License> licenses = Context.getMavenContext().getEnv().getMavenProject().getLicenses();
@@ -44,7 +48,10 @@ public class ResolveLicenseFromPOM implements PackagerFunction {
 			}
 		}
 
-		Logger.infoUnindent("License resolved " + licenseFile + "!");
+		if (licenseFile != null)
+			Logger.infoUnindent("License resolved " + licenseFile + "!");
+		else
+			Logger.infoUnindent("License not resolved!");
 		
 		return licenseFile;
 	}

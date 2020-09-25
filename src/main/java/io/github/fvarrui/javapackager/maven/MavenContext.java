@@ -17,6 +17,8 @@ public class MavenContext extends Context<Log> {
 		super();
 		this.env = env;
 		this.logger = logger;
+		this.getLinuxInstallerGenerators().add(new GenerateDeb());
+		this.getLinuxInstallerGenerators().add(new GenerateRpm());
 	}
 
 	public ExecutionEnvironment getEnv() {

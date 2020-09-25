@@ -2,61 +2,112 @@
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.fvarrui/javapackager/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.fvarrui/javapackager)
 
-JavaPackager is a Maven plugin which provides an easy way to package Java applications in native Windows, Mac OS X, or GNU/Linux executables, and generates installers for them.
+JavaPackager is a hybrid plugin for **Maven** and **Gradle** which provides an easy way to package Java applications in native Windows, Mac OS X or GNU/Linux executables, and generates installers for them.
 
-> SNAPSHOT versions are not released to Maven Central, so you have to [install them manually](#how-to-build-and-install-the-plugin). 
+> SNAPSHOT version are not released to Maven Central, so you have to [install them manually](#how-to-build-and-install-the-plugin).
+
+> :eyes: See [JavaPackager changes and fixes](https://github.com/fvarrui/JavaPackager/releases).
 
 ## How to use this plugin
 
-### Config your project
+### Config your project and package your app with Maven
 
 Add the following `plugin` tag to your `pom.xml`:
 
 ```xml
 <plugin>
-    <groupId>io.github.fvarrui</groupId>
-    <artifactId>javapackager</artifactId>
-    <version>1.1.0|1.2.0-SNAPSHOT</version>
-    <executions>
-        <execution>
-            <phase>package</phase>
-            <goals>
-                <goal>package</goal>
-            </goals>
-            <configuration>
-                <!-- mandatory -->
-                <mainClass>path.to.your.mainClass</mainClass>
-                <!-- optional -->
-                <bundleJre>true|false</bundleJre>
-                <generateInstaller>true|false</generateInstaller>        
-                <administratorRequired>true|false</administratorRequired>
-                <platform>auto|linux|mac|windows</platform>
-                <additionalResources>
-                    <additionalResource>file path</additionalResource>
-                    <additionalResource>folder path</additionalResource>
-                    <additionalResource>...</additionalResource>
-                </additionalResources>
-                <linuxConfig>...</linuxConfig>
-                <macConfig>...</macConfig>
-                <winConfig>...</winConfig>
-                [...]
-            </configuration>
-        </execution>
-    </executions>
+	<groupId>io.github.fvarrui</groupId>
+	<artifactId>javapackager</artifactId>
+	<version>1.2.0</version>
+	<executions>
+		<execution>
+			<phase>package</phase>
+			<goals>
+				<goal>package</goal>
+			</goals>
+			<configuration>
+				<!-- mandatory -->
+				<mainClass>path.to.your.mainClass</mainClass>
+				<!-- optional -->
+				<bundleJre>true|false</bundleJre>
+				<generateInstaller>true|false</generateInstaller>       				<administratorRequired>true|false</administratorRequired>
+				<platform>auto|linux|mac|windows</platform>
+				<additionalResources>
+					<additionalResource>file path</additionalResource>
+					<additionalResource>folder path</additionalResource>
+					<additionalResource>...</additionalResource>
+				</additionalResources>
+				<linuxConfig>...</linuxConfig>
+				<macConfig>...</macConfig>
+				<winConfig>...</winConfig>
+				[...]
+			</configuration>
+		</execution>
+	</executions>
 </plugin>
 ```
 
-> See [plugin configuration samples](docs/plugin-configuration-samples.md) to know more.
+> See [Maven plugin configuration samples](docs/maven-plugin-configuration-samples.md) to know more.
 
-### Package your app
-
-Execute the next  command in project's root folder:
+And execute the next command in project's root folder:
 
 ```bash
 mvn package
 ```
 
-And by default it will generate next artifacts in `target ` folder:
+### Config your project and package your app with Gradle
+
+Apply JavaPackager plugin in `build.gradle` using legacy mode (because at the moment it's only available in Maven Central repository):
+
+```groovy
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath 'io.github.fvarrui:javapackager:1.2.0'
+	}
+}
+
+apply plugin: 'io.github.fvarrui.javapackager.plugin'
+```
+
+Create your packaging task:
+
+```groovy
+task packageMyApp(type: io.github.fvarrui.javapackager.gradle.PackageTask, dependsOn: build) {
+	// mandatory
+	mainClass = 'path.to.your.mainClass'
+	// optional
+	bundleJre = true|false
+	generateInstaller = true|false
+	administratorRequired = true|false
+	platform = auto|linux|mac|windows
+	additionalResources = [ file('file path'), file('folder path'), ... ]
+	linuxConfig {
+		...
+	}
+	macConfig {
+		...
+	}
+	winConfig {
+		...
+	}
+	...
+}
+```
+
+>  See [Gradle plugin configuration samples](docs/gradle-plugin-configuration-samples.md) to know more.
+
+And execute the next command in project's root folder:
+
+```bash
+gradle packageMyApp
+```
+
+### Generated artifacts
+
+By default it will generate next artifacts in `${outputDirectory} ` folder:
 
 | Artifact                                | Description                                                  |
 | --------------------------------------- | ------------------------------------------------------------ |
@@ -69,10 +120,11 @@ And by default it will generate next artifacts in `target ` folder:
 | `${name}_${version}.dmg`                | Disk image file if it's executed on Mac OS X (requires **hdiutil**). |
 | `${name}_${version}.pkg`                | PKG installer file if it's executed on Mac OS X (requires **pkgbuild**) |
 | `${name}-${version}-${platform}.zip`    | Zipball containing generated directory `${name}`.            |
-| `${name}-${version}-${platform}.tar`    | Tarball containing generated directory `${name}`.            |
 | `${name}-${version}-${platform}.tar.gz` | Compressed tarball containing generated directory `${name}`. |
 
 >  :warning: Installers generation will be ommited if target platform is different from current platform (see `platform` property).
+
+> :warning: **DEB and RPM package generation in Gradle is not yet available. Coming soon!**
 
 ### Plugin configutation properties
 
@@ -81,7 +133,7 @@ And by default it will generate next artifacts in `target ` folder:
 | `additionalModules`        | :x:                | `[]`                                                         | Additional modules to the ones identified by `jdeps` or the specified with `modules` property. |
 | `additionalResources`      | :x:                | `[]`                                                         | Additional files and folders to include in the bundled app.  |
 | `administratorRequired`    | :x:                | `false`                                                      | App will run as administrator (with elevated privileges).    |
-| `assetsDir`                | :x:                | `${basedir}/assets`                                          | Assets location (icons and custom Velocity templates).       |
+| `assetsDir`                | :x:                | `${basedir}/assets` or `${projectdir}/assets`                | Assets location (icons and custom Velocity templates).       |
 | `bundleJre`                | :x:                | `false`                                                      | Embeds a customized JRE with the app.                        |
 | `copyDependencies`         | :x:                | `true`                                                       | Bundles all dependencies (JAR files) with the app.           |
 | `createTarball`            | :x:                | `false`                                                      | Bundles app folder in tarball.                               |
@@ -96,19 +148,22 @@ And by default it will generate next artifacts in `target ` folder:
 | `jdkPath`                  | :x:                | `${java.home}`                                               | JDK used to generate a customized JRE. It allows to bundle customized JREs for different platforms. |
 | `jreDirectoryName`         | :x:                | `"jre"`                                                      | Bundled JRE directory name.                                  |
 | `jrePath`                  | :x:                | `""`                                                         | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least. |
-| `licenseFile`              | :x:                | `${project.licenses[0].url}`  or `${project.basedir}/LICENSE` | Path to project license file.                                |
+| `licenseFile`              | :x:                | `${project.licenses[0].url}`  or `${basedir}/LICENSE` or `${projectdir}/LICENSE` | Path to project license file.                                |
 | `mainClass`                | :heavy_check_mark: | `${exec.mainClass}`                                          | Full path to your app main class.                            |
 | `modules`                  | :x:                | `[]`                                                         | Defines modules to customize the bundled JRE. Don't use `jdeps` to get module dependencies. |
 | `name`                     | :x:                | `${project.name}` or `${project.artifactId}`                 | App name.                                                    |
 | `organizationName`         | :x:                | `${project.organization.name}` or `"ACME"`                   | Organization name.                                           |
 | `organizationUrl`          | :x:                | `${project.organization.url}`                                | Organization website URL.                                    |
 | `organizationEmail`        | :x:                | `null`                                                       | Organization email.                                          |
+| `outputDirectory`          | :x:                | `${project.build.directory}` or `${project.builddir}`        | Output directory (where the artifacts will be generated).    |
 | `platform`                 | :x:                | `auto`                                                       | Defines the target platform, which could be different to the execution platform. Possible values:  `auto`, `mac`, `linux`, `windows`. Use `auto`  for using execution platform as target. |
 | `runnableJar`              | :x:                | `null`                                                       | Defines your own JAR file to be bundled. If it's ommited, the plugin packages your code in a runnable JAR and bundle it with the app. |
 | `url`                      | :x:                | `null`                                                       | App website URL.                                             |
 | `useResourcesAsWorkingDir` | :x:                | `true`                                                       | Uses app resources folder as default working directory.      |
 | ` version`                 | :x:                | `${project.version}`                                         | Project version.                                             |
 | `vmArgs`                   | :x:                | `[]`                                                         | Adds VM arguments.                                           |
+
+> Some default values depends on the used building tool.
 
 **Platform specific properties**
 
@@ -160,18 +215,20 @@ It is possible to use your own customized templates. You just have to put one of
 ```
 ${assetsDir}/
 ├── linux/
-|   ├── control.vtl                         # DEB control template
-|   ├── desktop.vtl                         # Desktop template
-│   └── startup.sh.vtl                      # Startup script template
+|   ├── assembly.xml.vtl               # maven-assembly-plugin template to generate ZIP/TGZ bundles for GNU/Linux
+|   ├── control.vtl                    # DEB control template
+|   ├── desktop.vtl                    # Desktop template
+│   └── startup.sh.vtl                 # Startup script template
 ├── mac/
-|   ├── customize-dmg.applescript.vtl       # DMG customization Applescript template
-|   ├── Info.plist.vtl                      # Info.plist template
-│   └── startup.vtl                         # Startup script template
-├── windows/
-|   ├── exe.manifest.vtl                    # exe.manifest template
-|   ├── iss.vtl                             # Inno Setup Script template
-│   └── wxs.vtl                             # WiX Toolset WXS template
-└── assembly.xml.vtl                        # maven-assembly-plugin template used to generate ZIP/TGZ bundles
+|   ├── assembly.xml.vtl               # maven-assembly-plugin template to generate ZIP/TGZ bundles for Mac OS X
+|   ├── customize-dmg.applescript.vtl  # DMG customization Applescript template
+|   ├── Info.plist.vtl                 # Info.plist template
+│   └── startup.vtl                    # Startup script template
+└── windows/
+    ├── assembly.xml.vtl               # maven-assembly-plugin template to generate ZIP/TGZ bundles for Windows
+    ├── exe.manifest.vtl               # exe.manifest template
+    ├── iss.vtl                        # Inno Setup Script template
+    └── wxs.vtl                        # WiX Toolset WXS template
 ```
 
 > Use [default templates](https://github.com/fvarrui/JavaPackager/tree/master/src/main/resources) as examples.
@@ -194,7 +251,7 @@ cd JavaPackager
 2. Compile, package and install the plugin in your local repository (ommit `./` on Windows):
 
 ```bash
-./gradlew clean build publishToMavenLocal
+./gradlew publishToMavenLocal
 ```
 
 ## How to release the plugin to Maven Central
@@ -202,10 +259,26 @@ cd JavaPackager
 Run next command after [build and publish the plugin locally](#how-to-build-and-install-the-plugin)  (ommit `./` on Windows):
 
 ```bash
-./gradlew -Prelease uploadArchives closeAndPromoteRepository
+./gradlew -Prelease uploadArchives closeAndReleaseRepository
 ```
 
 > Related [guide](https://nemerosa.ghost.io/2015/07/01/publishing-to-the-maven-central-using-gradle/).
+
+## How to release the plugin to Gradle plugin portal
+
+First time, you have to run next command:
+
+```bash
+./gradlew login
+```
+
+Run next command after [build and publish the plugin locally](#how-to-build-and-install-the-plugin)  (ommit `./` on Windows):
+
+```bash
+./gradlew publishPlugins
+```
+
+> Related [guide](https://plugins.gradle.org/docs/submit).
 
 ## Future features
 
@@ -213,6 +286,7 @@ Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column
 
 ## Older documentation
 
+- [v1.1.0](https://github.com/fvarrui/JavaPackager/blob/v1.1.0/README.md)
 - [v1.0.3](https://github.com/fvarrui/JavaPackager/blob/v1.0.3/README.md)
 - [v1.0.2](https://github.com/fvarrui/JavaPackager/blob/v1.0.2/README.md)
 - [v1.0.1](https://github.com/fvarrui/JavaPackager/blob/v1.0.1/README.md)

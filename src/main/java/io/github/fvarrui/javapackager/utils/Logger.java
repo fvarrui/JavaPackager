@@ -38,5 +38,17 @@ public class Logger {
 		info(info);
 		info("");
 	}
+	
+	public static void warnUnindent(String info) {
+		tabs--;
+		warn(info);
+		info("");
+	}
 
+	public static void errorUnindent(String info) {
+		tabs--;
+		error(info);
+		info("");
+	}
+	
 }

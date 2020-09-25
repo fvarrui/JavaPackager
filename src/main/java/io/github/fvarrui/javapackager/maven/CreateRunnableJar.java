@@ -16,13 +16,17 @@ import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
-import io.github.fvarrui.javapackager.packagers.PackagerFunction;
+import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.utils.Logger;
 
 /**
- * Creates a runnable jar file from sources
+ * Creates a runnable jar file from sources on Maven context
  */
-public class CreateRunnableJar implements PackagerFunction {
+public class CreateRunnableJar extends ArtifactGenerator {
+	
+	public CreateRunnableJar() {
+		super("Runnable JAR");
+	}
 	
 	@Override
 	public File apply(Packager packager) {

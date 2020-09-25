@@ -7,13 +7,21 @@ import org.gradle.api.tasks.bundling.Zip;
 
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.packagers.Context;
+import io.github.fvarrui.javapackager.packagers.MacPackager;
 import io.github.fvarrui.javapackager.packagers.Packager;
-import io.github.fvarrui.javapackager.packagers.PackagerFunction;
+import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 
-public class CreateZipball implements PackagerFunction {
+/**
+ * Creates zipball (zip file)  on Gradle context
+ */
+public class CreateZipball extends ArtifactGenerator {
+	
+	public CreateZipball() {
+		super("Zipball");
+	}
 	
 	@Override
-	public File apply(Packager packager) {
+	public File apply(Packager packager) throws Exception {
 		
 		String name = packager.getName();
 		String version = packager.getVersion();
@@ -21,25 +29,62 @@ public class CreateZipball implements PackagerFunction {
 		File outputDirectory = packager.getOutputDirectory();
 		File appFolder = packager.getAppFolder();
 		File executable = packager.getExecutable();
+		String jreDirectoryName = packager.getJreDirectoryName();
 		
 		File zipFile = new File(outputDirectory, name + "-" + version + "-" + platform + ".zip");
 
-		Zip zipExcludingBinariesTask = createZipTask();
-		zipExcludingBinariesTask.setProperty("archiveName", zipFile.getName());
-		zipExcludingBinariesTask.setProperty("destinationDirectory", zipFile.getParentFile());
-		zipExcludingBinariesTask.from(appFolder.getParentFile());
-		zipExcludingBinariesTask.include(appFolder.getName() + "/**");
-		zipExcludingBinariesTask.exclude(appFolder.getName() + "/" + executable.getName(), appFolder.getName() + "/jre/bin/*");
-		zipExcludingBinariesTask.getActions().forEach(action -> action.execute(zipExcludingBinariesTask));
-
-		Zip zipIncludingBinariesTask = createZipTask();
-		zipIncludingBinariesTask.setProperty("archiveName", zipFile.getName());
-		zipIncludingBinariesTask.setProperty("destinationDirectory", zipFile.getParentFile());
-		zipIncludingBinariesTask.from(appFolder.getParentFile());
-		zipIncludingBinariesTask.exclude(appFolder.getName() + "/**");
-		zipIncludingBinariesTask.include(appFolder.getName() + "/" + executable.getName(), appFolder.getName() + "/jre/bin/*");
-		zipIncludingBinariesTask.setFileMode(0755);
-		zipIncludingBinariesTask.getActions().forEach(action -> action.execute(zipIncludingBinariesTask));
+		Zip zipTask = createZipTask();
+		zipTask.setProperty("archiveFileName", zipFile.getName());
+		zipTask.setProperty("destinationDirectory", outputDirectory);
+		
+		// if zipball is for windows platform
+		if (Platform.windows.equals(platform)) {
+			
+			zipTask.from(appFolder.getParentFile(), copySpec -> {
+				copySpec.include(appFolder.getName() + "/**");
+			});
+			
+		}
+		
+		// if zipball is for linux platform
+		else if (Platform.linux.equals(platform)) {
+			
+			zipTask.from(appFolder.getParentFile(), copySpec -> {
+				copySpec.include(appFolder.getName() + "/**");
+				copySpec.exclude(appFolder.getName() + "/" + executable.getName());
+				copySpec.exclude(appFolder.getName() + "/" + jreDirectoryName + "/bin/*");
+			});
+			zipTask.from(appFolder.getParentFile(), copySpec -> {
+				copySpec.include(appFolder.getName() + "/" + executable.getName());
+				copySpec.include(appFolder.getName() + "/" + jreDirectoryName + "/bin/*");
+				copySpec.setFileMode(0755);
+			});
+			
+		}
+		
+		// if zipball is for macos platform
+		else if (Platform.mac.equals(platform)) {
+			
+			MacPackager macPackager = (MacPackager) packager;
+			File appFile = macPackager.getAppFile();
+			
+			zipTask.from(appFolder, copySpec -> {
+				copySpec.include(appFile.getName() + "/**");
+				copySpec.exclude(appFile.getName() + "/Contents/MacOS/" + executable.getName());
+				copySpec.exclude(appFile.getName() + "/Contents/MacOS/universalJavaApplicationStub");
+				copySpec.exclude(appFile.getName() + "/Contents/PlugIns/" + jreDirectoryName + "/Contents/Home/bin/*");
+				
+			});
+			zipTask.from(appFolder, copySpec -> {
+				copySpec.include(appFile.getName() + "/Contents/MacOS/" + executable.getName());
+				copySpec.include(appFile.getName() + "/Contents/MacOS/universalJavaApplicationStub");
+				copySpec.include(appFile.getName() + "/Contents/PlugIns/" + jreDirectoryName + "/Contents/Home/bin/*");
+				copySpec.setFileMode(0755);
+			});
+			
+		}
+		
+		zipTask.getActions().forEach(action -> action.execute(zipTask));
 
 		return zipFile;
 	}

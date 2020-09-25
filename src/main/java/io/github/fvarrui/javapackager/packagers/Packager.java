@@ -1,5 +1,6 @@
 package io.github.fvarrui.javapackager.packagers;
 
+import static org.apache.commons.collections4.CollectionUtils.addIgnoreNull;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 import java.io.File;
@@ -25,6 +26,9 @@ import io.github.fvarrui.javapackager.utils.VelocityUtils;
 public abstract class Packager extends PackagerSettings {
 	
 	private static final String DEFAULT_ORGANIZATION_NAME = "ACME";
+	
+	// artifact generators collection
+	protected List<ArtifactGenerator> installerGenerators = new ArrayList<>();
 	
 	// internal generic properties (setted in "createAppStructure/createApp")
 	protected File appFolder;
@@ -75,6 +79,10 @@ public abstract class Packager extends PackagerSettings {
 	private void init() throws Exception {
 		
 		Logger.infoIndent("Initializing packager ...");
+		
+		if (mainClass == null || mainClass.isEmpty()) {
+			throw new Exception("'mainClass' cannot be null");
+		}
 		
 		// sets assetsDir for velocity to locate custom velocity templates
 		VelocityUtils.setAssetsDir(assetsDir);
@@ -247,11 +255,6 @@ public abstract class Packager extends PackagerSettings {
 			
 			Logger.info("Creating customized JRE ...");
 			
-			// fixes the path to the JDK on MacOS
-			if (platform.equals(Platform.mac)) {
-				jdkPath = new File(jdkPath, "Contents/Home");
-			}
-			
 			// tests if specified JDK is for the same platform than target platform
 			if (!JDKUtils.isValidJDK(platform, jdkPath)) {
 				throw new Exception("Invalid JDK for platform '" + platform + "': " + jdkPath);
@@ -403,7 +406,11 @@ public abstract class Packager extends PackagerSettings {
 		
 		// invokes custom license resolver if exists
 		if (licenseFile == null) {
-			licenseFile = Context.getContext().resolveLicense(this);
+			try {
+				licenseFile = Context.getContext().resolveLicense(this);
+			} catch (Exception e) {
+				Logger.error(e.getMessage());
+			}
 		}
 		
 		// if license is still null, looks for LICENSE file
@@ -458,25 +465,31 @@ public abstract class Packager extends PackagerSettings {
 	}
 	
 	/**
-	 * Bundling app folder in tarball and/or zipball 
+	 * Bundling app folder in tarball and/or zipball
+	 * @return Generated bundles 
 	 * @throws Exception Process failed
 	 */
-	public void createBundles() throws Exception {
+	public List<File> createBundles() throws Exception {
+		
+		List<File> bundles = new ArrayList<>();
 
 		Logger.infoIndent("Creating bundles ...");
 		
 		if (createZipball) {
 			File zipball = Context.getContext().createZipball(this);
 			Logger.info("Zipball created: " + zipball);
+			bundles.add(zipball);
 		}
 
 		if (createTarball) {
 			File tarball = Context.getContext().createTarball(this);
 			Logger.info("Tarball created: " + tarball);
+			bundles.add(tarball);
 		}
 		
 		Logger.infoUnindent("Bundles created!");
 		
+		return bundles;
 	}
 	
 	private void createAppStructure() throws Exception {
@@ -567,7 +580,23 @@ public abstract class Packager extends PackagerSettings {
 		// creates folder for intermmediate assets if it doesn't exist  
 		assetsFolder = FileUtils.mkdir(outputDirectory, "assets");
 		
-		doGenerateInstallers(installers);
+		// invokes installer producers
+		
+		for (ArtifactGenerator generator : installerGenerators) {
+			try {
+				Logger.infoIndent("Generating " + generator.getArtifactName() + "...");
+				File artifact = generator.apply(this);
+				if (artifact != null) {
+					addIgnoreNull(installers, artifact);
+					Logger.infoUnindent(generator.getArtifactName() +  " generated in " + artifact + "!");
+				} else {
+					Logger.warnUnindent(generator.getArtifactName() +  " NOT generated!!!");					
+				}
+				
+			} catch (Exception e) {
+				Logger.errorUnindent(generator.getArtifactName() + " generation failed due to: " + e.getMessage());
+			}
+		}
 		
 		Logger.infoUnindent("Installers generated! " + installers);
 		
@@ -597,8 +626,6 @@ public abstract class Packager extends PackagerSettings {
 	protected abstract void doCreateAppStructure() throws Exception; 
 
 	public abstract File doCreateApp() throws Exception;
-	
-	public abstract void doGenerateInstallers(List<File> installers) throws Exception;
 	
 	public abstract void doInit() throws Exception;
 	

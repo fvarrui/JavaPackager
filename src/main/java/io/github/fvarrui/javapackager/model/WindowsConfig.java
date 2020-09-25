@@ -3,13 +3,15 @@ package io.github.fvarrui.javapackager.model;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
 import io.github.fvarrui.javapackager.packagers.Packager;
 
-public class WindowsConfig {
-
+public class WindowsConfig implements Serializable {
+	private static final long serialVersionUID = 2106752412224694318L;
+	
 	private File icoFile;
 	private HeaderType headerType;
 	private String companyName;
@@ -30,6 +32,7 @@ public class WindowsConfig {
 	private boolean createDesktopIconTask = true;
 	private boolean generateSetup = true;
 	private boolean generateMsi = true;
+	private boolean generateMsm = false;
 	private String msiUpgradeCode;
 	private boolean wrapJar = true;
 	private LinkedHashMap<String, String> setupLanguages = new LinkedHashMap<>();
@@ -193,6 +196,14 @@ public class WindowsConfig {
 	public void setGenerateMsi(boolean generateMsi) {
 		this.generateMsi = generateMsi;
 	}
+	
+	public boolean isGenerateMsm() {
+		return generateMsm;
+	}
+
+	public void setGenerateMsm(boolean generateMsm) {
+		this.generateMsm = generateMsm;
+	}
 
 	public String getMsiUpgradeCode() {
 		return msiUpgradeCode;
@@ -227,8 +238,9 @@ public class WindowsConfig {
 				+ ", txtFileVersion=" + txtFileVersion + ", txtProductVersion=" + txtProductVersion
 				+ ", disableDirPage=" + disableDirPage + ", disableProgramGroupPage=" + disableProgramGroupPage
 				+ ", disableFinishedPage=" + disableFinishedPage + ", createDesktopIconTask=" + createDesktopIconTask
-				+ ", generateSetup=" + generateSetup + ", generateMsi=" + generateMsi + ", msiUpgradeCode="
-				+ msiUpgradeCode + ", wrapJar=" + wrapJar + ", setupLanguages=" + setupLanguages + "]";
+				+ ", generateSetup=" + generateSetup + ", generateMsi=" + generateMsi + ", generateMsm=" + generateMsm
+				+ ", msiUpgradeCode=" + msiUpgradeCode + ", wrapJar=" + wrapJar + ", setupLanguages=" + setupLanguages
+				+ "]";
 	}
 
 	/**

@@ -7,15 +7,18 @@ import org.gradle.api.tasks.Copy;
 
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
-import io.github.fvarrui.javapackager.packagers.PackagerFunction;
+import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 
 /**
- * Copies all dependencies to app folder
- * 
+ * Copies all dependencies to app folder on Maven context
  */
-public class CopyDependencies implements PackagerFunction {
+public class CopyDependencies extends ArtifactGenerator {
 	
 	public Copy copyLibsTask;
+	
+	public CopyDependencies() {
+		super("Dependencies");
+	}
 	
 	@Override
 	public File apply(Packager packager) {

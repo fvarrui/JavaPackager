@@ -281,7 +281,7 @@ public class PackageMojo extends AbstractMojo {
 						.additionalModules(additionalModules)
 						.additionalResources(additionalResources)
 						.administratorRequired(administratorRequired)
-						.appVersion(version)
+						.version(version)
 						.assetsDir(assetsDir)
 						.bundleJre(bundleJre)
 						.copyDependencies(copyDependencies)

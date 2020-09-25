@@ -2,8 +2,8 @@
 
 ```xml
 <winConfig>
-    <!-- general properties -->
-    <icoFile>path/to/icon.ico</icoFile>
+	<!-- general properties -->
+	<icoFile>path/to/icon.ico</icoFile>
 	<generateSetup>true|false</generateSetup>
 	<generateMsi>true|false</generateMsi>
 	<generateMsm>true|false</generateMsm>
@@ -20,12 +20,12 @@
 	<productName>${name}</productName>
 	<internalName>${name}</internalName>
 	<originalFilename>${name}.exe</originalFilename>
-    <!-- setup generation properties -->
-    <setupLanguages>
-        <english>compiler:Default.isl</english>
-        <spanish>compiler:Languages\Spanish.isl</english>
-        [...]
-    </setupLanguages>
+	<!-- setup generation properties -->
+	<setupLanguages>
+		<english>compiler:Default.isl</english>
+		<spanish>compiler:Languages\Spanish.isl</english>
+		[...]
+	</setupLanguages>
 	<disableDirPage>true|false</disableDirPage>
 	<disableProgramGroupPage>true|false</disableProgramGroupPage>
 	<disableFinishedPage>true|false</disableFinishedPage>

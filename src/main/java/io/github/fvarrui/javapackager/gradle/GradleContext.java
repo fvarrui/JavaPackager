@@ -15,6 +15,8 @@ public class GradleContext extends Context<Logger> {
 	public GradleContext(Project project) {
 		super();
 		this.project = project;
+		this.getLinuxInstallerGenerators().add(new GenerateDeb());
+		this.getLinuxInstallerGenerators().add(new GenerateRpm());
 	}
 
 	public Logger getLogger() {
@@ -31,34 +33,33 @@ public class GradleContext extends Context<Logger> {
 	}
 
 	@Override
-	public File createRunnableJar(Packager packager) {
+	public File createRunnableJar(Packager packager) throws Exception {
 		return new CreateRunnableJar().apply(packager);
 	}
 
 	@Override
-	public File copyDependencies(Packager packager) {
+	public File copyDependencies(Packager packager) throws Exception {
 		return new CopyDependencies().apply(packager);
 	}
 
 	@Override
-	public File createTarball(Packager packager) {
-		// TODO create tarball from gradle
-		return null;
+	public File createTarball(Packager packager) throws Exception {
+		return new CreateTarball().apply(packager);
 	}
 
 	@Override
-	public File createZipball(Packager packager) {
+	public File createZipball(Packager packager) throws Exception {
 		return new CreateZipball().apply(packager);
 	}
 
 	@Override
-	public File resolveLicense(Packager packager) {
+	public File resolveLicense(Packager packager) throws Exception {
 		// do nothing
 		return null;
 	}
 	
 	@Override
-	public File createWindowsExe(Packager packager) {
+	public File createWindowsExe(Packager packager) throws Exception {
 		return new CreateWindowsExe().apply(packager);	
 	}
 

@@ -1,26 +1,15 @@
 package io.github.fvarrui.javapackager.gradle;
 
-import javax.inject.Inject;
-
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.internal.impldep.org.eclipse.jgit.annotations.NonNull;
-import org.gradle.internal.reflect.Instantiator;
 
 import io.github.fvarrui.javapackager.packagers.Context;
 
 public class PackagePlugin implements Plugin<Project> {
 
 	public static final String GROUP_NAME = "JavaPackager";
-	public static final String SETTINGS_EXT_NAME = "javaPackager";
-	public static final String TASK_NAME = "package";
-	
-    @NonNull final Instantiator instantiator;
-
-    @Inject
-    public PackagePlugin(@NonNull Instantiator instantiator) {
-        this.instantiator = instantiator;
-    }
+	public static final String SETTINGS_EXT_NAME = "javapackager";
+	public static final String PACKAGE_TASK_NAME = "package";	
 
 	@Override
 	public void apply(Project project) {
@@ -30,8 +19,8 @@ public class PackagePlugin implements Plugin<Project> {
 		project.getPluginManager().apply("java");
 		project.getPluginManager().apply("edu.sc.seis.launch4j");		
 		
-		project.getExtensions().create(SETTINGS_EXT_NAME, PackagePluginExtension.class, instantiator, project);
-		project.getTasks().create(TASK_NAME, PackageTask.class);
+		project.getExtensions().create(SETTINGS_EXT_NAME, PackagePluginExtension.class, project);
+		project.getTasks().create(PACKAGE_TASK_NAME, DefaultPackageTask.class).dependsOn("build");
 
 	}
 
