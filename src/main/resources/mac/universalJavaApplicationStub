@@ -150,10 +150,9 @@ CFBundleIconFile=$(plist_get ':CFBundleIconFile')
 exitcode=$?
 JavaKey=":Java"
 
-# if no :Java key is present, check Info.plist for universalJavaApplication style JavaX keys -> if key :JavaX is present, parse in apple mode
+# if no :Java key is present, check Info.plist for universalJavaApplication style JavaX keys -> if key :JavaX is present, parse in oracle mode
 if [ $exitcode -ne 0 ]; then
 	/usr/libexec/PlistBuddy -c "print :JavaX" "${InfoPlistFile}" > /dev/null 2>&1
-	exitcode=$?
 	JavaKey=":JavaX"
 fi
 

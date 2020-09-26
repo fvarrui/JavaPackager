@@ -38,7 +38,7 @@
 #else
 		<false />
 #end
-		<key>JavaX</key>
+		<key>Java</key>
 		<dict>
 #if ($info.useResourcesAsWorkingDir)		
 			<key>WorkingDirectory</key>
@@ -49,7 +49,7 @@
 			<key>MainClass</key>
 			<string>${info.mainClass}</string>
 #if (!$info.vmArgs.empty)			
-			<key>JVMOptions</key>
+			<key>VMOptions</key>
 			<array>
 #foreach ($vmArg in $info.vmArgs)
 				<string>$vmArg</string>
