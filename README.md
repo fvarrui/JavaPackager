@@ -4,7 +4,7 @@
 
 JavaPackager is a hybrid plugin for **Maven** and **Gradle** which provides an easy way to package Java applications in native Windows, Mac OS X or GNU/Linux executables, and generates installers for them.
 
-> SNAPSHOT version are not released to Maven Central, so you have to [install them manually](#how-to-build-and-install-the-plugin).
+> SNAPSHOT version is not released to Maven Central, so you have to [install it manually](#how-to-build-and-install-the-plugin).
 
 > :eyes: See [JavaPackager changes and fixes](https://github.com/fvarrui/JavaPackager/releases).
 
@@ -117,6 +117,7 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 | `${name}_${version}.rpm`                | RPM package file if it's executed on GNU/Linux (requires **rpmbuild**). |
 | `${name}_${version}.exe`                | Setup file if it's executed on Windows (requires [**Inno Setup**](http://www.jrsoftware.org/isinfo.php)). |
 | `${name}_${version}.msi`                | MSI installer file if it's executed on Windows (requires **[WiX Toolset](https://wixtoolset.org/)**). |
+| `${name}_${version}.msm`                | MSI merge module file if it's executed on Windows (requires **[WiX Toolset](https://wixtoolset.org/)**). |
 | `${name}_${version}.dmg`                | Disk image file if it's executed on Mac OS X (requires **hdiutil**). |
 | `${name}_${version}.pkg`                | PKG installer file if it's executed on Mac OS X (requires **pkgbuild**) |
 | `${name}-${version}-${platform}.zip`    | Zipball containing generated directory `${name}`.            |
@@ -256,7 +257,7 @@ cd JavaPackager
 
 ## How to release the plugin to Maven Central
 
-Run next command after [build and publish the plugin locally](#how-to-build-and-install-the-plugin)  (ommit `./` on Windows):
+Run next command (ommit `./` on Windows):
 
 ```bash
 ./gradlew -Prelease uploadArchives closeAndReleaseRepository
@@ -266,13 +267,13 @@ Run next command after [build and publish the plugin locally](#how-to-build-and-
 
 ## How to release the plugin to Gradle plugin portal
 
-First time, you have to run next command:
+Only the first time, run next command:
 
 ```bash
 ./gradlew login
 ```
 
-Run next command after [build and publish the plugin locally](#how-to-build-and-install-the-plugin)  (ommit `./` on Windows):
+And then, run (ommit `./` on Windows):
 
 ```bash
 ./gradlew publishPlugins
