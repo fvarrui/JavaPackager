@@ -1,6 +1,7 @@
 package io.github.fvarrui.javapackager.packagers;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -280,17 +281,17 @@ public class PackagerSettings {
 	}
 
 	public PackagerSettings additionalResources(List<File> additionalResources) {
-		this.additionalResources = additionalResources;
+		this.additionalResources = new ArrayList<>(additionalResources);
 		return this;
 	}
 
 	public PackagerSettings modules(List<String> modules) {
-		this.modules = modules;
+		this.modules = new ArrayList<>(modules);
 		return this;
 	}
 
 	public PackagerSettings additionalModules(List<String> additionalModules) {
-		this.additionalModules = additionalModules;
+		this.additionalModules = new ArrayList<>(additionalModules);
 		return this;
 	}
 
@@ -305,7 +306,7 @@ public class PackagerSettings {
 	}
 
 	public PackagerSettings vmArgs(List<String> vmArgs) {
-		this.vmArgs = vmArgs;
+		this.vmArgs = new ArrayList<>(vmArgs);
 		return this;
 	}
 
