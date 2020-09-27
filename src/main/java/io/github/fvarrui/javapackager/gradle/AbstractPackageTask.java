@@ -12,9 +12,9 @@ import io.github.fvarrui.javapackager.packagers.Packager;
 
 public abstract class AbstractPackageTask extends DefaultTask {
 	
-	@OutputFiles
 	private List<File> outputFiles;
 	
+	@OutputFiles
 	public List<File> getOutputFiles() {
 		return outputFiles != null ? outputFiles : new ArrayList<>();
 	}	
