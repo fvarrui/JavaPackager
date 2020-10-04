@@ -12,7 +12,7 @@ import io.github.fvarrui.javapackager.utils.Logger;
 public class GeneratePkg extends ArtifactGenerator {
 
 	public GeneratePkg() {
-		super("MSI installer");
+		super("PKG installer");
 	}
 	
 	@Override
