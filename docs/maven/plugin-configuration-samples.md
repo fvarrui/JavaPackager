@@ -1,4 +1,4 @@
-# Plugin configuration samples
+# Plugin configuration samples for Maven
 
 ## Minimal config
 
@@ -150,6 +150,9 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
 	<groupId>io.github.fvarrui</groupId>
 	<artifactId>javapackager</artifactId>
 	<version>{latest-plugin-version-here}</version>
+    <configuration>
+		<mainClass>fvarrui.sample.Main</mainClass>
+    </configuration>
 	<executions>
 		<execution>
 			<id>bundle-with-jre</id>
@@ -159,7 +162,6 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
 			</goals>
 			<configuration>
 				<name>Sample</name>
-				<mainClass>fvarrui.sample.Main</mainClass>
 				<bundleJre>true</bundleJre>
 			</configuration>
 		</execution>
@@ -171,7 +173,6 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
 			</goals>
 			<configuration>
 				<name>Sample-nojre</name>
-				<mainClass>fvarrui.sample.Main</mainClass>
 				<bundleJre>false</bundleJre>
 			</configuration>
 		</execution>
@@ -182,3 +183,63 @@ Also, JavaPackager plugin is able to get some properties from `pom.xml`, so you 
 E.g. on Windows, last configuration will generate next artifacts:
 * `Sample_x.y.z.exe` with a bundled JRE.
 * `Sample-nojre_x.y.z.exe` without JRE.
+
+## Bundling for multiple platforms
+
+```xml
+<plugin>
+	<groupId>io.github.fvarrui</groupId>
+	<artifactId>javapackager</artifactId>
+	<version>{latest-plugin-version-here}</version>
+    <configuration>
+        <bundleJre>true</bundleJre>
+		<mainClass>fvarrui.sample.Main</mainClass>
+        <generateInstaller>false</generateInstaller>
+    </configuration>    
+	<executions>
+		<execution>
+			<id>bundling-for-windows</id>
+			<phase>package</phase>
+			<goals>
+				<goal>package</goal>
+			</goals>
+			<configuration>
+                <platform>windows</platform>
+                <createZipball>true</createZipball>
+			</configuration>
+		</execution>
+		<execution>
+			<id>bundling-for-linux</id>
+			<phase>package</phase>
+			<goals>
+				<goal>package</goal>
+			</goals>
+			<configuration>
+                <platform>linux</platform>
+                <createTarball>true</createTarball>
+                <jdkPath>X:\\path\to\linux\jdk</jdkPath>
+			</configuration>
+		</execution>
+		<execution>
+			<id>bundling-for-mac</id>
+			<phase>package</phase>
+			<goals>
+				<goal>package</goal>
+			</goals>
+			<configuration>
+                <platform>mac</platform>
+                <createTarball>true</createTarball>
+                <jdkPath>X:\\path\to\mac\jdk</jdkPath>
+			</configuration>
+		</execution>
+	</executions>
+</plugin>
+```
+
+E.g. on Windows, last configuration will generate next artifacts:
+
+* `${name}_${version}-linux.tar.gz` with the GNU/Linux application including a customized JRE.
+* `${name}_${version}-mac.tar.gz` with the Mac OS X application including a customized JRE.
+* `${name}_${version}-windows.zip` with the Windows application including a customized JRE.
+
+As last sample is running on Windows, it's not necessary to specify a JDK when bundling for Windows (it uses current JDK by default). Otherwise, if running on GNU/Linux or Mac OS X, you have to specify a JDK for Windows.

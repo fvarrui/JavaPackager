@@ -47,7 +47,7 @@ Add the following `plugin` tag to your `pom.xml`:
 </plugin>
 ```
 
-> See [Maven plugin configuration samples](docs/maven-plugin-configuration-samples.md) to know more.
+> See [Maven plugin configuration samples](docs/maven/plugin-configuration-samples.md) to know more.
 
 And execute the next command in project's root folder:
 
@@ -97,7 +97,7 @@ task packageMyApp(type: io.github.fvarrui.javapackager.gradle.PackageTask, depen
 }
 ```
 
->  See [Gradle plugin configuration samples](docs/gradle-plugin-configuration-samples.md) to know more.
+>  See [Gradle plugin configuration samples](docs/gradle/plugin-configuration-samples.md) to know more.
 
 And execute the next command in project's root folder:
 
