@@ -18,7 +18,7 @@ Add the following `plugin` tag to your `pom.xml`:
 <plugin>
 	<groupId>io.github.fvarrui</groupId>
 	<artifactId>javapackager</artifactId>
-	<version>1.2.0</version>
+	<version>1.3.0</version>
 	<executions>
 		<execution>
 			<phase>package</phase>
@@ -287,6 +287,7 @@ Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column
 
 ## Older documentation
 
+- [v1.2.0](https://github.com/fvarrui/JavaPackager/blob/v1.2.0/README.md)
 - [v1.1.0](https://github.com/fvarrui/JavaPackager/blob/v1.1.0/README.md)
 - [v1.0.3](https://github.com/fvarrui/JavaPackager/blob/v1.0.3/README.md)
 - [v1.0.2](https://github.com/fvarrui/JavaPackager/blob/v1.0.2/README.md)
