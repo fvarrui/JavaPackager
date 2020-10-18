@@ -2,7 +2,7 @@
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.fvarrui/javapackager/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.fvarrui/javapackager)
 
-JavaPackager is a hybrid plugin for **Maven** and **Gradle** which provides an easy way to package Java applications in native Windows, Mac OS X or GNU/Linux executables, and generates installers for them.
+JavaPackager is a hybrid plugin for **Maven** and **Gradle** which provides an easy way to package Java applications in native Windows, Mac OS X or GNU/Linux executables, and generate installers for them.
 
 > SNAPSHOT version is not released to Maven Central, so you have to [install it manually](#how-to-build-and-install-the-plugin).
 
