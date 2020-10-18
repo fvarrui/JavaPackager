@@ -40,7 +40,7 @@ task packageMyApp(type: io.github.fvarrui.javapackager.gradle.PackageTask, depen
 
 ## Bundle with a full  JRE
 
-```xml
+```groovy 
 task packageMyApp(type: io.github.fvarrui.javapackager.gradle.PackageTask, dependsOn: build) {
 	mainClass = 'fvarrui.sample.Main'
 	bundleJre = true
