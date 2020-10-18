@@ -65,7 +65,7 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath 'io.github.fvarrui:javapackager:1.2.0'
+		classpath 'io.github.fvarrui:javapackager:1.3.0'
 	}
 }
 
