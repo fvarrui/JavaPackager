@@ -316,7 +316,7 @@ public abstract class Packager extends PackagerSettings {
 		File jdeps = new File(System.getProperty("java.home"), "/bin/jdeps");
 
 		File jarLibs = null;
-		if (libsFolder.exists()) 
+		if (libsFolder != null && libsFolder.exists()) 
 			jarLibs = new File(libsFolder, "*.jar");
 		else
 			Logger.warn("No dependencies found!");
