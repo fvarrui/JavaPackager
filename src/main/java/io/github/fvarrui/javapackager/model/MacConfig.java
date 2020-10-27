@@ -26,6 +26,7 @@ public class MacConfig implements Serializable {
 	private String volumeName;
 	private boolean generateDmg = true;
 	private boolean generatePkg = true;
+	private boolean relocateJar = true;
 
 	public File getIcnsFile() {
 		return icnsFile;
@@ -155,13 +156,22 @@ public class MacConfig implements Serializable {
 		this.generatePkg = generatePkg;
 	}
 
+	public boolean isRelocateJar() {
+		return relocateJar;
+	}
+
+	public void setRelocateJar(boolean relocateJar) {
+		this.relocateJar = relocateJar;
+	}
+
 	@Override
 	public String toString() {
 		return "MacConfig [icnsFile=" + icnsFile + ", backgroundImage=" + backgroundImage + ", windowWidth="
 				+ windowWidth + ", windowHeight=" + windowHeight + ", windowX=" + windowX + ", windowY=" + windowY
 				+ ", iconSize=" + iconSize + ", textSize=" + textSize + ", iconX=" + iconX + ", iconY=" + iconY
 				+ ", appsLinkIconX=" + appsLinkIconX + ", appsLinkIconY=" + appsLinkIconY + ", volumeIcon=" + volumeIcon
-				+ ", volumeName=" + volumeName + ", generateDmg=" + generateDmg + ", generatePkg=" + generatePkg + "]";
+				+ ", volumeName=" + volumeName + ", relocateJar="+ relocateJar + ", generateDmg=" + generateDmg +
+				", generatePkg=" + generatePkg + "]";
 	}
 
 	/**
@@ -181,5 +191,4 @@ public class MacConfig implements Serializable {
 		this.setAppsLinkIconX(defaultIfNull(this.getAppsLinkIconX(), 360));
 		this.setAppsLinkIconY(defaultIfNull(this.getAppsLinkIconY(), 116));
 	}
-
 }
