@@ -90,27 +90,15 @@ public class MacPackager extends Packager {
 		// copies universalJavaApplicationStub startup file to boot java app
 		File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
 		FileUtils.copyResourceToFile("/mac/universalJavaApplicationStub", appStubFile, true);
-
 		if (!macConfig.isRelocateJar()) { // Modifies the stub to look at the non-Java sub folder
-			Path appStubFilePath = appStubFile.toPath();
-			String stub = new String(Files.readAllBytes(appStubFilePath), StandardCharsets.UTF_8);
-			stub = stub.replaceAll("/Contents/Resources/Java", "/Contents/Resources");
-			Files.write(appStubFilePath, stub.getBytes(StandardCharsets.UTF_8));
+			FileUtils.processFileContent(appStubFile, stub -> stub.replaceAll("^AppleJavaFolder=\"\\${AppPackageFolder}\"/Contents/Resources/Java$", "AppleJavaFolder=\"${AppPackageFolder}\"/Contents/Resources"));
 		}
-
+		
 		appStubFile.setExecutable(true, false);
 
 		// creates and write the Info.plist file
 		File infoPlistFile = new File(contentsFolder, "Info.plist");
 		VelocityUtils.render("mac/Info.plist.vtl", infoPlistFile, this);
-
-		if (!macConfig.isRelocateJar()) { // Modifies the Info.plist to look at the non-Java sub folder
-			Path infoPlistFilePath = infoPlistFile.toPath();
-			String infoPlist = new String(Files.readAllBytes(infoPlistFilePath), StandardCharsets.UTF_8);
-			infoPlist = infoPlist.replaceAll("Java/", "");
-			Files.write(infoPlistFilePath, infoPlist.getBytes(StandardCharsets.UTF_8));
-		}
-
 		Logger.info("Info.plist file created in " + infoPlistFile.getAbsolutePath());
 
 		// codesigns app folder

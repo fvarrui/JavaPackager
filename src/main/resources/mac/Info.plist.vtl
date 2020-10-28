@@ -45,7 +45,11 @@
 			<string>$APP_PACKAGE/Contents/Resources</string>
 #end
 			<key>ClassPath</key>
+#if ($info.macConfig.relocateJar)			
 			<string>Java/${info.jarFile.name}</string>
+#else
+			<string>${info.jarFile.name}</string>
+#end
 			<key>MainClass</key>
 			<string>${info.mainClass}</string>
 #if (!$info.vmArgs.empty)			
@@ -57,17 +61,17 @@
 			</array>
 #end
 		</dict>
-#if ($info.bundleJre)
 		<key>LSEnvironment</key>
 		<dict>
+#if ($info.bundleJre)
 			<key>JAVA_HOME</key>
 			<string>Contents/PlugIns/${info.jreDirectoryName}/Contents/Home</string>
+#end
 #if($info.envPath)
 			<key>PATH</key>
 			<string>${info.envPath}</string>
 #end
 		</dict>
-#end
 		<key>NSAppleEventsUsageDescription</key>
 		<string>There was an error while launching the application. Please
 			click OK to display a dialog with more information or cancel and view
