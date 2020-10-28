@@ -2,8 +2,10 @@ package io.github.fvarrui.javapackager.gradle;
 
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
 import org.gradle.api.Project;
+import org.gradle.api.tasks.bundling.Zip;
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
@@ -39,7 +41,7 @@ public class CreateWindowsExe extends ArtifactGenerator {
 		boolean bundleJre = WindowsPackager.getBundleJre();
 		String jreDirectoryName = WindowsPackager.getJreDirectoryName();
 		
-		Launch4jLibraryTask l4jTask = project.getTasks().create("jplaunch4j", Launch4jLibraryTask.class);
+		Launch4jLibraryTask l4jTask = createLaunch4jTask();
 		l4jTask.setHeaderType(winConfig.getHeaderType().toString());
 		l4jTask.setJar(jarPath);
 		l4jTask.setDontWrapJar(!winConfig.isWrapJar());
@@ -67,6 +69,10 @@ public class CreateWindowsExe extends ArtifactGenerator {
 		FileUtils.copyFileToFile(generatedExe, executable);
 		
 		return executable;
+	}
+	
+	private Launch4jLibraryTask createLaunch4jTask() {
+		return Context.getGradleContext().getProject().getTasks().create("launch4j_" + UUID.randomUUID(), Launch4jLibraryTask.class);
 	}
 
 }
