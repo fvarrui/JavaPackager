@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.gradle.api.Project;
-import org.gradle.api.tasks.bundling.Zip;
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
