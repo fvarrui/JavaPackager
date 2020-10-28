@@ -1,6 +1,7 @@
 package io.github.fvarrui.javapackager.packagers;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -91,7 +92,7 @@ public class MacPackager extends Packager {
 		File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
 		FileUtils.copyResourceToFile("/mac/universalJavaApplicationStub", appStubFile, true);
 		if (!macConfig.isRelocateJar()) { // Modifies the stub to look at the non-Java sub folder
-			FileUtils.processFileContent(appStubFile, stub -> stub.replaceAll("^AppleJavaFolder=.*/Contents/Resources/Java$", "AppleJavaFolder=\"${AppPackageFolder}\"/Contents/Resources"));
+			FileUtils.processFileContent(appStubFile, stub -> stub.replaceAll("/Contents/Resources/Java", "/Contents/Resources"));
 		}
 		
 		appStubFile.setExecutable(true, false);
