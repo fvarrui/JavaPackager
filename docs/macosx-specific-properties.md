@@ -2,11 +2,11 @@
 
 ```xml
 <macConfig>
-    <!-- general properties -->
-    <icnsFile>path/to/icon.icns</icnsFile>
-    <generateDmg>true|false</generateDmg>
-    <generatePkg>true|false</generatePkg>
-    <relocateJar>true|false</relocateJar>
+	<!-- general properties -->
+	<icnsFile>path/to/icon.icns</icnsFile>
+	<generateDmg>true|false</generateDmg>
+	<generatePkg>true|false</generatePkg>
+	<relocateJar>true|false</relocateJar>
 	<!-- properties used in DMG disk image generation -->
 	<backgroundImage>path/to/png</backgroundImage>
 	<windowX>x</windowX>
@@ -29,7 +29,7 @@
 | `icnsFile`    | :x:       | `null`        | Icon file.                                                   |
 | `generateDmg` | :x:       | `true`        | Enables DMG disk image file generation.                      |
 | `generatePkg` | :x:       | `true`        | Enables installation package generation.                     |
-| `relocateJar` | :x:       | `true`        | If `true`, Jar files are located in `Contents/Resources/Java` folder, otherwise they are located in `Contents/Resources/Java` folder. |
+| `relocateJar` | :x:       | `true`        | If `true`, Jar files are located in `Contents/Resources/Java` folder, otherwise they are located in `Contents/Resources` folder. |
 
 
 ## DMG generation properties
