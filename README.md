@@ -233,7 +233,8 @@ ${assetsDir}/
     ├── assembly.xml.vtl               # maven-assembly-plugin template to generate ZIP/TGZ bundles for Windows
     ├── exe.manifest.vtl               # exe.manifest template
     ├── iss.vtl                        # Inno Setup Script template
-    └── wxs.vtl                        # WiX Toolset WXS template
+    ├── msm.wxs.vtl                    # WiX Toolset WXS template to generate Merge Module
+    └── wxs.vtl                        # WiX Toolset WXS template to generate MSI
 ```
 
 > Use [default templates](https://github.com/fvarrui/JavaPackager/tree/master/src/main/resources) as examples.
