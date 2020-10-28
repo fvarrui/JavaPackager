@@ -8,6 +8,10 @@ JavaPackager is a hybrid plugin for **Maven** and **Gradle** which provides an e
 
 > :eyes: See [JavaPackager changes and fixes](https://github.com/fvarrui/JavaPackager/releases).
 
+## History
+
+It was born while teaching to my students how to build and distribute their Java apps, and after seeing that a chain of several plugins was needed to achieve this task, I decided to develop a plugin :ring: to govern them all.
+
 ## How to use this plugin
 
 ### Config your project and package your app with Maven
