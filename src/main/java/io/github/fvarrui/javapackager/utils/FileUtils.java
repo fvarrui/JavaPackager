@@ -14,7 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
@@ -156,9 +156,9 @@ public class FileUtils {
 	}
 	
 	public static void processFileContent(File dest, Function<String, String> function) throws IOException {
-		String content = org.apache.commons.io.FileUtils.readFileToString(dest, Charset.forName("UTF-8"));
+		String content = org.apache.commons.io.FileUtils.readFileToString(dest, StandardCharsets.UTF_8);
 		content = function.apply(content);
-		org.apache.commons.io.FileUtils.writeStringToFile(dest, content, Charset.forName("UTF-8"));
+		org.apache.commons.io.FileUtils.writeStringToFile(dest, content, StandardCharsets.UTF_8);
 	}
 	
 	public static void copyResourceToFile(String resource, File dest) throws Exception  {
