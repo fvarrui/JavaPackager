@@ -1,3 +1,4 @@
+#set ($name = $info.name.replaceAll("-", "_"))
 #set ($id = 0)
 #macro(list $file)
 	#set($guid = $GUID.randomUUID())
@@ -24,7 +25,7 @@
 #end
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Module Id="${info.name}_Module" Codepage="1252" Language="1033" Version="${info.winConfig.productVersion}">
+    <Module Id="${name}_Module" Codepage="1252" Language="1033" Version="${info.winConfig.productVersion}">
         <Package Id="${GUID.randomUUID()}" Manufacturer="${info.organizationName}" InstallerVersion="200" Languages="1033" Platform="x64" SummaryCodepage="1252" Description="${info.description}"/>
 		<Directory Id="TARGETDIR" Name="SourceDir">
 			#list(${info.appFolder})
