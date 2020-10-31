@@ -88,7 +88,9 @@ public class MacPackager extends Packager {
 		File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
 		FileUtils.copyResourceToFile("/mac/universalJavaApplicationStub", appStubFile, true);
 		if (!macConfig.isRelocateJar()) { // Modifies the stub to look at the non-Java sub folder
-			FileUtils.processFileContent(appStubFile, stub -> stub.replaceAll("/Contents/Resources/Java", "/Contents/Resources"));
+			FileUtils.processFileContent(appStubFile, stub -> stub.replaceAll("/Contents/Java", "/Contents/Resources"));
+		} else {
+			FileUtils.processFileContent(appStubFile, stub -> stub.replaceAll("/Contents/Java", "/Contents/Resources/Java"));			
 		}
 		
 		appStubFile.setExecutable(true, false);

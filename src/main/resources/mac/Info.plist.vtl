@@ -38,29 +38,22 @@
 #else
 		<false />
 #end
-		<key>Java</key>
-		<dict>
-#if ($info.useResourcesAsWorkingDir)		
-			<key>WorkingDirectory</key>
-			<string>$APP_PACKAGE/Contents/Resources</string>
-#end
-			<key>ClassPath</key>
+		<key>JVMClassPath</key>
 #if ($info.macConfig.relocateJar)			
-			<string>Java/${info.jarFile.name}</string>
+		<string>Java/${info.jarFile.name}</string>
 #else
-			<string>${info.jarFile.name}</string>
+		<string>${info.jarFile.name}</string>
 #end
-			<key>MainClass</key>
-			<string>${info.mainClass}</string>
+		<key>JVMMainClassName</key>
+		<string>${info.mainClass}</string>
 #if (!$info.vmArgs.empty)			
-			<key>VMOptions</key>
-			<array>
+		<key>JVMDefaultOptions</key>
+		<array>
 #foreach ($vmArg in $info.vmArgs)
-				<string>$vmArg</string>
+			<string>$vmArg</string>
 #end			
-			</array>
+		</array>
 #end
-		</dict>
 		<key>LSEnvironment</key>
 		<dict>
 #if ($info.bundleJre)
