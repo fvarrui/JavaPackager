@@ -212,7 +212,7 @@ if [ $exitcode -eq 0 ]; then
 	else
 		JVMDefaultOptions=${JVMDefaultOptions_RAW}
 	fi
-
+	
 	# read StartOnMainThread and add as -XstartOnFirstThread
 	JVMStartOnMainThread=$(plist_get_java ':StartOnMainThread')
 	if [ "${JVMStartOnMainThread}" == "true" ]; then
@@ -278,7 +278,7 @@ else
 
 	# read the JVM Default Options
 	JVMDefaultOptions=$(plist_get ':JVMDefaultOptions' | grep -o " \-.*" | tr -d '\n' | xargs)
-
+	
 	# read the Main Arguments from JVMArguments key as an array and retain spaces (see #46 for naming details)
 	IFS=$'\t\n'
 	MainArgs=($(xargs -n1 <<<$(plist_get ':JVMArguments' | tr -d '\n' | sed -E 's/Array \{ *(.*) *\}/\1/g' | sed 's/  */ /g')))
@@ -290,6 +290,9 @@ else
 	# post processing of the version string follows below...
 fi
 
+# read JVM options from ini file
+JVMOptionsFile="$ResourcesFolder/${info.name}.l4j.ini"
+[ -f $JVMOptionsFile ] && while read -r option; do JVMDefaultOptions+=" $option"; done <<< $(sed "/^#.*$/d" $JVMOptionsFile)	
 
 # (#75) check for undefined icons or icon names without .icns extension and prepare
 # an osascript statement for those cases when the icon can be shown in the dialog
