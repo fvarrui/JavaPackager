@@ -101,7 +101,7 @@ public class MacPackager extends Packager {
 
 		// codesigns app folder
 		if (Platform.mac.isCurrentPlatform()) {
-			CommandUtils.execute("codesign", "--force", "--deep", "--sign", "-", appFile);
+			CommandUtils.execute("codesign", "--force", "--deep", "--sign", this.macConfig.getSigningIdentity(), appFile);
 		} else {
 			Logger.warn("Generated app could not be signed due to current platform is " + Platform.getCurrentPlatform());
 		}

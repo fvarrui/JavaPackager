@@ -9,7 +9,7 @@ import io.github.fvarrui.javapackager.packagers.Packager;
 
 public class MacConfig implements Serializable {
 	private static final long serialVersionUID = -2268944961932941577L;
-	
+
 	private File icnsFile;
 	private File backgroundImage;
 	private Integer windowWidth;
@@ -27,6 +27,7 @@ public class MacConfig implements Serializable {
 	private boolean generateDmg = true;
 	private boolean generatePkg = true;
 	private boolean relocateJar = true;
+	private String signingIdentity = "-";
 
 	public File getIcnsFile() {
 		return icnsFile;
@@ -164,14 +165,22 @@ public class MacConfig implements Serializable {
 		this.relocateJar = relocateJar;
 	}
 
+	public String getSigningIdentity() {
+		return signingIdentity;
+	}
+
+	public void setSigningIdentity(String signingIdentity) {
+		this.signingIdentity = signingIdentity;
+	}
+
 	@Override
 	public String toString() {
 		return "MacConfig [icnsFile=" + icnsFile + ", backgroundImage=" + backgroundImage + ", windowWidth="
 				+ windowWidth + ", windowHeight=" + windowHeight + ", windowX=" + windowX + ", windowY=" + windowY
 				+ ", iconSize=" + iconSize + ", textSize=" + textSize + ", iconX=" + iconX + ", iconY=" + iconY
 				+ ", appsLinkIconX=" + appsLinkIconX + ", appsLinkIconY=" + appsLinkIconY + ", volumeIcon=" + volumeIcon
-				+ ", volumeName=" + volumeName + ", relocateJar="+ relocateJar + ", generateDmg=" + generateDmg +
-				", generatePkg=" + generatePkg + "]";
+				+ ", volumeName=" + volumeName + ", generateDmg=" + generateDmg + ", generatePkg=" + generatePkg
+				+ ", relocateJar=" + relocateJar + ", signingIdentity=" + signingIdentity + "]";
 	}
 
 	/**
