@@ -86,8 +86,12 @@ public class MacPackager extends Packager {
 
 		// copies universalJavaApplicationStub startup file to boot java app
 		File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
-		VelocityUtils.render("mac/universalJavaApplicationStub", appStubFile, this);
-		FileUtils.processFileContent(appStubFile, stub -> stub.replaceAll("/Contents/Java", "/Contents/Resources" + (macConfig.isRelocateJar() ? "/Java" : "")));
+		FileUtils.copyResourceToFile("/mac/universalJavaApplicationStub", appStubFile, true);
+		FileUtils.processFileContent(appStubFile, stub -> {
+			stub = stub.replaceAll("/Contents/Java", "/Contents/Resources" + (macConfig.isRelocateJar() ? "/Java" : ""));
+			stub = stub.replaceAll("${info.name}", this.name);
+			return stub;
+		});
 		appStubFile.setExecutable(true, false);
 
 		// creates and write the Info.plist file
