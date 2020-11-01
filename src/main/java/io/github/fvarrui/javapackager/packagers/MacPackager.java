@@ -89,7 +89,7 @@ public class MacPackager extends Packager {
 		FileUtils.copyResourceToFile("/mac/universalJavaApplicationStub", appStubFile, true);
 		FileUtils.processFileContent(appStubFile, stub -> {
 			stub = stub.replaceAll("/Contents/Java", "/Contents/Resources" + (macConfig.isRelocateJar() ? "/Java" : ""));
-			stub = stub.replaceAll("${info.name}", this.name);
+			stub = stub.replaceAll("\\$\\{info.name\\}", this.name);
 			return stub;
 		});
 		appStubFile.setExecutable(true, false);
