@@ -27,6 +27,7 @@ public abstract class AbstractPackageTask extends DefaultTask {
 		super();
 		setGroup(PackagePlugin.GROUP_NAME);
 		setDescription("Packages the application as a native Windows, Mac OS X or GNU/Linux executable and creates an installer");
+		getOutputs().upToDateWhen(o -> false);
 	}
 	
 	// ===========
