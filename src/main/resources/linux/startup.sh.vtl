@@ -20,7 +20,7 @@ JVMDefaultOptions="${vmArgs}"
 JVMOptionsFile="$SCRIPTPATH/${info.name}.l4j.ini"
 [ -f $JVMOptionsFile ] && while read -r option; do JVMDefaultOptions+=" $option"; done <<< $(sed "/^#.*$/d" $JVMOptionsFile)
 
-JVMClassPath="$BINARY;${info.classpath}"
+JVMClassPath="$BINARY;$!{info.classpath}"
 
 #if ($info.useResourcesAsWorkingDir)
 cd "$SCRIPTPATH"
