@@ -39,14 +39,14 @@
 		<false />
 #end
 		<key>JVMClassPath</key>
-#if ($info.macConfig.relocateJar)			
-		<string>Java/${info.jarFile.name}</string>
+#if ($info.macConfig.relocateJar)
+		<string>Java/${info.jarFile.name};${info.classpath}</string>
 #else
-		<string>${info.jarFile.name}</string>
+		<string>${info.jarFile.name};${info.classpath}</string>
 #end
 		<key>JVMMainClassName</key>
 		<string>${info.mainClass}</string>
-#if (!$info.vmArgs.empty)			
+#if (!$info.vmArgs.empty)
 		<key>JVMDefaultOptions</key>
 		<array>
 #foreach ($vmArg in $info.vmArgs)

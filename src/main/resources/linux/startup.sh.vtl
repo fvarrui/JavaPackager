@@ -10,7 +10,7 @@ JAVA="$SCRIPTPATH/${info.jreDirectoryName}/bin/java"
 JAVA=java
 #end
 
-BINARY="$SCRIPTPATH/${info.name}"
+BINARY="$SCRIPTPATH/${info.executable.name}"
 
 #if ($info.envPath)
 export PATH=${info.envPath}
@@ -20,13 +20,15 @@ JVMDefaultOptions="${vmArgs}"
 JVMOptionsFile="$SCRIPTPATH/${info.name}.l4j.ini"
 [ -f $JVMOptionsFile ] && while read -r option; do JVMDefaultOptions+=" $option"; done <<< $(sed "/^#.*$/d" $JVMOptionsFile)
 
+JVMClassPath="$BINARY;${info.classpath}"
+
 #if ($info.useResourcesAsWorkingDir)
 cd "$SCRIPTPATH"
 #end
 
 #if ($info.administratorRequired)
-pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY GDKBACKEND=x11 $JAVA $JVMDefaultOptions -jar $BINARY $@
+pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY GDKBACKEND=x11 $JAVA $JVMDefaultOptions -cp $JVMClassPath ${info.mainClass} $@
 #else
-$JAVA $JVMDefaultOptions -jar $BINARY $@
+$JAVA $JVMDefaultOptions -cp $JVMClassPath ${info.mainClass} $@
 #end
 exit 0
