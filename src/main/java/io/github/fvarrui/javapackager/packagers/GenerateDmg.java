@@ -108,9 +108,9 @@ public class GenerateDmg extends ArtifactGenerator {
 		Logger.info("Running applescript");
 		CommandUtils.execute("/usr/bin/osascript", applescriptFile, volumeName);
 	
-		// makes sure it's not world writeable
+		// makes sure it's not world writeable and user readable
 		Logger.info("Fixing permissions...");
-		CommandUtils.execute("chmod", "-Rf", "go-w", mountFolder);
+		CommandUtils.execute("chmod", "-Rf", "u+r,go-w", mountFolder);
 		
 		// makes the top window open itself on mount:
 		Logger.info("Blessing ...");
