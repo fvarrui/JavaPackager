@@ -137,7 +137,7 @@ public abstract class Packager extends PackagerSettings {
 		default:
 		}
 		
-		Logger.info("Effective packager configuration " + this);		
+		Logger.info("" + this); // prints packager settings		
 				
 		Logger.infoUnindent("Packager initialized!");
 
@@ -601,26 +601,6 @@ public abstract class Packager extends PackagerSettings {
 		Logger.infoUnindent("Installers generated! " + installers);
 		
 		return installers;		
-	}
-
-	@Override
-	public String toString() {
-		return "[appFolder=" + appFolder + ", assetsFolder=" + assetsFolder + ", executable=" + executable
-				+ ", jarFile=" + jarFile + ", executableDestinationFolder=" + executableDestinationFolder
-				+ ", jarFileDestinationFolder=" + jarFileDestinationFolder + ", jreDestinationFolder="
-				+ jreDestinationFolder + ", resourcesDestinationFolder=" + resourcesDestinationFolder
-				+ ", outputDirectory=" + outputDirectory + ", licenseFile=" + licenseFile + ", iconFile=" + iconFile
-				+ ", generateInstaller=" + generateInstaller + ", mainClass=" + mainClass + ", name=" + name
-				+ ", displayName=" + displayName + ", version=" + version + ", description=" + description + ", url="
-				+ url + ", administratorRequired=" + administratorRequired + ", organizationName=" + organizationName
-				+ ", organizationUrl=" + organizationUrl + ", organizationEmail=" + organizationEmail + ", bundleJre="
-				+ bundleJre + ", customizedJre=" + customizedJre + ", jrePath=" + jrePath + ", additionalResources="
-				+ additionalResources + ", modules=" + modules + ", additionalModules=" + additionalModules
-				+ ", platform=" + platform + ", envPath=" + envPath + ", vmArgs=" + vmArgs + ", runnableJar="
-				+ runnableJar + ", copyDependencies=" + copyDependencies + ", jreDirectoryName=" + jreDirectoryName
-				+ ", winConfig=" + winConfig + ", linuxConfig=" + linuxConfig + ", macConfig=" + macConfig
-				+ ", createTarball=" + createTarball + ", createZipball=" + createZipball + ", extra=" + extra
-				+ ", useResourcesAsWorkingDir=" + useResourcesAsWorkingDir + ", assetsDir=" + assetsDir + "]";
 	}
 
 	protected abstract void doCreateAppStructure() throws Exception; 

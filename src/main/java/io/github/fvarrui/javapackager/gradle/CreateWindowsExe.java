@@ -1,7 +1,9 @@
 package io.github.fvarrui.javapackager.gradle;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.gradle.api.Project;
@@ -26,19 +28,23 @@ public class CreateWindowsExe extends ArtifactGenerator {
 	@Override
 	public File apply(Packager packager) throws Exception {
 		
-		WindowsPackager WindowsPackager = (WindowsPackager) packager;
+		WindowsPackager windowsPackager = (WindowsPackager) packager;
 		
 		Project project = Context.getGradleContext().getProject();
-		List<String> vmArgs = WindowsPackager.getVmArgs();
-		WindowsConfig winConfig = WindowsPackager.getWinConfig();
-		String jarPath = WindowsPackager.getJarPath();
-		File executable = WindowsPackager.getExecutable();
-		File iconFile = WindowsPackager.getIconFile();
-		File manifestFile = WindowsPackager.getManifestFile();
-		String mainClass = WindowsPackager.getMainClass();
-		boolean useResourcesAsWorkingDir = WindowsPackager.isUseResourcesAsWorkingDir();
-		boolean bundleJre = WindowsPackager.getBundleJre();
-		String jreDirectoryName = WindowsPackager.getJreDirectoryName();
+		List<String> vmArgs = windowsPackager.getVmArgs();
+		WindowsConfig winConfig = windowsPackager.getWinConfig();
+		String jarPath = windowsPackager.getJarPath();
+		File executable = windowsPackager.getExecutable();
+		File iconFile = windowsPackager.getIconFile();
+		File manifestFile = windowsPackager.getManifestFile();
+		String mainClass = windowsPackager.getMainClass();
+		boolean useResourcesAsWorkingDir = windowsPackager.isUseResourcesAsWorkingDir();
+		boolean bundleJre = windowsPackager.getBundleJre();
+		String jreDirectoryName = windowsPackager.getJreDirectoryName();
+		String classpath = windowsPackager.getClasspath();
+		
+		Set<String> classpathSet = new HashSet<>();
+		if (classpath != null) classpathSet.add(classpath);
 		
 		Launch4jLibraryTask l4jTask = createLaunch4jTask();
 		l4jTask.setHeaderType(winConfig.getHeaderType().toString());
@@ -48,6 +54,7 @@ public class CreateWindowsExe extends ArtifactGenerator {
 		l4jTask.setIcon(iconFile.getAbsolutePath());
 		l4jTask.setManifest(manifestFile.getAbsolutePath());
 		l4jTask.setMainClassName(mainClass);
+		l4jTask.setClasspath(classpathSet);
 		l4jTask.setChdir(useResourcesAsWorkingDir ? "." : "");
 		l4jTask.setBundledJrePath(bundleJre ? jreDirectoryName : "%JAVA_HOME%");
 		l4jTask.getJvmOptions().addAll(vmArgs);

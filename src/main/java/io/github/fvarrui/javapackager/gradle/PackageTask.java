@@ -461,6 +461,18 @@ public class PackageTask extends AbstractPackageTask {
 		this.outputDirectory = outputDirectory;
 	}
 	
+	@Input
+	@Optional	
+	private String classpath;
+
+	public String getClasspath() {
+		return classpath;
+	}
+
+	public void setClasspath(String classpath) {
+		this.classpath = classpath;
+	}
+	
 	// ===============
 	// create packager
 	// ===============
@@ -474,40 +486,41 @@ public class PackageTask extends AbstractPackageTask {
 		return
 			(Packager) PackagerFactory
 				.createPackager(defaultIfNull(platform, extension.getPlatform()))
-				.additionalModules(defaultIfNull(additionalModules, extension.getAdditionalModules()))
-				.additionalResources(defaultIfNull(additionalResources, extension.getAdditionalResources()))
-				.administratorRequired(defaultIfNull(administratorRequired, extension.getAdministratorRequired()))
-				.version(defaultIfNull(version, extension.getVersion(), getProject().getVersion().toString()))
-				.assetsDir(defaultIfNull(assetsDir, extension.getAssetsDir()))
-				.bundleJre(defaultIfNull(bundleJre, extension.getBundleJre()))
-				.copyDependencies(defaultIfNull(copyDependencies, extension.getCopyDependencies()))
-				.createTarball(defaultIfNull(createTarball, extension.getCreateTarball()))
-				.createZipball(defaultIfNull(createZipball, extension.getCreateZipball()))
-				.customizedJre(defaultIfNull(customizedJre, extension.getCustomizedJre()))
-				.description(defaultIfNull(appDescription, extension.getDescription()))
-				.displayName(defaultIfNull(displayName, extension.getDisplayName()))
-				.envPath(defaultIfNull(envPath, extension.getEnvPath()))
-				.extra(defaultIfNull(extra, extension.getExtra()))
-				.generateInstaller(defaultIfNull(generateInstaller, extension.getGenerateInstaller()))
-				.iconFile(defaultIfNull(iconFile, extension.getIconFile()))
-				.jdkPath(defaultIfNull(jdkPath, extension.getJdkPath()))
-				.jreDirectoryName(defaultIfBlank(jreDirectoryName, extension.getJreDirectoryName()))
-				.jrePath(defaultIfNull(jrePath, extension.getJrePath()))
-				.licenseFile(defaultIfNull(licenseFile, extension.getLicenseFile()))
-				.linuxConfig(defaultIfNull(linuxConfig, extension.getLinuxConfig()))
-				.macConfig(defaultIfNull(macConfig, extension.getMacConfig()))
-				.mainClass(defaultIfNull(mainClass, extension.getMainClass()))
-				.modules(defaultIfNull(modules, extension.getModules()))
-				.name(defaultIfNull(appName, extension.getName()))
-				.organizationEmail(defaultIfNull(organizationEmail, extension.getOrganizationEmail()))
-				.organizationName(defaultIfNull(organizationName, extension.getOrganizationName()))
-				.organizationUrl(defaultIfNull(organizationUrl, extension.getOrganizationUrl()))
-				.outputDirectory(defaultIfNull(outputDirectory, extension.getOutputDirectory()))
-				.runnableJar(defaultIfNull(runnableJar, extension.getRunnableJar()))
-				.useResourcesAsWorkingDir(defaultIfNull(useResourcesAsWorkingDir, extension.isUseResourcesAsWorkingDir()))
-				.url(defaultIfNull(url, extension.getUrl()))
-				.vmArgs(defaultIfNull(vmArgs, extension.getVmArgs()))
-				.winConfig(defaultIfNull(winConfig, extension.getWinConfig()));
+					.additionalModules(defaultIfNull(additionalModules, extension.getAdditionalModules()))
+					.additionalResources(defaultIfNull(additionalResources, extension.getAdditionalResources()))
+					.administratorRequired(defaultIfNull(administratorRequired, extension.getAdministratorRequired()))
+					.version(defaultIfNull(version, extension.getVersion(), getProject().getVersion().toString()))
+					.assetsDir(defaultIfNull(assetsDir, extension.getAssetsDir()))
+					.bundleJre(defaultIfNull(bundleJre, extension.getBundleJre()))
+					.copyDependencies(defaultIfNull(copyDependencies, extension.getCopyDependencies()))
+					.createTarball(defaultIfNull(createTarball, extension.getCreateTarball()))
+					.createZipball(defaultIfNull(createZipball, extension.getCreateZipball()))
+					.customizedJre(defaultIfNull(customizedJre, extension.getCustomizedJre()))
+					.description(defaultIfNull(appDescription, extension.getDescription()))
+					.displayName(defaultIfNull(displayName, extension.getDisplayName()))
+					.envPath(defaultIfNull(envPath, extension.getEnvPath()))
+					.extra(defaultIfNull(extra, extension.getExtra()))
+					.generateInstaller(defaultIfNull(generateInstaller, extension.getGenerateInstaller()))
+					.iconFile(defaultIfNull(iconFile, extension.getIconFile()))
+					.jdkPath(defaultIfNull(jdkPath, extension.getJdkPath()))
+					.jreDirectoryName(defaultIfBlank(jreDirectoryName, extension.getJreDirectoryName()))
+					.jrePath(defaultIfNull(jrePath, extension.getJrePath()))
+					.licenseFile(defaultIfNull(licenseFile, extension.getLicenseFile()))
+					.linuxConfig(defaultIfNull(linuxConfig, extension.getLinuxConfig()))
+					.macConfig(defaultIfNull(macConfig, extension.getMacConfig()))
+					.mainClass(defaultIfNull(mainClass, extension.getMainClass()))
+					.modules(defaultIfNull(modules, extension.getModules()))
+					.name(defaultIfNull(appName, extension.getName()))
+					.organizationEmail(defaultIfNull(organizationEmail, extension.getOrganizationEmail()))
+					.organizationName(defaultIfNull(organizationName, extension.getOrganizationName()))
+					.organizationUrl(defaultIfNull(organizationUrl, extension.getOrganizationUrl()))
+					.outputDirectory(defaultIfNull(outputDirectory, extension.getOutputDirectory()))
+					.classpath(defaultIfNull(classpath, extension.getClasspath()))
+					.runnableJar(defaultIfNull(runnableJar, extension.getRunnableJar()))
+					.useResourcesAsWorkingDir(defaultIfNull(useResourcesAsWorkingDir, extension.isUseResourcesAsWorkingDir()))
+					.url(defaultIfNull(url, extension.getUrl()))
+					.vmArgs(defaultIfNull(vmArgs, extension.getVmArgs()))
+					.winConfig(defaultIfNull(winConfig, extension.getWinConfig()));
 
 	}
 	

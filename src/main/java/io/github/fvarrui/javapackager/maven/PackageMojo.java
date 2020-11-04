@@ -261,17 +261,20 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${project.basedir}/assets", property = "assetsDir", required = false)
 	private File assetsDir;
 	
+	/**
+	 * Classpath
+	 */
+	@Parameter(property = "classpath", required = false)
+	private String classpath;
+
 	public void execute() throws MojoExecutionException {
 		
-		System.out.println(mavenProject.getDependencies());
-
 		Context.setContext(
 				new MavenContext(
 						executionEnvironment(mavenProject, mavenSession, pluginManager), 
 						getLog()
 						)
 				);
-		
 
 		try {
 
@@ -307,6 +310,7 @@ public class PackageMojo extends AbstractMojo {
 						.organizationName(organizationName)
 						.organizationUrl(organizationUrl)
 						.outputDirectory(outputDirectory)
+						.classpath(classpath)
 						.runnableJar(runnableJar)
 						.useResourcesAsWorkingDir(useResourcesAsWorkingDir)
 						.url(url)

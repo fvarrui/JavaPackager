@@ -47,6 +47,7 @@ public class PackagerSettings {
 	protected Map<String, String> extra;
 	protected boolean useResourcesAsWorkingDir;
 	protected File assetsDir;
+	protected String classpath;
 
 	public File getOutputDirectory() {
 		return outputDirectory;
@@ -186,6 +187,10 @@ public class PackagerSettings {
 
 	public File getAssetsDir() {
 		return assetsDir;
+	}
+
+	public String getClasspath() {
+		return classpath;
 	}
 
 	// fluent api
@@ -365,6 +370,11 @@ public class PackagerSettings {
 		return this;
 	}
 
+	public PackagerSettings classpath(String classpath) {
+		this.classpath = classpath;
+		return this;
+	}
+
 	@Override
 	public String toString() {
 		return "PackagerSettings [outputDirectory=" + outputDirectory + ", licenseFile=" + licenseFile + ", iconFile="
@@ -378,7 +388,8 @@ public class PackagerSettings {
 				+ ", runnableJar=" + runnableJar + ", copyDependencies=" + copyDependencies + ", jreDirectoryName="
 				+ jreDirectoryName + ", winConfig=" + winConfig + ", linuxConfig=" + linuxConfig + ", macConfig="
 				+ macConfig + ", createTarball=" + createTarball + ", createZipball=" + createZipball + ", extra="
-				+ extra + ", useResourcesAsWorkingDir=" + useResourcesAsWorkingDir + ", assetsDir=" + assetsDir + "]";
+				+ extra + ", useResourcesAsWorkingDir=" + useResourcesAsWorkingDir + ", assetsDir=" + assetsDir
+				+ ", classpath=" + classpath + "]";
 	}
 
 }

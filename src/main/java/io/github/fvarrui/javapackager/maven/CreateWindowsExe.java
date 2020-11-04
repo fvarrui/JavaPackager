@@ -48,6 +48,7 @@ public class CreateWindowsExe extends ArtifactGenerator {
 		boolean useResourcesAsWorkingDir = windowsPackager.isUseResourcesAsWorkingDir();
 		boolean bundleJre = windowsPackager.getBundleJre();
 		String jreDirectoryName = windowsPackager.getJreDirectoryName(); 
+		String classpath = windowsPackager.getClasspath();
 	
 		List<Element> optsElements = vmArgs.stream().map(arg -> element("opt", arg)).collect(Collectors.toList());
 		
@@ -60,7 +61,9 @@ public class CreateWindowsExe extends ArtifactGenerator {
 		pluginConfig.add(element("manifest", manifestFile.getAbsolutePath()));
 		pluginConfig.add(
 				element("classPath",
-						element("mainClass", mainClass)
+						element("mainClass", mainClass),
+						element("preCp", classpath),
+						element("addDependencies", "false")
 					)
 				);
 		pluginConfig.add(element("chdir", useResourcesAsWorkingDir ? "." : ""));		
