@@ -87,10 +87,10 @@ public class MacPackager extends Packager {
 		// copies universalJavaApplicationStub startup file to boot java app
 		File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
 		FileUtils.copyResourceToFile("/mac/universalJavaApplicationStub", appStubFile, true);
-		FileUtils.processFileContent(appStubFile, stub -> {
-			stub = stub.replaceAll("/Contents/Java", "/Contents/Resources" + (macConfig.isRelocateJar() ? "/Java" : ""));
-			stub = stub.replaceAll("\\$\\{info.name\\}", this.name);
-			return stub;
+		FileUtils.processFileContent(appStubFile, content -> {
+			content = content.replaceAll("/Contents/Java", "/Contents/Resources" + (macConfig.isRelocateJar() ? "/Java" : ""));
+			content = content.replaceAll("\\$\\{info.name\\}", this.name);
+			return content;
 		});
 		appStubFile.setExecutable(true, false);
 
