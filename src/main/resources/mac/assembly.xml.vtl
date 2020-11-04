@@ -8,7 +8,7 @@
 	<fileSets>
 		<fileSet>
 			<outputDirectory>${info.name}.app</outputDirectory>
-			<directory>${project.build.directory}/${info.name}/${info.name}.app</directory>
+			<directory>${info.outputDirectory}/${info.name}/${info.name}.app</directory>
 			<excludes>
 				<exclude>Contents/MacOS/${info.executable.name}</exclude>
 				<exclude>Contents/MacOS/universalJavaApplicationStub</exclude>
@@ -19,7 +19,7 @@
 		</fileSet>
 		<fileSet>
 			<outputDirectory>${info.name}.app</outputDirectory>
-			<directory>${project.build.directory}/${info.name}/${info.name}.app</directory>
+			<directory>${info.outputDirectory}/${info.name}/${info.name}.app</directory>
 			<includes>
 				<include>Contents/MacOS/${info.executable.name}</include>
 				<include>Contents/MacOS/universalJavaApplicationStub</include>
