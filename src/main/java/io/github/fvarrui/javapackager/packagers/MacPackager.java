@@ -88,7 +88,9 @@ public class MacPackager extends Packager {
 		File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
 		FileUtils.copyResourceToFile("/mac/universalJavaApplicationStub", appStubFile, true);
 		FileUtils.processFileContent(appStubFile, content -> {
-			content = content.replaceAll("/Contents/Java", "/Contents/Resources" + (macConfig.isRelocateJar() ? "/Java" : ""));
+			if (!macConfig.isRelocateJar()) {
+				content = content.replaceAll("/Contents/Resources/Java", "/Contents/Resources");
+			}
 			content = content.replaceAll("\\$\\{info.name\\}", this.name);
 			return content;
 		});
