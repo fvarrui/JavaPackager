@@ -45,11 +45,16 @@
 			<string>$APP_PACKAGE/Contents/Resources</string>
 #end
 			<key>ClassPath</key>
+			<array>
 #if ($info.macConfig.relocateJar)
-			<string>Java/${info.jarFile.name};$!{info.classpath}</string>
+				<string>Java/${info.jarFile.name}</string>
 #else
-			<string>${info.jarFile.name};$!{info.classpath}</string>
+				<string>${info.jarFile.name}</string>
 #end
+#if ($info.classpath)
+				<string>${info.classpath}</string>
+#end
+			</array>
 			<key>MainClass</key>
 			<string>${info.mainClass}</string>
 #if (!$info.vmArgs.empty)			
