@@ -81,7 +81,7 @@ public class GenerateDmg extends ArtifactGenerator {
 		
 		// creates image
 		Logger.info("Creating image: " + tempDmgFile.getAbsolutePath());
-		CommandUtils.execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", volumeName, "-fs", "HFS+", "-format", "UDRW", tempDmgFile);
+		CommandUtils.execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", volumeName, "-ov", "-fs", "HFS+", "-format", "UDRW", tempDmgFile);
 		
 		// mounts image
 		Logger.info("Mounting image: " + tempDmgFile.getAbsolutePath());
