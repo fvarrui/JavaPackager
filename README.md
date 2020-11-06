@@ -22,7 +22,7 @@ Add the following `plugin` tag to your `pom.xml`:
 <plugin>
 	<groupId>io.github.fvarrui</groupId>
 	<artifactId>javapackager</artifactId>
-	<version>1.3.0</version>
+	<version>1.4.0</version>
 	<executions>
 		<execution>
 			<phase>package</phase>
@@ -69,7 +69,7 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath 'io.github.fvarrui:javapackager:1.3.0'
+		classpath 'io.github.fvarrui:javapackager:1.4.0'
 	}
 }
 
@@ -140,6 +140,7 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 | `administratorRequired`    | :x:                | `false`                                                      | App will run as administrator (with elevated privileges).    |
 | `assetsDir`                | :x:                | `${basedir}/assets` or `${projectdir}/assets`                | Assets location (icons and custom Velocity templates).       |
 | `bundleJre`                | :x:                | `false`                                                      | Embeds a customized JRE with the app.                        |
+| `classpath`                | :x:                | `null`                                                       | List of additional paths to JVM classpath, separated with `;` (recommended) or `:`. |
 | `copyDependencies`         | :x:                | `true`                                                       | Bundles all dependencies (JAR files) with the app.           |
 | `createTarball`            | :x:                | `false`                                                      | Bundles app folder in tarball.                               |
 | `createZipball`            | :x:                | `false`                                                      | Bundles app folder in zipball.                               |
@@ -164,7 +165,7 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 | `platform`                 | :x:                | `auto`                                                       | Defines the target platform, which could be different to the execution platform. Possible values:  `auto`, `mac`, `linux`, `windows`. Use `auto`  for using execution platform as target. |
 | `runnableJar`              | :x:                | `null`                                                       | Defines your own JAR file to be bundled. If it's ommited, the plugin packages your code in a runnable JAR and bundle it with the app. |
 | `url`                      | :x:                | `null`                                                       | App website URL.                                             |
-| `useResourcesAsWorkingDir` | :x:                | `true`                                                       | Uses app resources folder as default working directory.      |
+| `useResourcesAsWorkingDir` | :x:                | `true`                                                       | Uses app resources folder as default working directory (always `true` on Mac OS). |
 | ` version`                 | :x:                | `${project.version}`                                         | Project version.                                             |
 | `vmArgs`                   | :x:                | `[]`                                                         | Adds VM arguments.                                           |
 
@@ -292,6 +293,7 @@ Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column
 
 ## Older documentation
 
+- [v1.3.0](https://github.com/fvarrui/JavaPackager/blob/v1.3.0/README.md)
 - [v1.2.0](https://github.com/fvarrui/JavaPackager/blob/v1.2.0/README.md)
 - [v1.1.0](https://github.com/fvarrui/JavaPackager/blob/v1.1.0/README.md)
 - [v1.0.3](https://github.com/fvarrui/JavaPackager/blob/v1.0.3/README.md)
