@@ -1,3 +1,8 @@
+#if ($info.useResourcesAsWorkingDir)
+#set ($classpathPrefix="")
+#else
+#set ($classpathPrefix="$ResourcesFolder/")
+#fi
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -45,12 +50,12 @@
 			<key>ClassPath</key>
 			<array>
 #if ($info.macConfig.relocateJar)
-				<string>$ResourcesFolder/Java/${info.jarFile.name}</string>
+				<string>${classpathPrefix}Java/${info.jarFile.name}</string>
 #else
-				<string>$ResourcesFolder/${info.jarFile.name}</string>
+				<string>${classpathPrefix}${info.jarFile.name}</string>
 #end
 #if ($info.classpath)
-				<string>$ResourcesFolder/${info.classpath}</string>
+				<string>${classpathPrefix}${info.classpath}</string>
 #end
 			</array>
 #if (!$info.vmArgs.empty)			
