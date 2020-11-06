@@ -27,7 +27,9 @@ public class MacConfig implements Serializable {
 	private boolean generateDmg = true;
 	private boolean generatePkg = true;
 	private boolean relocateJar = true;
-	private String signingIdentity = "-";
+	private String appIdentifier;
+	private String developerId = "-";
+	private File entitlements;
 
 	public File getIcnsFile() {
 		return icnsFile;
@@ -165,12 +167,28 @@ public class MacConfig implements Serializable {
 		this.relocateJar = relocateJar;
 	}
 
-	public String getSigningIdentity() {
-		return signingIdentity;
+	public String getAppIdentifier() {
+		return appIdentifier;
 	}
 
-	public void setSigningIdentity(String signingIdentity) {
-		this.signingIdentity = signingIdentity;
+	public void setAppIdentifier(String appIdentifier) {
+		this.appIdentifier = appIdentifier;
+	}
+
+	public String getDeveloperId() {
+		return developerId;
+	}
+
+	public void setDeveloperId(String developerId) {
+		this.developerId = developerId;
+	}
+
+	public File getEntitlements() {
+		return entitlements;
+	}
+
+	public void setEntitlements(File entitlements) {
+		this.entitlements = entitlements;
 	}
 
 	@Override
@@ -180,7 +198,8 @@ public class MacConfig implements Serializable {
 				+ ", iconSize=" + iconSize + ", textSize=" + textSize + ", iconX=" + iconX + ", iconY=" + iconY
 				+ ", appsLinkIconX=" + appsLinkIconX + ", appsLinkIconY=" + appsLinkIconY + ", volumeIcon=" + volumeIcon
 				+ ", volumeName=" + volumeName + ", generateDmg=" + generateDmg + ", generatePkg=" + generatePkg
-				+ ", relocateJar=" + relocateJar + ", signingIdentity=" + signingIdentity + "]";
+				+ ", relocateJar=" + relocateJar + ", appIdentifier=" + appIdentifier + ", developerId=" + developerId
+				+ ", entitlements=" + entitlements + "]";
 	}
 
 	/**
@@ -199,5 +218,6 @@ public class MacConfig implements Serializable {
 		this.setIconY(defaultIfNull(this.getIconY(), 116));
 		this.setAppsLinkIconX(defaultIfNull(this.getAppsLinkIconX(), 360));
 		this.setAppsLinkIconY(defaultIfNull(this.getAppsLinkIconY(), 116));
+		this.setAppIdentifier(defaultIfNull(this.getAppIdentifier(), packager.getMainClass()));
 	}
 }

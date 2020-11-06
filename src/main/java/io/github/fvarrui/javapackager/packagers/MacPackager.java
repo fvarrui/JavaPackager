@@ -1,6 +1,11 @@
 package io.github.fvarrui.javapackager.packagers;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.codehaus.plexus.util.cli.CommandLineException;
 
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
@@ -114,12 +119,30 @@ public class MacPackager extends Packager {
 
 		// codesigns app folder
 		if (Platform.mac.isCurrentPlatform()) {
-			CommandUtils.execute("codesign", "--force", "--deep", "--sign", this.macConfig.getSigningIdentity(), appFile);
+			codesign(this.macConfig.getDeveloperId(), this.macConfig.getEntitlements(), this.appFile);
 		} else {
 			Logger.warn("Generated app could not be signed due to current platform is " + Platform.getCurrentPlatform());
 		}
 		
 		return appFile;
+	}
+
+	private void codesign(String developerId, File entitlements, File appFile) throws IOException, CommandLineException {
+		List<Object> codesignArgs = new ArrayList<>();
+		codesignArgs.add("--force");
+		codesignArgs.add("--deep");
+		if (entitlements == null) {
+			Logger.warn("Entitlements file not specified");
+		} else if (!entitlements.exists()) {
+			Logger.warn("Entitlements file doesn't exist: " + entitlements);
+		} else {
+			codesignArgs.add("--entitlements");
+			codesignArgs.add(entitlements);
+		}
+		codesignArgs.add("--sign");
+		codesignArgs.add(developerId);
+		codesignArgs.add(appFile);
+		CommandUtils.execute("codesign", codesignArgs.toArray(new Object[codesignArgs.size()]));
 	}
 
 }
