@@ -1,8 +1,3 @@
-#if ($info.useResourcesAsWorkingDir)
-#set ($classpathPrefix="")
-#else
-#set ($classpathPrefix="$ResourcesFolder/")
-#end
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -16,7 +11,7 @@
 		<key>CFBundleIconFile</key>
 		<string>${info.name}.icns</string>
 		<key>CFBundleIdentifier</key>
-		<string>${info.mainClass}</string>
+		<string>${info.macConfig.appId}</string>
 		<key>CFBundleDisplayName</key>
 		<string>${info.displayName}</string>
 		<key>CFBundleInfoDictionaryVersion</key>
@@ -49,13 +44,8 @@
 			<string>${info.mainClass}</string>
 			<key>ClassPath</key>
 			<array>
-#if ($info.macConfig.relocateJar)
-				<string>${classpathPrefix}Java/${info.jarFile.name}</string>
-#else
-				<string>${classpathPrefix}${info.jarFile.name}</string>
-#end
-#if ($info.classpath)
-				<string>${classpathPrefix}${info.classpath}</string>
+#foreach ($classpath in $info.classpaths)
+				<string>$classpath</string>
 #end
 			</array>
 #if (!$info.vmArgs.empty)			

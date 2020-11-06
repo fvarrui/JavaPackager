@@ -1,6 +1,11 @@
 package io.github.fvarrui.javapackager.packagers;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
 
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
@@ -74,15 +79,27 @@ public class WindowsPackager extends Packager {
 
 		// sets executable file
 		executable = new File(appFolder, name + ".exe");
-
-		// invokes launch4j to generate windows executable
 		
+		// process classpath
+		if (classpath != null) {
+			classpaths = Arrays.asList(classpath.split(";"));
+			if (!isUseResourcesAsWorkingDir()) {
+				classpaths = classpaths.stream().map(cp -> new File(cp).isAbsolute() ? cp : "%EXEDIR%/" + cp).collect(Collectors.toList());
+			}
+			classpath = StringUtils.join(classpaths, ";");
+		}
+		
+		// invokes launch4j to generate windows executable
 		executable = Context.getContext().createWindowsExe(this);
 
 		Logger.infoUnindent("Windows EXE file created in " + executable + "!");		
 		
 		return appFolder;
 	}
-
 	
+	public static void main(String[] args) {
+		String classpath = "plugins/*:addons/*";
+		List<String> classpaths = Arrays.asList(classpath.split("[:;]"));
+		System.out.println(classpaths);
+	}
 }

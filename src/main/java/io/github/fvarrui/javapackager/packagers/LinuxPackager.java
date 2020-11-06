@@ -1,6 +1,10 @@
 package io.github.fvarrui.javapackager.packagers;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
 
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
@@ -42,6 +46,15 @@ public class LinuxPackager extends Packager {
 
 		// sets executable file
 		this.executable = new File(appFolder, name);
+		
+		// process classpath
+		if (classpath != null) {
+			classpaths = Arrays.asList(classpath.split("[:;]"));
+			if (!isUseResourcesAsWorkingDir()) {
+				classpaths = classpaths.stream().map(cp -> new File(cp).isAbsolute() ? cp : "$SCRIPTPATH/" + cp).collect(Collectors.toList());
+			}
+			classpath = StringUtils.join(classpaths, ":");
+		}
 		
 		// generates startup.sh script to boot java app
 		File startupFile = new File(assetsFolder, "startup.sh");

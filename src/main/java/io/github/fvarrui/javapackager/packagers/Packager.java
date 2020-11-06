@@ -42,6 +42,9 @@ public abstract class Packager extends PackagerSettings {
 	protected File jarFileDestinationFolder;
 	protected File jreDestinationFolder;
 	protected File resourcesDestinationFolder;
+	
+	// processed classpaths list
+	protected List<String> classpaths = new ArrayList<>();
 
 	// ===============================================	
 	
@@ -67,6 +70,10 @@ public abstract class Packager extends PackagerSettings {
 	
 	public File getLibsFolder() {
 		return libsFolder;
+	}
+	
+	public List<String> getClasspaths() {
+		return classpaths;
 	}
 
 	// ===============================================

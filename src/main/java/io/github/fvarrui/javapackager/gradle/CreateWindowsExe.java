@@ -1,6 +1,7 @@
 package io.github.fvarrui.javapackager.gradle;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,10 +42,6 @@ public class CreateWindowsExe extends ArtifactGenerator {
 		boolean useResourcesAsWorkingDir = windowsPackager.isUseResourcesAsWorkingDir();
 		boolean bundleJre = windowsPackager.getBundleJre();
 		String jreDirectoryName = windowsPackager.getJreDirectoryName();
-		String classpath = windowsPackager.getClasspath();
-		
-		Set<String> classpathSet = new HashSet<>();
-		if (classpath != null) classpathSet.add(classpath);
 		
 		Launch4jLibraryTask l4jTask = createLaunch4jTask();
 		l4jTask.setHeaderType(winConfig.getHeaderType().toString());
@@ -54,7 +51,7 @@ public class CreateWindowsExe extends ArtifactGenerator {
 		l4jTask.setIcon(iconFile.getAbsolutePath());
 		l4jTask.setManifest(manifestFile.getAbsolutePath());
 		l4jTask.setMainClassName(mainClass);
-		l4jTask.setClasspath(classpathSet);
+		l4jTask.setClasspath(new HashSet<>(windowsPackager.getClasspaths()));
 		l4jTask.setChdir(useResourcesAsWorkingDir ? "." : "");
 		l4jTask.setBundledJrePath(bundleJre ? jreDirectoryName : "%JAVA_HOME%");
 		l4jTask.getJvmOptions().addAll(vmArgs);

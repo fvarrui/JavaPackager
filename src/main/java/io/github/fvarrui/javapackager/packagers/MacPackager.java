@@ -3,8 +3,11 @@ package io.github.fvarrui.javapackager.packagers;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.plexus.util.cli.CommandLineException;
 
 import io.github.fvarrui.javapackager.model.Platform;
@@ -111,6 +114,14 @@ public class MacPackager extends Packager {
 			return content;
 		});
 		appStubFile.setExecutable(true, false);
+		
+		// process classpath
+		classpath = (this.macConfig.isRelocateJar() ? "Java/" : "") + this.jarFile.getName() + ":" + classpath;
+		classpaths = Arrays.asList(classpath.split("[:;]"));
+		if (!isUseResourcesAsWorkingDir()) {
+			classpaths = classpaths.stream().map(cp -> new File(cp).isAbsolute() ? cp : "$ResourcesFolder/" + cp).collect(Collectors.toList());
+		}
+		classpath = StringUtils.join(classpaths, ":");
 
 		// creates and write the Info.plist file
 		File infoPlistFile = new File(contentsFolder, "Info.plist");

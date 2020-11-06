@@ -27,7 +27,7 @@ public class MacConfig implements Serializable {
 	private boolean generateDmg = true;
 	private boolean generatePkg = true;
 	private boolean relocateJar = true;
-	private String appIdentifier;
+	private String appId;
 	private String developerId = "-";
 	private File entitlements;
 
@@ -167,12 +167,12 @@ public class MacConfig implements Serializable {
 		this.relocateJar = relocateJar;
 	}
 
-	public String getAppIdentifier() {
-		return appIdentifier;
+	public String getAppId() {
+		return appId;
 	}
 
-	public void setAppIdentifier(String appIdentifier) {
-		this.appIdentifier = appIdentifier;
+	public void setAppId(String appId) {
+		this.appId = appId;
 	}
 
 	public String getDeveloperId() {
@@ -198,7 +198,7 @@ public class MacConfig implements Serializable {
 				+ ", iconSize=" + iconSize + ", textSize=" + textSize + ", iconX=" + iconX + ", iconY=" + iconY
 				+ ", appsLinkIconX=" + appsLinkIconX + ", appsLinkIconY=" + appsLinkIconY + ", volumeIcon=" + volumeIcon
 				+ ", volumeName=" + volumeName + ", generateDmg=" + generateDmg + ", generatePkg=" + generatePkg
-				+ ", relocateJar=" + relocateJar + ", appIdentifier=" + appIdentifier + ", developerId=" + developerId
+				+ ", relocateJar=" + relocateJar + ", appId=" + appId + ", developerId=" + developerId
 				+ ", entitlements=" + entitlements + "]";
 	}
 
@@ -218,6 +218,6 @@ public class MacConfig implements Serializable {
 		this.setIconY(defaultIfNull(this.getIconY(), 116));
 		this.setAppsLinkIconX(defaultIfNull(this.getAppsLinkIconX(), 360));
 		this.setAppsLinkIconY(defaultIfNull(this.getAppsLinkIconY(), 116));
-		this.setAppIdentifier(defaultIfNull(this.getAppIdentifier(), packager.getMainClass()));
+		this.setAppId(defaultIfNull(this.getAppId(), packager.getMainClass()));
 	}
 }
