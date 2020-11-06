@@ -3,11 +3,11 @@
 ```xml
 <macConfig>
 	<!-- general properties -->
+    	<appId>app unique identifier</appId>
 	<icnsFile>path/to/icon.icns</icnsFile>
 	<generateDmg>true|false</generateDmg>
 	<generatePkg>true|false</generatePkg>
 	<relocateJar>true|false</relocateJar>
-    	<appId>app unique identifier</appId>
 	<!-- signing properties -->
     	<developerId>singning identity</developerId>
     	<entitlements>path/to/entitlements.plist</entitlements>
