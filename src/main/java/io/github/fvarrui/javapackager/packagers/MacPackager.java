@@ -37,6 +37,12 @@ public class MacPackager extends Packager {
 	public void doInit() throws Exception {
 
 		this.macConfig.setDefaults(this);
+	
+		// FIX useResourcesAsWorkingDir=false doesn't work fine on Mac OS (option disabled) 
+		if (!this.isUseResourcesAsWorkingDir()) {
+			this.useResourcesAsWorkingDir = true;
+			Logger.warn("'useResourcesAsWorkingDir' property disabled on Mac OS (useResourcesAsWorkingDir is always true)");
+		}
 		
 	}
 
