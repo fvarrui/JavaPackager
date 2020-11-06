@@ -54,6 +54,7 @@ public class CreateTarball extends ArtifactGenerator {
 					),
 					goal("single"),
 					configuration(
+							element("outputDirectory", outputDirectory.getAbsolutePath()),
 							element("formats", element("format", format)),
 							element("descriptors", element("descriptor", assemblyFile.getAbsolutePath())),
 							element("finalName", finalName),

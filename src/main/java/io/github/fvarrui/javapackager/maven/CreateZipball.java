@@ -54,10 +54,11 @@ public class CreateZipball extends ArtifactGenerator {
 					),
 					goal("single"),
 					configuration(
+							element("outputDirectory", outputDirectory.getAbsolutePath()),
 							element("formats", element("format", format)),
 							element("descriptors", element("descriptor", assemblyFile.getAbsolutePath())),
 							element("finalName", finalName),
-							element("appendAssemblyId", "false")
+							element("appendAssemblyId", "false")							
 					),
 					Context.getMavenContext().getEnv()
 				);
