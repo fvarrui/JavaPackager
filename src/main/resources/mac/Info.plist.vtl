@@ -40,10 +40,8 @@
 #end
 		<key>JavaX</key>
 		<dict>
-#if ($info.useResourcesAsWorkingDir)		
-			<key>WorkingDirectory</key>
-			<string>$APP_PACKAGE/Contents/Resources</string>
-#end
+			<key>MainClass</key>
+			<string>${info.mainClass}</string>
 			<key>ClassPath</key>
 			<array>
 #if ($info.macConfig.relocateJar)
@@ -55,8 +53,6 @@
 				<string>${info.classpath}</string>
 #end
 			</array>
-			<key>MainClass</key>
-			<string>${info.mainClass}</string>
 #if (!$info.vmArgs.empty)			
 			<key>VMOptions</key>
 			<array>
@@ -64,6 +60,10 @@
 				<string>$vmArg</string>
 #end			
 			</array>
+#end
+#if ($info.useResourcesAsWorkingDir)		
+			<key>WorkingDirectory</key>
+			<string>$APP_PACKAGE/Contents/Resources</string>
 #end
 		</dict>
 		<key>LSEnvironment</key>
