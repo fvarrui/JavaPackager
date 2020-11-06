@@ -5,7 +5,7 @@
 	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
 	<id>bundle</id>
 	<includeBaseDirectory>false</includeBaseDirectory>
-	<baseDirectory>${info.outputDirectory}</baseDirectory>
+	<outputDirectory>${info.outputDirectory}</outputDirectory>
 	<fileSets>
 		<fileSet>
 			<outputDirectory>${info.name}</outputDirectory>
@@ -23,7 +23,6 @@
 			<includes>
 				<include>${info.executable.name}</include>
 #if ($info.bundleJre)				
-				<include>${info.jreDirectoryName}/bin/*</include>
 				<include>${info.jreDirectoryName}/bin/*</include>
 #end
 			</includes>
