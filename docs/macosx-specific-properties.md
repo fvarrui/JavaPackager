@@ -8,6 +8,7 @@
 	<generatePkg>true|false</generatePkg>
 	<relocateJar>true|false</relocateJar>
     	<appId>app unique identifier</appId>
+	<!-- signing properties -->
     	<developerId>singning identity</developerId>
     	<entitlements>path/to/entitlements.plist</entitlements>
 	<!-- properties used in DMG disk image generation -->
