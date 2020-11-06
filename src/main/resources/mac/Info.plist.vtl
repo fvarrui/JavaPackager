@@ -45,12 +45,12 @@
 			<key>ClassPath</key>
 			<array>
 #if ($info.macConfig.relocateJar)
-				<string>Java/${info.jarFile.name}</string>
+				<string>$ResourcesFolder/Java/${info.jarFile.name}</string>
 #else
-				<string>${info.jarFile.name}</string>
+				<string>$ResourcesFolder/${info.jarFile.name}</string>
 #end
 #if ($info.classpath)
-				<string>${info.classpath}</string>
+				<string>$ResourcesFolder/${info.classpath}</string>
 #end
 			</array>
 #if (!$info.vmArgs.empty)			
