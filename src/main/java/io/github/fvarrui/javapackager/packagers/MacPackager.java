@@ -73,17 +73,28 @@ public class MacPackager extends Packager {
 	@Override
 	public File doCreateApp() throws Exception {
 		
-		// sets startup file
-		this.executable = new File(macOSFolder, "startup");			
 
 		// copies jarfile to Java folder
 		FileUtils.copyFileToFolder(jarFile, javaFolder);
 		
-		// creates startup file to boot java app
-		VelocityUtils.render("mac/startup.vtl", executable, this);
-		executable.setExecutable(true, false);
-		Logger.info("Startup script file created in " + executable.getAbsolutePath());
+		if (this.administratorRequired) {
 
+			// sets startup file
+			this.executable = new File(macOSFolder, "startup");			
+			
+			// creates startup file to boot java app
+			VelocityUtils.render("mac/startup.vtl", executable, this);
+			executable.setExecutable(true, false);
+			Logger.info("Startup script file created in " + executable.getAbsolutePath());
+
+		} else {
+			
+			// sets startup file
+			this.executable = new File(macOSFolder, "universalJavaApplicationStub");						
+			Logger.info("Using " + executable.getAbsolutePath() + " as startup script");
+			
+		}
+		
 		// copies universalJavaApplicationStub startup file to boot java app
 		File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
 		FileUtils.copyResourceToFile("/mac/universalJavaApplicationStub", appStubFile, true);
