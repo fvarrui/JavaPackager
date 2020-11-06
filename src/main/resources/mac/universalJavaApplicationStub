@@ -81,7 +81,7 @@ stub_logger "[StubDir] $PROGDIR"
 # set files and folders
 ############################################
 
-$CurrentWorkingDirectory=$(pwd)
+CurrentWorkingDirectory=$(pwd)
 
 # the absolute path of the app package
 cd "$PROGDIR"/../../ || exit 11
