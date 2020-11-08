@@ -3,7 +3,7 @@ package io.github.fvarrui.javapackager.gradle;
 import java.io.File;
 import java.util.UUID;
 
-import com.netflix.gradle.plugins.deb.Deb;
+//import com.netflix.gradle.plugins.deb.Deb;
 
 import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.Context;
@@ -33,6 +33,9 @@ public class GenerateDeb extends ArtifactGenerator {
 
 		Logger.warn("Sorry! " + getArtifactName() + " generation is not yet available");
 		
+		return null;
+		
+		/*
 		File assetsFolder = linuxPackager.getAssetsFolder();
 		String name = linuxPackager.getName();
 		String description = linuxPackager.getDescription();
@@ -69,10 +72,10 @@ public class GenerateDeb extends ArtifactGenerator {
 		debTask.setArchStr("amd64");
 		debTask.setDistribution("development");
 		
-		/* installation destination */
+		// installation destination
 		debTask.into("/opt/" + name);
 		
-		/* includes app folder files, except executable file and jre/bin/java */
+		// includes app folder files, except executable file and jre/bin/java
 		debTask.from(appFolder, c -> {
 			c.into(".");
 			c.exclude(executable.getName());
@@ -81,13 +84,13 @@ public class GenerateDeb extends ArtifactGenerator {
 			}
 		});
 		
-		/* executable */
+		// executable
 		debTask.from(executable, c -> {
 			c.into(".");
 			c.setFileMode(0755);
 		});
 
-		/* java binary file */
+		// java binary file
 		if (bundleJre) {
 			debTask.from(new File(appFolder, jreDirectoryName + "/bin/java"), c -> {
 				c.into(".");
@@ -95,19 +98,22 @@ public class GenerateDeb extends ArtifactGenerator {
 			});
 		}
 
-		/* desktop file */
+		// desktop file
 		debTask.from(desktopFile, c -> {
 			c.into("/usr/share/applications");
 		});
 
-		/* symbolic link in /usr/local/bin to app binary */
+		// symbolic link in /usr/local/bin to app binary
 		debTask.link("/usr/local/bin/" + name, "/opt/" + name + "/" + name, 0777);
 
 		return debFile;
+
+		*/
+
 	}
 	
-	private Deb createDebTask() {
-		return Context.getGradleContext().getProject().getTasks().create("createDEb_" + UUID.randomUUID(), Deb.class);
-	}
+//	private Deb createDebTask() {
+//		return Context.getGradleContext().getProject().getTasks().create("createDEb_" + UUID.randomUUID(), Deb.class);
+//	}
 	
 }
