@@ -34,7 +34,8 @@ Add the following `plugin` tag to your `pom.xml`:
 				<mainClass>path.to.your.mainClass</mainClass>
 				<!-- optional -->
 				<bundleJre>true|false</bundleJre>
-				<generateInstaller>true|false</generateInstaller>       				<administratorRequired>true|false</administratorRequired>
+				<generateInstaller>true|false</generateInstaller>
+                <administratorRequired>true|false</administratorRequired>
 				<platform>auto|linux|mac|windows</platform>
 				<additionalResources>
 					<additionalResource>file path</additionalResource>
