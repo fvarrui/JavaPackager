@@ -150,7 +150,7 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 | `envPath`                  | :x:                | `null`                                                       | Defines PATH environment variable in GNU/Linux and Mac OS X startup scripts. |
 | `extra`                    | :x:                | `null`                                                       | Map with extra properties to be used in customized Velocity templates, accesible through `$info.extra` variable. |
 | `generateInstaller`        | :x:                | `true`                                                       | Generates an installer for the app.                          |
-| `iconFile`                 | :x:                | `null`                                                       | Path to the app icon file (PNG, XPM, ICO or ICNS). **:warning: Deprecated (see platform specific properties).** |
+| `iconFile`                 | :x:                | `null`                                                       | Path to the app icon file (PNG, XPM, ICO or ICNS). **:warning: Deprecated (see [platform specific properties](#platform-specific-properties)).** |
 | `jdkPath`                  | :x:                | `${java.home}`                                               | JDK used to generate a customized JRE. It allows to bundle customized JREs for different platforms. |
 | `jreDirectoryName`         | :x:                | `"jre"`                                                      | Bundled JRE directory name.                                  |
 | `jrePath`                  | :x:                | `""`                                                         | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least. |
@@ -240,7 +240,7 @@ ${assetsDir}/
 
 > Use [default templates](https://github.com/fvarrui/JavaPackager/tree/master/src/main/resources) as examples.
 
-An object called `info` is passed to all templates with all plugin properties.
+An object called `info` of type [`PackagerSettings`](https://github.com/fvarrui/JavaPackager/blob/master/src/main/java/io/github/fvarrui/javapackager/packagers/PackagerSettings.java) is passed to all templates with all plugin properties.
 
 ### Additional JVM options at runtime
 
