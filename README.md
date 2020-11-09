@@ -150,7 +150,7 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 | `envPath`                  | :x:                | `null`                                                       | Defines PATH environment variable in GNU/Linux and Mac OS X startup scripts. |
 | `extra`                    | :x:                | `null`                                                       | Map with extra properties to be used in customized Velocity templates, accesible through `$info.extra` variable. |
 | `generateInstaller`        | :x:                | `true`                                                       | Generates an installer for the app.                          |
-| `iconFile`                 | :x:                | `null`                                                       | Path to the app icon file (PNG, XPM, ICO or ICNS). **:warning: Deprecated (see [platform specific properties](#platform-specific-properties)).** |
+| `iconFile`                 | :x:                | `null`                                                       | Path to the app icon file (PNG, XPM, ICO or ICNS). **:warning: Deprecated (see platform specific properties).** |
 | `jdkPath`                  | :x:                | `${java.home}`                                               | JDK used to generate a customized JRE. It allows to bundle customized JREs for different platforms. |
 | `jreDirectoryName`         | :x:                | `"jre"`                                                      | Bundled JRE directory name.                                  |
 | `jrePath`                  | :x:                | `""`                                                         | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least. |
@@ -187,7 +187,7 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 
 Some assets, such as application icons and Velocity templates, could be placed in `${assetsDir}` folder organized by platform.
 
-```
+```bash
 ${assetsDir}/
 ├── linux/
 ├── mac/
@@ -198,7 +198,7 @@ ${assetsDir}/
 
 If icons are located in `${assetsDir}` folders, it would not be necessary to specify the `iconFile` property:
 
-```
+```bash
 ${assetsDir}/
 ├── linux/
 │   ├── ${name}.png     # on GNU/Linux it has to be a PNG file for DEB package
@@ -218,7 +218,7 @@ ${assetsDir}/
 
 It is possible to use your own customized templates. You just have to put one of the following templates in the `${assetsDir}` folder organized by platform, and the plugin will use these templates instead of default ones:
 
-```
+```bash
 ${assetsDir}/
 ├── linux/
 |   ├── assembly.xml.vtl               # maven-assembly-plugin template to generate ZIP/TGZ bundles for GNU/Linux
