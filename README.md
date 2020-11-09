@@ -242,6 +242,21 @@ ${assetsDir}/
 
 An object called `info` is passed to all templates with all plugin properties.
 
+### Additional JVM options at runtime
+
+When you build your app, all configuration details are hardcoded into the executable and cannot be changed without recreating it or hacking with a resource editor. JavaPackager introduces a feature that allows to pass additional JVM options at runtime from an `.l4j.ini` file (like [Launch4j](http://launch4j.sourceforge.net/docs.html) does, but available for all platforms in the same way). So, you can specify these options in the packager's configuration (packaging time), in INI file (runtime) or in both. 
+
+The INI file's name must correspond to `${name}.l4j.ini` and it has to be located next to the executable on Windows and GNU/Linux, and in `Resources` folder on Mac OS X.
+
+The options should be separated with spaces or new lines:
+
+```ini
+# Additional JVM options
+-Dswing.aatext=true
+-Dsomevar="%SOMEVAR%"
+-Xms16m
+```
+
 ## How to build and install the plugin
 
 > Useful to try SNAPSHOT versions.
