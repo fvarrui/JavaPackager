@@ -14,7 +14,7 @@ It was born while teaching to my students how to build and distribute their Java
 
 ## How to use this plugin
 
-### Config your project and package your app with Maven
+### Package your app with Maven
 
 Add the following `plugin` tag to your `pom.xml`:
 
@@ -60,7 +60,7 @@ And execute the next command in project's root folder:
 mvn package
 ```
 
-### Config your project and package your app with Gradle
+### Package your app with Gradle
 
 Apply JavaPackager plugin in `build.gradle` using legacy mode (because at the moment it's only available in Maven Central repository):
 
