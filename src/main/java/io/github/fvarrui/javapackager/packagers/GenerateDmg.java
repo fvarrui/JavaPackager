@@ -1,6 +1,7 @@
 package io.github.fvarrui.javapackager.packagers;
 
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+import static io.github.fvarrui.javapackager.utils.CommandUtils.execute;
 
 import java.io.File;
 import java.util.Arrays;
@@ -8,7 +9,6 @@ import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 
 import io.github.fvarrui.javapackager.model.MacConfig;
-import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.ThreadUtils;
@@ -81,11 +81,14 @@ public class GenerateDmg extends ArtifactGenerator {
 		
 		// creates image
 		Logger.info("Creating image: " + tempDmgFile.getAbsolutePath());
-		CommandUtils.execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", volumeName, "-ov", "-fs", "HFS+", "-format", "UDRW", tempDmgFile);
+		execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", volumeName, "-ov", "-fs", "HFS+", "-format", "UDRW", tempDmgFile);
+
+		Logger.info("Unmounting disk image (if mounted)...");
+		execute("hdiutil", "detach", volumeName);
 		
 		// mounts image
 		Logger.info("Mounting image: " + tempDmgFile.getAbsolutePath());
-		String result = CommandUtils.execute("hdiutil", "attach", "-readwrite", "-noverify", "-noautoopen", tempDmgFile);
+		String result = execute("hdiutil", "attach", "-readwrite", "-noverify", "-noautoopen", tempDmgFile);
 		String deviceName = Arrays.asList(result.split("\n"))
 									.stream()
 									.filter(s -> s.contains(mountFolder.getAbsolutePath()))
@@ -106,26 +109,26 @@ public class GenerateDmg extends ArtifactGenerator {
 		
 		// runs applescript 
 		Logger.info("Running applescript");
-		CommandUtils.execute("/usr/bin/osascript", applescriptFile, volumeName);
+		execute("/usr/bin/osascript", applescriptFile, volumeName);
 	
 		// makes sure it's not world writeable and user readable
 		Logger.info("Fixing permissions...");
-		CommandUtils.execute("chmod", "-Rf", "u+r,go-w", mountFolder);
+		execute("chmod", "-Rf", "u+r,go-w", mountFolder);
 		
 		// makes the top window open itself on mount:
 		Logger.info("Blessing ...");
-		CommandUtils.execute("bless", "--folder", mountFolder, "--openfolder", mountFolder);
+		execute("bless", "--folder", mountFolder, "--openfolder", mountFolder);
 
 		// tells the volume that it has a special file attribute
-		CommandUtils.execute("SetFile", "-a", "C", mountFolder);
+		execute("SetFile", "-a", "C", mountFolder);
 		
 		// unmounts
 		Logger.info("Unmounting disk image...");
-		CommandUtils.execute("hdiutil", "detach", deviceName);
+		execute("hdiutil", "detach", volumeName);
 		
 		// compress image
 		Logger.info("Compressing disk image...");
-		CommandUtils.execute("hdiutil", "convert", tempDmgFile, "-format", "UDZO", "-imagekey", "zlib-level=9", "-o", dmgFile);
+		execute("hdiutil", "convert", tempDmgFile, "-format", "UDZO", "-imagekey", "zlib-level=9", "-o", dmgFile);
 		tempDmgFile.delete();
 
 		// checks if dmg file was created
