@@ -83,8 +83,10 @@ public class GenerateDmg extends ArtifactGenerator {
 		Logger.info("Creating image: " + tempDmgFile.getAbsolutePath());
 		execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", volumeName, "-ov", "-fs", "HFS+", "-format", "UDRW", tempDmgFile);
 
-		Logger.info("Unmounting disk image (if mounted)...");
-		execute("hdiutil", "detach", volumeName);
+		Logger.info("Unmounting disk image ...");
+		if (mountFolder.exists()) {
+			execute("hdiutil", "detach", mountFolder);
+		}
 		
 		// mounts image
 		Logger.info("Mounting image: " + tempDmgFile.getAbsolutePath());
@@ -124,7 +126,7 @@ public class GenerateDmg extends ArtifactGenerator {
 		
 		// unmounts
 		Logger.info("Unmounting disk image...");
-		execute("hdiutil", "detach", volumeName);
+		execute("hdiutil", "detach", mountFolder);
 		
 		// compress image
 		Logger.info("Compressing disk image...");
