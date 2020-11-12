@@ -1,8 +1,9 @@
 package io.github.fvarrui.javapackager.packagers;
 
+import static io.github.fvarrui.javapackager.utils.CommandUtils.execute;
+
 import java.io.File;
 
-import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 import io.github.fvarrui.javapackager.utils.XMLUtils;
@@ -45,13 +46,13 @@ public class GenerateMsi extends ArtifactGenerator {
 		// candle wxs file
 		Logger.info("Compiling file " + wxsFile);
 		File wixobjFile = new File(assetsFolder, name + ".wixobj");
-		CommandUtils.execute("candle", "-out", wixobjFile, wxsFile);
+		execute("candle", "-out", wixobjFile, wxsFile);
 		Logger.info("WIXOBJ file generated in " + wixobjFile +  "!");
 
 		// lighting wxs file
 		Logger.info("Linking file " + wixobjFile);
 		File msiFile = new File(outputDirectory, name + "_" + version + ".msi");
-		CommandUtils.execute("light", "-spdb", "-out", msiFile, wixobjFile);
+		execute("light", "-spdb", "-out", msiFile, wixobjFile);
 
 		// setup file
 		if (!msiFile.exists()) {

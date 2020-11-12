@@ -34,9 +34,9 @@ public class CommandUtils {
 		command.createArguments(arguments);
 		command.toString();
 		
-		result.setCommandLine(command.getCommandLineAsString());
+		String commandLine = command.getCommandLineAsString();
 
-		Logger.info("Executing command: " + result.getCommandLine());
+		Logger.info("Executing command: " + commandLine);
 
 		Process process = command.execute();
 
@@ -57,6 +57,7 @@ public class CommandUtils {
 		output.close();
 		error.close();
 
+		result.setCommandLine(commandLine);
 		result.setOutput(outputBuffer.toString());
 		result.setError(errorBuffer.toString());
 		result.setExitCode(process.exitValue());
