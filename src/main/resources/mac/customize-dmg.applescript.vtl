@@ -11,7 +11,7 @@ on run (volumeName)
 
 			set theBottomRightX to (theXOrigin + theWidth)
 			set theBottomRightY to (theYOrigin + theHeight)
-			set dsStore to "\"" & "/Volumes/" & volumeName & "/" & ".DS_STORE\""
+			set dsStore to "\"/Volumes/" & volumeName & "/.DS_STORE\""
 
 			tell container window
 				set current view to icon view
@@ -30,10 +30,10 @@ on run (volumeName)
 			set background picture of opts to file ".background:background.png"
 
 			-- Positioning
-			set position of item "${info.name}.app" to {${info.macConfig.iconX}, ${info.macConfig.iconY}}
+			set position of item "${info.appFile.name}" to {${info.macConfig.iconX}, ${info.macConfig.iconY}}
 
 			-- Hiding
-			set the extension hidden of item "${info.name}.app" to true
+			set the extension hidden of item "${info.appFile.name}" to true
 
 			-- Application
 			set position of item "Applications" to {${info.macConfig.appsLinkIconX}, ${info.macConfig.appsLinkIconY}}
