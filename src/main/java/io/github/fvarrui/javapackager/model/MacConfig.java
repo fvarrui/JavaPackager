@@ -27,6 +27,7 @@ public class MacConfig implements Serializable {
 	private boolean generateDmg = true;
 	private boolean generatePkg = true;
 	private boolean relocateJar = true;
+	private boolean removeApplicationLink = true;
 	private String appId;
 	private String developerId = "-";
 	private File entitlements;
@@ -167,6 +168,14 @@ public class MacConfig implements Serializable {
 		this.relocateJar = relocateJar;
 	}
 
+	public boolean isRemoveApplicationLink() {
+		return removeApplicationLink;
+	}
+
+	public void setRemoveApplicationLink(boolean removeApplicationLink) {
+		this.removeApplicationLink = removeApplicationLink;
+	}
+
 	public String getAppId() {
 		return appId;
 	}
@@ -198,7 +207,9 @@ public class MacConfig implements Serializable {
 				+ ", iconSize=" + iconSize + ", textSize=" + textSize + ", iconX=" + iconX + ", iconY=" + iconY
 				+ ", appsLinkIconX=" + appsLinkIconX + ", appsLinkIconY=" + appsLinkIconY + ", volumeIcon=" + volumeIcon
 				+ ", volumeName=" + volumeName + ", generateDmg=" + generateDmg + ", generatePkg=" + generatePkg
-				+ ", relocateJar=" + relocateJar + ", appId=" + appId + ", developerId=" + developerId
+				+ ", relocateJar=" + relocateJar
+				+ ", removeApplicationLink=" + removeApplicationLink
+				+ ", appId=" + appId + ", developerId=" + developerId
 				+ ", entitlements=" + entitlements + "]";
 	}
 

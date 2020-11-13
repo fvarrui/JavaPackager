@@ -1,7 +1,7 @@
 package io.github.fvarrui.javapackager.packagers;
 
-import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static io.github.fvarrui.javapackager.utils.CommandUtils.execute;
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 import java.io.File;
 import java.util.Arrays;
@@ -127,6 +127,16 @@ public class GenerateDmg extends ArtifactGenerator {
 		// unmounts
 		Logger.info("Unmounting volume: " + mountFolder);
 		execute("hdiutil", "detach", mountFolder);
+		
+		// remove application link (if required)
+		boolean removeApplicationLink = macPackager.getMacConfig().isRemoveApplicationLink();
+		if (removeApplicationLink) {
+			boolean success = linkFile.delete();
+			if (success)
+				Logger.info("Application link successfully deleted");
+			else
+				Logger.info("Could not delete Application link");
+		}
 		
 		// compress image
 		Logger.info("Compressing disk image...");
