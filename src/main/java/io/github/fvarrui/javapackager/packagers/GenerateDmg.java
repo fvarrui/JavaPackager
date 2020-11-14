@@ -59,12 +59,6 @@ public class GenerateDmg extends ArtifactGenerator {
 		// mount dir
 		File mountFolder = new File("/Volumes/" + volumeName);
 
-		// creates a symlink to Applications folder
-		Logger.info("Creating Applications link");
-		File targetFolder = new File("/Applications");
-		File linkFile = new File(appFolder, "Applications");
-		FileUtils.createSymlink(linkFile, targetFolder);
-
 		// copies background file
 		Logger.info("Copying background image");
 		File backgroundFolder = FileUtils.mkdir(appFolder, ".background");
@@ -102,7 +96,13 @@ public class GenerateDmg extends ArtifactGenerator {
 		// pause to prevent occasional "Can't get disk" (-1728) issues 
 		// https://github.com/seltzered/create-dmg/commit/5fe7802917bb85b40c0630b026d33e421db914ea
 		ThreadUtils.sleep(2000L);
-		
+
+		// creates a symlink to Applications folder
+		Logger.info("Creating Applications link");
+		File targetFolder = new File("/Applications");
+		File linkFile = new File(mountFolder, "Applications");
+		FileUtils.createSymlink(linkFile, targetFolder);
+
 		// renders applescript 
 		Logger.info("Rendering DMG customization applescript ... ");
 		File applescriptFile = new File(assetsFolder, "customize-dmg.applescript");
@@ -127,16 +127,6 @@ public class GenerateDmg extends ArtifactGenerator {
 		// unmounts
 		Logger.info("Unmounting volume: " + mountFolder);
 		execute("hdiutil", "detach", mountFolder);
-		
-		// remove application link (if required)
-		boolean removeApplicationLink = macPackager.getMacConfig().isRemoveApplicationLink();
-		if (removeApplicationLink) {
-			boolean success = linkFile.delete();
-			if (success)
-				Logger.info("Application link successfully deleted");
-			else
-				Logger.info("Could not delete Application link");
-		}
 		
 		// compress image
 		Logger.info("Compressing disk image...");
