@@ -8,6 +8,7 @@
 	<generateDmg>true|false</generateDmg>
 	<generatePkg>true|false</generatePkg>
 	<relocateJar>true|false</relocateJar>
+	<removeApplicationLink>true|false</removeApplicationLink>
 	<!-- signing properties -->
     	<developerId>singning identity</developerId>
     	<entitlements>path/to/entitlements.plist</entitlements>
@@ -34,6 +35,8 @@
 | `generateDmg`  | :x:       | `true`         | Enables DMG disk image file generation.                      |
 | `generatePkg`  | :x:       | `true`         | Enables installation package generation.                     |
 | `relocateJar`  | :x:       | `true`         | If `true`, Jar files are located in `Contents/Resources/Java` folder, otherwise they are located in `Contents/Resources` folder. |
+|
+| `removeApplicationLink`  | :x:       | `removeApplicationLink`         | If `true`, application link in build folder shall be removed after build. |
 | `appId`        | :x:       | `${mainClass}` | App unique identifier.                                       |
 | `developerId`  | :x:       | `null`         | Signing identity.                                            |
 | `entitlements` | :x:       | `null`         | Path to [entitlements](https://developer.apple.com/documentation/bundleresources/entitlements) file. |
