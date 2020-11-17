@@ -21,7 +21,7 @@
 	<internalName>${name}</internalName>
 	<originalFilename>${name}.exe</originalFilename>
 	<!-- setup generation properties -->
-    <setupMode>installForAllUsers|installForCurrentUser|askTheUser</setupMode>
+	<setupMode>installForAllUsers|installForCurrentUser|askTheUser</setupMode>
 	<setupLanguages>
 		<english>compiler:Default.isl</english>
 		<spanish>compiler:Languages\Spanish.isl</english>
