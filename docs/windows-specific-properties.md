@@ -2,11 +2,13 @@
 
 ```xml
 <winConfig>
+    
 	<!-- general properties -->
 	<icoFile>path/to/icon.ico</icoFile>
 	<generateSetup>true|false</generateSetup>
 	<generateMsi>true|false</generateMsi>
 	<generateMsm>true|false</generateMsm>
+    
 	<!-- exe creation properties -->
 	<headerType>gui</headerType>
 	<wrapJar>true|false</wrapJar>
@@ -20,6 +22,7 @@
 	<productName>${name}</productName>
 	<internalName>${name}</internalName>
 	<originalFilename>${name}.exe</originalFilename>
+    
 	<!-- setup generation properties -->
 	<setupMode>installForAllUsers|installForCurrentUser|askTheUser</setupMode>
 	<setupLanguages>
@@ -31,6 +34,7 @@
 	<disableProgramGroupPage>true|false</disableProgramGroupPage>
 	<disableFinishedPage>true|false</disableFinishedPage>
 	<createDesktopIconTask>true|false</createDesktopIconTask>
+    
 </winConfig>
 ```
 
