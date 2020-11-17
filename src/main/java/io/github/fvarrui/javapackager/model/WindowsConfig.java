@@ -11,7 +11,7 @@ import io.github.fvarrui.javapackager.packagers.Packager;
 
 public class WindowsConfig implements Serializable {
 	private static final long serialVersionUID = 2106752412224694318L;
-	
+
 	private File icoFile;
 	private HeaderType headerType;
 	private String companyName;
@@ -36,6 +36,7 @@ public class WindowsConfig implements Serializable {
 	private String msiUpgradeCode;
 	private boolean wrapJar = true;
 	private LinkedHashMap<String, String> setupLanguages = new LinkedHashMap<>();
+	private SetupMode setupMode = SetupMode.installForAllUsers;
 
 	public File getIcoFile() {
 		return icoFile;
@@ -196,7 +197,7 @@ public class WindowsConfig implements Serializable {
 	public void setGenerateMsi(boolean generateMsi) {
 		this.generateMsi = generateMsi;
 	}
-	
+
 	public boolean isGenerateMsm() {
 		return generateMsm;
 	}
@@ -229,6 +230,14 @@ public class WindowsConfig implements Serializable {
 		this.setupLanguages = setupLanguages;
 	}
 
+	public SetupMode getSetupMode() {
+		return setupMode;
+	}
+
+	public void setSetupMode(SetupMode setupMode) {
+		this.setupMode = setupMode;
+	}
+
 	@Override
 	public String toString() {
 		return "WindowsConfig [icoFile=" + icoFile + ", headerType=" + headerType + ", companyName=" + companyName
@@ -240,7 +249,7 @@ public class WindowsConfig implements Serializable {
 				+ ", disableFinishedPage=" + disableFinishedPage + ", createDesktopIconTask=" + createDesktopIconTask
 				+ ", generateSetup=" + generateSetup + ", generateMsi=" + generateMsi + ", generateMsm=" + generateMsm
 				+ ", msiUpgradeCode=" + msiUpgradeCode + ", wrapJar=" + wrapJar + ", setupLanguages=" + setupLanguages
-				+ "]";
+				+ ", setupMode=" + setupMode + "]";
 	}
 
 	/**
