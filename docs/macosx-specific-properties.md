@@ -58,6 +58,6 @@
 | `appsLinkIconX`   | :x:       | `360`                           | X coordinate of Applications link. Relative to DMG window. |
 | `appsLinkIconY`   | :x:       | `116`                           | Y coordinate of Applications link. Relative to DMG window. |
 | `volumeIcon`      | :x:       | `${icon}`                       | Bundled app icon in ICNS format.                           |
-| `volumeName`      | :x:       | `${displayName}`                | Volume name.                                               |
+| `volumeName`      | :x:       | `${displayName}`                | Volume name *(:warning: whitespaces are removed)*.         |
 
 ![DMG properties explained](dmg-properties-explained.png)
