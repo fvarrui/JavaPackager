@@ -2,15 +2,18 @@
 
 ```xml
 <macConfig>
+
 	<!-- general properties -->
 	<appId>app unique identifier</appId>
 	<icnsFile>path/to/icon.icns</icnsFile>
 	<generateDmg>true|false</generateDmg>
 	<generatePkg>true|false</generatePkg>
 	<relocateJar>true|false</relocateJar>
+	
 	<!-- signing properties -->
 	<developerId>singning identity</developerId>
 	<entitlements>path/to/entitlements.plist</entitlements>
+	
 	<!-- properties used in DMG disk image generation -->
 	<backgroundImage>path/to/png</backgroundImage>
 	<windowX>x</windowX>
@@ -25,6 +28,7 @@
 	<appsLinkIconY>y</appsLinkIconY>
 	<volumeIcon>path/to/icns</volumeIcon>
 	<volumeName>${name}</volumeName>
+	
 </macConfig>
 ```
 
