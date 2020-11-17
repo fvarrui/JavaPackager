@@ -21,6 +21,7 @@
 	<internalName>${name}</internalName>
 	<originalFilename>${name}.exe</originalFilename>
 	<!-- setup generation properties -->
+    <setupMode>installForAllUsers|installForCurrentUser|askTheUser</setupMode>
 	<setupLanguages>
 		<english>compiler:Default.isl</english>
 		<spanish>compiler:Languages\Spanish.isl</english>
@@ -64,8 +65,17 @@
 
 | Property                  | Mandatory | Default value                                                | Description                                                  |
 | ------------------------- | --------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `setupMode`               | :x:       | `installForAllUsers`                                         | Setup installation mode: require administrative privileges or not. [*](#setupmode) |
 | `setupLanguages`          | :x:       | `<english>compiler:Default.isl</english><spanish>compiler:Languages\Spanish.isl</spanish>` | Map with setup languages.                                    |
 | `disableDirPage`          | :x:       | `true`                                                       | If this is set to `yes`, Setup will not show the **Select Destination Location** wizard page. |
 | `disableProgramGroupPage` | :x:       | `true`                                                       | If this is set to `yes`, Setup will not show the **Select Start Menu Folder** wizard page. |
 | `disableFinishedPage`     | :x:       | `true`                                                       | If this is set to `yes`, Setup will not show the **Setup Completed** wizard page. |
 | `createDesktopIconTask`   | :x:       | `true`                                                       | If this is set to `yes`, Setup will not ask for **desktop icon creation**. |
+
+### SetupMode
+
+Property `winConfig.setupMode`can be ste with 3 possible values:
+
+- **installForAllUsers** *(default value, to keep the old behaviour)*: installs the app for the all users (behaviour can be changed via command-line with `/currentuser` argument). App installed in `%ProgramFiles%` folder.
+- **installForCurrentUser**: installs the app for the current user (behaviour can be changed via command-line with `/allusers` argument. App installed in `%USERPROFILE%\AppData\Local\Programs` folder.
+- **askTheUser**: asks to the final user if the app has to be installed for all users or only for the curretn user.
