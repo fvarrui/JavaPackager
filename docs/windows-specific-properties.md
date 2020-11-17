@@ -74,8 +74,8 @@
 
 ### SetupMode
 
-Property `winConfig.setupMode`can be ste with 3 possible values:
+Property `winConfig.setupMode` can be set with 3 possible values:
 
-- **installForAllUsers** *(default value, to keep the old behaviour)*: installs the app for the all users (behaviour can be changed via command-line with `/currentuser` argument). App installed in `%ProgramFiles%` folder.
-- **installForCurrentUser**: installs the app for the current user (behaviour can be changed via command-line with `/allusers` argument. App installed in `%USERPROFILE%\AppData\Local\Programs` folder.
-- **askTheUser**: asks to the final user if the app has to be installed for all users or only for the curretn user.
+- **installForAllUsers** *(default value)*: installs the app for the all users in `%ProgramFiles%` folder (behaviour can be changed when running setup installer from command-line with `/currentuser` argument). 
+- **installForCurrentUser**: installs the app for the current user in `%USERPROFILE%\AppData\Local\Programs` folder (behaviour can be changed when running setup installer from command-line with `/allusers` argument).
+- **askTheUser**: asks to the final user if the app has to be installed for all users or only for the current user.
