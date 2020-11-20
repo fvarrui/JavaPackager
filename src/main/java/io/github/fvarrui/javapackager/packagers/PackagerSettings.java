@@ -48,6 +48,7 @@ public class PackagerSettings {
 	protected boolean useResourcesAsWorkingDir;
 	protected File assetsDir;
 	protected String classpath;
+	protected String jreMinVersion;
 
 	public File getOutputDirectory() {
 		return outputDirectory;
@@ -191,6 +192,10 @@ public class PackagerSettings {
 
 	public String getClasspath() {
 		return classpath;
+	}
+
+	public String getJreMinVersion() {
+		return jreMinVersion;
 	}
 
 	// fluent api
@@ -375,6 +380,11 @@ public class PackagerSettings {
 		return this;
 	}
 
+	public PackagerSettings jreMinVersion(String jreMinVersion) {
+		this.jreMinVersion = jreMinVersion;
+		return this;
+	}
+
 	@Override
 	public String toString() {
 		return "PackagerSettings [outputDirectory=" + outputDirectory + ", licenseFile=" + licenseFile + ", iconFile="
@@ -389,7 +399,7 @@ public class PackagerSettings {
 				+ jreDirectoryName + ", winConfig=" + winConfig + ", linuxConfig=" + linuxConfig + ", macConfig="
 				+ macConfig + ", createTarball=" + createTarball + ", createZipball=" + createZipball + ", extra="
 				+ extra + ", useResourcesAsWorkingDir=" + useResourcesAsWorkingDir + ", assetsDir=" + assetsDir
-				+ ", classpath=" + classpath + "]";
+				+ ", classpath=" + classpath + ", jreMinVersion=" + jreMinVersion + "]";
 	}
 
 }

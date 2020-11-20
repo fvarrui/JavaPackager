@@ -7,7 +7,28 @@ SCRIPTPATH=$(dirname $(readlink -e "$0"))
 #if ($info.bundleJre)
 JAVA="$SCRIPTPATH/${info.jreDirectoryName}/bin/java"
 #else
-JAVA=java
+function showMessage() {
+	if type -p notify-send; then
+		notify-send -u critical "${info.name}" "$1"
+	else
+		echo $1
+	fi
+}
+if type -p java; then
+    JAVA=java
+elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
+    JAVA="$JAVA_HOME/bin/java"
+else
+    showMessage "Java not installed"
+    exit 1
+fi
+#if ($info.jreMinVersion)
+JAVA_VERSION=$("$JAVA" -version 2>&1 | awk -F '"' '/version/ {print $2}')
+if [[ "$JAVA_VERSION" < "${info.jreMinVersion}" ]]; then
+    showMessage "The application requires a Java Runtime Environment ${info.jreMinVersion} or higher."
+    exit 1
+fi
+#end
 #end
 
 BINARY="$SCRIPTPATH/${info.executable.name}"

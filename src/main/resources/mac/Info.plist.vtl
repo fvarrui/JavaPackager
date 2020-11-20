@@ -42,13 +42,17 @@
 		<dict>
 			<key>MainClass</key>
 			<string>${info.mainClass}</string>
+#if ($info.jreMinVersion)		
+			<key>JVMVersion</key>
+			<string>${info.jreMinVersion}+</string>
+#end
 			<key>ClassPath</key>
 			<array>
 #foreach ($classpath in $info.classpaths)
 				<string>$classpath</string>
 #end
 			</array>
-#if (!$info.vmArgs.empty)			
+#if (!$info.vmArgs.empty)
 			<key>VMOptions</key>
 			<array>
 #foreach ($vmArg in $info.vmArgs)

@@ -267,6 +267,12 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(property = "classpath", required = false)
 	private String classpath;
 
+	/**
+	 * JRE min version
+	 */
+	@Parameter(property = "jreMinVersion", required = false)
+	private String jreMinVersion;
+
 	public void execute() throws MojoExecutionException {
 		
 		Context.setContext(
@@ -299,6 +305,7 @@ public class PackageMojo extends AbstractMojo {
 						.iconFile(iconFile)
 						.jdkPath(jdkPath)
 						.jreDirectoryName(jreDirectoryName)
+						.jreMinVersion(jreMinVersion)
 						.jrePath(jrePath)
 						.licenseFile(licenseFile)
 						.linuxConfig(linuxConfig)

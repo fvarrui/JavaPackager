@@ -154,6 +154,7 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 | `iconFile`                 | :x:                | `null`                                                       | Path to the app icon file (PNG, XPM, ICO or ICNS). **:warning: Deprecated (see platform specific properties).** |
 | `jdkPath`                  | :x:                | `${java.home}`                                               | JDK used to generate a customized JRE. It allows to bundle customized JREs for different platforms. |
 | `jreDirectoryName`         | :x:                | `"jre"`                                                      | Bundled JRE directory name.                                  |
+| `jreMinVersion`            | :x:                | `null`                                                       | JRE minimum version. If an appropriate version cannot be found display error message. Disabled if a JRE is bundled. |
 | `jrePath`                  | :x:                | `""`                                                         | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least. |
 | `licenseFile`              | :x:                | `${project.licenses[0].url}`  or `${basedir}/LICENSE` or `${projectdir}/LICENSE` | Path to project license file.                                |
 | `mainClass`                | :heavy_check_mark: | `${exec.mainClass}`                                          | Full path to your app main class.                            |

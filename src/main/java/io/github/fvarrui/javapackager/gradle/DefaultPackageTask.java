@@ -31,6 +31,7 @@ public class DefaultPackageTask extends AbstractPackageTask {
 				.iconFile(extension.getIconFile())
 				.jdkPath(extension.getJdkPath())
 				.jreDirectoryName(extension.getJreDirectoryName())
+				.jreMinVersion(extension.getJreMinVersion())
 				.jrePath(extension.getJrePath())
 				.licenseFile(extension.getLicenseFile())
 				.linuxConfig(extension.getLinuxConfig())

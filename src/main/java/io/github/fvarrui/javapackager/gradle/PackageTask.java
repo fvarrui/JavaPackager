@@ -473,6 +473,18 @@ public class PackageTask extends AbstractPackageTask {
 		this.classpath = classpath;
 	}
 	
+	@Input
+	@Optional	
+	private String jreMinVersion;
+
+	public String getJreMinVersion() {
+		return jreMinVersion;
+	}
+
+	public void setJreMinVersion(String jreMinVersion) {
+		this.jreMinVersion = jreMinVersion;
+	}
+	
 	// ===============
 	// create packager
 	// ===============
@@ -504,6 +516,7 @@ public class PackageTask extends AbstractPackageTask {
 					.iconFile(defaultIfNull(iconFile, extension.getIconFile()))
 					.jdkPath(defaultIfNull(jdkPath, extension.getJdkPath()))
 					.jreDirectoryName(defaultIfBlank(jreDirectoryName, extension.getJreDirectoryName()))
+					.jreMinVersion(defaultIfBlank(jreMinVersion, extension.getJreMinVersion()))
 					.jrePath(defaultIfNull(jrePath, extension.getJrePath()))
 					.licenseFile(defaultIfNull(licenseFile, extension.getLicenseFile()))
 					.linuxConfig(defaultIfNull(linuxConfig, extension.getLinuxConfig()))

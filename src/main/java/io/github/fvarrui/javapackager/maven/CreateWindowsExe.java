@@ -14,14 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 
+import io.github.fvarrui.javapackager.gradle.GradleContext;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.packagers.WindowsPackager;
+import io.github.fvarrui.javapackager.utils.Logger;
 
 /**
  * Copies all dependencies to app folder on Maven context
@@ -49,8 +52,19 @@ public class CreateWindowsExe extends ArtifactGenerator {
 		boolean bundleJre = windowsPackager.getBundleJre();
 		String jreDirectoryName = windowsPackager.getJreDirectoryName(); 
 		String classpath = windowsPackager.getClasspath();
+		String jreMinVersion = windowsPackager.getJreMinVersion();
 	
 		List<Element> optsElements = vmArgs.stream().map(arg -> element("opt", arg)).collect(Collectors.toList());
+		
+		List<Element> jreElements = new ArrayList<>();
+		jreElements.add(element("opts", optsElements.toArray(new Element[optsElements.size()])));
+		if (bundleJre) {
+			jreElements.add(element("path", jreDirectoryName));
+		} else if (!StringUtils.isBlank(jreMinVersion)) {
+			jreElements.add(element("minVersion", jreMinVersion));
+		} else {
+			jreElements.add(element("path", "%JAVA_HOME%"));			
+		}
 		
 		List<Element> pluginConfig = new ArrayList<>();
 		pluginConfig.add(element("headerType", "" + winConfig.getHeaderType()));
@@ -67,12 +81,7 @@ public class CreateWindowsExe extends ArtifactGenerator {
 					)
 				);
 		pluginConfig.add(element("chdir", useResourcesAsWorkingDir ? "." : ""));		
-		pluginConfig.add(
-					element("jre",
-						element("path", bundleJre ? jreDirectoryName : "%JAVA_HOME%"),
-						element("opts", optsElements.toArray(new Element[optsElements.size()]))
-					)
-				);
+		pluginConfig.add(element("jre", jreElements.toArray(new Element[jreElements.size()])));
 		pluginConfig.add(
 					element("versionInfo", 
 						element("fileVersion", winConfig.getFileVersion()),
