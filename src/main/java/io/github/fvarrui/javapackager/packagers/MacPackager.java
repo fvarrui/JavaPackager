@@ -122,7 +122,7 @@ public class MacPackager extends Packager {
 		appStubFile.setExecutable(true, false);
 		
 		// process classpath
-		classpath = (this.macConfig.isRelocateJar() ? "Java/" : "") + this.jarFile.getName() + ":" + classpath;
+		classpath = (this.macConfig.isRelocateJar() ? "Java/" : "") + this.jarFile.getName() + (classpath != null ? ":" + classpath : "");
 		classpaths = Arrays.asList(classpath.split("[:;]"));
 		if (!isUseResourcesAsWorkingDir()) {
 			classpaths = classpaths.stream().map(cp -> new File(cp).isAbsolute() ? cp : "$ResourcesFolder/" + cp).collect(Collectors.toList());
