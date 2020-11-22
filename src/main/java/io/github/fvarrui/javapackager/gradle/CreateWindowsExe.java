@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.gradle.api.Project;
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
@@ -40,6 +41,7 @@ public class CreateWindowsExe extends ArtifactGenerator {
 		boolean useResourcesAsWorkingDir = windowsPackager.isUseResourcesAsWorkingDir();
 		boolean bundleJre = windowsPackager.getBundleJre();
 		String jreDirectoryName = windowsPackager.getJreDirectoryName();
+		String jreMinVersion = windowsPackager.getJreMinVersion();
 		
 		Launch4jLibraryTask l4jTask = createLaunch4jTask();
 		l4jTask.setHeaderType(winConfig.getHeaderType().toString());
@@ -51,7 +53,13 @@ public class CreateWindowsExe extends ArtifactGenerator {
 		l4jTask.setMainClassName(mainClass);
 		l4jTask.setClasspath(new HashSet<>(windowsPackager.getClasspaths()));
 		l4jTask.setChdir(useResourcesAsWorkingDir ? "." : "");
-		l4jTask.setBundledJrePath(bundleJre ? jreDirectoryName : "%JAVA_HOME%");
+		if (bundleJre) {
+			l4jTask.setBundledJrePath(jreDirectoryName);
+		} else if (!StringUtils.isBlank(jreMinVersion)) { 
+			l4jTask.setJreMinVersion(jreMinVersion);
+		} else {
+			l4jTask.setBundledJrePath("%JAVA_HOME%");			
+		}
 		l4jTask.getJvmOptions().addAll(vmArgs);
 		l4jTask.setVersion(winConfig.getProductVersion());
 		l4jTask.setTextVersion(winConfig.getTxtProductVersion());

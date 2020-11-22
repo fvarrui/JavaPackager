@@ -42,7 +42,7 @@
 		<dict>
 			<key>MainClass</key>
 			<string>${info.mainClass}</string>
-#if ($info.jreMinVersion)		
+#if (!$info.bundleJre && $info.jreMinVersion)		
 			<key>JVMVersion</key>
 			<string>${info.jreMinVersion}+</string>
 #end
