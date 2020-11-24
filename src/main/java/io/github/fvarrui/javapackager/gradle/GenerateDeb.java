@@ -67,33 +67,33 @@ public class GenerateDeb extends ArtifactGenerator {
 		// installation destination
 		debTask.into("/opt/" + name);
 		
-		// includes app folder files, except executable file and jre/bin/java
-		debTask.from(appFolder, c -> {
+//		// includes app folder files, except executable file and jre/bin/java
+//		debTask.from(appFolder, c -> {
 //			c.into(".");
-			c.exclude(executable.getName());
-			if (bundleJre) {
-				c.exclude(jreDirectoryName + "/bin/java");
-			}
-		});
-		
-		// executable
-		debTask.from(executable, c -> {
+//			c.exclude(executable.getName());
+//			if (bundleJre) {
+//				c.exclude(jreDirectoryName + "/bin/java");
+//			}
+//		});
+//		
+//		// executable
+//		debTask.from(executable, c -> {
 //			c.into(".");
-			c.setFileMode(0755);
-		});
-
-		// java binary file
-		if (bundleJre) {
-			debTask.from(new File(appFolder, jreDirectoryName + "/bin/java"), c -> {
+//			c.setFileMode(0755);
+//		});
+//
+//		// java binary file
+//		if (bundleJre) {
+//			debTask.from(new File(appFolder, jreDirectoryName + "/bin/java"), c -> {
 //				c.into(".");
-				c.setFileMode(0755);
-			});
-		}
-
-		// desktop file
-		debTask.from(desktopFile, c -> {
-			c.into("/usr/share/applications");
-		});
+//				c.setFileMode(0755);
+//			});
+//		}
+//
+//		// desktop file
+//		debTask.from(desktopFile, c -> {
+//			c.into("/usr/share/applications");
+//		});
 
 		// symbolic link in /usr/local/bin to app binary
 		debTask.link("/usr/local/bin/" + name, "/opt/" + name + "/" + name, 0777);
