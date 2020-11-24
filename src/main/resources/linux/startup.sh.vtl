@@ -39,13 +39,14 @@ function compareVersions() {
         done
         for ((i=0; i<${#v1[@]}; i++))
         do
-                [[ "${v1[$i]}" > "${v2[$i]}" ]] && return 1
-                [[ "${v1[$i]}" < "${v2[$i]}" ]] && return 2
+                [[ "${v1[$i]}" > "${v2[$i]}" ]] && return 0
+                [[ "${v1[$i]}" < "${v2[$i]}" ]] && return 1
         done
         return 0
 }
 JAVA_VERSION=$("$JAVA" -version 2>&1 | awk -F '"' '/version/ {print $2}')
-if compareVersions "$JAVA_VERSION" "${info.jreMinVersion}"; then
+compareVersions "$JAVA_VERSION" "${info.jreMinVersion}"
+if [[ $? != 0 ]]; then
     showMessage "The application requires a Java Runtime Environment ${info.jreMinVersion} or higher."
     exit 1
 fi
