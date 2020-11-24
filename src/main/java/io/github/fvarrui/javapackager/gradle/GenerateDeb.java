@@ -3,7 +3,7 @@ package io.github.fvarrui.javapackager.gradle;
 import java.io.File;
 import java.util.UUID;
 
-//import com.netflix.gradle.plugins.deb.Deb;
+import com.netflix.gradle.plugins.deb.Deb;
 
 import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.Context;
@@ -33,9 +33,6 @@ public class GenerateDeb extends ArtifactGenerator {
 
 		Logger.warn("Sorry! " + getArtifactName() + " generation is not yet available");
 		
-		return null;
-		
-		/*
 		File assetsFolder = linuxPackager.getAssetsFolder();
 		String name = linuxPackager.getName();
 		String description = linuxPackager.getDescription();
@@ -108,12 +105,10 @@ public class GenerateDeb extends ArtifactGenerator {
 
 		return debFile;
 
-		*/
-
 	}
 	
-//	private Deb createDebTask() {
-//		return Context.getGradleContext().getProject().getTasks().create("createDEb_" + UUID.randomUUID(), Deb.class);
-//	}
+	private Deb createDebTask() {
+		return Context.getGradleContext().getProject().getTasks().create("createDeb_" + UUID.randomUUID(), Deb.class);
+	}
 	
 }
