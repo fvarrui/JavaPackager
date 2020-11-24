@@ -601,7 +601,7 @@ public abstract class Packager extends PackagerSettings {
 				}
 				
 			} catch (Exception e) {
-				Logger.errorUnindent(generator.getArtifactName() + " generation failed due to: " + e.getMessage());
+				Logger.errorUnindent(generator.getArtifactName() + " generation failed due to: " + e.getMessage(), e);
 			}
 		}
 		

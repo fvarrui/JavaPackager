@@ -16,6 +16,17 @@ public class Logger {
 		return error;
 	}
 
+	public static String error(String error, Throwable t) {
+		if (Context.isMaven()) {
+			Context.getMavenContext().getLogger().error(StringUtils.repeat(TAB, tabs) + error);
+			Context.getMavenContext().getLogger().error(t);
+		}
+		if (Context.isGradle()) {
+			Context.getGradleContext().getLogger().error(StringUtils.repeat(TAB, tabs) + error, t);
+		}
+		return error;
+	}
+
 	public static String warn(String warn) {
 		if (Context.isMaven()) Context.getMavenContext().getLogger().warn(StringUtils.repeat(TAB, tabs) + warn);
 		if (Context.isGradle()) Context.getGradleContext().getLogger().warn(StringUtils.repeat(TAB, tabs) + warn);
@@ -28,26 +39,32 @@ public class Logger {
 		return info;
 	}
 
-	public static void infoIndent(String info) {
-		info(info);
+	public static void infoIndent(String msg) {
+		info(msg);
 		tabs++;
 	}
 	
-	public static void infoUnindent(String info) {
+	public static void infoUnindent(String msg) {
 		tabs--;
-		info(info);
+		info(msg);
 		info("");
 	}
 	
-	public static void warnUnindent(String info) {
+	public static void warnUnindent(String msg) {
 		tabs--;
-		warn(info);
+		warn(msg);
 		info("");
 	}
 
-	public static void errorUnindent(String info) {
+	public static void errorUnindent(String msg) {
 		tabs--;
-		error(info);
+		error(msg);
+		info("");
+	}
+	
+	public static void errorUnindent(String msg, Throwable t) {
+		tabs--;
+		error(msg, t);
 		info("");
 	}
 	
