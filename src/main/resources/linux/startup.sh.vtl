@@ -14,7 +14,7 @@ function showMessage() {
 		echo $1
 	fi
 }
-if type -p java; then
+if type -p java > /dev/null; then
     JAVA=java
 elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
     JAVA="$JAVA_HOME/bin/java"
