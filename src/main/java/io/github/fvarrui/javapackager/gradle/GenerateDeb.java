@@ -31,8 +31,6 @@ public class GenerateDeb extends ArtifactGenerator {
 			return null;
 		}
 
-		Logger.warn("Sorry! " + getArtifactName() + " generation is not yet available");
-		
 		File assetsFolder = linuxPackager.getAssetsFolder();
 		String name = linuxPackager.getName();
 		String description = linuxPackager.getDescription();
@@ -102,6 +100,9 @@ public class GenerateDeb extends ArtifactGenerator {
 
 		// symbolic link in /usr/local/bin to app binary
 		debTask.link("/usr/local/bin/" + name, "/opt/" + name + "/" + name, 0777);
+		
+		// runs deb task
+		debTask.getActions().forEach(action -> action.execute(debTask));
 
 		return debFile;
 
