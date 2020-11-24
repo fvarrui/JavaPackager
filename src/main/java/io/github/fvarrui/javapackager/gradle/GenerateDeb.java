@@ -64,6 +64,7 @@ public class GenerateDeb extends ArtifactGenerator {
 		debTask.setDistribution("development");
 		debTask.setEpoch(0);
 		debTask.setRelease("1");
+		debTask.customField("Section", "misc");
 		
 		// installation destination
 		debTask.into("/opt/" + name);
