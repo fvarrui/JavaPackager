@@ -127,7 +127,7 @@ public class GenerateDeb extends ArtifactGenerator {
 				plugin(
 						groupId("org.vafer"), 
 						artifactId("jdeb"), 
-						version("1.7")
+						version("1.8")
 				), 
 				goal("jdeb"), 
 				configuration(
