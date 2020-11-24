@@ -48,11 +48,6 @@ public class GenerateDeb extends ArtifactGenerator {
 		VelocityUtils.render("linux/desktop.vtl", desktopFile, linuxPackager);
 		Logger.info("Desktop file rendered in " + desktopFile.getAbsolutePath());
 
-		// generates deb control file from velocity template
-		File controlFile = new File(assetsFolder, "control");
-		VelocityUtils.render("linux/control.vtl", controlFile, linuxPackager);
-		Logger.info("Control file rendered in " + controlFile.getAbsolutePath());
-
 		// generated deb file
 		File debFile = new File(outputDirectory, name + "_" + version + ".deb");
 
@@ -62,10 +57,13 @@ public class GenerateDeb extends ArtifactGenerator {
 		debTask.setPackageName(name.toLowerCase());
 		debTask.setPackageDescription(description);
 		debTask.setPackager(organizationName);
+		debTask.setUploaders(organizationName);
 		debTask.setMaintainer(organizationName + (organizationEmail != null ? " <" + organizationEmail + ">" : ""));
 		debTask.setPriority("optional");
 		debTask.setArchStr("amd64");
 		debTask.setDistribution("development");
+		debTask.setEpoch(0);
+		debTask.setRelease("1");
 		
 		// installation destination
 		debTask.into("/opt/" + name);
