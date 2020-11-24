@@ -67,28 +67,28 @@ public class GenerateDeb extends ArtifactGenerator {
 		// installation destination
 		debTask.into("/opt/" + name);
 		
-		// includes app folder files, except executable file and jre/bin/java
-		debTask.from(appFolder.getParentFile(), c -> {
-			c.include(appFolder.getName() + "/**");
-			c.exclude(appFolder.getName() + "/" + executable.getName());
-			if (bundleJre) {
-				c.exclude(appFolder.getName() + "/" + jreDirectoryName + "/bin/java");
-			}
-		});
-		
-		// executable
-		debTask.from(appFolder.getParentFile(), c -> {
-			c.include(appFolder.getName() + "/" + executable.getName());
-			c.setFileMode(0755);
-		});
-
-		// java binary file
-		if (bundleJre) {
-			debTask.from(appFolder.getParentFile(), c -> {
-				c.include(appFolder.getName() + "/" + jreDirectoryName + "/bin/java");
-				c.setFileMode(0755);
-			});
-		}
+//		// includes app folder files, except executable file and jre/bin/java
+//		debTask.from(appFolder.getParentFile(), c -> {
+//			c.include(appFolder.getName() + "/**");
+//			c.exclude(appFolder.getName() + "/" + executable.getName());
+//			if (bundleJre) {
+//				c.exclude(appFolder.getName() + "/" + jreDirectoryName + "/bin/java");
+//			}
+//		});
+//		
+//		// executable
+//		debTask.from(appFolder.getParentFile(), c -> {
+//			c.include(appFolder.getName() + "/" + executable.getName());
+//			c.setFileMode(0755);
+//		});
+//
+//		// java binary file
+//		if (bundleJre) {
+//			debTask.from(appFolder.getParentFile(), c -> {
+//				c.include(appFolder.getName() + "/" + jreDirectoryName + "/bin/java");
+//				c.setFileMode(0755);
+//			});
+//		}
 
 		// desktop file
 		debTask.from(desktopFile.getParentFile(), c -> {
