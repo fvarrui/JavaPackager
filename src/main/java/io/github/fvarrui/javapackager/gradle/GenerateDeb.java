@@ -91,9 +91,8 @@ public class GenerateDeb extends ArtifactGenerator {
 //		}
 
 		// desktop file
-		debTask.from(desktopFile.getParentFile(), c -> {
+		debTask.from(desktopFile, c -> {
 			c.into("/usr/share/applications");
-			c.include(desktopFile.getName());
 		});
 
 		// symbolic link in /usr/local/bin to app binary
