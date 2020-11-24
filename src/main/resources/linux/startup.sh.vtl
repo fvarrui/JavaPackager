@@ -23,8 +23,29 @@ else
     exit 1
 fi
 #if ($info.jreMinVersion)
+function compareVersions() {
+        [[ "$1" == "$2" ]] && return 0
+        local IFS=.
+        local i v1 v2
+        read -r -a v1 <<< "$1"
+        read -r -a v2 <<< "$2"
+        for ((i=${#v1[@]}; i<${#v2[@]}; i++))
+        do
+                v1[i]=0
+        done
+        for ((i=${#v2[@]}; i<${#v1[@]}; i++))
+        do
+                v2[i]=0
+        done
+        for ((i=0; i<${#v1[@]}; i++))
+        do
+                [[ "${v1[$i]}" > "${v2[$i]}" ]] && return 1
+                [[ "${v1[$i]}" < "${v2[$i]}" ]] && return 2
+        done
+        return 0
+}
 JAVA_VERSION=$("$JAVA" -version 2>&1 | awk -F '"' '/version/ {print $2}')
-if [[ "$JAVA_VERSION" < "${info.jreMinVersion}" ]]; then
+if compareVersions "$JAVA_VERSION" "${info.jreMinVersion}"; then
     showMessage "The application requires a Java Runtime Environment ${info.jreMinVersion} or higher."
     exit 1
 fi
