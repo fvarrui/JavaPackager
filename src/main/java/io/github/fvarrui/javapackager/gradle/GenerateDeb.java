@@ -89,11 +89,11 @@ public class GenerateDeb extends ArtifactGenerator {
 //				c.setFileMode(0755);
 //			});
 //		}
-//
-//		// desktop file
-//		debTask.from(desktopFile, c -> {
-//			c.into("/usr/share/applications");
-//		});
+
+		// desktop file
+		debTask.from(desktopFile, c -> {
+			c.into("/usr/share/applications");
+		});
 
 		// symbolic link in /usr/local/bin to app binary
 		debTask.link("/usr/local/bin/" + name, "/opt/" + name + "/" + name, 0777);
