@@ -62,16 +62,14 @@ public class GenerateDeb extends ArtifactGenerator {
 		debTask.setPriority("optional");
 		debTask.setArchStr("amd64");
 		debTask.setDistribution("development");
-		debTask.setEpoch(0);
 		debTask.setRelease("1");
-		debTask.customField("Section", "misc");
 		
 		// installation destination
 		debTask.into("/opt/" + name);
 		
 		// includes app folder files, except executable file and jre/bin/java
 		debTask.from(appFolder, c -> {
-			c.into(".");
+//			c.into(".");
 			c.exclude(executable.getName());
 			if (bundleJre) {
 				c.exclude(jreDirectoryName + "/bin/java");
@@ -80,14 +78,14 @@ public class GenerateDeb extends ArtifactGenerator {
 		
 		// executable
 		debTask.from(executable, c -> {
-			c.into(".");
+//			c.into(".");
 			c.setFileMode(0755);
 		});
 
 		// java binary file
 		if (bundleJre) {
 			debTask.from(new File(appFolder, jreDirectoryName + "/bin/java"), c -> {
-				c.into(".");
+//				c.into(".");
 				c.setFileMode(0755);
 			});
 		}
