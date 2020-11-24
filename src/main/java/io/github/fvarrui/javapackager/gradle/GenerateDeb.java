@@ -59,7 +59,7 @@ public class GenerateDeb extends ArtifactGenerator {
 		Deb debTask = createDebTask();
 		debTask.setProperty("archiveFileName", debFile.getName());
 		debTask.setProperty("destinationDirectory", outputDirectory);
-		debTask.setPackageName(name);
+		debTask.setPackageName(name.toLowerCase());
 		debTask.setPackageDescription(description);
 		debTask.setPackager(organizationName);
 		debTask.setMaintainer(organizationName + (organizationEmail != null ? " <" + organizationEmail + ">" : ""));
