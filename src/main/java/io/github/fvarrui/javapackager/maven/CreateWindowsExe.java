@@ -56,12 +56,9 @@ public class CreateWindowsExe extends ArtifactGenerator {
 		
 		List<Element> jreElements = new ArrayList<>();
 		jreElements.add(element("opts", optsElements.toArray(new Element[optsElements.size()])));
-		if (bundleJre) {
-			jreElements.add(element("path", jreDirectoryName));
-		} else if (!StringUtils.isBlank(jreMinVersion)) {
+		jreElements.add(element("path", bundleJre ? jreDirectoryName : "%JAVA_HOME%"));
+		if (!StringUtils.isBlank(jreMinVersion)) {
 			jreElements.add(element("minVersion", jreMinVersion));
-		} else {
-			jreElements.add(element("path", "%JAVA_HOME%"));			
 		}
 		
 		List<Element> pluginConfig = new ArrayList<>();

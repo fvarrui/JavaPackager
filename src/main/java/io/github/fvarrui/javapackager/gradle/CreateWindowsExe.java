@@ -53,12 +53,9 @@ public class CreateWindowsExe extends ArtifactGenerator {
 		l4jTask.setMainClassName(mainClass);
 		l4jTask.setClasspath(new HashSet<>(windowsPackager.getClasspaths()));
 		l4jTask.setChdir(useResourcesAsWorkingDir ? "." : "");
-		if (bundleJre) {
-			l4jTask.setBundledJrePath(jreDirectoryName);
-		} else if (!StringUtils.isBlank(jreMinVersion)) { 
+		l4jTask.setBundledJrePath( bundleJre ? jreDirectoryName : "%JAVA_HOME%");
+		if (!StringUtils.isBlank(jreMinVersion)) { 
 			l4jTask.setJreMinVersion(jreMinVersion);
-		} else {
-			l4jTask.setBundledJrePath("%JAVA_HOME%");			
 		}
 		l4jTask.getJvmOptions().addAll(vmArgs);
 		l4jTask.setVersion(winConfig.getProductVersion());
