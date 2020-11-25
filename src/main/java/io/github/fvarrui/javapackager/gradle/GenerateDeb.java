@@ -91,7 +91,7 @@ public class GenerateDeb extends ArtifactGenerator {
 //		}
 
 		// desktop file
-		debTask.from(desktopFile, c -> {
+		debTask.from(desktopFile.getAbsolutePath(), c -> {
 			c.into("/usr/share/applications");
 		});
 
