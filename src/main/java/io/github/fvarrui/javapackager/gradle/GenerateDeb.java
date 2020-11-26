@@ -69,7 +69,7 @@ public class GenerateDeb extends ArtifactGenerator {
 		
 		// includes app folder files, except executable file and jre/bin/java
 		debTask.from("build/assets/" + name + ".desktop", c -> {
-		//	c.include(name + ".desktop");
+			c.into("/opt/" + name);
 		});
 		
 //		// executable
