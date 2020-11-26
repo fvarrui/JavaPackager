@@ -67,15 +67,11 @@ public class GenerateDeb extends ArtifactGenerator {
 		// installation destination
 		debTask.into("/opt/" + name);
 		
-//		// includes app folder files, except executable file and jre/bin/java
-//		debTask.from(appFolder.getParentFile(), c -> {
-//			c.include(appFolder.getName() + "/**");
-//			c.exclude(appFolder.getName() + "/" + executable.getName());
-//			if (bundleJre) {
-//				c.exclude(appFolder.getName() + "/" + jreDirectoryName + "/bin/java");
-//			}
-//		});
-//		
+		// includes app folder files, except executable file and jre/bin/java
+		debTask.from("build/assets", c -> {
+			c.include(name + ".desktop");
+		});
+		
 //		// executable
 //		debTask.from(appFolder.getParentFile(), c -> {
 //			c.include(appFolder.getName() + "/" + executable.getName());
@@ -89,11 +85,11 @@ public class GenerateDeb extends ArtifactGenerator {
 //				c.setFileMode(0755);
 //			});
 //		}
-
-		// desktop file
-		debTask.from(desktopFile.getAbsolutePath(), c -> {
-			c.into("/usr/share/applications");
-		});
+//
+//		// desktop file
+//		debTask.from(desktopFile.getParentFile().getAbsolutePath(), c -> {
+//			c.into("/usr/share/applications");
+//		});
 
 		// symbolic link in /usr/local/bin to app binary
 		debTask.link("/usr/local/bin/" + name, "/opt/" + name + "/" + name, 0777);
