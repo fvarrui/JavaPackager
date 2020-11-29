@@ -35,28 +35,20 @@ public abstract class AbstractPackageTask extends DefaultTask {
 	// ===========
 	
 	@TaskAction
-	public void doPackage() {
+	public void doPackage() throws Exception {
 		
-		try {
-			
-			Packager packager = createPackager();
-			
-			// generates app, installers and bundles
-			File app = packager.createApp();
-			List<File> installers = packager.generateInstallers();
-			List<File> bundles = packager.createBundles();
-			
-			// sets generated files as output
-			outputFiles = new ArrayList<>();
-			outputFiles.add(app);
-			outputFiles.addAll(installers);
-			outputFiles.addAll(bundles);
-			
-		} catch (Exception e) {
-
-			throw new RuntimeException(e.getMessage(), e);
-			
-		}
+		Packager packager = createPackager();
+		
+		// generates app, installers and bundles
+		File app = packager.createApp();
+		List<File> installers = packager.generateInstallers();
+		List<File> bundles = packager.createBundles();
+		
+		// sets generated files as output
+		outputFiles = new ArrayList<>();
+		outputFiles.add(app);
+		outputFiles.addAll(installers);
+		outputFiles.addAll(bundles);
 
 	}
 	
