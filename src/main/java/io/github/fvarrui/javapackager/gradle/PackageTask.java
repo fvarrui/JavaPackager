@@ -485,6 +485,18 @@ public class PackageTask extends AbstractPackageTask {
 		this.jreMinVersion = jreMinVersion;
 	}
 	
+	@Input
+	@Optional
+	private Map<String, String> additionalManifestEntries;
+	
+	public Map<String, String> getAdditionalManifestEntries() {
+		return additionalManifestEntries;
+	}
+	
+	public void setAdditionalManifestEntries(Map<String, String> additionalManifestEntries) {
+		this.additionalManifestEntries = additionalManifestEntries;
+	}
+	
 	// ===============
 	// create packager
 	// ===============
@@ -498,6 +510,7 @@ public class PackageTask extends AbstractPackageTask {
 		return
 			(Packager) PackagerFactory
 				.createPackager(defaultIfNull(platform, extension.getPlatform()))
+					.additionalManifestEntries(defaultIfNull(additionalManifestEntries, extension.getAdditionalManifestEntries()))
 					.additionalModules(defaultIfNull(additionalModules, extension.getAdditionalModules()))
 					.additionalResources(defaultIfNull(additionalResources, extension.getAdditionalResources()))
 					.administratorRequired(defaultIfNull(administratorRequired, extension.getAdministratorRequired()))

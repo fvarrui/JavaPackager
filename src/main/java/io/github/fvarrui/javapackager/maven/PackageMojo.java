@@ -246,7 +246,7 @@ public class PackageMojo extends AbstractMojo {
 	/**
 	 * Extra properties for customized Velocity templates, accesible through '$this.extra' map. 
 	 */
-	@Parameter(property = "extra", required = false)
+	@Parameter(required = false)
 	private Map<String, String> extra;
 	
 	/**
@@ -272,6 +272,12 @@ public class PackageMojo extends AbstractMojo {
 	 */
 	@Parameter(property = "jreMinVersion", required = false)
 	private String jreMinVersion;
+	
+	/**
+	 * Additional JAR manifest entries  
+	 */
+	@Parameter(required = false)
+	private Map<String, String> additionalManifestEntries;
 
 	public void execute() throws MojoExecutionException {
 		
@@ -287,6 +293,7 @@ public class PackageMojo extends AbstractMojo {
 			Packager packager = 
 				(Packager) PackagerFactory
 					.createPackager(platform)
+						.additionalManifestEntries(additionalManifestEntries)
 						.additionalModules(additionalModules)
 						.additionalResources(additionalResources)
 						.administratorRequired(administratorRequired)

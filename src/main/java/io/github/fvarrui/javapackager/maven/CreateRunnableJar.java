@@ -10,8 +10,12 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import io.github.fvarrui.javapackager.packagers.Context;
@@ -37,8 +41,24 @@ public class CreateRunnableJar extends ArtifactGenerator {
 		String mainClass = packager.getMainClass();
 		File outputDirectory = packager.getOutputDirectory();
 		ExecutionEnvironment env = Context.getMavenContext().getEnv();
+		Map<String, String> additionalManifestEntries = packager.getAdditionalManifestEntries();
 
 		File jarFile = new File(outputDirectory, name + "-" + version + "-" + classifier + ".jar");
+		
+		List<Element> archive = new ArrayList<>();
+		archive.add(
+			element("manifest", 
+				element("addClasspath", "true"),
+				element("classpathPrefix", "libs/"),
+				element("mainClass", mainClass)
+		));
+		if (additionalManifestEntries != null && !additionalManifestEntries.isEmpty()) {
+			List<Element> manifestEntries = new ArrayList<>();
+			for (String key : additionalManifestEntries.keySet()) {
+				manifestEntries.add(element(key, additionalManifestEntries.get(key)));
+			}
+			archive.add(element("manifestEntries", manifestEntries.toArray(new Element[manifestEntries.size()])));
+		}
 
 		try {
 			
@@ -51,13 +71,7 @@ public class CreateRunnableJar extends ArtifactGenerator {
 					goal("jar"),
 					configuration(
 							element("classifier", classifier),
-							element("archive", 
-									element("manifest", 
-											element("addClasspath", "true"),
-											element("classpathPrefix", "libs/"),
-											element("mainClass", mainClass)
-									)
-							),
+							element("archive", archive.toArray(new Element[archive.size()])),
 							element("outputDirectory", jarFile.getParentFile().getAbsolutePath()),
 							element("finalName", name + "-" + version)
 					),

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +34,7 @@ public class CreateRunnableJar extends ArtifactGenerator {
 		File outputDirectory = packager.getOutputDirectory();
 		Project project = Context.getGradleContext().getProject();
 		File libsFolder = packager.getLibsFolder();
+		Map<String, String> additionalManifestEntries = packager.getAdditionalManifestEntries();
 		
 		List<String> dependencies = new ArrayList<>();
 		if (libsFolder != null && libsFolder.exists()) {
@@ -46,6 +48,9 @@ public class CreateRunnableJar extends ArtifactGenerator {
 		jarTask.setProperty("destinationDirectory", outputDirectory);
 		jarTask.getManifest().getAttributes().put("Main-Class", mainClass);
 		jarTask.getManifest().getAttributes().put("Class-Path", StringUtils.join(dependencies, " "));
+		for (String key : additionalManifestEntries.keySet()) {
+			jarTask.getManifest().getAttributes().put(key, additionalManifestEntries.get(key));			
+		}
 		jarTask.getActions().forEach(action -> action.execute(jarTask));
 
 		return jarTask.getArchiveFile().get().getAsFile();
