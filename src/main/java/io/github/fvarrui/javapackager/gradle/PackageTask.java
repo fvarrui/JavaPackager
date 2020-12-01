@@ -16,6 +16,7 @@ import org.gradle.api.tasks.OutputDirectory;
 import groovy.lang.Closure;
 import io.github.fvarrui.javapackager.model.LinuxConfig;
 import io.github.fvarrui.javapackager.model.MacConfig;
+import io.github.fvarrui.javapackager.model.Manifest;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.Packager;
@@ -487,16 +488,18 @@ public class PackageTask extends AbstractPackageTask {
 	
 	@Input
 	@Optional
-	private Map<String, String> additionalManifestEntries;
+	private Manifest manifest;
 	
-	public Map<String, String> getAdditionalManifestEntries() {
-		return additionalManifestEntries;
+	public Manifest getManifest() {
+		return manifest;
 	}
 	
-	public void setAdditionalManifestEntries(Map<String, String> additionalManifestEntries) {
-		this.additionalManifestEntries = additionalManifestEntries;
-	}
-	
+    public Manifest manifest(Closure<Manifest> closure) {
+        manifest = new Manifest();
+        getProject().configure(manifest, closure);
+        return manifest;
+    }
+    
 	// ===============
 	// create packager
 	// ===============
@@ -510,7 +513,6 @@ public class PackageTask extends AbstractPackageTask {
 		return
 			(Packager) PackagerFactory
 				.createPackager(defaultIfNull(platform, extension.getPlatform()))
-					.additionalManifestEntries(defaultIfNull(additionalManifestEntries, extension.getAdditionalManifestEntries()))
 					.additionalModules(defaultIfNull(additionalModules, extension.getAdditionalModules()))
 					.additionalResources(defaultIfNull(additionalResources, extension.getAdditionalResources()))
 					.administratorRequired(defaultIfNull(administratorRequired, extension.getAdministratorRequired()))
@@ -535,6 +537,7 @@ public class PackageTask extends AbstractPackageTask {
 					.linuxConfig(defaultIfNull(linuxConfig, extension.getLinuxConfig()))
 					.macConfig(defaultIfNull(macConfig, extension.getMacConfig()))
 					.mainClass(defaultIfNull(mainClass, extension.getMainClass()))
+					.manifest(defaultIfNull(manifest, extension.getManifest()))
 					.modules(defaultIfNull(modules, extension.getModules()))
 					.name(defaultIfNull(appName, extension.getName()))
 					.organizationEmail(defaultIfNull(organizationEmail, extension.getOrganizationEmail()))

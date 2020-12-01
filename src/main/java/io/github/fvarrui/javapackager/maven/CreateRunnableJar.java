@@ -12,16 +12,18 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
+import io.github.fvarrui.javapackager.model.Manifest;
+import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
-import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.utils.Logger;
+import io.github.fvarrui.javapackager.utils.MavenUtils;
 
 /**
  * Creates a runnable jar file from sources on Maven context
@@ -41,7 +43,7 @@ public class CreateRunnableJar extends ArtifactGenerator {
 		String mainClass = packager.getMainClass();
 		File outputDirectory = packager.getOutputDirectory();
 		ExecutionEnvironment env = Context.getMavenContext().getEnv();
-		Map<String, String> additionalManifestEntries = packager.getAdditionalManifestEntries();
+		Manifest manifest = packager.getManifest();
 
 		File jarFile = new File(outputDirectory, name + "-" + version + "-" + classifier + ".jar");
 		
@@ -51,13 +53,24 @@ public class CreateRunnableJar extends ArtifactGenerator {
 				element("addClasspath", "true"),
 				element("classpathPrefix", "libs/"),
 				element("mainClass", mainClass)
-		));
-		if (additionalManifestEntries != null && !additionalManifestEntries.isEmpty()) {
-			List<Element> manifestEntries = new ArrayList<>();
-			for (String key : additionalManifestEntries.keySet()) {
-				manifestEntries.add(element(key, additionalManifestEntries.get(key)));
-			}
-			archive.add(element("manifestEntries", manifestEntries.toArray(new Element[manifestEntries.size()])));
+			)
+		);
+		if (manifest != null) {
+			
+			archive.add(MavenUtils.mapToElement("manifestEntries", manifest.getAdditionalEntries()));
+
+			List<Element> manifestSections = 
+					manifest
+						.getSections()
+						.stream()
+						.map(s -> element("manifestSection", 
+								element("Name", s.getName()),
+								MavenUtils.mapToElement("manifestEntries", s.getEntries())
+							))
+						.collect(Collectors.toList());
+			
+			archive.add(element("manifestSections", manifestSections.toArray(new Element[manifestSections.size()])));
+			
 		}
 
 		try {

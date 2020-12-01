@@ -20,6 +20,7 @@ import org.apache.maven.project.MavenProject;
 
 import io.github.fvarrui.javapackager.model.LinuxConfig;
 import io.github.fvarrui.javapackager.model.MacConfig;
+import io.github.fvarrui.javapackager.model.Manifest;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.Context;
@@ -277,7 +278,7 @@ public class PackageMojo extends AbstractMojo {
 	 * Additional JAR manifest entries  
 	 */
 	@Parameter(required = false)
-	private Map<String, String> additionalManifestEntries;
+	private Manifest manifest;
 
 	public void execute() throws MojoExecutionException {
 		
@@ -293,7 +294,6 @@ public class PackageMojo extends AbstractMojo {
 			Packager packager = 
 				(Packager) PackagerFactory
 					.createPackager(platform)
-						.additionalManifestEntries(additionalManifestEntries)
 						.additionalModules(additionalModules)
 						.additionalResources(additionalResources)
 						.administratorRequired(administratorRequired)
@@ -318,6 +318,7 @@ public class PackageMojo extends AbstractMojo {
 						.linuxConfig(linuxConfig)
 						.macConfig(macConfig)
 						.mainClass(mainClass)
+						.manifest(manifest)
 						.modules(modules)
 						.name(defaultIfBlank(name, Context.getMavenContext().getEnv().getMavenProject().getArtifactId()))
 						.organizationEmail(organizationEmail)

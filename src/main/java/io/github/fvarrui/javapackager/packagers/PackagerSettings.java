@@ -7,6 +7,7 @@ import java.util.Map;
 
 import io.github.fvarrui.javapackager.model.LinuxConfig;
 import io.github.fvarrui.javapackager.model.MacConfig;
+import io.github.fvarrui.javapackager.model.Manifest;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 
@@ -49,7 +50,7 @@ public class PackagerSettings {
 	protected File assetsDir;
 	protected String classpath;
 	protected String jreMinVersion;
-	protected Map<String, String> additionalManifestEntries;
+	protected Manifest manifest;
 
 	public File getOutputDirectory() {
 		return outputDirectory;
@@ -199,8 +200,8 @@ public class PackagerSettings {
 		return jreMinVersion;
 	}
 
-	public Map<String, String> getAdditionalManifestEntries() {
-		return additionalManifestEntries;
+	public Manifest getManifest() {
+		return manifest;
 	}
 
 	// fluent api
@@ -390,8 +391,8 @@ public class PackagerSettings {
 		return this;
 	}
 
-	public PackagerSettings additionalManifestEntries(Map<String, String> additionalManifestEntries) {
-		this.additionalManifestEntries = additionalManifestEntries;
+	public PackagerSettings manifest(Manifest manifest) {
+		this.manifest = manifest;
 		return this;
 	}
 
@@ -409,8 +410,8 @@ public class PackagerSettings {
 				+ jreDirectoryName + ", winConfig=" + winConfig + ", linuxConfig=" + linuxConfig + ", macConfig="
 				+ macConfig + ", createTarball=" + createTarball + ", createZipball=" + createZipball + ", extra="
 				+ extra + ", useResourcesAsWorkingDir=" + useResourcesAsWorkingDir + ", assetsDir=" + assetsDir
-				+ ", classpath=" + classpath + ", jreMinVersion=" + jreMinVersion + ", additionalManifestEntries="
-				+ additionalManifestEntries + "]";
+				+ ", classpath=" + classpath + ", jreMinVersion=" + jreMinVersion + ", manifest="
+				+ manifest + "]";
 	}
 
 }

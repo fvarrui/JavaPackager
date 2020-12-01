@@ -9,6 +9,7 @@ import org.gradle.api.Project;
 import groovy.lang.Closure;
 import io.github.fvarrui.javapackager.model.LinuxConfig;
 import io.github.fvarrui.javapackager.model.MacConfig;
+import io.github.fvarrui.javapackager.model.Manifest;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.PackagerSettings;
@@ -36,6 +37,7 @@ public class PackagePluginExtension extends PackagerSettings {
 		this.jreDirectoryName = "jre";
 		this.linuxConfig = new LinuxConfig();
 		this.macConfig = new MacConfig();
+		this.manifest = new Manifest();
 		this.modules = new ArrayList<>();
 		this.name = project.getName();
 		this.organizationEmail = "";
@@ -61,6 +63,12 @@ public class PackagePluginExtension extends PackagerSettings {
         winConfig = new WindowsConfig();
         project.configure(winConfig, closure);
         return winConfig;
+    }
+    
+    public Manifest manifest(Closure<Manifest> closure) {
+        manifest = new Manifest();
+        project.configure(manifest, closure);
+        return manifest;
     }
 
 }
