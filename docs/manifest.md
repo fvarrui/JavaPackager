@@ -1,6 +1,6 @@
 # *manifest* property
 
-`manifest` property allows to add additional manifest entries and sections.
+`manifest` property allows adding additional manifest entries and sections.
 
 ## Maven
 
