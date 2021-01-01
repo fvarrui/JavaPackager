@@ -133,7 +133,7 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 
 > :warning: **DEB and RPM package generation in Gradle is not yet available. Coming soon!**
 
-### Plugin configutation properties
+### Plugin configuration properties
 
 | Property                   | Mandatory          | Default value                                                | Description                                                  |
 | -------------------------- | ------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
