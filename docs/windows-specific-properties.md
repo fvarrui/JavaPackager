@@ -96,13 +96,13 @@ Property `winConfig.setupMode` can be set with 3 possible values:
 
 |             | Mandatory                                                    | Default value | Description                                                  |
 | ----------- | ------------------------------------------------------------ | ------------- | ------------------------------------------------------------ |
-| `storetype` | :x:                                                          | `JKS`         | The type of the keystore: JKS (Java keystore), PKCS12 (`.p12` or `.pfx` files), PKCS11. |
+| `storetype` | :x:                                                          | `JKS`         | The type of the keystore: **JKS** (Java keystore), **PKCS12** (`.p12` or `.pfx` files), **PKCS11**. |
 | `keystore`  | :heavy_check_mark:, unless `certfile` and `keyfile` are specified. |               | The keystore file, or the SunPKCS11 configuration file.      |
-| `certfile`  | :heavy_check_mark:, unless `keystore` is specified.          | `true`        | The file containing the PKCS#7 certificate chain (`.p7b` or `.spc` files). |
-| `keyfile`   | :heavy_check_mark:, unless `keystore` is specified.          | `true`        | The file containing the private key. `PEM` and `PVK` files are supported. |
-| `storepass` | :x:                                                          | `true`        | The password to open the keystore.                           |
-| `alias`     | :heavy_check_mark:, if `keystore` is specified and more than one alias exist | `true`        | The alias of the certificate used for signing in the keystore. Java code signing certificates can be used for Authenticode signatures. |
-| `keypass`   | :x:                                                          | `null`        | The password of the private key. When using a keystore, this parameter can be omitted if the keystore shares the same password. |
+| `certfile`  | :heavy_check_mark:, unless `keystore` is specified.          |               | The file containing the PKCS#7 certificate chain (`.p7b` or `.spc` files). |
+| `keyfile`   | :heavy_check_mark:, unless `keystore` is specified.          |               | The file containing the private key. `PEM` and `PVK` files are supported. |
+| `storepass` | :x:                                                          |               | The password to open the keystore.                           |
+| `alias`     | :heavy_check_mark:, if `keystore` is specified and more than one alias exist. |               | The alias of the certificate used for signing in the keystore. Java code signing certificates can be used for Authenticode signatures. |
+| `keypass`   | :x:                                                          |               | The password of the private key. When using a keystore, this parameter can be omitted if the keystore shares the same password. |
 | `alg`       | :x:                                                          | `SHA-256`     | The digest algorithm (`SHA-1`, `SHA-256`, `SHA-384` or `SHA-512`). |
 
 ### Example using a Java KeyStore
