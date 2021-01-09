@@ -10,16 +10,16 @@ import org.gradle.api.Project;
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
-import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
+import io.github.fvarrui.javapackager.packagers.WindowsArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 
 /**
  * Creates Windows native executable on Gradle context
  */
-public class CreateWindowsExe extends ArtifactGenerator {
+public class CreateWindowsExe extends WindowsArtifactGenerator {
 	
 	public CreateWindowsExe() {
 		super("Windows EXE");
@@ -71,6 +71,8 @@ public class CreateWindowsExe extends ArtifactGenerator {
 		l4jTask.getActions().forEach(action -> action.execute(l4jTask));
 
 		File generatedExe = new File(project.getBuildDir(), "launch4j/" + executable.getName());
+		
+		sign(generatedExe, windowsPackager);
 		
 		FileUtils.copyFileToFile(generatedExe, executable);
 		

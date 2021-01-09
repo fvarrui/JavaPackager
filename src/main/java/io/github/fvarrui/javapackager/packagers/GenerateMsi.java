@@ -12,7 +12,7 @@ import io.github.fvarrui.javapackager.utils.XMLUtils;
  * Creates a MSI file including all app folder's content only for
  * Windows so app could be easily distributed
  */
-public class GenerateMsi extends ArtifactGenerator {
+public class GenerateMsi extends WindowsArtifactGenerator {
 
 	public GenerateMsi() {
 		super("MSI installer");
@@ -58,6 +58,9 @@ public class GenerateMsi extends ArtifactGenerator {
 		if (!msiFile.exists()) {
 			throw new Exception("MSI installer file generation failed!");
 		}
+		
+		// sign installer
+		sign(msiFile, windowsPackager);
 		
 		return msiFile;
 	}

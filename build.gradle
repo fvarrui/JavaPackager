@@ -6,6 +6,7 @@ plugins {
 	id 'com.gradle.plugin-publish' version '0.12.0'
     id 'io.codearte.nexus-staging' version '0.21.2'
     id 'eclipse'
+	id 'de.undercouch.download' version '4.1.1'
 }
 
 repositories {
@@ -48,7 +49,8 @@ dependencies {
     implementation 'org.apache.velocity:velocity-engine-core:2.0'
 	implementation 'io.github.fvarrui:gradle-launch4j:2.4.7'
 	implementation 'com.netflix.nebula:gradle-ospackage-plugin:8.4.1'
-    
+	implementation 'net.jsign:jsign-core:3.1'
+	
     testImplementation 'junit:junit:4.12'
     
     compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
@@ -209,4 +211,12 @@ if (project.hasProperty('release')) {
 nexusStaging {
 	username = project.findProperty('ossrhUser') ?: ''
 	password = project.findProperty('ossrhPassword') ?: ''
+}
+
+task updateUniversalJavaApplicationStub(type: Download) {
+	group 'Update'
+	description 'Downloads universalJavaApplicationStub to src/main/resources/mac and overrides the existing one.'
+	src 'https://github.com/fvarrui/universalJavaApplicationStub/releases/download/v3.1.0b/universalJavaApplicationStub'
+	dest file('src/main/resources/mac')
+	overwrite true
 }

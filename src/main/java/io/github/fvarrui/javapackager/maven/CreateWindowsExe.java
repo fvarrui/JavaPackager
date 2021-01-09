@@ -19,16 +19,16 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 
 import io.github.fvarrui.javapackager.model.WindowsConfig;
-import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
+import io.github.fvarrui.javapackager.packagers.WindowsArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 
 /**
  * Copies all dependencies to app folder on Maven context
  * 
  */
-public class CreateWindowsExe extends ArtifactGenerator {
+public class CreateWindowsExe extends WindowsArtifactGenerator {
 	
 	public CreateWindowsExe() {
 		super("Windows EXE");
@@ -107,6 +107,8 @@ public class CreateWindowsExe extends ArtifactGenerator {
 					configuration(pluginConfig.toArray(new Element[pluginConfig.size()])),
 					Context.getMavenContext().getEnv()
 				);
+			
+			sign(executable, windowsPackager);
 			
 		} catch (MojoExecutionException e) {
 

@@ -37,6 +37,7 @@ public class WindowsConfig implements Serializable {
 	private boolean wrapJar = true;
 	private LinkedHashMap<String, String> setupLanguages = new LinkedHashMap<>();
 	private SetupMode setupMode = SetupMode.installForAllUsers;
+	private WindowsSigning signing;
 
 	public File getIcoFile() {
 		return icoFile;
@@ -238,6 +239,14 @@ public class WindowsConfig implements Serializable {
 		this.setupMode = setupMode;
 	}
 
+	public WindowsSigning getSigning() {
+		return signing;
+	}
+
+	public void setSigning(WindowsSigning signing) {
+		this.signing = signing;
+	}
+
 	@Override
 	public String toString() {
 		return "WindowsConfig [icoFile=" + icoFile + ", headerType=" + headerType + ", companyName=" + companyName
@@ -249,7 +258,7 @@ public class WindowsConfig implements Serializable {
 				+ ", disableFinishedPage=" + disableFinishedPage + ", createDesktopIconTask=" + createDesktopIconTask
 				+ ", generateSetup=" + generateSetup + ", generateMsi=" + generateMsi + ", generateMsm=" + generateMsm
 				+ ", msiUpgradeCode=" + msiUpgradeCode + ", wrapJar=" + wrapJar + ", setupLanguages=" + setupLanguages
-				+ ", setupMode=" + setupMode + "]";
+				+ ", setupMode=" + setupMode + ", signing=" + signing + "]";
 	}
 
 	/**

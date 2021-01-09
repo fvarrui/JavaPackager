@@ -11,7 +11,7 @@ import io.github.fvarrui.javapackager.utils.VelocityUtils;
  * Creates a Setup file including all app folder's content only for
  * Windows so app could be easily distributed
  */
-public class GenerateSetup extends ArtifactGenerator {
+public class GenerateSetup extends WindowsArtifactGenerator {
 
 	public GenerateSetup() {
 		super("Setup installer");
@@ -47,6 +47,9 @@ public class GenerateSetup extends ArtifactGenerator {
 		if (!setupFile.exists()) {
 			throw new Exception("Windows setup file generation failed!");
 		}
+		
+		// sign installer
+		sign(setupFile, windowsPackager);
 		
 		return setupFile;
 	}
