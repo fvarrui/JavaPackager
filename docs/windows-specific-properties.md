@@ -35,6 +35,14 @@
 	<disableFinishedPage>true|false</disableFinishedPage>
 	<createDesktopIconTask>true|false</createDesktopIconTask>
     
+    <!-- signing properties -->
+    <signing>
+		<keystore>path/to/keystore</keystore>
+		<storepass>password</storepass>
+		<alias>cert_alias</alias>        	
+        [...]
+    </signing>
+    
 </winConfig>
 ```
 
@@ -83,3 +91,27 @@ Property `winConfig.setupMode` can be set with 3 possible values:
 - **installForAllUsers** *(default value)*: installs the app for the all users in `%ProgramFiles%` folder (behaviour can be changed when running setup installer from command-line with `/currentuser` argument). 
 - **installForCurrentUser**: installs the app for the current user in `%USERPROFILE%\AppData\Local\Programs` folder (behaviour can be changed when running setup installer from command-line with `/allusers` argument).
 - **askTheUser**: asks to the final user if the app has to be installed for all users or only for the current user.
+
+## Signing properties
+
+|             | Mandatory                                                    | Default value | Description                                                  |
+| ----------- | ------------------------------------------------------------ | ------------- | ------------------------------------------------------------ |
+| `storetype` | :x:                                                          | `JKS`         | The type of the keystore: JKS (Java keystore), PKCS12 (`.p12` or `.pfx` files), PKCS11. |
+| `keystore`  | :heavy_check_mark:, unless `certfile` and `keyfile` are specified. |               | The keystore file, or the SunPKCS11 configuration file.      |
+| `certfile`  | :heavy_check_mark:, unless `keystore` is specified.          | `true`        | The file containing the PKCS#7 certificate chain (`.p7b` or `.spc` files). |
+| `keyfile`   | :heavy_check_mark:, unless `keystore` is specified.          | `true`        | The file containing the private key. `PEM` and `PVK` files are supported. |
+| `storepass` | :x:                                                          | `true`        | The password to open the keystore.                           |
+| `alias`     | :heavy_check_mark:, if `keystore` is specified and more than one alias exist | `true`        | The alias of the certificate used for signing in the keystore. Java code signing certificates can be used for Authenticode signatures. |
+| `keypass`   | :x:                                                          | `null`        | The password of the private key. When using a keystore, this parameter can be omitted if the keystore shares the same password. |
+| `alg`       | :x:                                                          | `SHA-256`     | The digest algorithm (`SHA-1`, `SHA-256`, `SHA-384` or `SHA-512`). |
+
+### Example using a Java KeyStore
+
+```xml
+<signing>
+	<keystore>c:\Users\fvarrui\keystore.jks</keystore>
+	<storepass>123456</storepass>
+	<alias>fvarrui</alias>
+</signing>
+```
+
