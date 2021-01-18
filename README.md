@@ -23,7 +23,7 @@ Add the following `plugin` tag to your `pom.xml`:
 <plugin>
 	<groupId>io.github.fvarrui</groupId>
 	<artifactId>javapackager</artifactId>
-	<version>1.4.2</version>
+	<version>1.5.0</version>
 	<executions>
 		<execution>
 			<phase>package</phase>
@@ -71,7 +71,7 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath 'io.github.fvarrui:javapackager:1.4.2'
+		classpath 'io.github.fvarrui:javapackager:1.5.0'
 	}
 }
 
