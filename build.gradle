@@ -216,7 +216,7 @@ nexusStaging {
 task updateUniversalJavaApplicationStub(type: Download) {
 	group 'Update'
 	description 'Downloads universalJavaApplicationStub to src/main/resources/mac and overrides the existing one.'
-	src 'https://github.com/fvarrui/universalJavaApplicationStub/releases/download/v3.1.0b/universalJavaApplicationStub'
+	src 'https://raw.githubusercontent.com/fvarrui/universalJavaApplicationStub/master/src/universalJavaApplicationStub'
 	dest file('src/main/resources/mac')
 	overwrite true
 }
