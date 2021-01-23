@@ -51,9 +51,10 @@ public class CreateRunnableJar extends ArtifactGenerator {
 		jarTask.getManifest().getAttributes().put("Build-Jdk", System.getProperty("java.version"));
 		jarTask.getManifest().getAttributes().put("Class-Path", StringUtils.join(dependencies, " "));
 		jarTask.getManifest().getAttributes().put("Main-Class", mainClass);
-		jarTask.getManifest().attributes(manifest.getAdditionalEntries());		
-		
-		manifest.getSections().stream().forEach(s -> jarTask.getManifest().attributes(s.getEntries(), s.getName()));
+		if (manifest != null) {
+			jarTask.getManifest().attributes(manifest.getAdditionalEntries());
+			manifest.getSections().stream().forEach(s -> jarTask.getManifest().attributes(s.getEntries(), s.getName()));
+		}
 
 		jarTask.getActions().forEach(action -> action.execute(jarTask));
 
