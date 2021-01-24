@@ -228,14 +228,14 @@ public abstract class Packager extends PackagerSettings {
 			
 			Logger.info("Embedding JRE from " + specificJreFolder);
 			
-			// fixes the path to the JRE on MacOS			
-			if (platform.equals(Platform.mac)) {
+			// fixes the path to the JRE on MacOS if "release" file not found
+			if (platform.equals(Platform.mac) && !FileUtils.folderContainsFile(specificJreFolder, "release")) {
 				specificJreFolder = new File(specificJreFolder, "Contents/Home");
 			}
 			
 			// checks if valid jre specified
 			if (!JDKUtils.isValidJRE(platform, specificJreFolder)) {
-				throw new Exception("Invalid JRE specified for '" + platform + "' platform: " + jrePath);
+				throw new Exception("Invalid JRE specified for '" + platform + "' platform: " + specificJreFolder);
 			}
 			
 			// removes old jre folder from bundle
