@@ -13,7 +13,7 @@ import io.github.fvarrui.javapackager.model.Platform;
 public class JDKUtils {
 	
 	/**
-	 * Converts "release" file from specified JDK to map
+	 * Converts "release" file from specified JDK or JRE to map
 	 * @param jdkPath JDK directory path
 	 * @return Map with all properties
 	 * @throws FileNotFoundException release file not found
@@ -31,6 +31,14 @@ public class JDKUtils {
 		return propertiesMap;
 	}
 	
+	/**
+	 * Checks if the platform specified in the "release" file matches the required platform 
+	 * @param platform
+	 * @param jdkPath
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	private static boolean checkPlatform(Platform platform, File jdkPath) throws FileNotFoundException, IOException {
 		Map<String, String> releaseMap = getRelease(jdkPath);
 		String osName = releaseMap.get("OS_NAME");

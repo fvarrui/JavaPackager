@@ -211,5 +211,9 @@ public class FileUtils {
 	public static boolean exists(File file) {
 		return file != null && file.exists();
 	}
+	
+	public static boolean folderContainsFile(File folder, String filename) {
+		return new File(folder, filename).exists();
+	}
 
 }
