@@ -231,6 +231,7 @@ public abstract class Packager extends PackagerSettings {
 			// fixes the path to the JRE on MacOS if "release" file not found
 			if (platform.equals(Platform.mac) && !FileUtils.folderContainsFile(specificJreFolder, "release")) {
 				specificJreFolder = new File(specificJreFolder, "Contents/Home");
+				Logger.warn("Specified jrePath fixed: " + specificJreFolder);				
 			}
 			
 			// checks if valid jre specified
