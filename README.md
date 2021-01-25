@@ -23,7 +23,7 @@ Add the following `plugin` tag to your `pom.xml`:
 <plugin>
 	<groupId>io.github.fvarrui</groupId>
 	<artifactId>javapackager</artifactId>
-	<version>1.5.0</version>
+	<version>1.5.1</version>
 	<executions>
 		<execution>
 			<phase>package</phase>
@@ -71,7 +71,7 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath 'io.github.fvarrui:javapackager:1.5.0'
+		classpath 'io.github.fvarrui:javapackager:1.5.1'
 	}
 }
 
@@ -142,33 +142,33 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 | `administratorRequired`    | :x:                | `false`                                                      | App will run as administrator (with elevated privileges).    |
 | `assetsDir`                | :x:                | `${basedir}/assets` or `${projectdir}/assets`                | Assets location (icons and custom Velocity templates).       |
 | `bundleJre`                | :x:                | `false`                                                      | Embeds a customized JRE with the app.                        |
-| `classpath`                | :x:                | `null`                                                       | List of additional paths to JVM classpath, separated with `;` (recommended) or `:`. |
+| `classpath`                | :x:                |                                                              | List of additional paths to JVM classpath, separated with `;` (recommended) or `:`. |
 | `copyDependencies`         | :x:                | `true`                                                       | Bundles all dependencies (JAR files) with the app.           |
 | `createTarball`            | :x:                | `false`                                                      | Bundles app folder in tarball.                               |
 | `createZipball`            | :x:                | `false`                                                      | Bundles app folder in zipball.                               |
 | `customizedJre`            | :x:                | `true`                                                       | Generates a customized JRE, including only identified or specified modules. Otherwise, all modules will be included. |
 | `description`              | :x:                | `${project.description}` or `${displayName}`                 | Project description.                                         |
 | `displayName`              | :x:                | `${project.name}` or `${name}`                               | App name to show.                                            |
-| `envPath`                  | :x:                | `null`                                                       | Defines PATH environment variable in GNU/Linux and Mac OS X startup scripts. |
-| `extra`                    | :x:                | `null`                                                       | Map with extra properties to be used in customized Velocity templates, accesible through `$info.extra` variable. |
+| `envPath`                  | :x:                |                                                              | Defines PATH environment variable in GNU/Linux and Mac OS X startup scripts. |
+| `extra`                    | :x:                |                                                              | Map with extra properties to be used in customized Velocity templates, accesible through `$info.extra` variable. |
 | `generateInstaller`        | :x:                | `true`                                                       | Generates an installer for the app.                          |
-| `iconFile`                 | :x:                | `null`                                                       | Path to the app icon file (PNG, XPM, ICO or ICNS). **:warning: Deprecated (see platform specific properties).** |
+| `iconFile`                 | :x:                |                                                              | Path to the app icon file (PNG, XPM, ICO or ICNS). **:warning: Deprecated (see platform specific properties).** |
 | `jdkPath`                  | :x:                | `${java.home}`                                               | JDK used to generate a customized JRE. It allows to bundle customized JREs for different platforms. |
 | `jreDirectoryName`         | :x:                | `"jre"`                                                      | Bundled JRE directory name.                                  |
-| `jreMinVersion`            | :x:                | `null`                                                       | JRE minimum version. If an appropriate version cannot be found display error message. Disabled if a JRE is bundled. |
+| `jreMinVersion`            | :x:                |                                                              | JRE minimum version. If an appropriate version cannot be found display error message. Disabled if a JRE is bundled. |
 | `jrePath`                  | :x:                | `""`                                                         | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least. |
 | `licenseFile`              | :x:                | `${project.licenses[0].url}`  or `${basedir}/LICENSE` or `${projectdir}/LICENSE` | Path to project license file.                                |
 | `mainClass`                | :heavy_check_mark: | `${exec.mainClass}`                                          | Full path to your app main class.                            |
-| `manifest`                 | :x:                | `null`                                                       | [Allows adding additional entries to MANIFEST.MF file.](docs/manifest.md) |
+| `manifest`                 | :x:                |                                                              | [Allows adding additional entries to MANIFEST.MF file.](docs/manifest.md) |
 | `modules`                  | :x:                | `[]`                                                         | Defines modules to customize the bundled JRE. Don't use `jdeps` to get module dependencies. |
 | `name`                     | :x:                | `${project.name}` or `${project.artifactId}`                 | App name.                                                    |
 | `organizationName`         | :x:                | `${project.organization.name}` or `"ACME"`                   | Organization name.                                           |
 | `organizationUrl`          | :x:                | `${project.organization.url}`                                | Organization website URL.                                    |
-| `organizationEmail`        | :x:                | `null`                                                       | Organization email.                                          |
+| `organizationEmail`        | :x:                |                                                              | Organization email.                                          |
 | `outputDirectory`          | :x:                | `${project.build.directory}` or `${project.builddir}`        | Output directory (where the artifacts will be generated).    |
 | `platform`                 | :x:                | `auto`                                                       | Defines the target platform, which could be different to the execution platform. Possible values:  `auto`, `mac`, `linux`, `windows`. Use `auto`  for using execution platform as target. |
-| `runnableJar`              | :x:                | `null`                                                       | Defines your own JAR file to be bundled. If it's ommited, the plugin packages your code in a runnable JAR and bundle it with the app. |
-| `url`                      | :x:                | `null`                                                       | App website URL.                                             |
+| `runnableJar`              | :x:                |                                                              | Defines your own JAR file to be bundled. If it's ommited, the plugin packages your code in a runnable JAR and bundle it with the app. |
+| `url`                      | :x:                |                                                              | App website URL.                                             |
 | `useResourcesAsWorkingDir` | :x:                | `true`                                                       | Uses app resources folder as default working directory (always `true` on Mac OS). |
 | ` version`                 | :x:                | `${project.version}`                                         | Project version.                                             |
 | `vmArgs`                   | :x:                | `[]`                                                         | Adds VM arguments.                                           |
@@ -179,13 +179,11 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 
 | Property      | Mandatory | Default | Description                                                  |
 | ------------- | --------- | ------- | ------------------------------------------------------------ |
-| `linuxConfig` | :x:       | `null`  | [GNU/Linux specific properties](docs/linux-specific-properties.md). |
-| `macConfig`   | :x:       | `null`  | [Mac OS X specific properties](docs/macosx-specific-properties.md). |
-| `winConfig`   | :x:       | `null`  | [Windows specific properties](docs/windows-specific-properties.md). |
+| `linuxConfig` | :x:       |         | [GNU/Linux specific properties](docs/linux-specific-properties.md). |
+| `macConfig`   | :x:       |         | [Mac OS X specific properties](docs/macosx-specific-properties.md). |
+| `winConfig`   | :x:       |         | [Windows specific properties](docs/windows-specific-properties.md). |
 
-> See [**Older documentation**](#older-documentation) for previous versions properties.
-
-> :warning: Be careful when using the `platform` property if your project uses platform dependent libraries, so the libraries of the current platform will be copied, not those required for the target platform. You can solve this problem using `classifiers`. Also, customized JRE and intallers generation will be ommited.
+> :warning: Be careful when using the `platform` property if your project uses platform dependent libraries, so the libraries of the current platform will be copied, not those required for the target platform. You can solve this problem using `classifiers`. Also, intallers generation will be ommited.
 
 ### Plugin assets
 
@@ -310,19 +308,4 @@ And then, run (ommit `./` on Windows):
 
 Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column-7704117) to know the features we plan to add to JavaPackager.
 
-## Older documentation
-
-- [v1.3.0](https://github.com/fvarrui/JavaPackager/blob/v1.3.0/README.md)
-- [v1.2.0](https://github.com/fvarrui/JavaPackager/blob/v1.2.0/README.md)
-- [v1.1.0](https://github.com/fvarrui/JavaPackager/blob/v1.1.0/README.md)
-- [v1.0.3](https://github.com/fvarrui/JavaPackager/blob/v1.0.3/README.md)
-- [v1.0.2](https://github.com/fvarrui/JavaPackager/blob/v1.0.2/README.md)
-- [v1.0.1](https://github.com/fvarrui/JavaPackager/blob/v1.0.1/README.md)
-- [v1.0.0](https://github.com/fvarrui/JavaPackager/blob/v1.0.0/README.md)
-- [v0.9.7](https://github.com/fvarrui/JavaPackager/blob/v0.9.7/README.md)
-- [v0.9.6](https://github.com/fvarrui/JavaPackager/blob/v0.9.6/README.md)
-- [v0.9.5](https://github.com/fvarrui/JavaPackager/blob/v0.9.5/README.md)
-- [v0.9.4](https://github.com/fvarrui/JavaPackager/blob/v0.9.4/README.md)
-- [v0.9.3](https://github.com/fvarrui/JavaPackager/blob/v0.9.3/README.md)
-- [v0.9.1](https://github.com/fvarrui/JavaPackager/blob/v0.9.1/README.md)
-- [v0.9.0](https://github.com/fvarrui/JavaPackager/blob/v0.9.0/README.md)
+- https://github.com/fvarrui/JavaPackager/blob/v0.9.0/README.md)
