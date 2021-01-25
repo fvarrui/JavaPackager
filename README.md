@@ -307,5 +307,3 @@ And then, run (ommit `./` on Windows):
 ## Future features
 
 Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column-7704117) to know the features we plan to add to JavaPackager.
-
-- https://github.com/fvarrui/JavaPackager/blob/v0.9.0/README.md)
