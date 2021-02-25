@@ -2,8 +2,8 @@
 
 ```xml
 <linuxConfig>
-	<pngFile>path/to/icon.png<pngFile>
-	<xpmFile>path/to/icon.png<xpmFile>
+	<pngFile>path/to/icon.png</pngFile>
+	<xpmFile>path/to/icon.png</xpmFile>
 	<generateDeb>true|false</generateDeb>
 	<generateRpm>true|false</generateRpm>
 </linuxConfig>
