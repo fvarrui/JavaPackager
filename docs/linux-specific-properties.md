@@ -3,7 +3,7 @@
 ```xml
 <linuxConfig>
 	<pngFile>path/to/icon.png</pngFile>
-	<xpmFile>path/to/icon.png</xpmFile>
+	<xpmFile>path/to/icon.xpm</xpmFile>
 	<generateDeb>true|false</generateDeb>
 	<generateRpm>true|false</generateRpm>
 </linuxConfig>
