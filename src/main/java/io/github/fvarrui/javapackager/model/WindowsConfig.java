@@ -38,6 +38,7 @@ public class WindowsConfig implements Serializable {
 	private LinkedHashMap<String, String> setupLanguages = new LinkedHashMap<>();
 	private SetupMode setupMode = SetupMode.installForAllUsers;
 	private WindowsSigning signing;
+	private Registry registry;
 
 	public File getIcoFile() {
 		return icoFile;
@@ -247,6 +248,14 @@ public class WindowsConfig implements Serializable {
 		this.signing = signing;
 	}
 
+	public Registry getRegistry() {
+		return registry;
+	}
+
+	public void setRegistry(Registry registry) {
+		this.registry = registry;
+	}
+
 	@Override
 	public String toString() {
 		return "WindowsConfig [icoFile=" + icoFile + ", headerType=" + headerType + ", companyName=" + companyName
@@ -258,7 +267,7 @@ public class WindowsConfig implements Serializable {
 				+ ", disableFinishedPage=" + disableFinishedPage + ", createDesktopIconTask=" + createDesktopIconTask
 				+ ", generateSetup=" + generateSetup + ", generateMsi=" + generateMsi + ", generateMsm=" + generateMsm
 				+ ", msiUpgradeCode=" + msiUpgradeCode + ", wrapJar=" + wrapJar + ", setupLanguages=" + setupLanguages
-				+ ", setupMode=" + setupMode + ", signing=" + signing + "]";
+				+ ", setupMode=" + setupMode + ", signing=" + signing + ", registry=" + registry + "]";
 	}
 
 	/**
