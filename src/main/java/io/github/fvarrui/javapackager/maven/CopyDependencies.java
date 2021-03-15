@@ -19,7 +19,6 @@ import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 
 /**
  * Copies all dependencies to app folder on Maven context
- * 
  */
 public class CopyDependencies extends ArtifactGenerator {
 
