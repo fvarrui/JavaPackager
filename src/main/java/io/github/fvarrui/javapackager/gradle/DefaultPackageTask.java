@@ -5,6 +5,9 @@ import static io.github.fvarrui.javapackager.utils.ObjectUtils.defaultIfNull;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.packagers.PackagerFactory;
 
+/**
+ * Default packaging task for Gradle 
+ */
 public class DefaultPackageTask extends AbstractPackageTask {
 	
 	@Override

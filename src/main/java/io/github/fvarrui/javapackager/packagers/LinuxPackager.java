@@ -10,6 +10,9 @@ import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
+/**
+ * Packager for GNU/Linux 
+ */
 public class LinuxPackager extends Packager {
 	
 	public LinuxPackager() {

@@ -8,6 +8,9 @@ import org.gradle.api.logging.Logger;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
 
+/**
+ * Gradle context 
+ */
 public class GradleContext extends Context<Logger> {
 
 	private Project project;

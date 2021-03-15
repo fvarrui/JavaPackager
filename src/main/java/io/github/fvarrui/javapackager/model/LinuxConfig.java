@@ -5,6 +5,9 @@ import java.io.Serializable;
 
 import io.github.fvarrui.javapackager.packagers.Packager;
 
+/**
+ * JavaPackager GNU/Linux specific configuration
+ */
 public class LinuxConfig implements Serializable {
 	private static final long serialVersionUID = -1238166997019141904L;
 	

@@ -22,6 +22,9 @@ import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.packagers.PackagerFactory;
 
+/**
+ * Packaging task fro Gradle 
+ */
 public class PackageTask extends AbstractPackageTask {
 		
 	// ===============

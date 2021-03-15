@@ -16,6 +16,9 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
 import org.apache.velocity.util.StringBuilderWriter;
 
+/**
+ * Velocity utils 
+ */
 public class VelocityUtils {
 
 	private static File assetsDir = new File("assets");

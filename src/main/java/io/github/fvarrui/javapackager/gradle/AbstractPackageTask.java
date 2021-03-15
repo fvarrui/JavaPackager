@@ -10,6 +10,9 @@ import org.gradle.api.tasks.TaskAction;
 
 import io.github.fvarrui.javapackager.packagers.Packager;
 
+/**
+ * Abstract packaging task for Gradle 
+ */
 public abstract class AbstractPackageTask extends DefaultTask {
 	
 	private List<File> outputFiles;
@@ -19,10 +22,9 @@ public abstract class AbstractPackageTask extends DefaultTask {
 		return outputFiles != null ? outputFiles : new ArrayList<>();
 	}	
 		
-	// ================
-	// task constructor
-	// ================
-	
+	/**
+	 * Task constructor
+	 */
 	public AbstractPackageTask() {
 		super();
 		setGroup(PackagePlugin.GROUP_NAME);
@@ -30,10 +32,10 @@ public abstract class AbstractPackageTask extends DefaultTask {
 		getOutputs().upToDateWhen(o -> false);
 	}
 	
-	// ===========
-	// task action
-	// ===========
-	
+	/**
+	 * Packaging task action
+	 * @throws Exception Throwed if something went wrong
+	 */
 	@TaskAction
 	public void doPackage() throws Exception {
 		
@@ -52,6 +54,11 @@ public abstract class AbstractPackageTask extends DefaultTask {
 
 	}
 	
+	/**
+	 * Creates a platform specific packager
+	 * @return Packager
+	 * @throws Exception Throwed if something went wrong
+	 */
 	protected abstract Packager createPackager() throws Exception; 
 	
 }

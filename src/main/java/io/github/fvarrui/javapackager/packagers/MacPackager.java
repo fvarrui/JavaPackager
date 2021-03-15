@@ -16,6 +16,9 @@ import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
+/**
+ * Packager for Mac OS X
+ */
 public class MacPackager extends Packager {
 	
 	private File appFile;

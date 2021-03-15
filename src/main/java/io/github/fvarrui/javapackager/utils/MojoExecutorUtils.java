@@ -7,7 +7,10 @@ import java.util.Map;
 import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
 
-public class MavenUtils {
+/**
+ * Mojo executor utils
+ */
+public class MojoExecutorUtils {
 
 	public static List<Element> mapToElementsList(Map<String, String> map) {
 		List<Element> elements = new ArrayList<>();

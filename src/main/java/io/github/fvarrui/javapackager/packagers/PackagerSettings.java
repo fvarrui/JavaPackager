@@ -11,6 +11,9 @@ import io.github.fvarrui.javapackager.model.Manifest;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 
+/**
+ * Common packagers' settings
+ */
 public class PackagerSettings {
 
 	protected File outputDirectory;

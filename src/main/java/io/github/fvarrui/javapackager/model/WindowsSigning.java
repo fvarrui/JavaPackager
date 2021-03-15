@@ -4,6 +4,9 @@ import java.io.File;
 
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Info needed for signing EXEs on Windows 
+ */
 public class WindowsSigning {
 
 	private String storetype;

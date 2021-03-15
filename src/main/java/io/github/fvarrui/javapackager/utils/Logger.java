@@ -4,9 +4,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import io.github.fvarrui.javapackager.packagers.Context;
 
+/**
+ * Logging class 
+ */
 public class Logger {
 	
-	private static final String TAB = "    ";
+	private static final String TAB = "    "; // uses four blank spaces as tab 
 	
 	private static int tabs = 0;
 	
@@ -65,7 +68,7 @@ public class Logger {
 	public static void errorUnindent(String msg, Throwable t) {
 		tabs--;
 		error(msg, t);
-		info("");
+		info(""); 
 	}
 	
 }

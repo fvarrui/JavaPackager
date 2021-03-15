@@ -8,6 +8,9 @@ import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
 
+/**
+ * Maven context 
+ */
 public class MavenContext extends Context<Log> {
 
 	private Log logger;

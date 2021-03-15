@@ -8,6 +8,9 @@ import java.io.InputStreamReader;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.plexus.util.cli.CommandLineException;
 
+/**
+ * Command utils
+ */
 public class CommandUtils {
 
 	public static String execute(File workingDirectory, String executable, Object... arguments) throws IOException, CommandLineException {

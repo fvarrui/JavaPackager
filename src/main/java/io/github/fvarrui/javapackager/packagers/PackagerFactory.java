@@ -4,6 +4,9 @@ import org.apache.commons.lang3.SystemUtils;
 
 import io.github.fvarrui.javapackager.model.Platform;
 
+/**
+ * Packager factory 
+ */
 public class PackagerFactory {
 	
 	public static Packager createPackager(Platform platform) throws Exception {

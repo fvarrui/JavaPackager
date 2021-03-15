@@ -14,6 +14,9 @@ import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.PackagerSettings;
 
+/**
+ * JavaPackager plugin extension for Gradle  
+ */
 public class PackagePluginExtension extends PackagerSettings {
 
 	private Project project;

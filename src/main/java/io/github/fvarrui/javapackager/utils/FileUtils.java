@@ -25,7 +25,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
-
+/**
+ * File utils
+ */
 public class FileUtils {
 
 	public static File mkdir(File dir) {

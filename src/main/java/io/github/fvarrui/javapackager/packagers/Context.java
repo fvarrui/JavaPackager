@@ -7,6 +7,9 @@ import java.util.List;
 import io.github.fvarrui.javapackager.gradle.GradleContext;
 import io.github.fvarrui.javapackager.maven.MavenContext;
 
+/**
+ * Building-tool context 
+ */
 public abstract class Context<T> {
 	
 	public Context() {

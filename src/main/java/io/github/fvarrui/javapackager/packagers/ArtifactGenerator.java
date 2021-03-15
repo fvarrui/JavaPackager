@@ -4,6 +4,10 @@ import java.io.File;
 
 import io.github.fvarrui.javapackager.utils.Logger;
 
+
+/**
+ * Artifact generation base class 
+ */
 public abstract class ArtifactGenerator {
 
 	private String artifactName;

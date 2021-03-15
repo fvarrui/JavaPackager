@@ -2,6 +2,9 @@ package io.github.fvarrui.javapackager.model;
 
 import org.apache.commons.lang3.SystemUtils;
 
+/**
+ * JavaPackager target platform 
+ */
 public enum Platform {
 	auto,
 	linux,

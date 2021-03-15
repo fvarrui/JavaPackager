@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Manifest section
+ */
 public class ManifestSection implements Serializable {
 	private static final long serialVersionUID = 118641813298011799L;
 

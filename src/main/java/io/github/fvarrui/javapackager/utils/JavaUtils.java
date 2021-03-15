@@ -1,5 +1,8 @@
 package io.github.fvarrui.javapackager.utils;
 
+/**
+ * Java utils
+ */
 public class JavaUtils {
 	
 	public static int getJavaMajorVersion() {

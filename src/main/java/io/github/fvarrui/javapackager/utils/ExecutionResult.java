@@ -1,5 +1,8 @@
 package io.github.fvarrui.javapackager.utils;
 
+/**
+ * Command execution result 
+ */
 public class ExecutionResult {
 
 	private String commandLine;

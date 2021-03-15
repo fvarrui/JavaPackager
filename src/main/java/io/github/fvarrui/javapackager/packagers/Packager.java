@@ -15,6 +15,9 @@ import io.github.fvarrui.javapackager.utils.IconUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
+/**
+ * Packager base class 
+ */
 public abstract class Packager extends PackagerSettings {
 	
 	private static final String DEFAULT_ORGANIZATION_NAME = "ACME";

@@ -5,6 +5,9 @@ import org.gradle.api.Project;
 
 import io.github.fvarrui.javapackager.packagers.Context;
 
+/**
+ * JavaPackager Gradle plugin
+ */
 public class PackagePlugin implements Plugin<Project> {
 
 	public static final String GROUP_NAME = "JavaPackager";

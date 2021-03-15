@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * JAR manifest configuration 
+ */
 public class Manifest implements Serializable {
 	private static final long serialVersionUID = -7271763575775465174L;
 	

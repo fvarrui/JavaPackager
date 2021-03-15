@@ -10,6 +10,9 @@ import java.util.Properties;
 
 import io.github.fvarrui.javapackager.model.Platform;
 
+/**
+ * JDK utils 
+ */
 public class JDKUtils {
 	
 	/**
@@ -50,10 +53,25 @@ public class JDKUtils {
 		}
 	}
 	
+	/**
+	 * Checks if a JDK is for platform
+	 * @param platform Specific platform
+	 * @param jdkPath Path to the JDK folder
+	 * @return true if is valid, otherwise false
+	 * @throws FileNotFoundException Path to JDK not found 
+	 * @throws IOException Error reading JDK "release" file
+	 */
 	public static boolean isValidJDK(Platform platform, File jdkPath) throws FileNotFoundException, IOException {
 		return checkPlatform(platform, jdkPath);
 	}
 	
+	/**
+	 * Checks if a JRE is for platform
+	 * @param platform Specific platform
+	 * @param jrePath Path to the JRE folder
+	 * @return true if is valid, otherwise false
+	 * @throws IOException Error reading JDK "release" file
+	 */
 	public static boolean isValidJRE(Platform platform, File jrePath) throws IOException {
 		try {
 			return checkPlatform(platform, jrePath);

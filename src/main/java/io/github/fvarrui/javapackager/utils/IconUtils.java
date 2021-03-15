@@ -2,6 +2,9 @@ package io.github.fvarrui.javapackager.utils;
 
 import io.github.fvarrui.javapackager.model.Platform;
 
+/**
+ * Icon utils
+ */
 public class IconUtils {
 
 	public static String getIconFileExtensionByPlatform(Platform platform) {

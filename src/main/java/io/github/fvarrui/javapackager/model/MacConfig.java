@@ -7,6 +7,9 @@ import java.io.Serializable;
 
 import io.github.fvarrui.javapackager.packagers.Packager;
 
+/**
+ * JavaPackager Mac OS specific configuration
+ */
 public class MacConfig implements Serializable {
 	private static final long serialVersionUID = -2268944961932941577L;
 
