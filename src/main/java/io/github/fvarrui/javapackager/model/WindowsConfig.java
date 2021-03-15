@@ -8,7 +8,11 @@ import java.util.LinkedHashMap;
 import java.util.UUID;
 
 import io.github.fvarrui.javapackager.packagers.Packager;
+import io.github.fvarrui.javapackager.utils.ObjectUtils;
 
+/**
+ * JavaPackager Windows specific configuration
+ */
 public class WindowsConfig implements Serializable {
 	private static final long serialVersionUID = 2106752412224694318L;
 
@@ -38,7 +42,7 @@ public class WindowsConfig implements Serializable {
 	private LinkedHashMap<String, String> setupLanguages = new LinkedHashMap<>();
 	private SetupMode setupMode = SetupMode.installForAllUsers;
 	private WindowsSigning signing;
-	private Registry registry;
+	private Registry registry = new Registry();
 
 	public File getIcoFile() {
 		return icoFile;
@@ -276,7 +280,7 @@ public class WindowsConfig implements Serializable {
 	 * @param packager Packager
 	 */
 	public void setDefaults(Packager packager) {
-		this.setHeaderType(this.getHeaderType() == null ? HeaderType.gui : this.getHeaderType());
+		this.setHeaderType(ObjectUtils.defaultIfNull(this.getHeaderType(), HeaderType.gui));
 		this.setFileVersion(defaultIfBlank(this.getFileVersion(), "1.0.0.0"));
 		this.setTxtFileVersion(defaultIfBlank(this.getTxtFileVersion(), "" + packager.getVersion()));
 		this.setProductVersion(defaultIfBlank(this.getProductVersion(), "1.0.0.0"));
