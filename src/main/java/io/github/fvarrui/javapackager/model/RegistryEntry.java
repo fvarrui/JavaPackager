@@ -1,9 +1,12 @@
 package io.github.fvarrui.javapackager.model;
 
+import java.io.Serializable;
+
 /**
  * Windows Registry entry
  */
-public class RegistryEntry {
+public class RegistryEntry implements Serializable {
+	private static final long serialVersionUID = 447936480111873679L;
 
 	/**
 	 * Windows registry key: HKCU, HKLM, ... 
