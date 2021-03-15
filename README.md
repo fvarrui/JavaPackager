@@ -137,6 +137,7 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 
 | Property                   | Mandatory          | Default value                                                | Description                                                  |
 | -------------------------- | ------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `additionalModulePaths`    | :x:                | `[]`                                                         | Additional module paths for `jdeps`.                         |
 | `additionalModules`        | :x:                | `[]`                                                         | Additional modules to the ones identified by `jdeps` or the specified with `modules` property. |
 | `additionalResources`      | :x:                | `[]`                                                         | Additional files and folders to include in the bundled app.  |
 | `administratorRequired`    | :x:                | `false`                                                      | App will run as administrator (with elevated privileges).    |

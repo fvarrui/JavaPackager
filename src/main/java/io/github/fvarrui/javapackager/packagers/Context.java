@@ -11,11 +11,14 @@ public abstract class Context<T> {
 	
 	public Context() {
 		super();
+		
+		// building tool independent generators
 		macInstallerGenerators.add(new GenerateDmg());
 		macInstallerGenerators.add(new GeneratePkg());
 		windowsInstallerGenerators.add(new GenerateSetup());
 		windowsInstallerGenerators.add(new GenerateMsm());
 		windowsInstallerGenerators.add(new GenerateMsi());
+		
 	}
 	
 	// common properties

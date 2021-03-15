@@ -279,6 +279,12 @@ public class PackageMojo extends AbstractMojo {
 	 */
 	@Parameter(required = false)
 	private Manifest manifest;
+	
+	/**
+	 * Additional module paths
+	 */
+	@Parameter(property = "additionalModulePaths", required = false)
+	private List<File> additionalModulePaths;
 
 	public void execute() throws MojoExecutionException {
 		
@@ -295,6 +301,7 @@ public class PackageMojo extends AbstractMojo {
 				(Packager) PackagerFactory
 					.createPackager(platform)
 						.additionalModules(additionalModules)
+						.additionalModulePaths(additionalModulePaths)
 						.additionalResources(additionalResources)
 						.administratorRequired(administratorRequired)
 						.version(version)

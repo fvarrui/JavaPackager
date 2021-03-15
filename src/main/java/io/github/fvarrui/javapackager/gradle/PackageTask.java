@@ -500,6 +500,18 @@ public class PackageTask extends AbstractPackageTask {
         return manifest;
     }
     
+	@Input
+	@Optional
+	private List<File> additionalModulePaths;
+	
+	public List<File> getAdditionalModulePaths() {
+		return additionalModulePaths;
+	}
+	
+	public void setAdditionalModulePaths(List<File> additionalModulePaths) {
+		this.additionalModulePaths = additionalModulePaths;
+	}
+    
 	// ===============
 	// create packager
 	// ===============
@@ -514,6 +526,7 @@ public class PackageTask extends AbstractPackageTask {
 			(Packager) PackagerFactory
 				.createPackager(defaultIfNull(platform, extension.getPlatform()))
 					.additionalModules(defaultIfNull(additionalModules, extension.getAdditionalModules()))
+					.additionalModulePaths(defaultIfNull(additionalModulePaths, extension.getAdditionalModulePaths()))
 					.additionalResources(defaultIfNull(additionalResources, extension.getAdditionalResources()))
 					.administratorRequired(defaultIfNull(administratorRequired, extension.getAdministratorRequired()))
 					.version(defaultIfNull(version, extension.getVersion(), getProject().getVersion().toString()))

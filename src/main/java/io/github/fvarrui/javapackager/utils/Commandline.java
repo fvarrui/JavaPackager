@@ -27,7 +27,7 @@ public class Commandline extends org.codehaus.plexus.util.cli.Commandline {
 				continue;
 			
 			if (argument.getClass().isArray()) {
-				createArguments(this, (Object[])argument);
+				createArguments((Object[])argument);
 				continue;
 			}
 			
