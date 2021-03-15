@@ -25,13 +25,13 @@ public class GenerateDmg extends ArtifactGenerator {
 	}
 	
 	@Override
-	public File apply(Packager packager) throws Exception {
+	public boolean skip(Packager packager) {
+		return !packager.getMacConfig().isGenerateDmg();
+	}
+	
+	@Override
+	protected File doApply(Packager packager) throws Exception {
 		MacPackager macPackager = (MacPackager) packager;
-		
-		if (!macPackager.getMacConfig().isGenerateDmg()) {
-			Logger.warn(getArtifactName() + " generation skipped by 'macConfig.generateDmg' property!");
-			return null;
-		}
 
 		File appFolder = macPackager.getAppFolder();
 		File assetsFolder = macPackager.getAssetsFolder();

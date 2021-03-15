@@ -2,6 +2,8 @@ package io.github.fvarrui.javapackager.packagers;
 
 import java.io.File;
 
+import io.github.fvarrui.javapackager.utils.Logger;
+
 public abstract class ArtifactGenerator {
 
 	private String artifactName;
@@ -14,6 +16,10 @@ public abstract class ArtifactGenerator {
 		super();
 		this.artifactName = artifactName;
 	}
+	
+	public boolean skip(Packager packager) {
+		return false;
+	}
 
 	public String getArtifactName() {
 		return artifactName;
@@ -23,6 +29,14 @@ public abstract class ArtifactGenerator {
 		this.artifactName = artifactName;
 	}
 
-    public abstract File apply(Packager packager) throws Exception;
+	protected abstract File doApply(Packager packager) throws Exception;
+    
+    public File apply(Packager packager) throws Exception {
+    	if (skip(packager)) {
+			Logger.warn(getArtifactName() + " artifact generation skipped!");    		
+    		return null;
+    	}
+    	return doApply(packager);
+    }
         
 }

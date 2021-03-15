@@ -33,7 +33,12 @@ public class GenerateDeb extends ArtifactGenerator {
 	}
 	
 	@Override
-	public File apply(Packager packager) throws Exception {
+	public boolean skip(Packager packager) {
+		return !packager.getLinuxConfig().isGenerateDeb();
+	}
+	
+	@Override
+	protected File doApply(Packager packager) throws Exception {
 		LinuxPackager linuxPackager = (LinuxPackager) packager;
 		
 		if (!linuxPackager.getLinuxConfig().isGenerateDeb()) {

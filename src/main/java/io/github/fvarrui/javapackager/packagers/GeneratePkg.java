@@ -3,7 +3,6 @@ package io.github.fvarrui.javapackager.packagers;
 import java.io.File;
 
 import io.github.fvarrui.javapackager.utils.CommandUtils;
-import io.github.fvarrui.javapackager.utils.Logger;
 
 /**
  * Creates a PKG installer file including all app folder's content only for MacOS so
@@ -16,13 +15,13 @@ public class GeneratePkg extends ArtifactGenerator {
 	}
 	
 	@Override
-	public File apply(Packager packager) throws Exception {
+	public boolean skip(Packager packager) {
+		return !packager.getMacConfig().isGeneratePkg();
+	}
+	
+	@Override
+	protected File doApply(Packager packager) throws Exception {
 		MacPackager macPackager = (MacPackager) packager;
-		
-		if (!macPackager.getMacConfig().isGeneratePkg()) {
-			Logger.warn(getArtifactName() + " generation skipped by 'macConfig.generatePkg' property!");
-			return null;
-		}
 
 		File appFile = macPackager.getAppFile();
 		String name = macPackager.getName();

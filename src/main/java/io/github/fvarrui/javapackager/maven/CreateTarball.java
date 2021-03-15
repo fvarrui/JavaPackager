@@ -27,7 +27,12 @@ public class CreateTarball extends ArtifactGenerator {
 	}
 
 	@Override
-	public File apply(Packager packager) {
+	public boolean skip(Packager packager) {
+		return !packager.getCreateTarball();
+	}
+
+	@Override
+	protected File doApply(Packager packager) {
 		
 		File assetsFolder = packager.getAssetsFolder();
 		String name = packager.getName();

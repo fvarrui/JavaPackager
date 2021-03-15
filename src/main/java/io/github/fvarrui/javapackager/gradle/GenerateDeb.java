@@ -23,13 +23,12 @@ public class GenerateDeb extends ArtifactGenerator {
 	}
 	
 	@Override
-	public File apply(Packager packager) throws Exception {
-		LinuxPackager linuxPackager = (LinuxPackager) packager;
-		
-		if (!linuxPackager.getLinuxConfig().isGenerateDeb()) {
-			Logger.info(getArtifactName() + " generation skipped by 'linuxConfig.generateDeb' property!");
-			return null;
-		}
+	public boolean skip(Packager packager) {
+		return !packager.getLinuxConfig().isGenerateDeb();
+	}
+	
+	@Override
+	protected File doApply(Packager packager) throws Exception {
 		
 		Logger.warn("Sorry! " + getArtifactName() + " generation is not yet available");
 		return null;

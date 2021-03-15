@@ -19,15 +19,15 @@ public class GenerateMsi extends WindowsArtifactGenerator {
 	}
 	
 	@Override
-	public File apply(Packager packager) throws Exception {
+	public boolean skip(Packager packager) {
+		return !packager.getWinConfig().isGenerateMsi();
+	}
+	
+	@Override
+	protected File doApply(Packager packager) throws Exception {
 		WindowsPackager windowsPackager = (WindowsPackager) packager;
 		
-		if (!windowsPackager.getWinConfig().isGenerateMsi()) {
-			Logger.warn(getArtifactName() + " generation skipped by 'winConfig.generateMsi' property!");
-			return null;
-		}
-		
-		File msmFile = new GenerateMsm().apply(windowsPackager);
+		File msmFile = new GenerateMsm().doApply(windowsPackager);
 		Logger.info("MSM file generated in " + msmFile);
 
 		File assetsFolder = windowsPackager.getAssetsFolder();

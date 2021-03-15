@@ -35,32 +35,32 @@ public class MavenContext extends Context<Log> {
 	}
 
 	@Override
-	public File createRunnableJar(Packager packager) {
+	public File createRunnableJar(Packager packager) throws Exception {
 		return new CreateRunnableJar().apply(packager);
 	}
 
 	@Override
-	public File copyDependencies(Packager packager) {
+	public File copyDependencies(Packager packager) throws Exception {
 		return new CopyDependencies().apply(packager);
 	}
 
 	@Override
-	public File createTarball(Packager packager) {
+	public File createTarball(Packager packager) throws Exception {
 		return new CreateTarball().apply(packager);
 	}
 
 	@Override
-	public File createZipball(Packager packager) {
+	public File createZipball(Packager packager) throws Exception {
 		return new CreateZipball().apply(packager);
 	}
 
 	@Override
-	public File resolveLicense(Packager packager) {
+	public File resolveLicense(Packager packager) throws Exception {
 		return new ResolveLicenseFromPOM().apply(packager);
 	}
 	
 	@Override
-	public File createWindowsExe(Packager packager) {
+	public File createWindowsExe(Packager packager) throws Exception {
 		return new CreateWindowsExe().apply(packager);
 	}
 

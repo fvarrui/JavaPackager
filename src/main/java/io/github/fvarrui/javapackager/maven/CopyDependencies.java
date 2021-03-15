@@ -28,7 +28,7 @@ public class CopyDependencies extends ArtifactGenerator {
 	}
 	
 	@Override
-	public File apply(Packager packager) {
+	protected File doApply(Packager packager) {
 		
 		File libsFolder = new File(packager.getJarFileDestinationFolder(), "libs");
 	

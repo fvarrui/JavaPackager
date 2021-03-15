@@ -18,14 +18,16 @@ public class GenerateMsm extends ArtifactGenerator {
 	}
 	
 	@Override
-	public File apply(Packager packager) throws Exception {
+	public boolean skip(Packager packager) {
+		return !packager.getWinConfig().isGenerateMsm() && !packager.getWinConfig().isGenerateMsi();
+	}
+	
+	@Override
+	protected File doApply(Packager packager) throws Exception {
 		WindowsPackager windowsPackager = (WindowsPackager) packager;
 		
-		if (windowsPackager.getMsmFile() != null) return windowsPackager.getMsmFile();
-		
-		if (!windowsPackager.getWinConfig().isGenerateMsm() && !windowsPackager.getWinConfig().isGenerateMsi()) {
-			Logger.warn(getArtifactName() + " generation skipped by 'winConfig.generateMsm' property!");
-			return null;
+		if (windowsPackager.getMsmFile() != null) {
+			return windowsPackager.getMsmFile();
 		}
 
 		File assetsFolder = windowsPackager.getAssetsFolder();

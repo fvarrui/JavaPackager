@@ -10,10 +10,6 @@ public abstract class WindowsArtifactGenerator extends ArtifactGenerator {
 	
 	private static final String TIMESTAMPING_AUTHORITY = "http://timestamp.comodoca.com/authenticode";
 
-	public WindowsArtifactGenerator() {
-		super();
-	}
-
 	public WindowsArtifactGenerator(String artifactName) {
 		super(artifactName);
 	}

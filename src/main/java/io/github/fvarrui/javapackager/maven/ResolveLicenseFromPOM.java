@@ -24,7 +24,7 @@ public class ResolveLicenseFromPOM extends ArtifactGenerator {
 	}
 	
 	@Override
-	public File apply(Packager packager) {
+	protected File doApply(Packager packager) {
 		Logger.infoIndent("Trying to resolve license from POM ...");
 		
 		File licenseFile = packager.getLicenseFile();

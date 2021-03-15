@@ -35,7 +35,7 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 	}
 
 	@Override
-	public File apply(Packager packager) {
+	protected File doApply(Packager packager) {
 		
 		WindowsPackager windowsPackager = (WindowsPackager) packager;
 		

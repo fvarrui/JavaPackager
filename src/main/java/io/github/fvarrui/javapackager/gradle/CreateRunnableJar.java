@@ -25,7 +25,7 @@ public class CreateRunnableJar extends ArtifactGenerator {
 	}
 	
 	@Override
-	public File apply(Packager packager) {
+	protected File doApply(Packager packager) {
 
 		String classifier = "runnable";
 		String name = packager.getName();

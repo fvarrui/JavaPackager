@@ -3,7 +3,6 @@ package io.github.fvarrui.javapackager.gradle;
 import java.io.File;
 
 import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
-import io.github.fvarrui.javapackager.packagers.LinuxPackager;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.utils.Logger;
 
@@ -18,14 +17,13 @@ public class GenerateRpm extends ArtifactGenerator {
 	}
 	
 	@Override
-	public File apply(Packager packager) throws Exception {
-		LinuxPackager linuxPackager = (LinuxPackager) packager; 
+	public boolean skip(Packager packager) {
+		return !packager.getLinuxConfig().isGenerateRpm();
+	}
+	
+	@Override
+	protected File doApply(Packager packager) throws Exception {
 		
-		if (!linuxPackager.getLinuxConfig().isGenerateRpm()) {
-			Logger.info(getArtifactName() + " generation skipped by 'linuxConfig.generateRpm' property!");
-			return null;
-		}
-
 		Logger.warn("Sorry! " + getArtifactName() + " generation is not yet available");
 
 		return null;

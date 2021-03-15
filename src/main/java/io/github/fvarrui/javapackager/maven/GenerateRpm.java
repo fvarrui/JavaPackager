@@ -35,13 +35,13 @@ public class GenerateRpm extends ArtifactGenerator {
 	}
 	
 	@Override
-	public File apply(Packager packager) throws Exception {
+	public boolean skip(Packager packager) {
+		return !packager.getLinuxConfig().isGenerateRpm();
+	}
+	
+	@Override
+	protected File doApply(Packager packager) throws Exception {
 		LinuxPackager linuxPackager = (LinuxPackager) packager; 
-		
-		if (!linuxPackager.getLinuxConfig().isGenerateRpm()) {
-			Logger.info(getArtifactName() + " generation skipped by 'linuxConfig.generateRpm' property!");
-			return null;
-		}
 
 		File assetsFolder = linuxPackager.getAssetsFolder();
 		String name = linuxPackager.getName();

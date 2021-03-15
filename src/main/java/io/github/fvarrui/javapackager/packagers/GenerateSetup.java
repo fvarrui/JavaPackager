@@ -4,7 +4,6 @@ import java.io.File;
 
 import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
-import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
 /**
@@ -18,13 +17,13 @@ public class GenerateSetup extends WindowsArtifactGenerator {
 	}
 	
 	@Override
-	public File apply(Packager packager) throws Exception {
+	public boolean skip(Packager packager) {
+		return !packager.getWinConfig().isGenerateSetup();
+	}
+	
+	@Override
+	protected File doApply(Packager packager) throws Exception {
 		WindowsPackager windowsPackager = (WindowsPackager) packager;
-		
-		if (!windowsPackager.getWinConfig().isGenerateSetup()) {
-			Logger.warn(getArtifactName() + " generation skipped by 'winConfig.generateSetup' property!");
-			return null;
-		}
 		
 		File iconFile = windowsPackager.getIconFile();
 		File assetsFolder = windowsPackager.getAssetsFolder();

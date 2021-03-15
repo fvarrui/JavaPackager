@@ -21,7 +21,12 @@ public class CreateZipball extends ArtifactGenerator {
 	}
 	
 	@Override
-	public File apply(Packager packager) throws Exception {
+	public boolean skip(Packager packager) {
+		return !packager.getCreateZipball();
+	}
+	
+	@Override
+	protected File doApply(Packager packager) throws Exception {
 		
 		String name = packager.getName();
 		String version = packager.getVersion();
