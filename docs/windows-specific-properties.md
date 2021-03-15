@@ -43,6 +43,19 @@
         [...]
     </signing>
     
+    <!-- windows registry entries added during installation -->
+    <registry>
+        <entries>
+            	<entry>
+                    <key>root:path/to/my/key</key>
+                    <valueName>name</valueName>
+                    <valueType>type</valueType>
+                    <valueData>data</valueData>
+            	</entry>
+            	[...]
+        </entries>
+    </registry>
+    
 </winConfig>
 ```
 
@@ -113,5 +126,35 @@ Property `winConfig.setupMode` can be set with 3 possible values:
 	<storepass>123456</storepass>
 	<alias>fvarrui</alias>
 </signing>
+```
+
+## Add values to the Windows Registry
+
+This property allows to specify Windows Registry values to be added during installation. These values will be removed during uninstallation.
+
+Structure of an entry:
+
+|             | Mandatory          | Default value | Description                                                  |
+| ----------- | ------------------ | ------------- | ------------------------------------------------------------ |
+| `key`       | :heavy_check_mark: |               | Key path, composed by root (`HKCU`, `HKLM`, `HKU`, `HKCC`, `HKCR`), ":" and subkey. |
+| `valueName` | :heavy_check_mark: |               | Value name.                                                  |
+| `valueType` | :x:                | `REG_SZ`      | Value type: `REG_SZ`, `REG_EXPAND_SZ`, `REG_MULTI_SZ`, `REG_DWORD`, `REG_QWORD`, `REG_BINARY`. |
+| `valueData` | :x:                | `""`          | Data to be stored.                                           |
+
+### Example
+
+Next configuration will add a value named  `greeting` in `MyApp ` key, under `HKEY_CURRENT_USER (HKCU)`  root, of type `REG_SZ (string)`, with value `hello`:
+
+```xml
+<registry>
+    <entries>
+        <entry>
+            <key>HKCU:MyApp</key>
+            <valueName>greeting</valueName>
+            <valueType>REG_SZ</valueType>
+            <valueData>hello</valueData>
+        </entry>
+    </entries>
+</registry>
 ```
 

@@ -59,6 +59,13 @@ Name: "${language.key}"; MessagesFile: "${language.value}"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 #end
 
+#if ($info.winConfig.registry)
+[Registry]
+#foreach ($entry in $info.winConfig.registry.entries)
+Root: ${entry.root}; Subkey: "${entry.subkey}"; ValueType: ${entry.valueTypeAsInnoSetupString}; ValueName: "${entry.valueName}"; ValueData: "${entry.valueData}"; Flags: uninsdeletevalue
+#end
+#end
+
 [Files]
 Source: "${info.appFolder}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
