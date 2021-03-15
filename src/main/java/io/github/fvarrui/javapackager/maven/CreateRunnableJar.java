@@ -23,7 +23,7 @@ import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.utils.Logger;
-import io.github.fvarrui.javapackager.utils.MavenUtils;
+import io.github.fvarrui.javapackager.utils.MojoExecutorUtils;
 
 /**
  * Creates a runnable jar file from sources on Maven context
@@ -57,7 +57,7 @@ public class CreateRunnableJar extends ArtifactGenerator {
 		);
 		if (manifest != null) {
 			
-			archive.add(MavenUtils.mapToElement("manifestEntries", manifest.getAdditionalEntries()));
+			archive.add(MojoExecutorUtils.mapToElement("manifestEntries", manifest.getAdditionalEntries()));
 
 			List<Element> manifestSections = 
 					manifest
@@ -65,7 +65,7 @@ public class CreateRunnableJar extends ArtifactGenerator {
 						.stream()
 						.map(s -> element("manifestSection", 
 								element("Name", s.getName()),
-								MavenUtils.mapToElement("manifestEntries", s.getEntries())
+								MojoExecutorUtils.mapToElement("manifestEntries", s.getEntries())
 							))
 						.collect(Collectors.toList());
 			
