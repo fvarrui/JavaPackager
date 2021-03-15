@@ -1,6 +1,7 @@
 package io.github.fvarrui.javapackager.packagers;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,6 +43,7 @@ public class BundleJre extends ArtifactGenerator {
 		File jarFile = packager.getJarFile();
 		List<String> requiredModules = packager.getModules();
 		List<String> additionalModules = packager.getAdditionalModules();
+		List<File> additionalModulePaths = packager.getAdditionalModulePaths();
 		
 		File currentJdk = new File(System.getProperty("java.home"));
 		
@@ -91,7 +93,7 @@ public class BundleJre extends ArtifactGenerator {
 				throw new Exception("Invalid JDK for platform '" + platform + "': " + jdkPath);
 			}
 			
-			String modules = getRequiredModules(libsFolder, customizedJre, jarFile, requiredModules, additionalModules);
+			String modules = getRequiredModules(libsFolder, customizedJre, jarFile, requiredModules, additionalModules, additionalModulePaths);
 
 			Logger.info("Creating JRE with next modules included: " + modules);
 
@@ -138,10 +140,11 @@ public class BundleJre extends ArtifactGenerator {
 	 * @param jarFile Runnable jar file reference
 	 * @param defaultModules Additional files and folders to include in the bundled app.
 	 * @param additionalModules Defines modules to customize the bundled JRE. Don't use jdeps to get module dependencies.
+	 * @param additionalModulePaths Defines additional module paths to customize the bundled JRE.
 	 * @return string containing a comma separated list with all needed modules
 	 * @throws Exception Process failed
 	 */
-	protected String getRequiredModules(File libsFolder, boolean customizedJre, File jarFile, List<String> defaultModules, List<String> additionalModules) throws Exception {
+	protected String getRequiredModules(File libsFolder, boolean customizedJre, File jarFile, List<String> defaultModules, List<String> additionalModules, List<File> additionalModulePaths) throws Exception {
 		
 		Logger.infoIndent("Getting required modules ... ");
 		
@@ -170,8 +173,9 @@ public class BundleJre extends ArtifactGenerator {
 					jdeps.getAbsolutePath(), 
 					"-q",
 					"--multi-release", JavaUtils.getJavaMajorVersion(),
-					"--ignore-missing-deps", 
-					"--print-module-deps", 
+					"--ignore-missing-deps",
+					"--print-module-deps",
+					additionalModulePathsToParams(additionalModulePaths),
 					jarLibs,
 					jarFile
 				);
@@ -190,7 +194,8 @@ public class BundleJre extends ArtifactGenerator {
 					jdeps.getAbsolutePath(), 
 					"-q",
 					"--multi-release", JavaUtils.getJavaMajorVersion(),
-					"--list-deps", 
+					"--list-deps",
+					additionalModulePathsToParams(additionalModulePaths),
 					jarLibs,
 					jarFile
 				);
@@ -222,7 +227,24 @@ public class BundleJre extends ArtifactGenerator {
 		
 		return StringUtils.join(modulesList, ",");
 	}
-
-
+	
+	private String [] additionalModulePathsToParams(List<File> additionalModulePaths) {
+		
+		List<String> additionalPaths = new ArrayList<>();
+		
+		additionalModulePaths
+			.stream()
+			.filter(path -> {
+				if (path.exists()) return true;
+				Logger.warn("Additional module path not found: " + path);
+				return false;
+			})
+			.forEach(path -> {
+				additionalPaths.add("--module-path");
+				additionalPaths.add(path.toString());
+			});
+		
+		return additionalPaths.toArray(new String[0]);
+	}
 
 }

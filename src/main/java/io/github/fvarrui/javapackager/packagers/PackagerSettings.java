@@ -51,6 +51,7 @@ public class PackagerSettings {
 	protected String classpath;
 	protected String jreMinVersion;
 	protected Manifest manifest;
+	protected List<File> additionalModulePaths;
 
 	public File getOutputDirectory() {
 		return outputDirectory;
@@ -202,6 +203,10 @@ public class PackagerSettings {
 
 	public Manifest getManifest() {
 		return manifest;
+	}
+
+	public List<File> getAdditionalModulePaths() {
+		return additionalModulePaths;
 	}
 
 	// fluent api
@@ -396,6 +401,11 @@ public class PackagerSettings {
 		return this;
 	}
 
+	public PackagerSettings additionalModulePaths(List<File> additionalModulePaths) {
+		this.additionalModulePaths = additionalModulePaths;
+		return this;
+	}
+
 	@Override
 	public String toString() {
 		return "PackagerSettings [outputDirectory=" + outputDirectory + ", licenseFile=" + licenseFile + ", iconFile="
@@ -410,8 +420,8 @@ public class PackagerSettings {
 				+ jreDirectoryName + ", winConfig=" + winConfig + ", linuxConfig=" + linuxConfig + ", macConfig="
 				+ macConfig + ", createTarball=" + createTarball + ", createZipball=" + createZipball + ", extra="
 				+ extra + ", useResourcesAsWorkingDir=" + useResourcesAsWorkingDir + ", assetsDir=" + assetsDir
-				+ ", classpath=" + classpath + ", jreMinVersion=" + jreMinVersion + ", manifest="
-				+ manifest + "]";
+				+ ", classpath=" + classpath + ", jreMinVersion=" + jreMinVersion + ", manifest=" + manifest
+				+ ", additionalModulePaths=" + additionalModulePaths + "]";
 	}
 
 }

@@ -23,6 +23,7 @@ public class PackagePluginExtension extends PackagerSettings {
 		this.project = project;
 		this.platform = Platform.auto;
 		this.additionalModules = new ArrayList<>();
+		this.additionalModulePaths = new ArrayList<>();
 		this.additionalResources = new ArrayList<>();
 		this.administratorRequired = false;
 		this.assetsDir = new File(project.getProjectDir(), "assets");
