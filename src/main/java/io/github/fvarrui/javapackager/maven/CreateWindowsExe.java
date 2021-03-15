@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 
 import io.github.fvarrui.javapackager.model.WindowsConfig;
@@ -23,12 +22,18 @@ import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.packagers.WindowsArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.WindowsPackager;
+import io.github.fvarrui.javapackager.utils.FileUtils;
 
 /**
  * Copies all dependencies to app folder on Maven context
- * 
  */
 public class CreateWindowsExe extends WindowsArtifactGenerator {
+	
+	private File launch4jFolder;
+	private File genericManifest;
+	private File genericIcon;
+	private File genericJar;
+	private File genericExe;
 	
 	public CreateWindowsExe() {
 		super("Windows EXE");
@@ -41,16 +46,23 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 		
 		List<String> vmArgs = windowsPackager.getVmArgs();
 		WindowsConfig winConfig = windowsPackager.getWinConfig();
-		String jarPath = windowsPackager.getJarPath();
 		File executable = windowsPackager.getExecutable();
-		File iconFile = windowsPackager.getIconFile();
-		File manifestFile = windowsPackager.getManifestFile();
 		String mainClass = windowsPackager.getMainClass();
 		boolean useResourcesAsWorkingDir = windowsPackager.isUseResourcesAsWorkingDir();
 		boolean bundleJre = windowsPackager.getBundleJre();
 		String jreDirectoryName = windowsPackager.getJreDirectoryName(); 
 		String classpath = windowsPackager.getClasspath();
 		String jreMinVersion = windowsPackager.getJreMinVersion();
+		File jarFile = windowsPackager.getJarFile();
+		
+		try {
+			// creates a folder only for launch4j assets
+			createAssets(windowsPackager);
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		} 
+		
+		String jarPath = winConfig.isWrapJar() ? genericJar.getAbsolutePath() : jarFile.getName();
 	
 		List<Element> optsElements = vmArgs.stream().map(arg -> element("opt", arg)).collect(Collectors.toList());
 		
@@ -65,9 +77,9 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 		pluginConfig.add(element("headerType", "" + winConfig.getHeaderType()));
 		pluginConfig.add(element("jar", jarPath));
 		pluginConfig.add(element("dontWrapJar", "" + !winConfig.isWrapJar()));
-		pluginConfig.add(element("outfile", executable.getAbsolutePath()));
-		pluginConfig.add(element("icon", iconFile.getAbsolutePath()));
-		pluginConfig.add(element("manifest", manifestFile.getAbsolutePath()));
+		pluginConfig.add(element("outfile", genericExe.getAbsolutePath()));
+		pluginConfig.add(element("icon", genericIcon.getAbsolutePath()));
+		pluginConfig.add(element("manifest", genericManifest.getAbsolutePath()));
 		pluginConfig.add(
 				element("classPath",
 						element("mainClass", mainClass),
@@ -108,15 +120,36 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 					Context.getMavenContext().getEnv()
 				);
 			
-			sign(executable, windowsPackager);
+			sign(genericExe, windowsPackager);
 			
-		} catch (MojoExecutionException e) {
-
-			throw new RuntimeException(e);
+			FileUtils.copyFileToFile(genericExe, executable);
 			
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
 		}	
 
 		return executable;
+	}
+
+	private void createAssets(WindowsPackager packager) throws Exception {
+		
+		File assetsFolder = packager.getAssetsFolder();
+		File manifestFile = packager.getManifestFile();
+		File iconFile = packager.getIconFile();
+		File jarFile = packager.getJarFile();
+
+		launch4jFolder = new File(assetsFolder, "launch4j");
+		if (!launch4jFolder.exists()) launch4jFolder.mkdirs();
+		
+		genericManifest = new File(launch4jFolder, "app.exe.manifest");
+		genericIcon = new File(launch4jFolder, "app.ico");
+		genericJar = new File(launch4jFolder, "app.jar");
+		genericExe = new File(launch4jFolder, "app.exe");
+		
+		FileUtils.copyFileToFile(manifestFile, genericManifest);
+		FileUtils.copyFileToFile(iconFile, genericIcon);
+		FileUtils.copyFileToFile(jarFile, genericJar);
+		
 	}
 
 }

@@ -2,7 +2,6 @@ package io.github.fvarrui.javapackager.packagers;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -11,19 +10,17 @@ import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
+/**
+ * Packager for Windows
+ */
 public class WindowsPackager extends Packager {
 	
-	private String jarPath;
 	private File manifestFile;
 	private File msmFile;
 	
 	public WindowsPackager() {
 		super();
 		installerGenerators.addAll(Context.getContext().getWindowsInstallerGenerators());
-	}
-	
-	public String getJarPath() {
-		return jarPath;
 	}
 	
 	public File getManifestFile() {
@@ -66,10 +63,8 @@ public class WindowsPackager extends Packager {
 		Logger.infoIndent("Creating windows EXE ...");
 
 		// copies JAR to app folder
-		jarPath = jarFile.getAbsolutePath();
 		if (!winConfig.isWrapJar()) {
 			FileUtils.copyFileToFolder(jarFile, appFolder);
-			jarPath = jarFile.getName();
 		}
 		
 		// generates manifest file to require administrator privileges from velocity template
@@ -97,9 +92,4 @@ public class WindowsPackager extends Packager {
 		return appFolder;
 	}
 	
-	public static void main(String[] args) {
-		String classpath = "plugins/*:addons/*";
-		List<String> classpaths = Arrays.asList(classpath.split("[:;]"));
-		System.out.println(classpaths);
-	}
 }
