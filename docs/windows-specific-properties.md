@@ -2,13 +2,13 @@
 
 ```xml
 <winConfig>
-    
+
 	<!-- general properties -->
 	<icoFile>path/to/icon.ico</icoFile>
 	<generateSetup>true|false</generateSetup>
 	<generateMsi>true|false</generateMsi>
 	<generateMsm>true|false</generateMsm>
-    
+
 	<!-- exe creation properties -->
 	<headerType>gui</headerType>
 	<wrapJar>true|false</wrapJar>
@@ -22,7 +22,7 @@
 	<productName>${name}</productName>
 	<internalName>${name}</internalName>
 	<originalFilename>${name}.exe</originalFilename>
-    
+
 	<!-- setup generation properties -->
 	<setupMode>installForAllUsers|installForCurrentUser|askTheUser</setupMode>
 	<setupLanguages>
@@ -34,27 +34,27 @@
 	<disableProgramGroupPage>true|false</disableProgramGroupPage>
 	<disableFinishedPage>true|false</disableFinishedPage>
 	<createDesktopIconTask>true|false</createDesktopIconTask>
-    
-    <!-- signing properties -->
-    <signing>
+
+	<!-- signing properties -->
+	<signing>
 		<keystore>path/to/keystore</keystore>
 		<storepass>password</storepass>
 		<alias>cert_alias</alias>        	
-        [...]
-    </signing>
-    
-    <!-- windows registry entries added during installation -->
-    <registry>
-        <entries>
-            	<entry>
-                    <key>root:path/to/my/key</key>
-                    <valueName>name</valueName>
-                    <valueType>type</valueType>
-                    <valueData>data</valueData>
-            	</entry>
-            	[...]
-        </entries>
-    </registry>
+		[...]
+	</signing>
+
+	<!-- windows registry entries added during installation -->
+	<registry>
+		<entries>
+			<entry>
+					<key>root:path/to/my/key</key>
+					<valueName>name</valueName>
+					<valueType>type</valueType>
+					<valueData>data</valueData>
+			</entry>
+			[...]
+		</entries>
+	</registry>
     
 </winConfig>
 ```
