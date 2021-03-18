@@ -13,7 +13,7 @@
 	<!-- signing properties -->
 	<developerId>singning identity</developerId>
 	<entitlements>path/to/entitlements.plist</entitlements>
-	<dontCodesignApp>true|false</dontCodesignApp>
+	<codesignApp>true|false</codesignApp>
 	
 	<!-- properties used in DMG disk image generation -->
 	<backgroundImage>path/to/png</backgroundImage>
@@ -33,16 +33,16 @@
 </macConfig>
 ```
 
-| Property          | Mandatory | Default value  | Description                                                  |
-| ----------------- | --------- | -------------- | ------------------------------------------------------------ |
-| `icnsFile`        | :x:       | `null`         | Icon file.                                                   |
-| `generateDmg`     | :x:       | `true`         | Enables DMG disk image file generation.                      |
-| `generatePkg`     | :x:       | `true`         | Enables installation package generation.                     |
-| `relocateJar`     | :x:       | `true`         | If `true`, Jar files are located in `Contents/Resources/Java` folder, otherwise they are located in `Contents/Resources` folder. |
-| `appId`           | :x:       | `${mainClass}` | App unique identifier.                                       |
-| `developerId`     | :x:       | `null`         | Signing identity.                                            |
-| `entitlements`    | :x:       | `null`         | Path to [entitlements](https://developer.apple.com/documentation/bundleresources/entitlements) file. |
-| `dontCodesignApp` | :x:       | `false`        | If sets to `true`, generated app is not codesigned.          |
+| Property       | Mandatory | Default value  | Description                                                  |
+| -------------- | --------- | -------------- | ------------------------------------------------------------ |
+| `icnsFile`     | :x:       | `null`         | Icon file.                                                   |
+| `generateDmg`  | :x:       | `true`         | Enables DMG disk image file generation.                      |
+| `generatePkg`  | :x:       | `true`         | Enables installation package generation.                     |
+| `relocateJar`  | :x:       | `true`         | If `true`, Jar files are located in `Contents/Resources/Java` folder, otherwise they are located in `Contents/Resources` folder. |
+| `appId`        | :x:       | `${mainClass}` | App unique identifier.                                       |
+| `developerId`  | :x:       | `null`         | Signing identity.                                            |
+| `entitlements` | :x:       | `null`         | Path to [entitlements](https://developer.apple.com/documentation/bundleresources/entitlements) file. |
+| `codesignApp`  | :x:       | `true`         | If it is set to `false`, generated app will not be codesigned. |
 
 ## DMG generation properties
 
