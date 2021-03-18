@@ -138,10 +138,12 @@ public class MacPackager extends Packager {
 		Logger.info("Info.plist file created in " + infoPlistFile.getAbsolutePath());
 
 		// codesigns app folder
-		if (Platform.mac.isCurrentPlatform()) {
-			codesign(this.macConfig.getDeveloperId(), this.macConfig.getEntitlements(), this.appFile);
-		} else {
+		if (!Platform.mac.isCurrentPlatform()) {
 			Logger.warn("Generated app could not be signed due to current platform is " + Platform.getCurrentPlatform());
+		} else if (!getMacConfig().isCodesignApp()) {
+			Logger.warn("App codesigning disabled");
+		} else {
+			codesign(this.macConfig.getDeveloperId(), this.macConfig.getEntitlements(), this.appFile);
 		}
 		
 		return appFile;
