@@ -7,6 +7,8 @@ import static org.apache.commons.io.FileUtils.copyInputStreamToFile;
 import static org.apache.commons.io.FileUtils.deleteDirectory;
 import static org.apache.commons.io.FileUtils.moveDirectoryToDirectory;
 import static org.apache.commons.io.FileUtils.moveFileToDirectory;
+import static org.apache.commons.io.FileUtils.readFileToString;
+import static org.apache.commons.io.FileUtils.writeStringToFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,7 +28,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * File utils
+ * Common files and folders utils
  */
 public class FileUtils {
 
@@ -158,16 +160,15 @@ public class FileUtils {
 	}
 	
 	public static void processFileContent(File dest, Function<String, String> function) throws IOException {
-		String content = org.apache.commons.io.FileUtils.readFileToString(dest, StandardCharsets.UTF_8);
+		String content = readFileToString(dest, StandardCharsets.UTF_8);
 		content = function.apply(content);
-		org.apache.commons.io.FileUtils.writeStringToFile(dest, content, StandardCharsets.UTF_8);
+		writeStringToFile(dest, content, StandardCharsets.UTF_8);
 	}
 	
 	public static void copyResourceToFile(String resource, File dest) throws Exception  {
 		Logger.info("Copying resource [" + resource + "] to file [" + dest + "]");		
 		copyStreamToFile(FileUtils.class.getResourceAsStream(resource), dest);
 	}
-
 	
 	public static void createSymlink(File link, File target) throws Exception {
 		Logger.info("Creating symbolic link [" + link + "] to [" + target + "]");		
@@ -188,7 +189,7 @@ public class FileUtils {
 	}
 	
 	public static void rename(File file, String newName) {
-		Logger.info("Changing name of [" + file + "] to [" + newName + "]");		
+		Logger.info("Renaming file [" + file + "] to [" + newName + "]");		
 		file.renameTo(new File(file.getParentFile(), newName)); 
 	}
 	
@@ -202,7 +203,9 @@ public class FileUtils {
 	public static File findFirstFile(File searchFolder, String regex) {
 		return Arrays.asList(searchFolder.listFiles((dir, name) -> Pattern.matches(regex, name)))
 				.stream()
-				.map(f -> new File(f.getName())).findFirst().get();
+				.map(f -> new File(f.getName()))
+				.findFirst()
+				.get();
 	}
 	
 	public static void downloadFromUrl(URL url, File file) throws IOException {
