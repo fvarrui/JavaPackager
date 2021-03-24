@@ -109,9 +109,6 @@ public class BundleJre extends ArtifactGenerator {
 			String jlink = new File(currentJdk, "/bin/jlink").getAbsolutePath();
 			
 			// generates customized jre using modules
-<<<<<<< Updated upstream:src/main/java/io/github/fvarrui/javapackager/packagers/BundleJre.java
-			CommandUtils.execute(jlink.getAbsolutePath(), "--module-path", modulesDir, "--add-modules", modules, "--output", destinationFolder, "--no-header-files", "--no-man-pages", "--strip-debug", "--compress=2");
-=======
 			CommandUtils.execute(
 					jlink, 
 					"--vm=client", 
@@ -123,7 +120,6 @@ public class BundleJre extends ArtifactGenerator {
 					"--strip-debug", 
 					"--compress=2"
 				);
->>>>>>> Stashed changes:src/main/java/io/github/fvarrui/javapackager/common/generators/BundleJre.java
 	
 			// sets execution permissions on executables in jre
 			File binFolder = new File(destinationFolder, "bin");
