@@ -45,7 +45,7 @@ public class FileUtils {
 	}
 	
 	public static void copyFileToFile(File source, File dest) throws Exception {
-		Logger.info("Copying file [" + source + "] to folder [" + dest + "]");			
+		Logger.info("Copying file [" + source + "] to file [" + dest + "]");			
 		try {
 			copyFile(source, dest);
 		} catch (IOException e) {
