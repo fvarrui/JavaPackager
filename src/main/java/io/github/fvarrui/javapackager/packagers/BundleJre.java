@@ -111,7 +111,6 @@ public class BundleJre extends ArtifactGenerator {
 			// generates customized jre using modules
 			CommandUtils.execute(
 					jlink, 
-					"--vm=client", 
 					"--module-path", modulesDir, 
 					"--add-modules", modules, 
 					"--output", destinationFolder, 
