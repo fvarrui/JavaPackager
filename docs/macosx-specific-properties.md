@@ -13,6 +13,7 @@
 	<!-- signing properties -->
 	<developerId>singning identity</developerId>
 	<entitlements>path/to/entitlements.plist</entitlements>
+	<codesignApp>true|false</codesignApp>
 	
 	<!-- properties used in DMG disk image generation -->
 	<backgroundImage>path/to/png</backgroundImage>
@@ -41,6 +42,7 @@
 | `appId`        | :x:       | `${mainClass}` | App unique identifier.                                       |
 | `developerId`  | :x:       | `null`         | Signing identity.                                            |
 | `entitlements` | :x:       | `null`         | Path to [entitlements](https://developer.apple.com/documentation/bundleresources/entitlements) file. |
+| `codesignApp`  | :x:       | `true`         | If it is set to `false`, generated app will not be codesigned. |
 
 ## DMG generation properties
 
