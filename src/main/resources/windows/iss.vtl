@@ -59,11 +59,19 @@ Name: "${language.key}"; MessagesFile: "${language.value}"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 #end
 
-#if ($info.winConfig.registry)
 [Registry]
+#if ($info.winConfig.registry)
 #foreach ($entry in $info.winConfig.registry.entries)
 Root: ${entry.root}; Subkey: "${entry.subkey}"; ValueType: ${entry.valueTypeAsInnoSetupString}; ValueName: "${entry.valueName}"; ValueData: "${entry.valueData}"; Flags: uninsdeletevalue
 #end
+#end
+#foreach ($fileAssociation in $info.fileAssociations)
+; ${fileAssociation.extension} extension file association
+Root: HKA; Subkey: "Software\Classes\.${fileAssociation.extension}\OpenWithProgids"; ValueType: string; ValueName: "${info.name}.${fileAssociation.extension}"; ValueData: ""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\\${info.name}.${fileAssociation.extension}"; ValueType: string; ValueName: ""; ValueData: "${fileAssociation.description}"; Flags: uninsdeletekey
+Root: HKA; Subkey: "Software\Classes\\${info.name}.${fileAssociation.extension}\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\\${info.executable.name},0"
+Root: HKA; Subkey: "Software\Classes\\${info.name}.${fileAssociation.extension}\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\\${info.executable.name}"" ""%1"""
+Root: HKA; Subkey: "Software\Classes\Applications\\${info.executable.name}\SupportedTypes"; ValueType: string; ValueName: ".${fileAssociation.extension}"; ValueData: ""
 #end
 
 [Files]
@@ -76,4 +84,6 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 #end
 
 [Run]
+#if (!$info.winConfig.disableRunAfterInstall)
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent runascurrentuser
+#end

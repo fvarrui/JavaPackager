@@ -33,6 +33,7 @@ public class WindowsConfig implements Serializable {
 	private boolean disableDirPage = true;
 	private boolean disableProgramGroupPage = true;
 	private boolean disableFinishedPage = true;
+	private boolean disableRunAfterInstall = true;
 	private boolean createDesktopIconTask = true;
 	private boolean generateSetup = true;
 	private boolean generateMsi = true;
@@ -260,6 +261,14 @@ public class WindowsConfig implements Serializable {
 		this.registry = registry;
 	}
 
+	public boolean isDisableRunAfterInstall() {
+		return disableRunAfterInstall;
+	}
+
+	public void setDisableRunAfterInstall(boolean disableRunAfterInstall) {
+		this.disableRunAfterInstall = disableRunAfterInstall;
+	}
+
 	@Override
 	public String toString() {
 		return "WindowsConfig [icoFile=" + icoFile + ", headerType=" + headerType + ", companyName=" + companyName
@@ -268,10 +277,11 @@ public class WindowsConfig implements Serializable {
 				+ ", productName=" + productName + ", productVersion=" + productVersion + ", trademarks=" + trademarks
 				+ ", txtFileVersion=" + txtFileVersion + ", txtProductVersion=" + txtProductVersion
 				+ ", disableDirPage=" + disableDirPage + ", disableProgramGroupPage=" + disableProgramGroupPage
-				+ ", disableFinishedPage=" + disableFinishedPage + ", createDesktopIconTask=" + createDesktopIconTask
-				+ ", generateSetup=" + generateSetup + ", generateMsi=" + generateMsi + ", generateMsm=" + generateMsm
-				+ ", msiUpgradeCode=" + msiUpgradeCode + ", wrapJar=" + wrapJar + ", setupLanguages=" + setupLanguages
-				+ ", setupMode=" + setupMode + ", signing=" + signing + ", registry=" + registry + "]";
+				+ ", disableFinishedPage=" + disableFinishedPage + ", disableRunAfterInstall=" + disableRunAfterInstall
+				+ ", createDesktopIconTask=" + createDesktopIconTask + ", generateSetup=" + generateSetup
+				+ ", generateMsi=" + generateMsi + ", generateMsm=" + generateMsm + ", msiUpgradeCode=" + msiUpgradeCode
+				+ ", wrapJar=" + wrapJar + ", setupLanguages=" + setupLanguages + ", setupMode=" + setupMode
+				+ ", signing=" + signing + ", registry=" + registry + "]";
 	}
 
 	/**

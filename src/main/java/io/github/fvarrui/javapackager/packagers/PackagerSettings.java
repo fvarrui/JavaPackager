@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import io.github.fvarrui.javapackager.model.FileAssociation;
 import io.github.fvarrui.javapackager.model.LinuxConfig;
 import io.github.fvarrui.javapackager.model.MacConfig;
 import io.github.fvarrui.javapackager.model.Manifest;
@@ -55,6 +56,7 @@ public class PackagerSettings {
 	protected String jreMinVersion;
 	protected Manifest manifest;
 	protected List<File> additionalModulePaths;
+	protected List<FileAssociation> fileAssociations;
 
 	public File getOutputDirectory() {
 		return outputDirectory;
@@ -210,6 +212,10 @@ public class PackagerSettings {
 
 	public List<File> getAdditionalModulePaths() {
 		return additionalModulePaths;
+	}
+
+	public List<FileAssociation> getFileAssociations() {
+		return fileAssociations;
 	}
 
 	// fluent api
@@ -409,6 +415,11 @@ public class PackagerSettings {
 		return this;
 	}
 
+	public PackagerSettings fileAssociations(List<FileAssociation> fileAssociations) {
+		this.fileAssociations = fileAssociations;
+		return this;
+	}
+
 	@Override
 	public String toString() {
 		return "PackagerSettings [outputDirectory=" + outputDirectory + ", licenseFile=" + licenseFile + ", iconFile="
@@ -424,7 +435,7 @@ public class PackagerSettings {
 				+ macConfig + ", createTarball=" + createTarball + ", createZipball=" + createZipball + ", extra="
 				+ extra + ", useResourcesAsWorkingDir=" + useResourcesAsWorkingDir + ", assetsDir=" + assetsDir
 				+ ", classpath=" + classpath + ", jreMinVersion=" + jreMinVersion + ", manifest=" + manifest
-				+ ", additionalModulePaths=" + additionalModulePaths + "]";
+				+ ", additionalModulePaths=" + additionalModulePaths + ", fileAssociations=" + fileAssociations + "]";
 	}
 
 }
