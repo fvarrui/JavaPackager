@@ -36,23 +36,23 @@ public abstract class Context<T> {
 	public abstract File createTarball(Packager packager) throws Exception;
 	public abstract File createZipball(Packager packager) throws Exception;
 	public abstract File resolveLicense(Packager packager) throws Exception;
-	public abstract File createWindowsExe(Packager packager) throws Exception;
+	public abstract File createWindowsExe(WindowsPackager packager) throws Exception;
 	
 	// installer producers
 	
-	private List<ArtifactGenerator> linuxInstallerGenerators = new ArrayList<>();
-	private List<ArtifactGenerator> macInstallerGenerators = new ArrayList<>();
-	private List<ArtifactGenerator> windowsInstallerGenerators = new ArrayList<>();
+	private List<ArtifactGenerator<LinuxPackager>> linuxInstallerGenerators = new ArrayList<>();
+	private List<ArtifactGenerator<MacPackager>> macInstallerGenerators = new ArrayList<>();
+	private List<ArtifactGenerator<WindowsPackager>> windowsInstallerGenerators = new ArrayList<>();
 
-	public List<ArtifactGenerator> getLinuxInstallerGenerators() {
+	public List<ArtifactGenerator<LinuxPackager>> getLinuxInstallerGenerators() {
 		return linuxInstallerGenerators;
 	}
 	
-	public List<ArtifactGenerator> getMacInstallerGenerators() {
+	public List<ArtifactGenerator<MacPackager>> getMacInstallerGenerators() {
 		return macInstallerGenerators;
 	}
 	
-	public List<ArtifactGenerator> getWindowsInstallerGenerators() {
+	public List<ArtifactGenerator<WindowsPackager>> getWindowsInstallerGenerators() {
 		return windowsInstallerGenerators;
 	}
 	

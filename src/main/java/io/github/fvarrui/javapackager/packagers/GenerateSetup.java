@@ -20,20 +20,19 @@ public class GenerateSetup extends WindowsArtifactGenerator {
 	}
 	
 	@Override
-	public boolean skip(Packager packager) {
+	public boolean skip(WindowsPackager packager) {
 		return !packager.getWinConfig().isGenerateSetup();
 	}
 	
 	@Override
-	protected File doApply(Packager packager) throws Exception {
-		WindowsPackager windowsPackager = (WindowsPackager) packager;
+	protected File doApply(WindowsPackager packager) throws Exception {
 		
-		File iconFile = windowsPackager.getIconFile();
-		File assetsFolder = windowsPackager.getAssetsFolder();
-		String name = windowsPackager.getName();
-		File outputDirectory = windowsPackager.getOutputDirectory();
-		String version = windowsPackager.getVersion();
-		Registry registry = windowsPackager.getWinConfig().getRegistry();
+		File iconFile = packager.getIconFile();
+		File assetsFolder = packager.getAssetsFolder();
+		String name = packager.getName();
+		File outputDirectory = packager.getOutputDirectory();
+		String version = packager.getVersion();
+		Registry registry = packager.getWinConfig().getRegistry();
 		
 		// checks if registry entries' names are not empy
 		if (registry.getEntries().stream().anyMatch(e -> StringUtils.isBlank(e.getKey()) || StringUtils.isBlank(e.getValueName()))) {
@@ -45,7 +44,7 @@ public class GenerateSetup extends WindowsArtifactGenerator {
 		
 		// generates iss file from velocity template
 		File issFile = new File(assetsFolder, name + ".iss");
-		VelocityUtils.render("windows/iss.vtl", issFile, windowsPackager);
+		VelocityUtils.render("windows/iss.vtl", issFile, packager);
 
 		// generates windows installer with inno setup command line compiler
 		CommandUtils.execute("iscc", "/O" + outputDirectory.getAbsolutePath(), "/F" + name + "_" + version, issFile);
@@ -57,7 +56,7 @@ public class GenerateSetup extends WindowsArtifactGenerator {
 		}
 		
 		// sign installer
-		sign(setupFile, windowsPackager);
+		sign(setupFile, packager);
 		
 		return setupFile;
 	}

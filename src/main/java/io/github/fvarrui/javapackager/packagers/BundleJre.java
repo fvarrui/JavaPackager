@@ -19,7 +19,7 @@ import io.github.fvarrui.javapackager.utils.Logger;
 /**
  * Bundles a Java Runtime Enrironment (JRE) with the app
  */
-public class BundleJre extends ArtifactGenerator {
+public class BundleJre extends ArtifactGenerator<Packager> {
 	
 	public BundleJre() {
 		super("JRE");
@@ -80,7 +80,7 @@ public class BundleJre extends ArtifactGenerator {
 			
 		} else if (!platform.isCurrentPlatform() && jdkPath.equals(currentJdk)) {
 			
-			Logger.warn("Cannot create a customized JRE ... target platform (" + platform + ") is different than execution platform (" + Platform.getCurrentPlatform() + "). Use jdkPath property.");
+			Logger.warn("Cannot create a customized JRE ... target platform (" + platform + ") is different than execution platform (" + Platform.getCurrentPlatform() + "). Use 'jdkPath' property.");
 			
 			bundleJre = false;
 

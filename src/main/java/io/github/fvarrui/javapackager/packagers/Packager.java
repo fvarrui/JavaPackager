@@ -23,7 +23,7 @@ public abstract class Packager extends PackagerSettings {
 	private static final String DEFAULT_ORGANIZATION_NAME = "ACME";
 	
 	// artifact generators
-	protected List<ArtifactGenerator> installerGenerators = new ArrayList<>();
+	protected List<ArtifactGenerator<?>> installerGenerators = new ArrayList<>();
 	private BundleJre generateJre = new BundleJre(); 
 	
 	// internal generic properties (setted in "createAppStructure/createApp")
@@ -393,7 +393,7 @@ public abstract class Packager extends PackagerSettings {
 		
 		// invokes installer producers
 		
-		for (ArtifactGenerator generator : installerGenerators) {
+		for (ArtifactGenerator<?> generator : installerGenerators) {
 			try {
 				Logger.infoIndent("Generating " + generator.getArtifactName() + "...");
 				File artifact = generator.apply(this);

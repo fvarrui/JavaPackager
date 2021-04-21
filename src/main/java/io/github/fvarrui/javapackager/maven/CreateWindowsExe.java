@@ -19,7 +19,6 @@ import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.Context;
-import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.packagers.WindowsArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 import io.github.fvarrui.javapackager.utils.FileUtils;
@@ -40,24 +39,22 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 	}
 
 	@Override
-	protected File doApply(Packager packager) {
+	protected File doApply(WindowsPackager packager) {
 		
-		WindowsPackager windowsPackager = (WindowsPackager) packager;
-		
-		List<String> vmArgs = windowsPackager.getVmArgs();
-		WindowsConfig winConfig = windowsPackager.getWinConfig();
-		File executable = windowsPackager.getExecutable();
-		String mainClass = windowsPackager.getMainClass();
-		boolean useResourcesAsWorkingDir = windowsPackager.isUseResourcesAsWorkingDir();
-		boolean bundleJre = windowsPackager.getBundleJre();
-		String jreDirectoryName = windowsPackager.getJreDirectoryName(); 
-		String classpath = windowsPackager.getClasspath();
-		String jreMinVersion = windowsPackager.getJreMinVersion();
-		File jarFile = windowsPackager.getJarFile();
+		List<String> vmArgs = packager.getVmArgs();
+		WindowsConfig winConfig = packager.getWinConfig();
+		File executable = packager.getExecutable();
+		String mainClass = packager.getMainClass();
+		boolean useResourcesAsWorkingDir = packager.isUseResourcesAsWorkingDir();
+		boolean bundleJre = packager.getBundleJre();
+		String jreDirectoryName = packager.getJreDirectoryName(); 
+		String classpath = packager.getClasspath();
+		String jreMinVersion = packager.getJreMinVersion();
+		File jarFile = packager.getJarFile();
 		
 		try {
 			// creates a folder only for launch4j assets
-			createAssets(windowsPackager);
+			createAssets(packager);
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} 
@@ -120,7 +117,7 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 					Context.getMavenContext().getEnv()
 				);
 			
-			sign(genericExe, windowsPackager);
+			sign(genericExe, packager);
 			
 			FileUtils.copyFileToFile(genericExe, executable);
 			

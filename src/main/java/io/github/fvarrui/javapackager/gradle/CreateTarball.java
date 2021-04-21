@@ -15,7 +15,7 @@ import io.github.fvarrui.javapackager.packagers.Packager;
 /**
  * Creates tarball (tar.gz file) on Gradle context 
  */
-public class CreateTarball extends ArtifactGenerator {
+public class CreateTarball extends ArtifactGenerator<Packager> {
 	
 	public CreateTarball() {
 		super("Tarball");

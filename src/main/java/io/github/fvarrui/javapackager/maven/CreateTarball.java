@@ -20,7 +20,7 @@ import io.github.fvarrui.javapackager.utils.VelocityUtils;
 /**
  * Creates tarball (tar.gz file) on Maven context 
  */
-public class CreateTarball extends ArtifactGenerator {
+public class CreateTarball extends ArtifactGenerator<Packager> {
 	
 	public CreateTarball() {
 		super("Tarball");

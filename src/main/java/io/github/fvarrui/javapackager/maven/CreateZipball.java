@@ -20,7 +20,7 @@ import io.github.fvarrui.javapackager.utils.VelocityUtils;
 /**
  * Creates zipball (zip file) on Maven context 
  */
-public class CreateZipball extends ArtifactGenerator {
+public class CreateZipball extends ArtifactGenerator<Packager> {
 	
 	public CreateZipball() {
 		super("Zipball");
