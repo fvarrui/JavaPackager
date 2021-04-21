@@ -100,7 +100,7 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 					element("src", mimeXmlFile.getAbsolutePath()),
 					element("mapper", 
 							element("type", "perm"),
-							element("prefix", "/usr/share/mime/applications")
+							element("prefix", "/usr/share/mime/packages")
 					)
 			));
 		}

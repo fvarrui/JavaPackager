@@ -122,7 +122,7 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 		if (packager.isThereFileAssociations()) {
 			mappings.add(
 				element("mapping", 
-						element("directory", "/usr/share/mime/applications"),
+						element("directory", "/usr/share/mime/packages"),
 						element("sources",
 								element("source", 
 										element("location", mimeXmlFile.getAbsolutePath())
