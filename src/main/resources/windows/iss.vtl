@@ -69,9 +69,9 @@ Root: ${entry.root}; Subkey: "${entry.subkey}"; ValueType: ${entry.valueTypeAsIn
 ; ${fileAssociation.extension} extension file association
 Root: HKA; Subkey: "Software\Classes\.${fileAssociation.extension}\OpenWithProgids"; ValueType: string; ValueName: "${info.name}.${fileAssociation.extension}"; ValueData: ""; Flags: uninsdeletevalue
 Root: HKA; Subkey: "Software\Classes\\${info.name}.${fileAssociation.extension}"; ValueType: string; ValueName: ""; ValueData: "${fileAssociation.description}"; Flags: uninsdeletekey
-Root: HKA; Subkey: "Software\Classes\\${info.name}.${fileAssociation.extension}\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\\${info.executable.name},0"
-Root: HKA; Subkey: "Software\Classes\\${info.name}.${fileAssociation.extension}\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\\${info.executable.name}"" ""%1"""
-Root: HKA; Subkey: "Software\Classes\Applications\\${info.executable.name}\SupportedTypes"; ValueType: string; ValueName: ".${fileAssociation.extension}"; ValueData: ""
+Root: HKA; Subkey: "Software\Classes\\${info.name}.${fileAssociation.extension}\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\\${info.executable.name},0"; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\\${info.name}.${fileAssociation.extension}\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\\${info.executable.name}"" ""%1"""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\Applications\\${info.executable.name}\SupportedTypes"; ValueType: string; ValueName: ".${fileAssociation.extension}"; ValueData: ""; Flags: uninsdeletevalue
 #end
 
 [Files]
