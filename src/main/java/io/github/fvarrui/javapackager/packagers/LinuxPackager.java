@@ -15,9 +15,15 @@ import io.github.fvarrui.javapackager.utils.VelocityUtils;
  */
 public class LinuxPackager extends Packager {
 	
+	private File desktopFile;
+	
 	public LinuxPackager() {
 		super();
 		installerGenerators.addAll(Context.getContext().getLinuxInstallerGenerators());
+	}
+	
+	public File getDesktopFile() {
+		return desktopFile;
 	}
 
 	@Override
@@ -58,6 +64,11 @@ public class LinuxPackager extends Packager {
 			}
 			classpath = StringUtils.join(classpaths, ":");
 		}
+		
+		// generates desktop file from velocity template
+		desktopFile = new File(assetsFolder, name + ".desktop");
+		VelocityUtils.render("linux/desktop.vtl", desktopFile, this);
+		Logger.info("Rendering desktop file to " + desktopFile.getAbsolutePath());
 		
 		// generates startup.sh script to boot java app
 		File startupFile = new File(assetsFolder, "startup.sh");

@@ -41,11 +41,6 @@ public class GenerateDeb extends ArtifactGenerator {
 	protected File doApply(Packager packager) throws Exception {
 		LinuxPackager linuxPackager = (LinuxPackager) packager;
 		
-		if (!linuxPackager.getLinuxConfig().isGenerateDeb()) {
-			Logger.info(getArtifactName() + " generation skipped by 'linuxConfig.generateDeb' property!");
-			return null;
-		}
-
 		File assetsFolder = linuxPackager.getAssetsFolder();
 		String name = linuxPackager.getName();
 		File appFolder = linuxPackager.getAppFolder();
@@ -54,11 +49,7 @@ public class GenerateDeb extends ArtifactGenerator {
 		boolean bundleJre = linuxPackager.getBundleJre();
 		String jreDirectoryName = linuxPackager.getJreDirectoryName();
 		File executable = linuxPackager.getExecutable();
-
-		// generates desktop file from velocity template
-		File desktopFile = new File(assetsFolder, name + ".desktop");
-		VelocityUtils.render("linux/desktop.vtl", desktopFile, linuxPackager);
-		Logger.info("Desktop file rendered in " + desktopFile.getAbsolutePath());
+		File desktopFile = linuxPackager.getDesktopFile();
 
 		// generates deb control file from velocity template
 		File controlFile = new File(assetsFolder, "control");
@@ -138,7 +129,7 @@ public class GenerateDeb extends ArtifactGenerator {
 				configuration(
 						element("controlDir", controlFile.getParentFile().getAbsolutePath()),
 						element("deb", outputDirectory.getAbsolutePath() + "/" + debFile.getName()),
-						element("dataSet", dataSet.toArray(new Element[dataSet.size()]))
+						element("dataSet", dataSet.toArray(new Element[0]))
 				),
 				Context.getMavenContext().getEnv()
 			);
