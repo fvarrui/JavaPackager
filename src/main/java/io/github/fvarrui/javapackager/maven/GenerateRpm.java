@@ -22,7 +22,6 @@ import io.github.fvarrui.javapackager.packagers.LinuxPackager;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
-import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
 /**
  * Creates a RPM package file including all app folder's content only for 
@@ -43,7 +42,6 @@ public class GenerateRpm extends ArtifactGenerator {
 	protected File doApply(Packager packager) throws Exception {
 		LinuxPackager linuxPackager = (LinuxPackager) packager; 
 
-		File assetsFolder = linuxPackager.getAssetsFolder();
 		String name = linuxPackager.getName();
 		File appFolder = linuxPackager.getAppFolder();
 		File iconFile = linuxPackager.getIconFile();
@@ -52,11 +50,7 @@ public class GenerateRpm extends ArtifactGenerator {
 		boolean bundleJre = linuxPackager.getBundleJre();
 		String jreDirectoryName = linuxPackager.getJreDirectoryName();
 		String organizationName = linuxPackager.getOrganizationName();
-		
-		// generates desktop file from velocity template
-		File desktopFile = new File(assetsFolder, name + ".desktop");
-		VelocityUtils.render("linux/desktop.vtl", desktopFile, linuxPackager);
-		Logger.info("Rendering desktop file to " + desktopFile.getAbsolutePath());
+		File desktopFile = linuxPackager.getDesktopFile();
 		
 		// copies desktop file to app
 		FileUtils.copyFileToFolder(desktopFile, appFolder);
@@ -83,6 +77,60 @@ public class GenerateRpm extends ArtifactGenerator {
 			excludes.add(element("exclude", jreDirectoryName + "/bin/java"));
 		}
 		
+		// creates mappings
+		List<Element> mappings = new ArrayList<>();
+		
+		/* app folder files, except executable file and jre/bin/java */
+		mappings.add(
+			element("mapping", 
+				element("directory", "/opt/" + name),
+				element("sources", 
+						element("source", 
+								element("location", appFolder.getAbsolutePath()),
+								element("excludes", excludes.toArray(new Element[0]))
+						)
+				)
+			)
+		);
+
+		/* app executable and java binary file */
+		mappings.add(
+			element("mapping", 
+					element("directory", "/opt/" + name),
+					element("filemode", "755"),
+					element("sources",
+							element("source", 
+									element("location", appFolder.getAbsolutePath()),
+									element("includes", includes.toArray(new Element[0]))
+							)
+					)
+			)
+		);
+		
+		/* desktop file */
+		mappings.add(
+			element("mapping", 
+					element("directory", "/usr/share/applications"),
+					element("sources",
+							element("softlinkSource", 
+									element("location", "/opt/" + name + "/" + desktopFile.getName())
+							)
+					)
+			)
+		);
+		
+		/* symbolic link in /usr/local/bin to app binary */
+		mappings.add(
+			element("mapping", 
+					element("directory", "/usr/local/bin"),
+					element("sources", 
+							element("softlinkSource", 
+									element("location", "/opt/" + name + "/" + name)
+							)
+					)
+			)
+		);
+		
 		// invokes plugin to generate deb package
 		executeMojo(
 				plugin(
@@ -102,46 +150,7 @@ public class GenerateRpm extends ArtifactGenerator {
 						element("defaultUsername", "root"),
 						element("defaultGroupname", "root"),
 						element("copyTo", rpmFile.getAbsolutePath()),
-						element("mappings",
-								/* app folder files, except executable file and jre/bin/java */
-								element("mapping", 
-										element("directory", "/opt/" + name),
-										element("sources", 
-												element("source", 
-														element("location", appFolder.getAbsolutePath()),
-														element("excludes", excludes.toArray(new Element[excludes.size()]))
-												)
-										)
-								),
-								/* app executable and java binary file */
-								element("mapping", 
-										element("directory", "/opt/" + name),
-										element("filemode", "755"),
-										element("sources",
-												element("source", 
-														element("location", appFolder.getAbsolutePath()),
-														element("includes", includes.toArray(new Element[includes.size()]))
-												)
-										)
-								),
-								/* desktop file */
-								element("mapping", 
-										element("directory", "/usr/share/applications"),
-										element("sources",
-												element("softlinkSource", 
-														element("location", "/opt/" + name + "/" + desktopFile.getName())
-												)
-										)
-								),
-								/* symbolic link in /usr/local/bin to app binary */
-								element("mapping", 
-										element("directory", "/usr/local/bin"),
-										element("sources", 
-												element("softlinkSource", 
-														element("location", "/opt/" + name + "/" + name)
-												)
-										)
-								)
+						element("mappings", mappings.toArray(new Element[0])
 						)
 				),
 				Context.getMavenContext().getEnv()
