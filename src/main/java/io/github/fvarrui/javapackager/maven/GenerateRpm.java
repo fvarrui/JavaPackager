@@ -114,7 +114,7 @@ public class GenerateRpm extends ArtifactGenerator {
 					element("directory", "/usr/share/applications"),
 					element("sources",
 							element("source", 
-									element("location", desktopFile.getName())
+									element("location", desktopFile.getAbsolutePath())
 							)
 					)
 			)
@@ -127,7 +127,7 @@ public class GenerateRpm extends ArtifactGenerator {
 						element("directory", "/usr/share/mime/applications"),
 						element("sources",
 								element("source", 
-										element("location", mimeXmlFile.getName())
+										element("location", mimeXmlFile.getAbsolutePath())
 								)
 						)
 				)
