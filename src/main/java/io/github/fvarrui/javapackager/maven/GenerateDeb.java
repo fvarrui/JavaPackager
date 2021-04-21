@@ -50,6 +50,7 @@ public class GenerateDeb extends ArtifactGenerator {
 		String jreDirectoryName = linuxPackager.getJreDirectoryName();
 		File executable = linuxPackager.getExecutable();
 		File desktopFile = linuxPackager.getDesktopFile();
+		File mimeXmlFile = linuxPackager.getMimeXmlFile();
 
 		// generates deb control file from velocity template
 		File controlFile = new File(assetsFolder, "control");
@@ -93,7 +94,19 @@ public class GenerateDeb extends ArtifactGenerator {
 						element("prefix", "/usr/share/applications")
 				)
 		));
-		
+
+		/* mime types file */
+		if (packager.isThereFileAssociations()) {
+			dataSet.add(element("data", 
+					element("type", "file"),
+					element("src", mimeXmlFile.getAbsolutePath()),
+					element("mapper", 
+							element("type", "perm"),
+							element("prefix", "/usr/share/mime/applications")
+					)
+			));
+		}
+
 		/* java binary file */
 		if (bundleJre)
 			dataSet.add(element("data", 

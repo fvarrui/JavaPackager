@@ -51,6 +51,7 @@ public class GenerateRpm extends ArtifactGenerator {
 		String jreDirectoryName = linuxPackager.getJreDirectoryName();
 		String organizationName = linuxPackager.getOrganizationName();
 		File desktopFile = linuxPackager.getDesktopFile();
+		File mimeXmlFile = linuxPackager.getMimeXmlFile();
 		
 		// copies desktop file to app
 		FileUtils.copyFileToFolder(desktopFile, appFolder);
@@ -112,12 +113,26 @@ public class GenerateRpm extends ArtifactGenerator {
 			element("mapping", 
 					element("directory", "/usr/share/applications"),
 					element("sources",
-							element("softlinkSource", 
-									element("location", "/opt/" + name + "/" + desktopFile.getName())
+							element("source", 
+									element("location", desktopFile.getName())
 							)
 					)
 			)
 		);
+		
+		/* mime types file */
+		if (packager.isThereFileAssociations()) {
+			mappings.add(
+				element("mapping", 
+						element("directory", "/usr/share/mime/applications"),
+						element("sources",
+								element("source", 
+										element("location", mimeXmlFile.getName())
+								)
+						)
+				)
+			);
+		}
 		
 		/* symbolic link in /usr/local/bin to app binary */
 		mappings.add(
