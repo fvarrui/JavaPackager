@@ -349,7 +349,7 @@ public abstract class Packager extends PackagerSettings {
         
 		// copies all dependencies to Java folder
 		Logger.infoIndent("Copying all dependencies ...");		
-		libsFolder = copyDependencies ? Context.getContext().copyDependencies(this) : null;
+		libsFolder = Context.getContext().copyDependencies(this);
 		Logger.infoUnindent("Dependencies copied to " + libsFolder + "!");		
 
 		// creates a runnable jar file
