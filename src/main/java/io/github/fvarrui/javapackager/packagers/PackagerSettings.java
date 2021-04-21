@@ -429,13 +429,13 @@ public class PackagerSettings {
 		return fileAssociations != null && !fileAssociations.isEmpty();
 	}
 	
-	public String getMimeTypesListAsString() {
+	public String getMimeTypesListAsString(String separator) {
 		return StringUtils.join(
 					fileAssociations
 						.stream()
 						.map(fa -> fa.getMimeType())
 						.collect(Collectors.toList()),
-					";"
+					separator
 					);
 	}
 
