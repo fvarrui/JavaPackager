@@ -30,6 +30,15 @@
 		<Directory Id="TARGETDIR" Name="SourceDir">
 			#list(${info.appFolder})
 			<Directory Id="ProgramMenuFolder" />
+#if ($info.winConfig.registry)
+			<Component Id="RegistryEntries" Guid="${GUID.randomUUID()}">
+#foreach ($entry in $info.winConfig.registry.entries)
+		        <RegistryKey Root="${entry.root}" Key="${entry.subkey}" Action="createAndRemoveOnUninstall">
+		            <RegistryValue Type="${entry.valueTypeAsWIXToolsetString}" Name="${entry.valueName}" Value="${entry.valueData}"/>
+		        </RegistryKey>
+#end
+	        </Component>
+#end
 		</Directory>
     </Module>
 </Wix>
