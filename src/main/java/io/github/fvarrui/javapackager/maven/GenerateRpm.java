@@ -164,7 +164,7 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 						element("defaultGroupname", "root"),
 						element("copyTo", rpmFile.getAbsolutePath()),
 						element("mappings", mappings.toArray(new Element[0])
-						)
+					)
 				),
 				Context.getMavenContext().getEnv()
 			);
