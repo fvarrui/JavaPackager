@@ -113,7 +113,7 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 					plugin(
 							groupId("com.akathist.maven.plugins.launch4j"), 
 							artifactId("launch4j-maven-plugin"),
-							version("1.7.25")
+							version("2.1.1")
 					),
 					goal("launch4j"),
 					configuration(pluginConfig.toArray(new Element[pluginConfig.size()])),
