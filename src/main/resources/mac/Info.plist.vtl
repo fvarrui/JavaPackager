@@ -4,6 +4,21 @@
 	<dict>
 		<key>CFBundleGetInfoString</key>
 		<string>${info.displayName} ${info.version}</string>
+#if (!$info.fileAssociations.isEmpty())		
+		<key>CFBundleDocumentTypes</key>
+		<array>
+#foreach ($fileAssociation in $info.fileAssociations)		
+			<dict>
+				<key>CFBundleTypeExtensions</key>
+				<array>
+					<string>${fileAssociation.extension}</string>
+				</array>
+				<key>CFBundleTypeName</key>
+				<string>${fileAssociation.description}</string>
+			</dict>
+#end			
+		</array>
+#end
 		<key>CFBundleDevelopmentRegion</key>
 		<string>English</string>
 		<key>CFBundleExecutable</key>
