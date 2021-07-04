@@ -111,7 +111,6 @@ task generatePluginDescriptor(type: JavaExec, dependsOn: compileJava) {
             '--batch-mode',
             '--file', "${buildDir}/pom.xml",
             'org.apache.maven.plugins:maven-plugin-plugin:3.6.0:descriptor',
-            // '-Dmaven.repo.remote=https://plugins.gradle.org/m2/',            
             '-Dproject.build.sourceEncoding=' + compileJava.options.encoding
     ]
 
