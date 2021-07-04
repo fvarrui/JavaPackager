@@ -12,6 +12,9 @@ plugins {
 repositories {
 	mavenLocal()
 	mavenCentral()
+	maven { 
+		url 'https://plugins.gradle.org/m2/'
+	}
 }
 
 gradlePlugin {
@@ -47,7 +50,7 @@ dependencies {
     implementation 'commons-io:commons-io:2.6'
     implementation 'org.apache.commons:commons-collections4:4.1'
     implementation 'org.apache.velocity:velocity-engine-core:2.0'
-	implementation 'io.github.fvarrui:gradle-launch4j:2.4.7'
+	implementation 'edu.sc.seis.launch4j:launch4j:2.5.0' 
 	implementation 'com.netflix.nebula:gradle-ospackage-plugin:8.4.1'
 	implementation 'net.jsign:jsign-core:3.1'
 	
@@ -108,6 +111,7 @@ task generatePluginDescriptor(type: JavaExec, dependsOn: compileJava) {
             '--batch-mode',
             '--file', "${buildDir}/pom.xml",
             'org.apache.maven.plugins:maven-plugin-plugin:3.6.0:descriptor',
+            // '-Dmaven.repo.remote=https://plugins.gradle.org/m2/',            
             '-Dproject.build.sourceEncoding=' + compileJava.options.encoding
     ]
 
@@ -116,6 +120,12 @@ task generatePluginDescriptor(type: JavaExec, dependsOn: compileJava) {
                .mavenInstaller
                .pom
                .withXml {
+                    asNode().appendNode('repositories').appendNode('repository')
+                    		.with {
+                                appendNode('id', 'gradle')
+                                appendNode('name', 'Gradle Plugin Portal')
+                                appendNode('url', 'https://plugins.gradle.org/m2/')                    		
+                    		}
                     asNode().appendNode('build')
                             .with {
                                 appendNode('directory', directory)
