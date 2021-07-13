@@ -1,7 +1,10 @@
 package io.github.fvarrui.javapackager.gradle;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
+import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 
@@ -14,6 +17,8 @@ import io.github.fvarrui.javapackager.packagers.Packager;
 public class GradleContext extends Context<Logger> {
 
 	private Project project;
+
+	private Launch4jLibraryTask libraryTask;
 	
 	public GradleContext(Project project) {
 		super();
@@ -67,6 +72,14 @@ public class GradleContext extends Context<Logger> {
 	@Override
 	public File createWindowsExe(Packager packager) throws Exception {
 		return new CreateWindowsExe().apply(packager);	
+	}
+
+	public Launch4jLibraryTask getLibraryTask() {
+		return libraryTask;
+	}
+
+	public void setLibraryTask(Launch4jLibraryTask libraryTask) {
+		this.libraryTask = libraryTask;
 	}
 
 }

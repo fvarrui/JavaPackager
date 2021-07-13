@@ -3,7 +3,6 @@ package io.github.fvarrui.javapackager.gradle;
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -53,7 +52,8 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 		
 		String jarPath = winConfig.isWrapJar() ? genericJar.getAbsolutePath() : jarFile.getName();
 		
-		Launch4jLibraryTask l4jTask = createLaunch4jTask();
+		Launch4jLibraryTask l4jTask = Context.getGradleContext().getLibraryTask();
+		l4jTask.getOutputs().upToDateWhen(task -> false);
 		l4jTask.setHeaderType(winConfig.getHeaderType().toString());
 		l4jTask.setJar(jarPath);
 		l4jTask.setDontWrapJar(!winConfig.isWrapJar());
@@ -85,10 +85,6 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 		FileUtils.copyFileToFile(genericExe, executable);
 		
 		return executable;
-	}
-	
-	private Launch4jLibraryTask createLaunch4jTask() {
-		return Context.getGradleContext().getProject().getTasks().create("launch4j_" + UUID.randomUUID(), Launch4jLibraryTask.class);
 	}
 	
 	private void createAssets(WindowsPackager packager) throws Exception {
