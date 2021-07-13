@@ -7,11 +7,12 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputDirectory;
-import org.gradle.api.tasks.InputFile;
-import org.gradle.api.tasks.Optional;
-import org.gradle.api.tasks.OutputDirectory;
+import org.gradle.api.Project;
+import org.gradle.api.internal.provider.Providers;
+import org.gradle.api.plugins.JavaPluginExtension;
+import org.gradle.api.provider.Property;
+import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.*;
 
 import groovy.lang.Closure;
 import io.github.fvarrui.javapackager.model.LinuxConfig;
@@ -21,6 +22,9 @@ import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.packagers.PackagerFactory;
+import org.gradle.jvm.toolchain.JavaLauncher;
+import org.gradle.jvm.toolchain.JavaToolchainService;
+import org.gradle.jvm.toolchain.JavaToolchainSpec;
 
 /**
  * Packaging task fro Gradle 
@@ -89,6 +93,18 @@ public class PackageTask extends AbstractPackageTask {
 	
 	public void setAssetsDir(File assetsDir) {
 		this.assetsDir = assetsDir;
+	}
+
+	@InputDirectory
+	@Optional
+	private File packagingJdk;
+
+	public File getPackagingJdk() {
+		return packagingJdk;
+	}
+
+	public void setPackagingJdk(File packagingJdk) {
+		this.packagingJdk = packagingJdk;
 	}
 	
 	@Input
@@ -533,6 +549,7 @@ public class PackageTask extends AbstractPackageTask {
 					.additionalResources(defaultIfNull(additionalResources, extension.getAdditionalResources()))
 					.administratorRequired(defaultIfNull(administratorRequired, extension.getAdministratorRequired()))
 					.version(defaultIfNull(version, extension.getVersion(), getProject().getVersion().toString()))
+					.packagingJdk(defaultIfNull(packagingJdk, getDefaultToolchain(getProject())))
 					.assetsDir(defaultIfNull(assetsDir, extension.getAssetsDir()))
 					.bundleJre(defaultIfNull(bundleJre, extension.getBundleJre()))
 					.copyDependencies(defaultIfNull(copyDependencies, extension.getCopyDependencies()))
@@ -567,6 +584,20 @@ public class PackageTask extends AbstractPackageTask {
 					.vmArgs(defaultIfNull(vmArgs, extension.getVmArgs()))
 					.winConfig(defaultIfNull(winConfig, extension.getWinConfig()));
 
+	}
+
+	private File getDefaultToolchain(Project project) {
+		// Default toolchain
+		JavaToolchainSpec toolchain = project.getExtensions().getByType(JavaPluginExtension.class).getToolchain();
+
+		// acquire a provider that returns the launcher for the toolchain
+		JavaToolchainService service = project.getExtensions().getByType(JavaToolchainService.class);
+		Provider<JavaLauncher> defaultLauncher = service.launcherFor(toolchain).orElse(Providers.notDefined());
+
+		if (defaultLauncher.isPresent()) {
+			return defaultLauncher.get().getMetadata().getInstallationPath().getAsFile();
+		}
+		return new File(System.getProperty("java.home")); // Use java.home as fallback
 	}
 	
 }
