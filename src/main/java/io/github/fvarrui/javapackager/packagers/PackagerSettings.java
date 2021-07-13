@@ -55,6 +55,15 @@ public class PackagerSettings {
 	protected String jreMinVersion;
 	protected Manifest manifest;
 	protected List<File> additionalModulePaths;
+	protected File packagingJdk;
+
+	public File getPackagingJdk() {
+		return packagingJdk;
+	}
+
+	public void setPackagingJdk(File packagingJdk) {
+		this.packagingJdk = packagingJdk;
+	}
 
 	public File getOutputDirectory() {
 		return outputDirectory;
@@ -216,6 +225,11 @@ public class PackagerSettings {
 
 	public PackagerSettings outputDirectory(File outputDirectory) {
 		this.outputDirectory = outputDirectory;
+		return this;
+	}
+
+	public PackagerSettings packagingJdk(File packagingJdk) {
+		this.packagingJdk = packagingJdk;
 		return this;
 	}
 

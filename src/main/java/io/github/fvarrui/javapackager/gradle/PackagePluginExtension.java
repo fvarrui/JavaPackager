@@ -13,6 +13,12 @@ import io.github.fvarrui.javapackager.model.Manifest;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.PackagerSettings;
+import org.gradle.api.internal.provider.Providers;
+import org.gradle.api.plugins.JavaPluginExtension;
+import org.gradle.api.provider.Provider;
+import org.gradle.jvm.toolchain.JavaLauncher;
+import org.gradle.jvm.toolchain.JavaToolchainService;
+import org.gradle.jvm.toolchain.JavaToolchainSpec;
 
 /**
  * JavaPackager plugin extension for Gradle  
