@@ -1,13 +1,11 @@
 package io.github.fvarrui.javapackager.gradle;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
-import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 
+import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
 

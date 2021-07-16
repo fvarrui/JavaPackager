@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.gradle.api.Project;
+import org.gradle.api.internal.provider.Providers;
+import org.gradle.api.plugins.JavaPluginExtension;
+import org.gradle.api.provider.Provider;
+import org.gradle.jvm.toolchain.JavaLauncher;
+import org.gradle.jvm.toolchain.JavaToolchainService;
+import org.gradle.jvm.toolchain.JavaToolchainSpec;
 
 import groovy.lang.Closure;
 import io.github.fvarrui.javapackager.model.LinuxConfig;
@@ -13,12 +19,6 @@ import io.github.fvarrui.javapackager.model.Manifest;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.PackagerSettings;
-import org.gradle.api.internal.provider.Providers;
-import org.gradle.api.plugins.JavaPluginExtension;
-import org.gradle.api.provider.Provider;
-import org.gradle.jvm.toolchain.JavaLauncher;
-import org.gradle.jvm.toolchain.JavaToolchainService;
-import org.gradle.jvm.toolchain.JavaToolchainSpec;
 
 /**
  * JavaPackager plugin extension for Gradle  
@@ -54,7 +54,8 @@ public class PackagePluginExtension extends PackagerSettings {
 		this.useResourcesAsWorkingDir = true;
 		this.vmArgs = new ArrayList<>();
 		this.winConfig = new WindowsConfig();
-		this.outputDirectory = project.getBuildDir();		
+		this.outputDirectory = project.getBuildDir();
+		this.packagingJdk = getDefaultToolchain(project);
 	}
 	
     public LinuxConfig linuxConfig(Closure<LinuxConfig> closure) {
@@ -80,5 +81,24 @@ public class PackagePluginExtension extends PackagerSettings {
         project.configure(manifest, closure);
         return manifest;
     }
+    
+	/**
+	 * Returns project's default toolchain
+	 * @param project Gradle project
+	 * @return Default toolchain
+	 */
+	public File getDefaultToolchain(Project project) {
+		// Default toolchain
+		JavaToolchainSpec toolchain = project.getExtensions().getByType(JavaPluginExtension.class).getToolchain();
+
+		// acquire a provider that returns the launcher for the toolchain
+		JavaToolchainService service = project.getExtensions().getByType(JavaToolchainService.class);
+		Provider<JavaLauncher> defaultLauncher = service.launcherFor(toolchain).orElse(Providers.notDefined());
+
+		if (defaultLauncher.isPresent()) {
+			return defaultLauncher.get().getMetadata().getInstallationPath().getAsFile();
+		}
+		return new File(System.getProperty("java.home")); // Use java.home as fallback
+	}
 
 }
