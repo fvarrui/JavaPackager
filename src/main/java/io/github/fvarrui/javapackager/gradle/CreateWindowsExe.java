@@ -1,12 +1,5 @@
 package io.github.fvarrui.javapackager.gradle;
 
-import java.io.File;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
-
-import org.apache.commons.lang3.StringUtils;
-
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.Context;
@@ -14,6 +7,12 @@ import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.packagers.WindowsArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 import io.github.fvarrui.javapackager.utils.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Creates Windows native executable on Gradle context
@@ -63,7 +62,7 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 		l4jTask.setMainClassName(mainClass);
 		l4jTask.setClasspath(new HashSet<>(windowsPackager.getClasspaths()));
 		l4jTask.setChdir(useResourcesAsWorkingDir ? "." : "");
-		l4jTask.setBundledJrePath(bundleJre ? jreDirectoryName : "%JAVA_HOME%");
+		l4jTask.setBundledJrePath(bundleJre ? jreDirectoryName : "%JAVA_HOME%;%PATH%");
 		if (!StringUtils.isBlank(jreMinVersion)) { 
 			l4jTask.setJreMinVersion(jreMinVersion);
 		}

@@ -1,28 +1,19 @@
 package io.github.fvarrui.javapackager.maven;
 
-import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.groupId;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
-
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.packagers.WindowsArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 import io.github.fvarrui.javapackager.utils.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
 
 /**
  * Copies all dependencies to app folder on Maven context
@@ -68,7 +59,7 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 		
 		List<Element> jreElements = new ArrayList<>();
 		jreElements.add(element("opts", optsElements.toArray(new Element[optsElements.size()])));
-		jreElements.add(element("path", bundleJre ? jreDirectoryName : "%JAVA_HOME%"));
+		jreElements.add(element("path", bundleJre ? jreDirectoryName : "%JAVA_HOME%;%PATH%"));
 		if (!StringUtils.isBlank(jreMinVersion)) {
 			jreElements.add(element("minVersion", jreMinVersion));
 		}
