@@ -52,7 +52,7 @@ dependencies {
     implementation 'org.apache.velocity:velocity-engine-core:2.0'
     implementation 'edu.sc.seis.launch4j:launch4j:2.5.0'
     implementation 'com.netflix.nebula:gradle-ospackage-plugin:8.4.1'
-	implementation 'net.jsign:jsign-core:3.1'
+    implementation 'net.jsign:jsign-core:3.1'
 	
     testImplementation 'junit:junit:4.12'
     
