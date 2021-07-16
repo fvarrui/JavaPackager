@@ -68,7 +68,7 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 		
 		List<Element> jreElements = new ArrayList<>();
 		jreElements.add(element("opts", optsElements.toArray(new Element[optsElements.size()])));
-		jreElements.add(element("path", bundleJre ? jreDirectoryName : "%JAVA_HOME%"));
+		jreElements.add(element("path", bundleJre ? jreDirectoryName : "%JAVA_HOME%;%PATH%"));
 		if (!StringUtils.isBlank(jreMinVersion)) {
 			jreElements.add(element("minVersion", jreMinVersion));
 		}
