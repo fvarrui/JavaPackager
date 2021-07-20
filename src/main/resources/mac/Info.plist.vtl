@@ -48,8 +48,10 @@
 		        <dict>
 		            <key>public.filename-extension</key>
 		            <string>${fileAssociation.extension}</string>
+#if ($fileAssociation.mimeType)
 		            <key>public.mime-type</key>
 		            <string>${fileAssociation.mimeType}</string>
+#end
 		        </dict>
 		    </dict>
 #end		    
