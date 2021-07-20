@@ -10,23 +10,19 @@
 #foreach ($fileAssociation in $info.fileAssociations)		
 			<dict>
 				<key>CFBundleTypeIconFiles</key>
-		        <array>
-		            <string>${info.iconFile.name}</string>
-		        </array>			
+				<array>
+					<string>${info.iconFile.name}</string>
+				</array>			
 				<key>CFBundleTypeName</key>
 				<string>${fileAssociation.description}</string>
-		        <key>CFBundleTypeRole</key>
-		        <string>Viewer</string>
-		        <key>LSHandlerRank</key>
-		        <string>Owner</string>				
-				<key>CFBundleTypeExtensions</key>
-				<array>
-					<string>${fileAssociation.extension}</string>
-				</array>
+				<key>CFBundleTypeRole</key>
+				<string>Viewer</string>
+				<key>LSHandlerRank</key>
+				<string>Owner</string>				
 				<key>LSItemContentTypes</key>
-		        <array>
-		            <string>${info.macConfig.appId}.${fileAssociation.extension}</string>
-		        </array>
+				<array>
+					<string>${info.macConfig.appId}.${fileAssociation.extension}</string>
+				</array>
 			</dict>			
 #end
 		</array>
@@ -35,25 +31,25 @@
 		<key>UTExportedTypeDeclarations</key>
 		<array>
 #foreach ($fileAssociation in $info.fileAssociations)		
-		    <dict>
-		        <key>UTTypeConformsTo</key>
-		        <array>
-		            <string>public.data</string>
-		        </array>
-		        <key>UTTypeDescription</key>
-		        <string>${fileAssociation.description}</string>
-		        <key>UTTypeIdentifier</key>
-		        <string>${info.macConfig.appId}.${fileAssociation.extension}</string>
-		        <key>UTTypeTagSpecification</key>
-		        <dict>
-		            <key>public.filename-extension</key>
-		            <string>${fileAssociation.extension}</string>
+			<dict>
+				<key>UTTypeConformsTo</key>
+				<array>
+					<string>public.data</string>
+				</array>
+				<key>UTTypeDescription</key>
+				<string>${fileAssociation.description}</string>
+				<key>UTTypeIdentifier</key>
+				<string>${info.macConfig.appId}.${fileAssociation.extension}</string>
+				<key>UTTypeTagSpecification</key>
+				<dict>
+					<key>public.filename-extension</key>
+					<string>${fileAssociation.extension}</string>
 #if ($fileAssociation.mimeType)
-		            <key>public.mime-type</key>
-		            <string>${fileAssociation.mimeType}</string>
+					<key>public.mime-type</key>
+					<string>${fileAssociation.mimeType}</string>
 #end
-		        </dict>
-		    </dict>
+				</dict>
+			</dict>
 #end		    
 		</array>
 #end
