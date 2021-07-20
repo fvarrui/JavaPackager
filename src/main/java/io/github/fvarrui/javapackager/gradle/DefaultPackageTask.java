@@ -20,6 +20,7 @@ public class DefaultPackageTask extends AbstractPackageTask {
 				.additionalResources(extension.getAdditionalResources())
 				.administratorRequired(extension.getAdministratorRequired())
 				.version(defaultIfNull(extension.getVersion(), getProject().getVersion().toString()))
+				.packagingJdk(extension.getPackagingJdk())
 				.assetsDir(extension.getAssetsDir())
 				.bundleJre(extension.getBundleJre())
 				.copyDependencies(extension.getCopyDependencies())
