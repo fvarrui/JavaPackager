@@ -90,6 +90,18 @@ public class PackageTask extends AbstractPackageTask {
 	public void setAssetsDir(File assetsDir) {
 		this.assetsDir = assetsDir;
 	}
+
+	@InputDirectory
+	@Optional
+	private File packagingJdk;
+
+	public File getPackagingJdk() {
+		return packagingJdk;
+	}
+
+	public void setPackagingJdk(File packagingJdk) {
+		this.packagingJdk = packagingJdk;
+	}
 	
 	@Input
 	@Optional
@@ -533,6 +545,7 @@ public class PackageTask extends AbstractPackageTask {
 					.additionalResources(defaultIfNull(additionalResources, extension.getAdditionalResources()))
 					.administratorRequired(defaultIfNull(administratorRequired, extension.getAdministratorRequired()))
 					.version(defaultIfNull(version, extension.getVersion(), getProject().getVersion().toString()))
+					.packagingJdk(defaultIfNull(packagingJdk, extension.getPackagingJdk()))
 					.assetsDir(defaultIfNull(assetsDir, extension.getAssetsDir()))
 					.bundleJre(defaultIfNull(bundleJre, extension.getBundleJre()))
 					.copyDependencies(defaultIfNull(copyDependencies, extension.getCopyDependencies()))

@@ -12,9 +12,9 @@ plugins {
 repositories {
 	mavenLocal()
 	mavenCentral()
-    maven {
-        url 'https://plugins.gradle.org/m2/'
-    }
+	maven { 
+		url 'https://plugins.gradle.org/m2/'
+	}
 }
 
 gradlePlugin {
@@ -50,16 +50,16 @@ dependencies {
     implementation 'commons-io:commons-io:2.6'
     implementation 'org.apache.commons:commons-collections4:4.1'
     implementation 'org.apache.velocity:velocity-engine-core:2.0'
-    implementation 'edu.sc.seis.launch4j:launch4j:2.5.0'
+    implementation 'io.github.fvarrui:gradle-launch4j:2.4.7' 
     implementation 'com.netflix.nebula:gradle-ospackage-plugin:8.4.1'
     implementation 'net.jsign:jsign-core:3.1'
 	
     testImplementation 'junit:junit:4.12'
     
     compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
-	
-	mavenEmbedder 'org.apache.maven:maven-embedder:3.6.0'
-	mavenEmbedder 'org.apache.maven:maven-compat:3.6.0'	
+    
+    mavenEmbedder 'org.apache.maven:maven-embedder:3.6.0'
+    mavenEmbedder 'org.apache.maven:maven-compat:3.6.0'	
     mavenEmbedder 'org.slf4j:slf4j-simple:1.7.30'
     mavenEmbedder 'org.eclipse.aether:aether-connector-basic:1.1.0'
     mavenEmbedder 'org.eclipse.aether:aether-transport-wagon:1.1.0'
@@ -119,12 +119,12 @@ task generatePluginDescriptor(type: JavaExec, dependsOn: compileJava) {
                .mavenInstaller
                .pom
                .withXml {
-                   asNode().appendNode('repositories').appendNode('repository')
-                           .with {
-                               appendNode('id', 'gradle')
-                               appendNode('name', 'Gradle Plugin Portal')
-                               appendNode('url', 'https://plugins.gradle.org/m2/')
-                           }
+                    asNode().appendNode('repositories').appendNode('repository')
+                    		.with {
+                                appendNode('id', 'gradle')
+                                appendNode('name', 'Gradle Plugin Portal')
+                                appendNode('url', 'https://plugins.gradle.org/m2/')                    		
+                    		}
                     asNode().appendNode('build')
                             .with {
                                 appendNode('directory', directory)
