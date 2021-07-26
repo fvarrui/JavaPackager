@@ -69,10 +69,17 @@ public class BundleJre extends ArtifactGenerator {
 
 			// copies JRE folder to bundle
 			FileUtils.copyFolderContentToFolder(specificJreFolder, destinationFolder);
-
+			
 			// sets execution permissions on executables in jre
 			File binFolder = new File(destinationFolder, "bin");
 			Arrays.asList(binFolder.listFiles()).forEach(f -> f.setExecutable(true, false));
+			
+			// sets execution permissions on jspawnhelper in jre
+			File libFolder = new File(destinationFolder, "lib");
+			File jshFile = new File(libFolder, "jspawnhelper");
+			if (jshFile.exists()) {
+				jshFile.setExecutable(true, false);
+			}
 
 		} else if (JavaUtils.getJavaMajorVersion() <= 8) {
 			

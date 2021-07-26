@@ -38,7 +38,7 @@ public class JDKUtils {
 	 * Checks if the platform specified in the "release" file matches the required platform 
 	 * @param platform
 	 * @param jdkPath
-	 * @return
+	 * @return true if JDK is for platform
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */

@@ -32,6 +32,11 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class FileUtils {
 
+	/**
+	 * Creates a directory if it doesn't exist
+	 * @param dir Directory to be created
+	 * @return Created directory or existing one
+	 */
 	public static File mkdir(File dir) {
 		if (!dir.exists()) {
 			dir.mkdirs();
@@ -39,11 +44,23 @@ public class FileUtils {
 		return dir;
 	}
 	
+	/**
+	 * Creates a directory inside an exiting one
+	 * @param parent Parent directory
+	 * @param name New directory name
+	 * @return Created directory
+	 */
 	public static File mkdir(File parent, String name) {
 		File dir = new File(parent, name);
 		return mkdir(dir);
 	}
 	
+	/**
+	 * Copies a file
+	 * @param source Source file
+	 * @param dest Destination file
+	 * @throws Exception If the file cannot be copied
+	 */
 	public static void copyFileToFile(File source, File dest) throws Exception {
 		Logger.info("Copying file [" + source + "] to file [" + dest + "]");			
 		try {
@@ -53,6 +70,12 @@ public class FileUtils {
 		}
 	}
 	
+	/**
+	 * Copies a file inside an existing folder 
+	 * @param source File to be copied
+	 * @param destFolder Destination folder
+	 * @throws Exception If the file cannot be copied
+	 */
 	public static void copyFileToFolder(File source, File destFolder) throws Exception {
 		Logger.info("Copying file [" + source + "] to folder [" + destFolder + "]");
 		if (new File(destFolder, source.getName()).exists()) return;
@@ -63,6 +86,12 @@ public class FileUtils {
 		}
 	}
 	
+	/**
+	 * Concatenates several files into a new one
+	 * @param dest Destination file
+	 * @param sources Source files array
+	 * @throws Exception If a file cannot be writen to the destination 
+	 */
 	public static void concat(File dest, File ... sources) throws Exception {
 		Logger.info("Concatenating files [" + StringUtils.join(sources, ",") + "] into file [" + dest + "]");
 		try {
@@ -188,11 +217,22 @@ public class FileUtils {
 		}
 	}
 	
+	/**
+	 * Renames a file
+	 * @param file File to be renamed
+	 * @param newName New file name
+	 */
 	public static void rename(File file, String newName) {
 		Logger.info("Renaming file [" + file + "] to [" + newName + "]");		
 		file.renameTo(new File(file.getParentFile(), newName)); 
 	}
 	
+	/**
+	 * Finds all files in folder that matches the regular expression
+	 * @param searchFolder Searching folder
+	 * @param regex Regular expression
+	 * @return List of found files or an empty list if nothing matches 
+	 */
 	public static List<File> findFiles(File searchFolder, String regex) {
 		return Arrays.asList(searchFolder.listFiles((dir, name) -> Pattern.matches(regex, name)))
 				.stream()
@@ -200,6 +240,12 @@ public class FileUtils {
 				.collect(Collectors.toList());
 	}
 	
+	/**
+	 * Finds the first file in folder that matches the regular expression
+	 * @param searchFolder Searching folder
+	 * @param regex Regular expression
+	 * @return Found file or null if nothing matches 
+	 */
 	public static File findFirstFile(File searchFolder, String regex) {
 		return Arrays.asList(searchFolder.listFiles((dir, name) -> Pattern.matches(regex, name)))
 				.stream()
@@ -208,15 +254,32 @@ public class FileUtils {
 				.get();
 	}
 	
+	/**
+	 * Download a resource from an URL to a file
+	 * @param url URL to download
+	 * @param file File to copy the downloaded resource
+	 * @throws IOException Resource cannot be copied/downloaded
+	 */
 	public static void downloadFromUrl(URL url, File file) throws IOException {
 		org.apache.commons.io.FileUtils.copyURLToFile(url, file);
 		Logger.info("File downloaded from [" + url + "] to [" + file.getAbsolutePath() + "]");
 	}
 	
+	/**
+	 * Checks if a file exists or is not null
+	 * @param file File
+	 * @return true if file exits, false if doesn't or is null
+	 */
 	public static boolean exists(File file) {
 		return file != null && file.exists();
 	}
 	
+	/**
+	 * Checks if a folder contains a file
+	 * @param folder Searching folder
+	 * @param filename Searched file name
+	 * @return true if folder contains file
+	 */
 	public static boolean folderContainsFile(File folder, String filename) {
 		return new File(folder, filename).exists();
 	}
