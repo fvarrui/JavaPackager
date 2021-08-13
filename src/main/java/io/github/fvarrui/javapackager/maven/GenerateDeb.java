@@ -72,7 +72,8 @@ public class GenerateDeb extends ArtifactGenerator {
 		List<Element> dataSet = new ArrayList<>();
 		
 		/* app folder files, except executable file and jre/bin/java */
-		dataSet.add(element("data", 
+		dataSet.add(
+			element("data", 
 				element("type", "directory"),
 				element("src", appFolder.getAbsolutePath()),
 				element("mapper", 
@@ -80,10 +81,12 @@ public class GenerateDeb extends ArtifactGenerator {
 						element("prefix", "/opt/" + name)
 				),
 				element("excludes", executable.getName() + (bundleJre ? "," + jreDirectoryName + "/bin/java" : ""))
-		));
+			)
+		);
 		
 		/* executable */
-		dataSet.add(element("data", 
+		dataSet.add(
+			element("data", 
 				element("type", "file"),
 				element("src", appFolder.getAbsolutePath() + "/" + name),
 				element("mapper", 
@@ -91,21 +94,25 @@ public class GenerateDeb extends ArtifactGenerator {
 						element("filemode", "755"),
 						element("prefix", "/opt/" + name)
 				)
-		));
+			)
+		);
 		
 		/* desktop file */
-		dataSet.add(element("data", 
+		dataSet.add(
+			element("data", 
 				element("type", "file"),
 				element("src", desktopFile.getAbsolutePath()),
 				element("mapper", 
 						element("type", "perm"),
 						element("prefix", "/usr/share/applications")
 				)
-		));
+			)
+		);
 		
 		/* java binary file */
 		if (bundleJre)
-			dataSet.add(element("data", 
+			dataSet.add(
+				element("data", 
 					element("type", "file"),
 					element("src", appFolder.getAbsolutePath() + "/" + jreDirectoryName + "/bin/java"),
 					element("mapper", 
@@ -113,10 +120,12 @@ public class GenerateDeb extends ArtifactGenerator {
 							element("filemode", "755"),
 							element("prefix", "/opt/" + name + "/" + jreDirectoryName + "/bin")
 					)
-			));
+				)
+			);
 		
 		/* symbolic link in /usr/local/bin to app binary */
-		dataSet.add(element("data", 
+		dataSet.add(
+			element("data", 
 				element("type", "link"),
 				element("linkTarget", "/opt/" + name + "/" + name),
 				element("linkName", "/usr/local/bin/" + name),
@@ -125,14 +134,15 @@ public class GenerateDeb extends ArtifactGenerator {
 						element("type", "perm"),
 						element("filemode", "777")
 				)
-		));
+			)
+		);
 		
 		// invokes plugin to generate deb package
 		executeMojo(
 				plugin(
 						groupId("org.vafer"), 
 						artifactId("jdeb"), 
-						version("1.8")
+						version("1.9")
 				), 
 				goal("jdeb"), 
 				configuration(
