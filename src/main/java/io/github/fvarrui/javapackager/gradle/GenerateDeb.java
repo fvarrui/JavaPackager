@@ -1,7 +1,5 @@
 package io.github.fvarrui.javapackager.gradle;
 
-import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +9,6 @@ import org.vafer.jdeb.Console;
 import org.vafer.jdeb.DataProducer;
 import org.vafer.jdeb.DebMaker;
 import org.vafer.jdeb.ant.Data;
-import org.vafer.jdeb.ant.Link;
 import org.vafer.jdeb.ant.Mapper;
 import org.vafer.jdeb.mapping.PermMapper;
 import org.vafer.jdeb.producers.DataProducerLink;
