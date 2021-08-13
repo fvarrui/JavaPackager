@@ -110,7 +110,7 @@ public class GenerateDeb extends ArtifactGenerator {
 		
 		Data executableData = new Data();
 		executableData.setType("file");
-		executableData.setSrc(executable);
+		executableData.setSrc(new File(appFolder, name));
 		executableData.addMapper(executableMapper);
 
 		dataProducers.add(executableData);
