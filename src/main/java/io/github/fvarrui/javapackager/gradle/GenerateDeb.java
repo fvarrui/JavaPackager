@@ -171,7 +171,7 @@ public class GenerateDeb extends ArtifactGenerator {
 		
         DebMaker debMaker = new DebMaker(console, dataProducers, conffilesProducers);
         debMaker.setDeb(debFile);
-        debMaker.setControl(controlFile);
+        debMaker.setControl(controlFile.getParentFile());
         debMaker.setCompression("gzip");
         debMaker.setDigest("SHA256");
         debMaker.validate();
