@@ -104,9 +104,9 @@ public class GenerateDeb extends ArtifactGenerator {
 		// builds executable data producer
 		
 		Mapper executableMapper = new Mapper();
-		appFolderMapper.setType("perm");
-		appFolderMapper.setPrefix("/opt/" + name);
-		appFolderMapper.setFileMode("755");
+		executableMapper.setType("perm");
+		executableMapper.setPrefix("/opt/" + name);
+		executableMapper.setFileMode("755");
 		
 		Data executableData = new Data();
 		executableData.setType("file");
