@@ -110,7 +110,7 @@ public class GenerateDeb extends ArtifactGenerator {
 		
 		Data executableData = new Data();
 		executableData.setType("file");
-		executableData.setSrc(new File(appFolder, name));
+		executableData.setSrc(new File(appFolder.getAbsolutePath() + "/" + name));
 		executableData.addMapper(executableMapper);
 
 		dataProducers.add(executableData);
@@ -148,23 +148,8 @@ public class GenerateDeb extends ArtifactGenerator {
 		
 		// symbolic link in /usr/local/bin to app binary data producer
 
-		int linkMode = UnixStat.LINK_FLAG | Integer.parseInt("777", 8);
-		
-		org.vafer.jdeb.mapping.Mapper linkMapper = new PermMapper(
-				0, 0, 					// uid, gid 
-				"root", "root", 		// user, group
-				linkMode, linkMode, 	// perms 
-				0, null
-			);
-		
-        DataProducer linkData = new DataProducerLink(
-        		"/usr/local/bin/" + name,		// link name 
-        		"/opt/" + name + "/" + name, 	// target
-        		true, 							// symbolic link
-        		null, null, 
-        		new org.vafer.jdeb.mapping.Mapper[] { linkMapper }	// link mapper
-    		);
-
+        DataProducer linkData = createLink("/usr/local/bin/" + name, "/opt/" + name + "/" + name);
+        
 		dataProducers.add(linkData);
 		
 		// builds deb file
@@ -179,6 +164,23 @@ public class GenerateDeb extends ArtifactGenerator {
 
 		return debFile;
 
+	}
+	
+	private DataProducer createLink(String name, String target) {
+		int linkMode = UnixStat.LINK_FLAG | Integer.parseInt("777", 8);		
+		org.vafer.jdeb.mapping.Mapper linkMapper = new PermMapper(
+				0, 0, 					// uid, gid 
+				"root", "root", 		// user, group
+				linkMode, linkMode, 	// perms 
+				0, null
+			);
+        return new DataProducerLink(
+        		name,		// link name 
+        		target, 	// target
+        		true, 		// symbolic link
+        		null, null, 
+        		new org.vafer.jdeb.mapping.Mapper[] { linkMapper }	// link mapper
+    		);
 	}
 	
 }
