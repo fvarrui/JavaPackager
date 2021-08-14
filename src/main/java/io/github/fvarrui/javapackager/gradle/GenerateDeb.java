@@ -92,6 +92,7 @@ public class GenerateDeb extends ArtifactGenerator {
 		Mapper appFolderMapper = new Mapper();
 		appFolderMapper.setType("perm");
 		appFolderMapper.setPrefix("/opt/" + name);
+		appFolderMapper.setFileMode("644");
 		
 		Data appFolderData = new Data();
 		appFolderData.setType("directory");
