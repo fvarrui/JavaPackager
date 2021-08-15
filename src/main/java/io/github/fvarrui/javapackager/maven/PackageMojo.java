@@ -288,6 +288,13 @@ public class PackageMojo extends AbstractMojo {
 	 */
 	@Parameter(property = "additionalModulePaths", required = false)
 	private List<File> additionalModulePaths;
+	
+	/**
+	 * Packaging JDK
+	 */
+	@Parameter(defaultValue = "${java.home}", property = "packagingJdk", required = false)
+	private File packagingJdk;
+	
 
 	public void execute() throws MojoExecutionException {
 		
@@ -307,9 +314,9 @@ public class PackageMojo extends AbstractMojo {
 						.additionalModulePaths(additionalModulePaths)
 						.additionalResources(additionalResources)
 						.administratorRequired(administratorRequired)
-						.version(version)
 						.assetsDir(assetsDir)
 						.bundleJre(bundleJre)
+						.classpath(classpath)
 						.copyDependencies(copyDependencies)
 						.createTarball(createTarball)
 						.createZipball(createZipball)
@@ -335,10 +342,11 @@ public class PackageMojo extends AbstractMojo {
 						.organizationName(organizationName)
 						.organizationUrl(organizationUrl)
 						.outputDirectory(outputDirectory)
-						.classpath(classpath)
+						.packagingJdk(packagingJdk)
 						.runnableJar(runnableJar)
 						.useResourcesAsWorkingDir(useResourcesAsWorkingDir)
 						.url(url)
+						.version(version)
 						.vmArgs(vmArgs)
 						.winConfig(winConfig);
 			
