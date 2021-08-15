@@ -2,7 +2,13 @@ package io.github.fvarrui.javapackager.gradle;
 
 import java.io.File;
 
+import org.redline_rpm.header.Architecture;
+import org.redline_rpm.header.Os;
+
+import com.netflix.gradle.plugins.rpm.Rpm;
+
 import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
+import io.github.fvarrui.javapackager.packagers.LinuxPackager;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.utils.Logger;
 
@@ -24,9 +30,27 @@ public class GenerateRpm extends ArtifactGenerator {
 	@Override
 	protected File doApply(Packager packager) throws Exception {
 		
-		Logger.warn("Sorry! " + getArtifactName() + " generation is not yet available");
+		LinuxPackager linuxPackager = (LinuxPackager) packager; 
+		
+		File appFolder = linuxPackager.getAppFolder();
+		String name = linuxPackager.getName();
+		String version = linuxPackager.getVersion();
+		String description = linuxPackager.getDescription();
+		String organizationName = linuxPackager.getOrganizationName();
+		File outputDirectory = linuxPackager.getOutputDirectory();
+		
+		Rpm rpmTask = new Rpm();
+		rpmTask.setPackageName(name);
+		rpmTask.setPackageDescription(description);
+		rpmTask.setRelease("1");
+		rpmTask.setArch(Architecture.X86_64);
+		rpmTask.setPackager(organizationName);
+		rpmTask.setOs(Os.LINUX);
+		rpmTask.into("/opt/" + name);
+		rpmTask.from(appFolder);
+		rpmTask.getActions().forEach(action -> action.execute(rpmTask));
 
-		return null;
+		return new File(outputDirectory, name + "_" + version + ".rpm");
 	}
 	
 }
