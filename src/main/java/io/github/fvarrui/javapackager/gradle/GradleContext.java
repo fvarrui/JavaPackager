@@ -87,7 +87,6 @@ public class GradleContext extends Context<Logger> {
 	
 	/**
 	 * Returns project's default toolchain
-	 * @param project Gradle project
 	 * @return Default toolchain
 	 */
 	public File getDefaultToolchain() {
