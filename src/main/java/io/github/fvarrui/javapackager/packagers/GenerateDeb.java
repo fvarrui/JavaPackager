@@ -1,4 +1,4 @@
-package io.github.fvarrui.javapackager.gradle;
+package io.github.fvarrui.javapackager.packagers;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,9 +13,6 @@ import org.vafer.jdeb.ant.Mapper;
 import org.vafer.jdeb.mapping.PermMapper;
 import org.vafer.jdeb.producers.DataProducerLink;
 
-import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
-import io.github.fvarrui.javapackager.packagers.LinuxPackager;
-import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
