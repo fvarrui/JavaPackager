@@ -1,13 +1,16 @@
 package io.github.fvarrui.javapackager.gradle;
 
 import java.io.File;
+import java.util.UUID;
 
+import org.gradle.api.tasks.bundling.Zip;
 import org.redline_rpm.header.Architecture;
 import org.redline_rpm.header.Os;
 
 import com.netflix.gradle.plugins.rpm.Rpm;
 
 import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
+import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.LinuxPackager;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.utils.Logger;
@@ -39,7 +42,7 @@ public class GenerateRpm extends ArtifactGenerator {
 		String organizationName = linuxPackager.getOrganizationName();
 		File outputDirectory = linuxPackager.getOutputDirectory();
 		
-		Rpm rpmTask = new Rpm();
+		Rpm rpmTask = createTask();
 		rpmTask.setPackageName(name);
 		rpmTask.setPackageDescription(description);
 		rpmTask.setRelease("1");
@@ -51,6 +54,10 @@ public class GenerateRpm extends ArtifactGenerator {
 		rpmTask.getActions().forEach(action -> action.execute(rpmTask));
 
 		return new File(outputDirectory, name + "_" + version + ".rpm");
+	}
+	
+	private Rpm createTask() {
+		return Context.getGradleContext().getProject().getTasks().create("createRpm_" + UUID.randomUUID(), Rpm.class);
 	}
 	
 }
