@@ -46,13 +46,14 @@ public class GenerateRpm extends ArtifactGenerator {
 		rpmTask.setPackageName(name);
 		rpmTask.setPackageDescription(description);
 		rpmTask.setRelease("1");
+		rpmTask.setEpoch(0);
 		rpmTask.setArch(Architecture.X86_64);
 		rpmTask.setPackager(organizationName);
 		rpmTask.setOs(Os.LINUX);
 		rpmTask.into("/opt/" + name);
 		rpmTask.from(appFolder);
 		rpmTask.getActions().forEach(action -> action.execute(rpmTask));
-
+		
 		return new File(outputDirectory, name + "_" + version + ".rpm");
 	}
 	
