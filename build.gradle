@@ -54,7 +54,7 @@ dependencies {
     implementation 'io.github.fvarrui:gradle-launch4j:2.4.7' 
     implementation 'org.vafer:jdeb:1.9'
     implementation 'net.jsign:jsign-core:3.1'
-    implementation 'com.netflix.nebula:gradle-ospackage-plugin:8.5.6'
+    implementation 'org.redline-rpm:redline:1.2.10'
 	
     testImplementation 'junit:junit:4.12'
     

@@ -1,19 +1,15 @@
 package io.github.fvarrui.javapackager.gradle;
 
 import java.io.File;
-import java.util.UUID;
 
-import org.gradle.api.tasks.bundling.Zip;
+import org.redline_rpm.Builder;
 import org.redline_rpm.header.Architecture;
 import org.redline_rpm.header.Os;
-
-import com.netflix.gradle.plugins.rpm.Rpm;
+import org.redline_rpm.header.RpmType;
 
 import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
-import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.LinuxPackager;
 import io.github.fvarrui.javapackager.packagers.Packager;
-import io.github.fvarrui.javapackager.utils.Logger;
 
 /**
  * Creates a RPM package file including all app folder's content only for 
@@ -42,24 +38,17 @@ public class GenerateRpm extends ArtifactGenerator {
 		String organizationName = linuxPackager.getOrganizationName();
 		File outputDirectory = linuxPackager.getOutputDirectory();
 		
-		Rpm rpmTask = createTask();
-		rpmTask.setPackageName(name);
-		rpmTask.setPackageDescription(description);
-		rpmTask.setSourcePackage("");
-		rpmTask.setRelease("1");
-		rpmTask.setEpoch(0);
-		rpmTask.setArch(Architecture.X86_64);
-		rpmTask.setPackager(organizationName);
-		rpmTask.setOs(Os.LINUX);
-		rpmTask.into("/opt/" + name);
-		rpmTask.from(appFolder);
-		rpmTask.getActions().forEach(action -> action.execute(rpmTask));
+		Builder builder = new Builder();
+		builder.setType(RpmType.BINARY);
+		builder.setPlatform(Architecture.X86_64, Os.LINUX);
+		builder.setPackage(name, version, "1");
+		builder.setPackager(organizationName);
+		builder.setDescription(description);
+		builder.setPrefixes("/opt/" + name);
+		builder.addDirectory(appFolder.getAbsolutePath());
+		builder.build(outputDirectory);
 		
 		return new File(outputDirectory, name + "_" + version + ".rpm");
-	}
-	
-	private Rpm createTask() {
-		return Context.getGradleContext().getProject().getTasks().create("createRpm_" + UUID.randomUUID(), Rpm.class);
 	}
 	
 }
