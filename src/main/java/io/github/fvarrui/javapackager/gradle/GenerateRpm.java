@@ -45,6 +45,7 @@ public class GenerateRpm extends ArtifactGenerator {
 		Rpm rpmTask = createTask();
 		rpmTask.setPackageName(name);
 		rpmTask.setPackageDescription(description);
+		rpmTask.setSourcePackage("");
 		rpmTask.setRelease("1");
 		rpmTask.setEpoch(0);
 		rpmTask.setArch(Architecture.X86_64);
