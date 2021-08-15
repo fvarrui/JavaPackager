@@ -3,7 +3,13 @@ package io.github.fvarrui.javapackager.gradle;
 import java.io.File;
 
 import org.gradle.api.Project;
+import org.gradle.api.internal.provider.Providers;
 import org.gradle.api.logging.Logger;
+import org.gradle.api.plugins.JavaPluginExtension;
+import org.gradle.api.provider.Provider;
+import org.gradle.jvm.toolchain.JavaLauncher;
+import org.gradle.jvm.toolchain.JavaToolchainService;
+import org.gradle.jvm.toolchain.JavaToolchainSpec;
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import io.github.fvarrui.javapackager.packagers.Context;
@@ -77,6 +83,25 @@ public class GradleContext extends Context<Logger> {
 
 	public void setLibraryTask(Launch4jLibraryTask libraryTask) {
 		this.libraryTask = libraryTask;
+	}
+	
+	/**
+	 * Returns project's default toolchain
+	 * @param project Gradle project
+	 * @return Default toolchain
+	 */
+	public File getDefaultToolchain() {
+		// Default toolchain
+		JavaToolchainSpec toolchain = project.getExtensions().getByType(JavaPluginExtension.class).getToolchain();
+
+		// acquire a provider that returns the launcher for the toolchain
+		JavaToolchainService service = project.getExtensions().getByType(JavaToolchainService.class);
+		Provider<JavaLauncher> defaultLauncher = service.launcherFor(toolchain).orElse(Providers.notDefined());
+
+		if (defaultLauncher.isPresent()) {
+			return defaultLauncher.get().getMetadata().getInstallationPath().getAsFile();
+		}
+		return super.getDefaultToolchain();
 	}
 
 }

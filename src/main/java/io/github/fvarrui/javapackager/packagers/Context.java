@@ -85,4 +85,8 @@ public abstract class Context<T> {
 		return (GradleContext) context;
 	}
 	
+	public File getDefaultToolchain() {
+		return new File(System.getProperty("java.home")); // Use java.home as fallback
+	}
+	
 }
