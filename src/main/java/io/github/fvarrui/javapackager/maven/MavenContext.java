@@ -6,7 +6,6 @@ import org.apache.maven.plugin.logging.Log;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import io.github.fvarrui.javapackager.packagers.Context;
-import io.github.fvarrui.javapackager.packagers.GenerateDeb;
 import io.github.fvarrui.javapackager.packagers.Packager;
 
 /**
@@ -24,7 +23,6 @@ public class MavenContext extends Context<Log> {
 		this.logger = logger;
 		
 		// maven dependant generators 		
-		this.getLinuxInstallerGenerators().add(new GenerateDeb());
 		this.getLinuxInstallerGenerators().add(new GenerateRpm());
 		
 	}

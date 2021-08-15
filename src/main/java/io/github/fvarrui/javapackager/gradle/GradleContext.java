@@ -7,7 +7,6 @@ import org.gradle.api.logging.Logger;
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import io.github.fvarrui.javapackager.packagers.Context;
-import io.github.fvarrui.javapackager.packagers.GenerateDeb;
 import io.github.fvarrui.javapackager.packagers.Packager;
 
 /**
@@ -24,7 +23,6 @@ public class GradleContext extends Context<Logger> {
 		this.project = project;
 		
 		// gradle dependant generators 
-		this.getLinuxInstallerGenerators().add(new GenerateDeb());
 		this.getLinuxInstallerGenerators().add(new GenerateRpm());
 		
 	}
