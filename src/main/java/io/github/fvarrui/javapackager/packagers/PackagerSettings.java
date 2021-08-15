@@ -438,7 +438,9 @@ public class PackagerSettings {
 				+ macConfig + ", createTarball=" + createTarball + ", createZipball=" + createZipball + ", extra="
 				+ extra + ", useResourcesAsWorkingDir=" + useResourcesAsWorkingDir + ", assetsDir=" + assetsDir
 				+ ", classpath=" + classpath + ", jreMinVersion=" + jreMinVersion + ", manifest=" + manifest
-				+ ", additionalModulePaths=" + additionalModulePaths + "]";
+				+ ", additionalModulePaths=" + additionalModulePaths + ", packagingJdk=" + packagingJdk + "]";
 	}
+
+
 
 }
