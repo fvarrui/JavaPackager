@@ -14,6 +14,7 @@
 				<exclude>Contents/MacOS/universalJavaApplicationStub</exclude>
 #if ($info.bundleJre)
 				<exclude>Contents/PlugIns/${info.jreDirectoryName}/Contents/Home/bin/*</exclude>
+				<exclude>Contents/PlugIns/${info.jreDirectoryName}/Contents/Home/lib/jspawnhelper</exclude>
 #end
 			</excludes>
 		</fileSet>
@@ -25,6 +26,7 @@
 				<include>Contents/MacOS/universalJavaApplicationStub</include>
 #if ($info.bundleJre)
 				<include>Contents/PlugIns/${info.jreDirectoryName}/Contents/Home/bin/*</include>
+				<include>Contents/PlugIns/${info.jreDirectoryName}/Contents/Home/lib/jspawnhelper</include>
 #end
 			</includes>
 			<fileMode>0755</fileMode>
