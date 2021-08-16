@@ -65,7 +65,12 @@ public class LinuxPackager extends Packager {
 		Logger.info("Startup script generated in " + startupFile.getAbsolutePath());
 
 		// concats linux startup.sh script + generated jar in executable (binary)
-		FileUtils.concat(executable, startupFile, jarFile);
+		if (getLinuxConfig().isWrapJar())
+			FileUtils.concat(executable, startupFile, jarFile);
+		else {
+			FileUtils.copyFileToFile(startupFile, executable);
+			FileUtils.copyFileToFolder(jarFile, appFolder);
+		}
 
 		// sets execution permissions
 		executable.setExecutable(true, false);

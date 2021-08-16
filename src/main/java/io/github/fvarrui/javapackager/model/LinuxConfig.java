@@ -15,6 +15,7 @@ public class LinuxConfig implements Serializable {
 	private boolean generateRpm = true;
 	private File pngFile;
 	private File xpmFile;
+	private boolean wrapJar = true;
 
 	public boolean isGenerateDeb() {
 		return generateDeb;
@@ -47,11 +48,19 @@ public class LinuxConfig implements Serializable {
 	public void setXpmFile(File xpmFile) {
 		this.xpmFile = xpmFile;
 	}
+	
+	public boolean isWrapJar() {
+		return wrapJar;
+	}
+	
+	public void setWrapJar(boolean wrapJar) {
+		this.wrapJar = wrapJar;
+	}
 
 	@Override
 	public String toString() {
 		return "LinuxConfig [generateDeb=" + generateDeb + ", generateRpm=" + generateRpm + ", pngFile=" + pngFile
-				+ ", xpmFile=" + xpmFile + "]";
+				+ ", xpmFile=" + xpmFile + ", wrapJar=" + wrapJar + "]";
 	}
 
 	/**
