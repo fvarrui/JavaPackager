@@ -23,7 +23,6 @@ public class MavenContext extends Context<Log> {
 		this.logger = logger;
 		
 		// maven dependant generators 		
-		this.getLinuxInstallerGenerators().add(new GenerateDeb());
 		this.getLinuxInstallerGenerators().add(new GenerateRpm());
 		
 	}

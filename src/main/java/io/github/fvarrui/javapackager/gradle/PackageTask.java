@@ -19,6 +19,7 @@ import io.github.fvarrui.javapackager.model.MacConfig;
 import io.github.fvarrui.javapackager.model.Manifest;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
+import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.packagers.PackagerFactory;
 
@@ -544,10 +545,9 @@ public class PackageTask extends AbstractPackageTask {
 					.additionalModulePaths(defaultIfNull(additionalModulePaths, extension.getAdditionalModulePaths()))
 					.additionalResources(defaultIfNull(additionalResources, extension.getAdditionalResources()))
 					.administratorRequired(defaultIfNull(administratorRequired, extension.getAdministratorRequired()))
-					.version(defaultIfNull(version, extension.getVersion(), getProject().getVersion().toString()))
-					.packagingJdk(defaultIfNull(packagingJdk, extension.getPackagingJdk()))
 					.assetsDir(defaultIfNull(assetsDir, extension.getAssetsDir()))
 					.bundleJre(defaultIfNull(bundleJre, extension.getBundleJre()))
+					.classpath(defaultIfNull(classpath, extension.getClasspath()))
 					.copyDependencies(defaultIfNull(copyDependencies, extension.getCopyDependencies()))
 					.createTarball(defaultIfNull(createTarball, extension.getCreateTarball()))
 					.createZipball(defaultIfNull(createZipball, extension.getCreateZipball()))
@@ -573,10 +573,11 @@ public class PackageTask extends AbstractPackageTask {
 					.organizationName(defaultIfNull(organizationName, extension.getOrganizationName()))
 					.organizationUrl(defaultIfNull(organizationUrl, extension.getOrganizationUrl()))
 					.outputDirectory(defaultIfNull(outputDirectory, extension.getOutputDirectory()))
-					.classpath(defaultIfNull(classpath, extension.getClasspath()))
+					.packagingJdk(defaultIfNull(packagingJdk, extension.getPackagingJdk(), Context.getContext().getDefaultToolchain()))
 					.runnableJar(defaultIfNull(runnableJar, extension.getRunnableJar()))
 					.useResourcesAsWorkingDir(defaultIfNull(useResourcesAsWorkingDir, extension.isUseResourcesAsWorkingDir()))
 					.url(defaultIfNull(url, extension.getUrl()))
+					.version(defaultIfNull(version, extension.getVersion(), getProject().getVersion().toString()))
 					.vmArgs(defaultIfNull(vmArgs, extension.getVmArgs()))
 					.winConfig(defaultIfNull(winConfig, extension.getWinConfig()));
 

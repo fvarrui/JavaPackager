@@ -16,11 +16,12 @@ public abstract class Context<T> {
 		super();
 		
 		// building tool independent generators
+		linuxInstallerGenerators.add(new GenerateDeb());
 		macInstallerGenerators.add(new GenerateDmg());
 		macInstallerGenerators.add(new GeneratePkg());
 		windowsInstallerGenerators.add(new GenerateSetup());
 		windowsInstallerGenerators.add(new GenerateMsm());
-		windowsInstallerGenerators.add(new GenerateMsi());
+		windowsInstallerGenerators.add(new GenerateMsi());		
 		
 	}
 	
@@ -82,6 +83,10 @@ public abstract class Context<T> {
 
 	public static GradleContext getGradleContext() {
 		return (GradleContext) context;
+	}
+	
+	public File getDefaultToolchain() {
+		return new File(System.getProperty("java.home")); // Use java.home as fallback
 	}
 	
 }

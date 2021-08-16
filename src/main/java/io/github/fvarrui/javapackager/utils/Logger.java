@@ -41,6 +41,12 @@ public class Logger {
 		if (Context.isGradle()) Context.getGradleContext().getLogger().quiet(StringUtils.repeat(TAB, tabs) + info);
 		return info;
 	}
+	
+	public static String debug(String debug) {
+		if (Context.isMaven()) Context.getMavenContext().getLogger().debug(StringUtils.repeat(TAB, tabs) + debug);
+		if (Context.isGradle()) Context.getGradleContext().getLogger().debug(StringUtils.repeat(TAB, tabs) + debug);
+		return debug;
+	}
 
 	public static void infoIndent(String msg) {
 		info(msg);

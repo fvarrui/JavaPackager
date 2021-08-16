@@ -131,7 +131,7 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 
 >  :warning: Installers generation will be ommited if target platform is different from current platform (see `platform` property).
 
-> :warning: **DEB and RPM package generation in Gradle is not yet available. Coming soon!**
+> :warning: **RPM package generation in Gradle is not yet available. Coming soon!**
 
 ### Plugin configuration properties
 
@@ -153,7 +153,6 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 | `envPath`                  | :x:                |                                                              | Defines PATH environment variable in GNU/Linux and Mac OS X startup scripts. |
 | `extra`                    | :x:                |                                                              | Map with extra properties to be used in customized Velocity templates, accesible through `$info.extra` variable. |
 | `generateInstaller`        | :x:                | `true`                                                       | Generates an installer for the app.                          |
-| `iconFile`                 | :x:                |                                                              | Path to the app icon file (PNG, XPM, ICO or ICNS). **:warning: Deprecated (see platform specific properties).** |
 | `jdkPath`                  | :x:                | `${java.home}`                                               | JDK used to generate a customized JRE. It allows to bundle customized JREs for different platforms. |
 | `jreDirectoryName`         | :x:                | `"jre"`                                                      | Bundled JRE directory name.                                  |
 | `jreMinVersion`            | :x:                |                                                              | JRE minimum version. If an appropriate version cannot be found display error message. Disabled if a JRE is bundled. |
@@ -161,18 +160,19 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 | `licenseFile`              | :x:                | `${project.licenses[0].url}`  or `${basedir}/LICENSE` or `${projectdir}/LICENSE` | Path to project license file.                                |
 | `mainClass`                | :heavy_check_mark: | `${exec.mainClass}`                                          | Full path to your app main class.                            |
 | `manifest`                 | :x:                |                                                              | [Allows adding additional entries to MANIFEST.MF file.](docs/manifest.md) |
-| `modules`                  | :x:                | `[]`                                                         | Defines modules to customize the bundled JRE. Don't use `jdeps` to get module dependencies. |
+| `modules`                  | :x:                | `[]`                                                         | Modules to customize the bundled JRE. Don't use `jdeps` to get module dependencies. |
 | `name`                     | :x:                | `${project.name}` or `${project.artifactId}`                 | App name.                                                    |
 | `organizationName`         | :x:                | `${project.organization.name}` or `"ACME"`                   | Organization name.                                           |
 | `organizationUrl`          | :x:                | `${project.organization.url}`                                | Organization website URL.                                    |
 | `organizationEmail`        | :x:                |                                                              | Organization email.                                          |
 | `outputDirectory`          | :x:                | `${project.build.directory}` or `${project.builddir}`        | Output directory (where the artifacts will be generated).    |
+| `packagingJdk`             | :x:                | `${java.home}`                                               | JDK used in the execution of `jlink` and other JDK tools.    |
 | `platform`                 | :x:                | `auto`                                                       | Defines the target platform, which could be different to the execution platform. Possible values:  `auto`, `mac`, `linux`, `windows`. Use `auto`  for using execution platform as target. |
 | `runnableJar`              | :x:                |                                                              | Defines your own JAR file to be bundled. If it's ommited, the plugin packages your code in a runnable JAR and bundle it with the app. |
 | `url`                      | :x:                |                                                              | App website URL.                                             |
 | `useResourcesAsWorkingDir` | :x:                | `true`                                                       | Uses app resources folder as default working directory (always `true` on Mac OS). |
-| ` version`                 | :x:                | `${project.version}`                                         | Project version.                                             |
-| `vmArgs`                   | :x:                | `[]`                                                         | Adds VM arguments.                                           |
+| ` version`                 | :x:                | `${project.version}`                                         | App version.                                                 |
+| `vmArgs`                   | :x:                | `[]`                                                         | VM arguments.                                                |
 
 > Some default values depends on the used building tool.
 
