@@ -1,6 +1,7 @@
 package io.github.fvarrui.javapackager.gradle;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
@@ -34,41 +35,46 @@ public class GenerateRpm extends ArtifactGenerator {
 	@Override
 	protected File doApply(Packager packager) throws Exception {
 
-		Logger.warn("Sorry! " + getArtifactName() + " generation is not yet available");
-		return null;
+		LinuxPackager linuxPackager = (LinuxPackager) packager;
 
-//		LinuxPackager linuxPackager = (LinuxPackager) packager;
-//
-//		File appFolder = linuxPackager.getAppFolder();
-//		String name = linuxPackager.getName();
-//		String version = linuxPackager.getVersion();
-//		String description = linuxPackager.getDescription();
-//		String organizationName = linuxPackager.getOrganizationName();
-//		File outputDirectory = linuxPackager.getOutputDirectory();
-//
-//		Builder builder = new Builder();
-//		builder.setType(RpmType.BINARY);
-//		builder.setPlatform(Architecture.X86_64, Os.LINUX);
-//		builder.setPackage(name, version, "1");
-//		builder.setPackager(organizationName);
-//		builder.setDescription(description);
-//		builder.setPrefixes("/opt/" + name);
-//
-//		// TODO add directories tree and all app files
-//		// builder.addDirectory(appFolder.getAbsolutePath());
-//		// builder.addFile("HelloWorldMaven/HelloWorldMaven", new File(appFolder,
-//		// "HelloWorldMaven"), 0755);
-//
-//		builder.build(outputDirectory);
-//
-//		File rpm = new File(outputDirectory, name + "-" + version + "-1.x86_64.rpm");
-//		if (rpm.exists()) {
-//			File rpmOutput = new File(outputDirectory, name + "_" + version + ".rpm");
-//			FileUtils.rename(rpm, rpmOutput.getName());
-//			return rpmOutput;
-//		}
-//
-//		return null;
+		File appFolder = linuxPackager.getAppFolder();
+		String name = linuxPackager.getName();
+		String version = linuxPackager.getVersion();
+		String description = linuxPackager.getDescription();
+		String organizationName = linuxPackager.getOrganizationName();
+		File outputDirectory = linuxPackager.getOutputDirectory();
+
+		Builder builder = new Builder();
+		builder.setType(RpmType.BINARY);
+		builder.setPlatform(Architecture.X86_64, Os.LINUX);
+		builder.setPackage(name, version, "1");
+		builder.setPackager(organizationName);
+		builder.setDescription(description);
+		builder.setPrefixes("opt");
+
+		// TODO add directories tree and all app files
+		addDirectoryTree(builder, "", appFolder);
+		
+		// builder.addFile("HelloWorldMaven/HelloWorldMaven", new File(appFolder,
+		// "HelloWorldMaven"), 0755);
+
+		builder.build(outputDirectory);
+
+		File rpm = new File(outputDirectory, name + "-" + version + "-1.x86_64.rpm");
+		if (rpm.exists()) {
+			File rpmOutput = new File(outputDirectory, name + "_" + version + ".rpm");
+			FileUtils.rename(rpm, rpmOutput.getName());
+			return rpmOutput;
+		}
+
+		return null;
+	}
+	
+	private void addDirectoryTree(Builder builder, String parentPath, File root) throws NoSuchAlgorithmException, IOException {
+		builder.addDirectory(parentPath + "/" + root.getName());
+		for (File dir : root.listFiles(f -> f.isDirectory())) {
+			addDirectoryTree(builder, parentPath + "/" + root.getName(), dir);
+		}
 	}
 
 }

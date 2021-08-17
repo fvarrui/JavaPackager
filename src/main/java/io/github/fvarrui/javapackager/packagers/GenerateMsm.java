@@ -2,6 +2,7 @@ package io.github.fvarrui.javapackager.packagers;
 
 import java.io.File;
 
+import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
@@ -19,7 +20,17 @@ public class GenerateMsm extends ArtifactGenerator {
 	
 	@Override
 	public boolean skip(Packager packager) {
-		return !packager.getWinConfig().isGenerateMsm() && !packager.getWinConfig().isGenerateMsi();
+		
+		if (!packager.getWinConfig().isGenerateMsm() && !packager.getWinConfig().isGenerateMsi()) {
+			return true;
+		}
+		
+		if (!packager.getPlatform().isCurrentPlatform()) {
+			Logger.warn(getArtifactName() + " cannot be generated due to the target platform (" + packager.getPlatform() + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
+			return true;
+		}
+		
+		return false;
 	}
 	
 	@Override
