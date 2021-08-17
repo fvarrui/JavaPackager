@@ -53,7 +53,11 @@ fi
 #end
 #end
 
+#if ($info.linuxConfig.wrapJar)
 BINARY="$SCRIPTPATH/${info.executable.name}"
+#else
+BINARY="$SCRIPTPATH/${info.jarFile.name}"
+#end
 
 #if ($info.envPath)
 export PATH=${info.envPath}

@@ -133,7 +133,7 @@ public class BundleJre extends ArtifactGenerator {
 
 		}
 		
-		// removes jre/legal folder
+		// removes jre/legal folder as it causes problems when codesigning from Mac OS
 		File legalFolder = new File(destinationFolder, "legal");
 		if (legalFolder.exists()) {
 			FileUtils.removeFolder(legalFolder);
@@ -144,6 +144,10 @@ public class BundleJre extends ArtifactGenerator {
 		} else {
 			Logger.infoUnindent("JRE bundling skipped!");
 		}
+		
+		// updates bundle jre property value, as this artifact generator could disable this option 
+		// (e.g. when bundling a jre from a different platform than the current one)
+		packager.bundleJre(bundleJre);
 
 		return destinationFolder;
 	}
