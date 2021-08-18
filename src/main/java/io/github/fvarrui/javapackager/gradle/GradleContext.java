@@ -13,6 +13,7 @@ import org.gradle.jvm.toolchain.JavaToolchainSpec;
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import io.github.fvarrui.javapackager.packagers.Context;
+import io.github.fvarrui.javapackager.packagers.GenerateRpm;
 import io.github.fvarrui.javapackager.packagers.Packager;
 
 /**

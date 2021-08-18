@@ -1,4 +1,4 @@
-package io.github.fvarrui.javapackager.gradle;
+package io.github.fvarrui.javapackager.packagers;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,9 +11,6 @@ import org.redline_rpm.header.Architecture;
 import org.redline_rpm.header.Os;
 import org.redline_rpm.header.RpmType;
 
-import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
-import io.github.fvarrui.javapackager.packagers.LinuxPackager;
-import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
