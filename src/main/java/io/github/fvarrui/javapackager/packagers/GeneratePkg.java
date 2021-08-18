@@ -2,7 +2,9 @@ package io.github.fvarrui.javapackager.packagers;
 
 import java.io.File;
 
+import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
+import io.github.fvarrui.javapackager.utils.Logger;
 
 /**
  * Creates a PKG installer file including all app folder's content only for MacOS so
@@ -16,7 +18,17 @@ public class GeneratePkg extends ArtifactGenerator {
 	
 	@Override
 	public boolean skip(Packager packager) {
-		return !packager.getMacConfig().isGeneratePkg();
+		
+		if (!packager.getMacConfig().isGeneratePkg()) {
+			return true;
+		}
+		
+		if (!packager.getPlatform().isCurrentPlatform()) {
+			Logger.warn(getArtifactName() + " cannot be generated due to the target platform (" + packager.getPlatform() + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
+			return true;
+		}
+		
+		return false;
 	}
 	
 	@Override

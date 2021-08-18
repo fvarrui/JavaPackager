@@ -26,11 +26,7 @@ public class GradleContext extends Context<Logger> {
 	
 	public GradleContext(Project project) {
 		super();
-		this.project = project;
-		
-		// gradle dependant generators 
-		this.getLinuxInstallerGenerators().add(new GenerateRpm());
-		
+		this.project = project;		
 	}
 
 	public Logger getLogger() {

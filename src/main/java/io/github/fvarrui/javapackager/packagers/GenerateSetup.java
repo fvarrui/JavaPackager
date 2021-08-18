@@ -4,9 +4,11 @@ import java.io.File;
 
 import org.apache.commons.lang3.StringUtils;
 
+import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.Registry;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
+import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
 /**
@@ -21,7 +23,17 @@ public class GenerateSetup extends WindowsArtifactGenerator {
 	
 	@Override
 	public boolean skip(Packager packager) {
-		return !packager.getWinConfig().isGenerateSetup();
+		
+		if (!packager.getWinConfig().isGenerateSetup()) {
+			return true;
+		}
+		
+		if (!packager.getPlatform().isCurrentPlatform()) {
+			Logger.warn(getArtifactName() + " cannot be generated due to the target platform (" + packager.getPlatform() + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
+			return true;
+		}
+		
+		return false;
 	}
 	
 	@Override

@@ -16,9 +16,13 @@ public abstract class Context<T> {
 		super();
 		
 		// building tool independent generators
+		
 		linuxInstallerGenerators.add(new GenerateDeb());
+		linuxInstallerGenerators.add(new GenerateRpm());
+		
 		macInstallerGenerators.add(new GenerateDmg());
 		macInstallerGenerators.add(new GeneratePkg());
+		
 		windowsInstallerGenerators.add(new GenerateSetup());
 		windowsInstallerGenerators.add(new GenerateMsm());
 		windowsInstallerGenerators.add(new GenerateMsi());		

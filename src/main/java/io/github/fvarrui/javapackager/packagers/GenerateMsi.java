@@ -4,6 +4,7 @@ import static io.github.fvarrui.javapackager.utils.CommandUtils.execute;
 
 import java.io.File;
 
+import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 import io.github.fvarrui.javapackager.utils.XMLUtils;
@@ -20,7 +21,17 @@ public class GenerateMsi extends WindowsArtifactGenerator {
 	
 	@Override
 	public boolean skip(Packager packager) {
-		return !packager.getWinConfig().isGenerateMsi();
+		
+		if (!packager.getWinConfig().isGenerateMsi()) {
+			return true;
+		}
+		
+		if (!packager.getPlatform().isCurrentPlatform()) {
+			Logger.warn(getArtifactName() + " cannot be generated due to the target platform (" + packager.getPlatform() + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
+			return true;
+		}
+		
+		return false;		
 	}
 	
 	@Override

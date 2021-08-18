@@ -379,10 +379,6 @@ public abstract class Packager extends PackagerSettings {
 			Logger.warn("Installer generation is disabled by 'generateInstaller' property!");
 			return installers;
 		}
-		if (!platform.isCurrentPlatform()) {
-			Logger.warn("Installers cannot be generated due to the target platform (" + platform + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
-			return installers;
-		}
 		
 		Logger.infoIndent("Generating installers ...");
 

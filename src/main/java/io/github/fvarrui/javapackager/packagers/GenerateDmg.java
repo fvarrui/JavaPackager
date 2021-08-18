@@ -9,6 +9,7 @@ import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 
 import io.github.fvarrui.javapackager.model.MacConfig;
+import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.ThreadUtils;
@@ -26,7 +27,17 @@ public class GenerateDmg extends ArtifactGenerator {
 	
 	@Override
 	public boolean skip(Packager packager) {
-		return !packager.getMacConfig().isGenerateDmg();
+		
+		if (!packager.getMacConfig().isGenerateDmg()) {
+			return true;
+		}
+		
+		if (!packager.getPlatform().isCurrentPlatform()) {
+			Logger.warn(getArtifactName() + " cannot be generated due to the target platform (" + packager.getPlatform() + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
+			return true;
+		}
+		
+		return false;		
 	}
 	
 	@Override
