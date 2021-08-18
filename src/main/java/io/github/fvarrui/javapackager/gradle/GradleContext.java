@@ -13,7 +13,6 @@ import org.gradle.jvm.toolchain.JavaToolchainSpec;
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import io.github.fvarrui.javapackager.packagers.Context;
-import io.github.fvarrui.javapackager.packagers.GenerateRpm;
 import io.github.fvarrui.javapackager.packagers.Packager;
 
 /**
@@ -27,11 +26,7 @@ public class GradleContext extends Context<Logger> {
 	
 	public GradleContext(Project project) {
 		super();
-		this.project = project;
-		
-		// gradle dependant generators 
-		this.getLinuxInstallerGenerators().add(new GenerateRpm());
-		
+		this.project = project;		
 	}
 
 	public Logger getLogger() {
