@@ -1,21 +1,22 @@
 package io.github.fvarrui.javapackager.gradle;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.redline_rpm.Builder;
 import org.redline_rpm.header.Architecture;
 import org.redline_rpm.header.Os;
 import org.redline_rpm.header.RpmType;
-import org.redline_rpm.payload.Directive;
 
 import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.LinuxPackager;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
+import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
 /**
  * Creates a RPM package file including all app folder's content only for
@@ -43,6 +44,17 @@ public class GenerateRpm extends ArtifactGenerator {
 		String description = linuxPackager.getDescription();
 		String organizationName = linuxPackager.getOrganizationName();
 		File outputDirectory = linuxPackager.getOutputDirectory();
+		File executable = linuxPackager.getExecutable();
+		File assetsFolder = linuxPackager.getAssetsFolder();
+		String jreDirectoryName = linuxPackager.getJreDirectoryName();
+		
+		// generates desktop file from velocity template
+		File desktopFile = new File(assetsFolder, name + ".desktop");
+		VelocityUtils.render("linux/desktop.vtl", desktopFile, linuxPackager);
+		Logger.info("Rendering desktop file to " + desktopFile.getAbsolutePath());
+		
+		// copies desktop file to app
+		FileUtils.copyFileToFolder(desktopFile, appFolder);
 
 		Builder builder = new Builder();
 		builder.setType(RpmType.BINARY);
@@ -51,29 +63,44 @@ public class GenerateRpm extends ArtifactGenerator {
 		builder.setPackager(organizationName);
 		builder.setDescription(description);
 		builder.setPrefixes("opt");
-
-		// TODO add directories tree and all app files
-		addDirectoryTree(builder, "", appFolder);
 		
-		// builder.addFile("HelloWorldMaven/HelloWorldMaven", new File(appFolder,
-		// "HelloWorldMaven"), 0755);
+		// list of files which needs execution permissions
+		List<File> executionPermissions = new ArrayList<>();
+		executionPermissions.add(executable);
+		executionPermissions.add(new File(appFolder, jreDirectoryName + "/bin/java"));
+		executionPermissions.add(new File(appFolder, jreDirectoryName + "/lib/jspawnhelper"));
+
+		// add all app files
+		addDirectoryTree(builder, "/opt", appFolder, executionPermissions);
+
+		// link to desktop file
+		builder.addLink("/usr/share/applications/" + desktopFile.getName(), "/opt/" + name + "/" + desktopFile.getName());
+
+		// link to binary
+		builder.addLink("/usr/local/bin/" + executable.getName(), "/opt/" + name + "/" + executable.getName());
 
 		builder.build(outputDirectory);
 
-		File rpm = new File(outputDirectory, name + "-" + version + "-1.x86_64.rpm");
-		if (rpm.exists()) {
-			File rpmOutput = new File(outputDirectory, name + "_" + version + ".rpm");
-			FileUtils.rename(rpm, rpmOutput.getName());
-			return rpmOutput;
+		File originalRpm = new File(outputDirectory, name + "-" + version + "-1.x86_64.rpm");
+		File rpm = null;
+		if (originalRpm.exists()) {
+			rpm = new File(outputDirectory, name + "_" + version + ".rpm");
+			if (rpm.exists()) rpm.delete();
+			FileUtils.rename(originalRpm, rpm.getName());
 		}
 
-		return null;
+		return rpm;
 	}
 	
-	private void addDirectoryTree(Builder builder, String parentPath, File root) throws NoSuchAlgorithmException, IOException {
-		builder.addDirectory(parentPath + "/" + root.getName());
-		for (File dir : root.listFiles(f -> f.isDirectory())) {
-			addDirectoryTree(builder, parentPath + "/" + root.getName(), dir);
+	private void addDirectoryTree(Builder builder, String parentPath, File root, List<File> executionPermissions) throws NoSuchAlgorithmException, IOException {
+		String rootPath = parentPath + "/" + root.getName();
+		builder.addDirectory(rootPath);
+		for (File f : root.listFiles()) {
+			if (f.isDirectory())
+				addDirectoryTree(builder, parentPath + "/" + root.getName(), f, executionPermissions);
+			else {
+				builder.addFile(rootPath + "/" + f.getName(), f, executionPermissions.contains(f) ? 0755 : 0644);
+			}
 		}
 	}
 
