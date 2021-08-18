@@ -33,7 +33,7 @@ public class LinuxConfig implements Serializable {
 	}
 
 	public File getPngFile() {
-		return pngFile;
+		return pngFile;	
 	}
 
 	public void setPngFile(File pngFile) {
