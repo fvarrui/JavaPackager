@@ -126,12 +126,10 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 | `${name}_${version}.msm`                | MSI merge module file if it's executed on Windows (requires **[WiX Toolset](https://wixtoolset.org/)**). |
 | `${name}_${version}.dmg`                | Disk image file if it's executed on Mac OS X (requires **hdiutil**). |
 | `${name}_${version}.pkg`                | PKG installer file if it's executed on Mac OS X (requires **pkgbuild**) |
-| `${name}-${version}-${platform}.zip`    | Zipball containing generated directory `${name}`.            |
+| `${name}-${version}-${platform}.zip`    | Zipball containing generated directory `${name}`.****        |
 | `${name}-${version}-${platform}.tar.gz` | Compressed tarball containing generated directory `${name}`. |
 
->  :warning: Installers generation will be ommited if target platform is different from current platform (see `platform` property).
-
-> :warning: **RPM package generation in Gradle is not yet available. Coming soon!**
+>  :warning: **Installers generation will be ommited if target platform is different from current platform (see `platform` property), except DEB and RPM packages.**
 
 ### Plugin configuration properties
 
@@ -184,7 +182,7 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 | `macConfig`   | :x:       |         | [Mac OS X specific properties](docs/macosx-specific-properties.md). |
 | `winConfig`   | :x:       |         | [Windows specific properties](docs/windows-specific-properties.md). |
 
-> :warning: Be careful when using the `platform` property if your project uses platform dependent libraries, so the libraries of the current platform will be copied, not those required for the target platform. You can solve this problem using `classifiers`. Also, intallers generation will be ommited.
+> :warning: Be careful when using the `platform` property if your project uses platform dependent libraries, so the libraries of the current platform will be copied, not those required for the target platform. You can solve this problem using `classifiers`.
 
 ### Plugin assets
 
