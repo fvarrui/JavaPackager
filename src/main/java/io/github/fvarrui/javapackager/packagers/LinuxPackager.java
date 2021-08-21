@@ -15,9 +15,20 @@ import io.github.fvarrui.javapackager.utils.VelocityUtils;
  */
 public class LinuxPackager extends Packager {
 	
+	private File desktopFile;
+	private File mimeXmlFile = null;
+	
 	public LinuxPackager() {
 		super();
 		installerGenerators.addAll(Context.getContext().getLinuxInstallerGenerators());
+	}
+	
+	public File getDesktopFile() {
+		return desktopFile;
+	}
+	
+	public File getMimeXmlFile() {
+		return mimeXmlFile;
 	}
 
 	@Override
@@ -59,6 +70,18 @@ public class LinuxPackager extends Packager {
 			classpath = StringUtils.join(classpaths, ":");
 		}
 		
+		// generates desktop file from velocity template
+		desktopFile = new File(assetsFolder, name + ".desktop");
+		VelocityUtils.render("linux/desktop.vtl", desktopFile, this);
+		Logger.info("Rendering desktop file to " + desktopFile.getAbsolutePath());
+
+		// generates mime.xml file from velocity template
+		if (isThereFileAssociations()) {
+			mimeXmlFile = new File(assetsFolder, name + ".xml");
+			VelocityUtils.render("linux/mime.xml.vtl", mimeXmlFile, this);
+			Logger.info("Rendering mime.xml file to " + mimeXmlFile.getAbsolutePath());
+		}
+
 		// generates startup.sh script to boot java app
 		File startupFile = new File(assetsFolder, "startup.sh");
 		VelocityUtils.render("linux/startup.sh.vtl", startupFile, this);

@@ -19,7 +19,7 @@ import io.github.fvarrui.javapackager.utils.VelocityUtils;
  * Creates a DMG image file including all app folder's content only for MacOS so
  * app could be easily distributed
  */
-public class GenerateDmg extends ArtifactGenerator {
+public class GenerateDmg extends ArtifactGenerator<MacPackager> {
 
 	public GenerateDmg() {
 		super("DMG image");
@@ -41,16 +41,15 @@ public class GenerateDmg extends ArtifactGenerator {
 	}
 	
 	@Override
-	protected File doApply(Packager packager) throws Exception {
-		MacPackager macPackager = (MacPackager) packager;
+	protected File doApply(MacPackager packager) throws Exception {
 
-		File appFolder = macPackager.getAppFolder();
-		File assetsFolder = macPackager.getAssetsFolder();
-		String name = macPackager.getName();
-		File outputDirectory = macPackager.getOutputDirectory();
-		File iconFile = macPackager.getIconFile();
-		String version = macPackager.getVersion();
-		MacConfig macConfig = macPackager.getMacConfig();
+		File appFolder = packager.getAppFolder();
+		File assetsFolder = packager.getAssetsFolder();
+		String name = packager.getName();
+		File outputDirectory = packager.getOutputDirectory();
+		File iconFile = packager.getIconFile();
+		String version = packager.getVersion();
+		MacConfig macConfig = packager.getMacConfig();
 		
 		// sets volume name if blank
 		String volumeName = defaultIfBlank(macConfig.getVolumeName(), name);
@@ -117,7 +116,7 @@ public class GenerateDmg extends ArtifactGenerator {
 		// renders applescript 
 		Logger.info("Rendering DMG customization applescript ... ");
 		File applescriptFile = new File(assetsFolder, "customize-dmg.applescript");
-		VelocityUtils.render("/mac/customize-dmg.applescript.vtl", applescriptFile, macPackager);
+		VelocityUtils.render("/mac/customize-dmg.applescript.vtl", applescriptFile, packager);
 		Logger.info("Applescript rendered in " + applescriptFile.getAbsolutePath() + "!");
 		
 		// runs applescript 

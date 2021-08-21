@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.Context;
-import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.packagers.WindowsArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 import io.github.fvarrui.javapackager.utils.FileUtils;
@@ -29,23 +28,21 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 	}
 
 	@Override
-	protected File doApply(Packager packager) throws Exception {
+	protected File doApply(WindowsPackager packager) throws Exception {
 		
-		WindowsPackager windowsPackager = (WindowsPackager) packager;
-		
-		List<String> vmArgs = windowsPackager.getVmArgs();
-		WindowsConfig winConfig = windowsPackager.getWinConfig();
-		File executable = windowsPackager.getExecutable();
-		String mainClass = windowsPackager.getMainClass();
-		boolean useResourcesAsWorkingDir = windowsPackager.isUseResourcesAsWorkingDir();
-		boolean bundleJre = windowsPackager.getBundleJre();
-		String jreDirectoryName = windowsPackager.getJreDirectoryName();
-		String jreMinVersion = windowsPackager.getJreMinVersion();
-		File jarFile = windowsPackager.getJarFile();
+		List<String> vmArgs = packager.getVmArgs();
+		WindowsConfig winConfig = packager.getWinConfig();
+		File executable = packager.getExecutable();
+		String mainClass = packager.getMainClass();
+		boolean useResourcesAsWorkingDir = packager.isUseResourcesAsWorkingDir();
+		boolean bundleJre = packager.getBundleJre();
+		String jreDirectoryName = packager.getJreDirectoryName();
+		String jreMinVersion = packager.getJreMinVersion();
+		File jarFile = packager.getJarFile();
 		
 		try {
 			// creates a folder only for launch4j assets
-			createAssets(windowsPackager);
+			createAssets(packager);
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
@@ -61,7 +58,7 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 		l4jTask.setIcon(genericIcon.getAbsolutePath());
 		l4jTask.setManifest(genericManifest.getAbsolutePath());
 		l4jTask.setMainClassName(mainClass);
-		l4jTask.setClasspath(new HashSet<>(windowsPackager.getClasspaths()));
+		l4jTask.setClasspath(new HashSet<>(packager.getClasspaths()));
 		l4jTask.setChdir(useResourcesAsWorkingDir ? "." : "");
 		l4jTask.setBundledJrePath(bundleJre ? jreDirectoryName : "%JAVA_HOME%;%PATH%");
 		if (!StringUtils.isBlank(jreMinVersion)) { 
@@ -80,7 +77,7 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 		l4jTask.setLibraryDir("");
 		l4jTask.getActions().forEach(action -> action.execute(l4jTask));
 
-		sign(genericExe, windowsPackager);
+		sign(genericExe, packager);
 		
 		FileUtils.copyFileToFile(genericExe, executable);
 		

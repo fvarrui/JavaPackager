@@ -35,20 +35,19 @@ public class GenerateMsi extends WindowsArtifactGenerator {
 	}
 	
 	@Override
-	protected File doApply(Packager packager) throws Exception {
-		WindowsPackager windowsPackager = (WindowsPackager) packager;
+	protected File doApply(WindowsPackager packager) throws Exception {
 		
-		File msmFile = new GenerateMsm().doApply(windowsPackager);
+		File msmFile = new GenerateMsm().doApply(packager);
 		Logger.info("MSM file generated in " + msmFile);
 
-		File assetsFolder = windowsPackager.getAssetsFolder();
-		String name = windowsPackager.getName();
-		File outputDirectory = windowsPackager.getOutputDirectory();
-		String version = windowsPackager.getVersion();
+		File assetsFolder = packager.getAssetsFolder();
+		String name = packager.getName();
+		File outputDirectory = packager.getOutputDirectory();
+		String version = packager.getVersion();
 		
 		// generates WXS file from velocity template
 		File wxsFile = new File(assetsFolder, name + ".wxs");
-		VelocityUtils.render("windows/wxs.vtl", wxsFile, windowsPackager);
+		VelocityUtils.render("windows/wxs.vtl", wxsFile, packager);
 		Logger.info("WXS file generated in " + wxsFile + "!");
 
 		// pretiffy wxs
@@ -71,7 +70,7 @@ public class GenerateMsi extends WindowsArtifactGenerator {
 		}
 		
 		// sign installer
-		sign(msiFile, windowsPackager);
+		sign(msiFile, packager);
 		
 		return msiFile;
 	}

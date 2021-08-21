@@ -17,7 +17,7 @@ import io.github.fvarrui.javapackager.utils.Logger;
 /**
  * Creates a runnable jar file from sources on Maven context
  */
-public class ResolveLicenseFromPOM extends ArtifactGenerator {
+public class ResolveLicenseFromPOM extends ArtifactGenerator<Packager> {
 	
 	public ResolveLicenseFromPOM() {
 		super("LICENSE");

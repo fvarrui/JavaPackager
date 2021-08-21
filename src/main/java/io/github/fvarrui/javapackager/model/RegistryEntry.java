@@ -85,6 +85,22 @@ public class RegistryEntry implements Serializable {
 		}
 	}
 
+	/**
+	 * Returns value type as WIX Toolset expects
+	 * https://wixtoolset.org/documentation/manual/v3/xsd/wix/registryvalue.html
+	 */
+	public String getValueTypeAsWIXToolsetString() {
+		switch(valueType) {
+		case REG_BINARY: return "binary";
+		case REG_DWORD: return "integer";
+		case REG_EXPAND_SZ: return "expandable";
+		case REG_MULTI_SZ: return "multiString";
+		case REG_QWORD: return "integer";
+		case REG_SZ: return "string";
+		default: return "none";
+		}
+	}
+
 	@Override
 	public String toString() {
 		return "RegistryEntry [key=" + key + ", valueName=" + valueName + ", valueType=" + valueType + ", valueData="

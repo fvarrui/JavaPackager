@@ -4,7 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
+import io.github.fvarrui.javapackager.model.FileAssociation;
 import io.github.fvarrui.javapackager.model.LinuxConfig;
 import io.github.fvarrui.javapackager.model.MacConfig;
 import io.github.fvarrui.javapackager.model.Manifest;
@@ -221,6 +225,10 @@ public class PackagerSettings {
 		return additionalModulePaths;
 	}
 
+	public List<FileAssociation> getFileAssociations() {
+		return fileAssociations;
+	}
+
 	// fluent api
 
 	public PackagerSettings outputDirectory(File outputDirectory) {
@@ -423,6 +431,27 @@ public class PackagerSettings {
 		return this;
 	}
 
+	public PackagerSettings fileAssociations(List<FileAssociation> fileAssociations) {
+		this.fileAssociations = fileAssociations;
+		return this;
+	}
+	
+	// some helpful methods
+	
+	public boolean isThereFileAssociations() {
+		return fileAssociations != null && !fileAssociations.isEmpty();
+	}
+	
+	public String getMimeTypesListAsString(String separator) {
+		return StringUtils.join(
+					fileAssociations
+						.stream()
+						.map(fa -> fa.getMimeType())
+						.collect(Collectors.toList()),
+					separator
+					);
+	}
+
 	@Override
 	public String toString() {
 		return "PackagerSettings [outputDirectory=" + outputDirectory + ", licenseFile=" + licenseFile + ", iconFile="
@@ -438,7 +467,8 @@ public class PackagerSettings {
 				+ macConfig + ", createTarball=" + createTarball + ", createZipball=" + createZipball + ", extra="
 				+ extra + ", useResourcesAsWorkingDir=" + useResourcesAsWorkingDir + ", assetsDir=" + assetsDir
 				+ ", classpath=" + classpath + ", jreMinVersion=" + jreMinVersion + ", manifest=" + manifest
-				+ ", additionalModulePaths=" + additionalModulePaths + ", packagingJdk=" + packagingJdk + "]";
+				+ ", additionalModulePaths=" + additionalModulePaths + ", packagingJdk=" + packagingJdk + 
+				", fileAssociations=" + fileAssociations + "]";
 	}
 
 

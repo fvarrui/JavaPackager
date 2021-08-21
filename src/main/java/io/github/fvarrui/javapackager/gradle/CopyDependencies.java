@@ -12,12 +12,17 @@ import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 /**
  * Copies all dependencies to app folder on Maven context
  */
-public class CopyDependencies extends ArtifactGenerator {
+public class CopyDependencies extends ArtifactGenerator<Packager> {
 	
 	public Copy copyLibsTask;
 	
 	public CopyDependencies() {
 		super("Dependencies");
+	}
+	
+	@Override
+	public boolean skip(Packager packager) {
+		return !packager.getCopyDependencies();
 	}
 	
 	@Override

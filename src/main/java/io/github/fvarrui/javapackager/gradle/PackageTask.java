@@ -14,6 +14,7 @@ import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 
 import groovy.lang.Closure;
+import io.github.fvarrui.javapackager.model.FileAssociation;
 import io.github.fvarrui.javapackager.model.LinuxConfig;
 import io.github.fvarrui.javapackager.model.MacConfig;
 import io.github.fvarrui.javapackager.model.Manifest;
@@ -527,7 +528,19 @@ public class PackageTask extends AbstractPackageTask {
 	public void setAdditionalModulePaths(List<File> additionalModulePaths) {
 		this.additionalModulePaths = additionalModulePaths;
 	}
-    
+
+	@Input
+	@Optional
+	private List<FileAssociation> fileAssociations;
+	
+	public List<FileAssociation> getFileAssociations() {
+		return fileAssociations;
+	}
+	
+	public void setFileAssociations(List<FileAssociation> fileAssociations) {
+		this.fileAssociations = fileAssociations;
+	}
+
 	// ===============
 	// create packager
 	// ===============
@@ -556,6 +569,7 @@ public class PackageTask extends AbstractPackageTask {
 					.displayName(defaultIfNull(displayName, extension.getDisplayName()))
 					.envPath(defaultIfNull(envPath, extension.getEnvPath()))
 					.extra(defaultIfNull(extra, extension.getExtra()))
+					.fileAssociations(defaultIfNull(fileAssociations, extension.getFileAssociations()))
 					.generateInstaller(defaultIfNull(generateInstaller, extension.getGenerateInstaller()))
 					.iconFile(defaultIfNull(iconFile, extension.getIconFile()))
 					.jdkPath(defaultIfNull(jdkPath, extension.getJdkPath()))

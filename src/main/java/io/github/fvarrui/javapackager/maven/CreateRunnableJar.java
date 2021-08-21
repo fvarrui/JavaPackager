@@ -28,7 +28,7 @@ import io.github.fvarrui.javapackager.utils.MojoExecutorUtils;
 /**
  * Creates a runnable jar file from sources on Maven context
  */
-public class CreateRunnableJar extends ArtifactGenerator {
+public class CreateRunnableJar extends ArtifactGenerator<Packager> {
 	
 	public CreateRunnableJar() {
 		super("Runnable JAR");

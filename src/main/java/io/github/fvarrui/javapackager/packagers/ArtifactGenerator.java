@@ -8,7 +8,7 @@ import io.github.fvarrui.javapackager.utils.Logger;
 /**
  * Artifact generation base class 
  */
-public abstract class ArtifactGenerator {
+public abstract class ArtifactGenerator<T extends Packager> {
 
 	private String artifactName;
 	
@@ -21,7 +21,7 @@ public abstract class ArtifactGenerator {
 		this.artifactName = artifactName;
 	}
 	
-	public boolean skip(Packager packager) {
+	public boolean skip(T packager) {
 		return false;
 	}
 
@@ -33,14 +33,15 @@ public abstract class ArtifactGenerator {
 		this.artifactName = artifactName;
 	}
 
-	protected abstract File doApply(Packager packager) throws Exception;
+	protected abstract File doApply(T packager) throws Exception;
     
-    public File apply(Packager packager) throws Exception {
-    	if (skip(packager)) {
+    @SuppressWarnings("unchecked")
+	public File apply(Packager packager) throws Exception {
+    	if (skip((T)packager)) {
 			Logger.warn(getArtifactName() + " artifact generation skipped!");    		
     		return null;
     	}
-    	return doApply(packager);
+    	return doApply((T)packager);
     }
         
 }

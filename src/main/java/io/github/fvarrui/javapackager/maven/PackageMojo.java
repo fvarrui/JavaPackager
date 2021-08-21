@@ -18,6 +18,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
+import io.github.fvarrui.javapackager.model.FileAssociation;
 import io.github.fvarrui.javapackager.model.LinuxConfig;
 import io.github.fvarrui.javapackager.model.MacConfig;
 import io.github.fvarrui.javapackager.model.Manifest;
@@ -296,6 +297,12 @@ public class PackageMojo extends AbstractMojo {
 	private File packagingJdk;
 	
 
+	/**
+	 * Additional module paths
+	 */
+	@Parameter(property = "fileAssociations", required = false)
+	private List<FileAssociation> fileAssociations;
+
 	public void execute() throws MojoExecutionException {
 		
 		Context.setContext(
@@ -325,6 +332,7 @@ public class PackageMojo extends AbstractMojo {
 						.displayName(displayName)
 						.envPath(envPath)
 						.extra(extra)
+						.fileAssociations(fileAssociations)
 						.generateInstaller(generateInstaller)
 						.iconFile(iconFile)
 						.jdkPath(jdkPath)

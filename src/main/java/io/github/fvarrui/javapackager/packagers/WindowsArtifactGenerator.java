@@ -9,7 +9,7 @@ import io.github.fvarrui.javapackager.utils.SignerHelper;
 /**
  * Artifact generation base class including Windows specific features (signing)  
  */
-public abstract class WindowsArtifactGenerator extends ArtifactGenerator {
+public abstract class WindowsArtifactGenerator extends ArtifactGenerator<WindowsPackager> {
 	
 	private static final String TIMESTAMPING_AUTHORITY = "http://timestamp.comodoca.com/authenticode";
 

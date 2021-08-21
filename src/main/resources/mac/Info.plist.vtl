@@ -4,6 +4,53 @@
 	<dict>
 		<key>CFBundleGetInfoString</key>
 		<string>${info.displayName} ${info.version}</string>
+#if (!$info.fileAssociations.isEmpty())		
+		<key>CFBundleDocumentTypes</key>
+		<array>
+#foreach ($fileAssociation in $info.fileAssociations)		
+			<dict>
+				<key>CFBundleTypeIconFile</key>
+				<string>${info.iconFile.name}</string>
+				<key>CFBundleTypeName</key>
+				<string>${fileAssociation.description}</string>
+				<key>CFBundleTypeRole</key>
+				<string>Viewer</string>
+				<key>LSHandlerRank</key>
+				<string>Owner</string>				
+				<key>LSItemContentTypes</key>
+				<array>
+					<string>${info.macConfig.appId}.${fileAssociation.extension}</string>
+				</array>
+			</dict>
+#end
+		</array>
+#end
+#if (!$info.fileAssociations.isEmpty())
+		<key>UTExportedTypeDeclarations</key>
+		<array>
+#foreach ($fileAssociation in $info.fileAssociations)		
+			<dict>
+				<key>UTTypeConformsTo</key>
+				<array>
+					<string>public.data</string>
+				</array>
+				<key>UTTypeDescription</key>
+				<string>${fileAssociation.description}</string>
+				<key>UTTypeIdentifier</key>
+				<string>${info.macConfig.appId}.${fileAssociation.extension}</string>
+				<key>UTTypeTagSpecification</key>
+				<dict>
+					<key>public.filename-extension</key>
+					<string>${fileAssociation.extension}</string>
+#if ($fileAssociation.mimeType)
+					<key>public.mime-type</key>
+					<string>${fileAssociation.mimeType}</string>
+#end
+				</dict>
+			</dict>
+#end		    
+		</array>
+#end
 		<key>CFBundleDevelopmentRegion</key>
 		<string>English</string>
 		<key>CFBundleExecutable</key>

@@ -14,7 +14,7 @@ import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 /**
  * Creates zipball (zip file)  on Gradle context
  */
-public class CreateZipball extends ArtifactGenerator {
+public class CreateZipball extends ArtifactGenerator<Packager> {
 	
 	public CreateZipball() {
 		super("Zipball");

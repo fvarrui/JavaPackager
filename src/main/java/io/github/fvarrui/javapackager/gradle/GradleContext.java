@@ -14,6 +14,7 @@ import org.gradle.jvm.toolchain.JavaToolchainSpec;
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
+import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 
 /**
  * Gradle context 
@@ -69,7 +70,7 @@ public class GradleContext extends Context<Logger> {
 	}
 	
 	@Override
-	public File createWindowsExe(Packager packager) throws Exception {
+	public File createWindowsExe(WindowsPackager packager) throws Exception {
 		return new CreateWindowsExe().apply(packager);	
 	}
 

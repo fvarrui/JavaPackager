@@ -12,7 +12,7 @@ import io.github.fvarrui.javapackager.utils.XMLUtils;
  * Creates a MSI file including all app folder's content only for
  * Windows so app could be easily distributed
  */
-public class GenerateMsm extends ArtifactGenerator {
+public class GenerateMsm extends WindowsArtifactGenerator {
 
 	public GenerateMsm() {
 		super("MSI merge module");
@@ -34,21 +34,20 @@ public class GenerateMsm extends ArtifactGenerator {
 	}
 	
 	@Override
-	protected File doApply(Packager packager) throws Exception {
-		WindowsPackager windowsPackager = (WindowsPackager) packager;
+	protected File doApply(WindowsPackager packager) throws Exception {
 		
-		if (windowsPackager.getMsmFile() != null) {
-			return windowsPackager.getMsmFile();
+		if (packager.getMsmFile() != null) {
+			return packager.getMsmFile();
 		}
 
-		File assetsFolder = windowsPackager.getAssetsFolder();
-		String name = windowsPackager.getName();
-		File outputDirectory = windowsPackager.getOutputDirectory();
-		String version = windowsPackager.getVersion();
+		File assetsFolder = packager.getAssetsFolder();
+		String name = packager.getName();
+		File outputDirectory = packager.getOutputDirectory();
+		String version = packager.getVersion();
 		
 		// generates WXS file from velocity template
 		File wxsFile = new File(assetsFolder, name + ".msm.wxs");
-		VelocityUtils.render("windows/msm.wxs.vtl", wxsFile, windowsPackager);
+		VelocityUtils.render("windows/msm.wxs.vtl", wxsFile, packager);
 		Logger.info("WXS file generated in " + wxsFile + "!");
 
 		// pretiffy wxs
@@ -70,7 +69,7 @@ public class GenerateMsm extends ArtifactGenerator {
 			throw new Exception("MSI installer file generation failed!");
 		}
 		
-		windowsPackager.setMsmFile(msmFile);
+		packager.setMsmFile(msmFile);
 		
 		return msmFile;
 	}
