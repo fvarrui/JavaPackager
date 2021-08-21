@@ -20,7 +20,7 @@ import io.github.fvarrui.javapackager.utils.VelocityUtils;
  * Creates a DEB package file including all app folder's content only for 
  * GNU/Linux so app could be easily distributed on Gradle context
  */
-public class GenerateDeb extends ArtifactGenerator {
+public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 
 	private Console console;
 	
@@ -47,33 +47,31 @@ public class GenerateDeb extends ArtifactGenerator {
 	}
 	
 	@Override
-	public boolean skip(Packager packager) {
+	public boolean skip(LinuxPackager packager) {
 		return !packager.getLinuxConfig().isGenerateDeb();
 	}
 	
 	@Override
-	protected File doApply(Packager packager) throws Exception {
+	protected File doApply(LinuxPackager packager) throws Exception {
 		
-		LinuxPackager linuxPackager = (LinuxPackager) packager;
-		
-		File assetsFolder = linuxPackager.getAssetsFolder();
-		String name = linuxPackager.getName();
-		File appFolder = linuxPackager.getAppFolder();
-		File outputDirectory = linuxPackager.getOutputDirectory();
-		String version = linuxPackager.getVersion();
-		boolean bundleJre = linuxPackager.getBundleJre();
-		String jreDirectoryName = linuxPackager.getJreDirectoryName();
-		File executable = linuxPackager.getExecutable();
+		File assetsFolder = packager.getAssetsFolder();
+		String name = packager.getName();
+		File appFolder = packager.getAppFolder();
+		File outputDirectory = packager.getOutputDirectory();
+		String version = packager.getVersion();
+		boolean bundleJre = packager.getBundleJre();
+		String jreDirectoryName = packager.getJreDirectoryName();
+		File executable = packager.getExecutable();
 		File javaFile = new File(appFolder, jreDirectoryName + "/bin/java");
 
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");
-		VelocityUtils.render("linux/desktop.vtl", desktopFile, linuxPackager);
+		VelocityUtils.render("linux/desktop.vtl", desktopFile, packager);
 		Logger.info("Desktop file rendered in " + desktopFile.getAbsolutePath());
 		
 		// generates deb control file from velocity template
 		File controlFile = new File(assetsFolder, "control");
-		VelocityUtils.render("linux/control.vtl", controlFile, linuxPackager);
+		VelocityUtils.render("linux/control.vtl", controlFile, packager);
 		Logger.info("Control file rendered in " + controlFile.getAbsolutePath());
 
 		// generated deb file

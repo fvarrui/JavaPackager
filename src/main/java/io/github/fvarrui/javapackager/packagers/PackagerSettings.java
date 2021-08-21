@@ -59,6 +59,7 @@ public class PackagerSettings {
 	protected String jreMinVersion;
 	protected Manifest manifest;
 	protected List<File> additionalModulePaths;
+	protected List<FileAssociation> fileAssociations;
 	protected File packagingJdk;
 
 	public File getPackagingJdk() {

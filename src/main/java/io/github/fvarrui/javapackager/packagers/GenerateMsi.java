@@ -20,7 +20,7 @@ public class GenerateMsi extends WindowsArtifactGenerator {
 	}
 	
 	@Override
-	public boolean skip(Packager packager) {
+	public boolean skip(WindowsPackager packager) {
 		
 		if (!packager.getWinConfig().isGenerateMsi()) {
 			return true;

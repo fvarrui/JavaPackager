@@ -26,7 +26,7 @@ public class GenerateDmg extends ArtifactGenerator<MacPackager> {
 	}
 	
 	@Override
-	public boolean skip(Packager packager) {
+	public boolean skip(MacPackager packager) {
 		
 		if (!packager.getMacConfig().isGenerateDmg()) {
 			return true;

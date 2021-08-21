@@ -19,35 +19,33 @@ import io.github.fvarrui.javapackager.utils.VelocityUtils;
  * Creates a RPM package file including all app folder's content only for
  * GNU/Linux so app could be easily distributed on Gradle context
  */
-public class GenerateRpm extends ArtifactGenerator {
+public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 
 	public GenerateRpm() {
 		super("RPM package");
 	}
 
 	@Override
-	public boolean skip(Packager packager) {
+	public boolean skip(LinuxPackager packager) {
 		return !packager.getLinuxConfig().isGenerateRpm();
 	}
 
 	@Override
-	protected File doApply(Packager packager) throws Exception {
+	protected File doApply(LinuxPackager packager) throws Exception {
 
-		LinuxPackager linuxPackager = (LinuxPackager) packager;
-
-		File appFolder = linuxPackager.getAppFolder();
-		String name = linuxPackager.getName();
-		String version = linuxPackager.getVersion();
-		String description = linuxPackager.getDescription();
-		String organizationName = linuxPackager.getOrganizationName();
-		File outputDirectory = linuxPackager.getOutputDirectory();
-		File executable = linuxPackager.getExecutable();
-		File assetsFolder = linuxPackager.getAssetsFolder();
-		String jreDirectoryName = linuxPackager.getJreDirectoryName();
+		File appFolder = packager.getAppFolder();
+		String name = packager.getName();
+		String version = packager.getVersion();
+		String description = packager.getDescription();
+		String organizationName = packager.getOrganizationName();
+		File outputDirectory = packager.getOutputDirectory();
+		File executable = packager.getExecutable();
+		File assetsFolder = packager.getAssetsFolder();
+		String jreDirectoryName = packager.getJreDirectoryName();
 		
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");
-		VelocityUtils.render("linux/desktop.vtl", desktopFile, linuxPackager);
+		VelocityUtils.render("linux/desktop.vtl", desktopFile, packager);
 		Logger.info("Rendering desktop file to " + desktopFile.getAbsolutePath());
 		
 		// copies desktop file to app

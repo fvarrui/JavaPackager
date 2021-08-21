@@ -19,7 +19,7 @@ public class GenerateMsm extends WindowsArtifactGenerator {
 	}
 	
 	@Override
-	public boolean skip(Packager packager) {
+	public boolean skip(WindowsPackager packager) {
 		
 		if (!packager.getWinConfig().isGenerateMsm() && !packager.getWinConfig().isGenerateMsi()) {
 			return true;
