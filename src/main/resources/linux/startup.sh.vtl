@@ -76,6 +76,14 @@ JVMClassPath+=":${classpath}"
 cd "$SCRIPTPATH"
 #end
 
+# invoke bootstrap script
+$Bootstrap=$SCRIPTPATH/scripts/bootstrap
+#if ($info.administratorRequired)
+[ -x "$Bootstrap" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY GDKBACKEND=x11 $Bootstrap
+#else
+[ -x "$Bootstrap" ] && $Bootstrap
+#fi
+
 #if ($info.administratorRequired)
 pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY GDKBACKEND=x11 $JAVA $JVMDefaultOptions -cp $JVMClassPath ${info.mainClass} $@
 #else
