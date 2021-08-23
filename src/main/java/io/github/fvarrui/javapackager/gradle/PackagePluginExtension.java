@@ -11,6 +11,7 @@ import io.github.fvarrui.javapackager.model.LinuxConfig;
 import io.github.fvarrui.javapackager.model.MacConfig;
 import io.github.fvarrui.javapackager.model.Manifest;
 import io.github.fvarrui.javapackager.model.Platform;
+import io.github.fvarrui.javapackager.model.Scripts;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.PackagerSettings;
 
@@ -49,6 +50,7 @@ public class PackagePluginExtension extends PackagerSettings {
 		this.vmArgs = new ArrayList<>();
 		this.winConfig = new WindowsConfig();
 		this.outputDirectory = project.getBuildDir();
+		this.scripts = new Scripts();
 	}
 	
     public LinuxConfig linuxConfig(Closure<LinuxConfig> closure) {
@@ -73,6 +75,12 @@ public class PackagePluginExtension extends PackagerSettings {
         manifest = new Manifest();
         project.configure(manifest, closure);
         return manifest;
+    }
+    
+    public Scripts scripts(Closure<Scripts> closure) {
+        scripts = new Scripts();
+        project.configure(scripts, closure);
+        return scripts;
     }
 
 }

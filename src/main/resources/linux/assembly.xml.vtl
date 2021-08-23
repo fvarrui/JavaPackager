@@ -14,6 +14,7 @@
 #if ($info.bundleJre)				
 				<exclude>${info.jreDirectoryName}/bin/*</exclude>
 				<exclude>${info.jreDirectoryName}/lib/jspawnhelper</exclude>
+				<exclude>scripts/*</exclude>
 #end
 			</excludes>
 		</fileSet>
@@ -25,6 +26,7 @@
 #if ($info.bundleJre)				
 				<include>${info.jreDirectoryName}/bin/*</include>
 				<include>${info.jreDirectoryName}/lib/jspawnhelper</include>
+				<include>scripts/*</include>
 #end
 			</includes>
 			<fileMode>0755</fileMode>

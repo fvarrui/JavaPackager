@@ -198,6 +198,18 @@ public abstract class Packager extends PackagerSettings {
 			}
 		});
 		
+		// copy bootstrap script
+		if (getScripts().getBootstrap() != null && getScripts().getBootstrap().exists()) {
+			File scriptsFolder = new File(destination, "scripts");
+			File bootstrapFile = new File(scriptsFolder, "bootstrap"); 
+			try {
+				FileUtils.copyFileToFile(getScripts().getBootstrap(), bootstrapFile);
+				bootstrapFile.setExecutable(true, false);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
 		Logger.infoUnindent("All additional resources copied!");
 		
 	}

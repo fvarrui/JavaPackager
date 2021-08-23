@@ -13,6 +13,7 @@ import io.github.fvarrui.javapackager.model.LinuxConfig;
 import io.github.fvarrui.javapackager.model.MacConfig;
 import io.github.fvarrui.javapackager.model.Manifest;
 import io.github.fvarrui.javapackager.model.Platform;
+import io.github.fvarrui.javapackager.model.Scripts;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 
 /**
@@ -61,13 +62,10 @@ public class PackagerSettings {
 	protected List<File> additionalModulePaths;
 	protected List<FileAssociation> fileAssociations;
 	protected File packagingJdk;
+	protected Scripts scripts;
 
 	public File getPackagingJdk() {
 		return packagingJdk;
-	}
-
-	public void setPackagingJdk(File packagingJdk) {
-		this.packagingJdk = packagingJdk;
 	}
 
 	public File getOutputDirectory() {
@@ -228,6 +226,10 @@ public class PackagerSettings {
 
 	public List<FileAssociation> getFileAssociations() {
 		return fileAssociations;
+	}
+
+	public Scripts getScripts() {
+		return scripts;
 	}
 
 	// fluent api
@@ -436,21 +438,21 @@ public class PackagerSettings {
 		this.fileAssociations = fileAssociations;
 		return this;
 	}
-	
+
+	public PackagerSettings scripts(Scripts scripts) {
+		this.scripts = scripts;
+		return this;
+	}
+
 	// some helpful methods
-	
+
 	public boolean isThereFileAssociations() {
 		return fileAssociations != null && !fileAssociations.isEmpty();
 	}
-	
+
 	public String getMimeTypesListAsString(String separator) {
-		return StringUtils.join(
-					fileAssociations
-						.stream()
-						.map(fa -> fa.getMimeType())
-						.collect(Collectors.toList()),
-					separator
-					);
+		return StringUtils.join(fileAssociations.stream().map(fa -> fa.getMimeType()).collect(Collectors.toList()),
+				separator);
 	}
 
 	@Override
@@ -468,10 +470,8 @@ public class PackagerSettings {
 				+ macConfig + ", createTarball=" + createTarball + ", createZipball=" + createZipball + ", extra="
 				+ extra + ", useResourcesAsWorkingDir=" + useResourcesAsWorkingDir + ", assetsDir=" + assetsDir
 				+ ", classpath=" + classpath + ", jreMinVersion=" + jreMinVersion + ", manifest=" + manifest
-				+ ", additionalModulePaths=" + additionalModulePaths + ", packagingJdk=" + packagingJdk + 
-				", fileAssociations=" + fileAssociations + "]";
+				+ ", additionalModulePaths=" + additionalModulePaths + ", fileAssociations=" + fileAssociations
+				+ ", packagingJdk=" + packagingJdk + ", scripts=" + scripts + "]";
 	}
-
-
 
 }

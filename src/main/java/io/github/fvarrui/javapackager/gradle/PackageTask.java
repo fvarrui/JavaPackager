@@ -19,6 +19,7 @@ import io.github.fvarrui.javapackager.model.LinuxConfig;
 import io.github.fvarrui.javapackager.model.MacConfig;
 import io.github.fvarrui.javapackager.model.Manifest;
 import io.github.fvarrui.javapackager.model.Platform;
+import io.github.fvarrui.javapackager.model.Scripts;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
@@ -540,6 +541,24 @@ public class PackageTask extends AbstractPackageTask {
 	public void setFileAssociations(List<FileAssociation> fileAssociations) {
 		this.fileAssociations = fileAssociations;
 	}
+	
+	@Input
+	@Optional
+	private Scripts scripts;
+	
+	public Scripts getScripts() {
+		return scripts;
+	}
+	
+	public void setScripts(Scripts scripts) {
+		this.scripts = scripts;
+	}
+	
+    public Scripts scripts(Closure<Scripts> closure) {
+    	scripts = new Scripts();
+        getProject().configure(scripts, closure);
+        return scripts;
+    }
 
 	// ===============
 	// create packager
@@ -589,6 +608,7 @@ public class PackageTask extends AbstractPackageTask {
 					.outputDirectory(defaultIfNull(outputDirectory, extension.getOutputDirectory()))
 					.packagingJdk(defaultIfNull(packagingJdk, extension.getPackagingJdk(), Context.getContext().getDefaultToolchain()))
 					.runnableJar(defaultIfNull(runnableJar, extension.getRunnableJar()))
+					.scripts(defaultIfNull(scripts, extension.getScripts()))
 					.useResourcesAsWorkingDir(defaultIfNull(useResourcesAsWorkingDir, extension.isUseResourcesAsWorkingDir()))
 					.url(defaultIfNull(url, extension.getUrl()))
 					.version(defaultIfNull(version, extension.getVersion(), getProject().getVersion().toString()))
