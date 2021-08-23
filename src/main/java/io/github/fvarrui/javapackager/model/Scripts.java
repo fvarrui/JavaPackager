@@ -1,9 +1,11 @@
 package io.github.fvarrui.javapackager.model;
 
 import java.io.File;
+import java.io.Serializable;
 
-public class Scripts {
-
+public class Scripts implements Serializable {
+	private static final long serialVersionUID = 5665412825491635461L;
+	
 	private File bootstrap;
 	private File preInstall;
 	private File postInstall;
