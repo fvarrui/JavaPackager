@@ -874,7 +874,7 @@ cd "${WorkingDirectory}" || exit 13
 stub_logger "[WorkingDirectory] ${WorkingDirectory}"
 
 # invoke bootstrap script
-$Bootstrap=$ResourcesFolder/scripts/bootstrap && [ -x "$Bootstrap" ] && $Bootstrap
+Bootstrap=$ResourcesFolder/scripts/bootstrap && [ -x "$Bootstrap" ] && $Bootstrap
 
 # execute Java and set
 # - classpath
