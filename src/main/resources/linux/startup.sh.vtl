@@ -78,8 +78,7 @@ cd "$SCRIPTPATH"
 
 #if ($info.scripts.bootstrap)
 # invoke bootstrap script
-$Bootstrap=$SCRIPTPATH/scripts/bootstrap
-[ -x "$Bootstrap" ] && $Bootstrap
+Bootstrap=$SCRIPTPATH/scripts/bootstrap && [ -x "$Bootstrap" ] && $Bootstrap
 #end
 
 #if ($info.administratorRequired)
