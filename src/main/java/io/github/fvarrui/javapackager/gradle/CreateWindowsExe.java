@@ -7,11 +7,13 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
+import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.WindowsArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 import io.github.fvarrui.javapackager.utils.FileUtils;
+import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
 /**
  * Creates Windows native executable on Gradle context
@@ -39,6 +41,8 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 		String jreDirectoryName = packager.getJreDirectoryName();
 		String jreMinVersion = packager.getJreMinVersion();
 		File jarFile = packager.getJarFile();
+		File appFolder = packager.getAppFolder();
+		String name = packager.getName();
 		
 		try {
 			// creates a folder only for launch4j assets
@@ -60,7 +64,9 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 		l4jTask.setMainClassName(mainClass);
 		l4jTask.setClasspath(new HashSet<>(packager.getClasspaths()));
 		l4jTask.setChdir(useResourcesAsWorkingDir ? "." : "");
-		l4jTask.setBundledJrePath(bundleJre ? jreDirectoryName : "%JAVA_HOME%;%PATH%");
+		if (bundleJre) {
+			l4jTask.setBundledJrePath(jreDirectoryName);
+		}
 		if (!StringUtils.isBlank(jreMinVersion)) { 
 			l4jTask.setJreMinVersion(jreMinVersion);
 		}
@@ -74,16 +80,31 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 		l4jTask.setInternalName(winConfig.getInternalName());
 		l4jTask.setTrademarks(winConfig.getTrademarks());
 		l4jTask.setLanguage(winConfig.getLanguage());
-		l4jTask.setLibraryDir("");
+		//l4jTask.setLibraryDir("");
 		l4jTask.getActions().forEach(action -> action.execute(l4jTask));
 
 		sign(genericExe, packager);
 		
 		FileUtils.copyFileToFile(genericExe, executable);
 		
+		// bootstrap script specified
+		if (FileUtils.exists(packager.getScripts().getBootstrap())) {
+
+			// generates startup VBS script file
+			File vbsFile = new File(appFolder, name + ".vbs");
+			VelocityUtils.render(Platform.windows + "/startup.vbs.vtl", vbsFile, packager);
+			executable = vbsFile;
+			
+		}
+		
 		return executable;
 	}
 	
+	/**
+	 * Renames assets required for launch4j to avoid unsupported characters (chinese, e.g.) 
+	 * @param packager Windows packager
+	 * @throws Exception Something went wrong
+	 */
 	private void createAssets(WindowsPackager packager) throws Exception {
 		
 		File manifestFile = packager.getManifestFile();
@@ -91,7 +112,7 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 		File jarFile = packager.getJarFile();
 
 		File launch4j = new File(Context.getGradleContext().getProject().getBuildDir(), "launch4j");
-		if (!launch4j.exists()) launch4j.mkdirs();
+		FileUtils.mkdir(launch4j);
 		
 		genericManifest = new File(launch4j, "app.exe.manifest");
 		genericIcon = new File(launch4j, "app.ico");

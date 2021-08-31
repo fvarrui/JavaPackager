@@ -55,6 +55,7 @@ dependencies {
     implementation 'org.vafer:jdeb:1.9'
     implementation 'net.jsign:jsign-core:3.1'
     implementation 'org.redline-rpm:redline:1.2.10'
+    implementation 'com.github.vatbub:mslinks:1.0.6.2'
 	
     testImplementation 'junit:junit:4.12'
     

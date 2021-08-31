@@ -23,6 +23,7 @@ import io.github.fvarrui.javapackager.model.LinuxConfig;
 import io.github.fvarrui.javapackager.model.MacConfig;
 import io.github.fvarrui.javapackager.model.Manifest;
 import io.github.fvarrui.javapackager.model.Platform;
+import io.github.fvarrui.javapackager.model.Scripts;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
@@ -296,12 +297,18 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${java.home}", property = "packagingJdk", required = false)
 	private File packagingJdk;
 	
-
 	/**
 	 * Additional module paths
 	 */
 	@Parameter(property = "fileAssociations", required = false)
 	private List<FileAssociation> fileAssociations;
+	
+	/**
+	 * Scripts
+	 */
+	@Parameter(property = "scripts", required = false)
+	private Scripts scripts;
+
 
 	public void execute() throws MojoExecutionException {
 		
@@ -352,6 +359,7 @@ public class PackageMojo extends AbstractMojo {
 						.outputDirectory(outputDirectory)
 						.packagingJdk(packagingJdk)
 						.runnableJar(runnableJar)
+						.scripts(scripts)
 						.useResourcesAsWorkingDir(useResourcesAsWorkingDir)
 						.url(url)
 						.version(version)

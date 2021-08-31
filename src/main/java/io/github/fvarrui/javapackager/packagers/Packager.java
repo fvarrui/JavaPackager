@@ -2,6 +2,7 @@ package io.github.fvarrui.javapackager.packagers;
 
 import static org.apache.commons.collections4.CollectionUtils.addIgnoreNull;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+import static org.apache.commons.io.FilenameUtils.getExtension;
 
 import java.io.File;
 import java.nio.file.InvalidPathException;
@@ -32,6 +33,7 @@ public abstract class Packager extends PackagerSettings {
 	protected File executable;
 	protected File jarFile;
 	protected File libsFolder;
+	protected File bootstrapFile;
 	
 	// internal specific properties (setted in "doCreateAppStructure")
 	protected File executableDestinationFolder;
@@ -74,6 +76,10 @@ public abstract class Packager extends PackagerSettings {
 	
 	public File getJreDestinationFolder() {
 		return jreDestinationFolder;
+	}
+	
+	public File getBootstrapFile() {
+		return bootstrapFile;
 	}
 
 	// ===============================================
@@ -199,9 +205,10 @@ public abstract class Packager extends PackagerSettings {
 		});
 		
 		// copy bootstrap script
-		if (getScripts().getBootstrap() != null && getScripts().getBootstrap().exists()) {
+		if (FileUtils.exists(getScripts().getBootstrap())) {
+			String scriptExtension = getExtension(getScripts().getBootstrap().getName());
 			File scriptsFolder = new File(destination, "scripts");
-			File bootstrapFile = new File(scriptsFolder, "bootstrap"); 
+			bootstrapFile = new File(scriptsFolder, "bootstrap" + (!scriptExtension.isEmpty() ? "." + scriptExtension : ""));
 			try {
 				FileUtils.copyFileToFile(getScripts().getBootstrap(), bootstrapFile);
 				bootstrapFile.setExecutable(true, false);
