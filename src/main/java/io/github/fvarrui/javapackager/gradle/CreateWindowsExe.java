@@ -17,10 +17,10 @@ import io.github.fvarrui.javapackager.utils.FileUtils;
  * Creates Windows native executable on Gradle context
  */
 public class CreateWindowsExe extends AbstractCreateWindowsExe {
-	
+
 	@Override
 	protected File doApply(WindowsPackager packager) throws Exception {
-		
+
 		List<String> vmArgs = packager.getVmArgs();
 		WindowsConfig winConfig = packager.getWinConfig();
 		File executable = packager.getExecutable();
@@ -30,16 +30,11 @@ public class CreateWindowsExe extends AbstractCreateWindowsExe {
 		String jreDirectoryName = packager.getJreDirectoryName();
 		String jreMinVersion = packager.getJreMinVersion();
 		File jarFile = packager.getJarFile();
-		
-		try {
-			// creates a folder only for launch4j assets
-			createAssets(packager);
-		} catch (Exception ex) {
-			throw new RuntimeException(ex);
-		}
-		
+
+		createAssets(packager); // creates a folder only for launch4j assets
+
 		String jarPath = winConfig.isWrapJar() ? getGenericJar().getAbsolutePath() : jarFile.getName();
-		
+
 		Launch4jLibraryTask l4jTask = Context.getGradleContext().getLibraryTask();
 		l4jTask.getOutputs().upToDateWhen(task -> false);
 		l4jTask.setHeaderType(winConfig.getHeaderType().toString());
@@ -54,7 +49,7 @@ public class CreateWindowsExe extends AbstractCreateWindowsExe {
 		if (bundleJre) {
 			l4jTask.setBundledJrePath(jreDirectoryName);
 		}
-		if (!StringUtils.isBlank(jreMinVersion)) { 
+		if (!StringUtils.isBlank(jreMinVersion)) {
 			l4jTask.setJreMinVersion(jreMinVersion);
 		}
 		l4jTask.getJvmOptions().addAll(vmArgs);
@@ -67,11 +62,11 @@ public class CreateWindowsExe extends AbstractCreateWindowsExe {
 		l4jTask.setInternalName(winConfig.getInternalName());
 		l4jTask.setTrademarks(winConfig.getTrademarks());
 		l4jTask.setLanguage(winConfig.getLanguage());
-		//l4jTask.setLibraryDir("");
+		// l4jTask.setLibraryDir("");
 		l4jTask.getActions().forEach(action -> action.execute(l4jTask));
 
 		sign(getGenericExe(), packager);
-		
+
 		FileUtils.copyFileToFile(getGenericExe(), executable);
 
 		return createBootstrapScript(packager);
