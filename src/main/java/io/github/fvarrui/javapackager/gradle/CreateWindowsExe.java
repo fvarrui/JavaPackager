@@ -93,8 +93,13 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 			// generates startup VBS script file
 			File vbsFile = new File(appFolder, name + ".vbs");
 			VelocityUtils.render(Platform.windows + "/startup.vbs.vtl", vbsFile, packager);
-			executable = vbsFile;
 			
+			// creates shortcut to VBS script
+			File lnk = new File(appFolder, name + ".lnk");			
+			createShortcut(lnk, vbsFile, executable);
+
+			executable = vbsFile;
+
 		}
 		
 		return executable;

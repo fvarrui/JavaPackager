@@ -17,11 +17,13 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 
+import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.WindowsArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 import io.github.fvarrui.javapackager.utils.FileUtils;
+import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
 /**
  * Copies all dependencies to app folder on Maven context
@@ -39,7 +41,7 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 	}
 
 	@Override
-	protected File doApply(WindowsPackager packager) {
+	protected File doApply(WindowsPackager packager) throws Exception {
 		
 		List<String> vmArgs = packager.getVmArgs();
 		WindowsConfig winConfig = packager.getWinConfig();
@@ -51,6 +53,8 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 		String classpath = packager.getClasspath();
 		String jreMinVersion = packager.getJreMinVersion();
 		File jarFile = packager.getJarFile();
+		File appFolder = packager.getAppFolder();
+		String name = packager.getName();
 		
 		try {
 			// creates a folder only for launch4j assets
@@ -123,7 +127,22 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 			
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
-		}	
+		}
+		
+		// bootstrap script specified
+		if (FileUtils.exists(packager.getScripts().getBootstrap())) {
+
+			// generates startup VBS script file
+			File vbsFile = new File(appFolder, name + ".vbs");
+			VelocityUtils.render(Platform.windows + "/startup.vbs.vtl", vbsFile, packager);
+			
+			// creates shortcut to VBS script
+			File lnk = new File(appFolder, name + ".lnk");			
+			createShortcut(lnk, vbsFile, executable);
+
+			executable = vbsFile;
+
+		}
 
 		return executable;
 	}

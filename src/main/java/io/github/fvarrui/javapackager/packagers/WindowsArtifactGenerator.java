@@ -1,10 +1,12 @@
 package io.github.fvarrui.javapackager.packagers;
 
 import java.io.File;
+import java.io.IOException;
 
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.SignerException;
 import io.github.fvarrui.javapackager.utils.SignerHelper;
+import mslinks.ShellLink;
 
 /**
  * Artifact generation base class including Windows specific features (signing)  
@@ -59,6 +61,22 @@ public abstract class WindowsArtifactGenerator extends ArtifactGenerator<Windows
 
 		}
 
+	}
+	
+	protected File createShortcut(File lnkFile, File targetFile, File iconFile) throws IOException {
+		ShellLink sl = ShellLink
+			.createLink(targetFile.getAbsolutePath())
+			.setWorkingDir(targetFile.getParentFile().getAbsolutePath())
+			.setIconLocation(iconFile.getAbsolutePath());
+		sl.getHeader().setIconIndex(0);
+		/*
+		sl.getConsoleData()
+			.setFont(mslinks.extra.ConsoleData.Font.Consolas)
+			.setFontSize(24)
+			.setTextColor(5);
+		*/			
+		sl.saveTo(lnkFile.getAbsolutePath());
+		return lnkFile;
 	}
 
 }
