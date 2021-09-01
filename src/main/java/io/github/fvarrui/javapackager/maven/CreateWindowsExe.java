@@ -17,29 +17,17 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 
-import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
+import io.github.fvarrui.javapackager.packagers.AbstractCreateWindowsExe;
 import io.github.fvarrui.javapackager.packagers.Context;
-import io.github.fvarrui.javapackager.packagers.WindowsArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 import io.github.fvarrui.javapackager.utils.FileUtils;
-import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
 /**
- * Copies all dependencies to app folder on Maven context
+ * Creates Windows executable with Maven
  */
-public class CreateWindowsExe extends WindowsArtifactGenerator {
+public class CreateWindowsExe extends AbstractCreateWindowsExe {
 	
-	private File launch4jFolder;
-	private File genericManifest;
-	private File genericIcon;
-	private File genericJar;
-	private File genericExe;
-	
-	public CreateWindowsExe() {
-		super("Windows EXE");
-	}
-
 	@Override
 	protected File doApply(WindowsPackager packager) throws Exception {
 		
@@ -53,17 +41,10 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 		String classpath = packager.getClasspath();
 		String jreMinVersion = packager.getJreMinVersion();
 		File jarFile = packager.getJarFile();
-		File appFolder = packager.getAppFolder();
-		String name = packager.getName();
 		
-		try {
-			// creates a folder only for launch4j assets
-			createAssets(packager);
-		} catch (Exception ex) {
-			throw new RuntimeException(ex);
-		} 
+		createAssets(packager);
 		
-		String jarPath = winConfig.isWrapJar() ? genericJar.getAbsolutePath() : jarFile.getName();
+		String jarPath = winConfig.isWrapJar() ? getGenericJar().getAbsolutePath() : jarFile.getName();
 	
 		List<Element> optsElements = vmArgs.stream().map(arg -> element("opt", arg)).collect(Collectors.toList());
 		
@@ -78,9 +59,9 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 		pluginConfig.add(element("headerType", "" + winConfig.getHeaderType()));
 		pluginConfig.add(element("jar", jarPath));
 		pluginConfig.add(element("dontWrapJar", "" + !winConfig.isWrapJar()));
-		pluginConfig.add(element("outfile", genericExe.getAbsolutePath()));
-		pluginConfig.add(element("icon", genericIcon.getAbsolutePath()));
-		pluginConfig.add(element("manifest", genericManifest.getAbsolutePath()));
+		pluginConfig.add(element("outfile", getGenericExe().getAbsolutePath()));
+		pluginConfig.add(element("icon", getGenericIcon().getAbsolutePath()));
+		pluginConfig.add(element("manifest", getGenericManifest().getAbsolutePath()));
 		pluginConfig.add(
 				element("classPath",
 						element("mainClass", mainClass),
@@ -121,51 +102,15 @@ public class CreateWindowsExe extends WindowsArtifactGenerator {
 					Context.getMavenContext().getEnv()
 				);
 			
-			sign(genericExe, packager);
+			sign(getGenericExe(), packager);
 			
-			FileUtils.copyFileToFile(genericExe, executable);
+			FileUtils.copyFileToFile(getGenericExe(), executable);
 			
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
 		
-		// bootstrap script specified
-		if (FileUtils.exists(packager.getScripts().getBootstrap())) {
-
-			// generates startup VBS script file
-			File vbsFile = new File(appFolder, name + ".vbs");
-			VelocityUtils.render(Platform.windows + "/startup.vbs.vtl", vbsFile, packager);
-			
-			// creates shortcut to VBS script
-			File lnk = new File(appFolder, name + ".lnk");			
-			createShortcut(lnk, vbsFile, executable);
-
-			executable = vbsFile;
-
-		}
-
-		return executable;
-	}
-
-	private void createAssets(WindowsPackager packager) throws Exception {
-		
-		File assetsFolder = packager.getAssetsFolder();
-		File manifestFile = packager.getManifestFile();
-		File iconFile = packager.getIconFile();
-		File jarFile = packager.getJarFile();
-
-		launch4jFolder = new File(assetsFolder, "launch4j");
-		if (!launch4jFolder.exists()) launch4jFolder.mkdirs();
-		
-		genericManifest = new File(launch4jFolder, "app.exe.manifest");
-		genericIcon = new File(launch4jFolder, "app.ico");
-		genericJar = new File(launch4jFolder, "app.jar");
-		genericExe = new File(launch4jFolder, "app.exe");
-		
-		FileUtils.copyFileToFile(manifestFile, genericManifest);
-		FileUtils.copyFileToFile(iconFile, genericIcon);
-		FileUtils.copyFileToFile(jarFile, genericJar);
-		
+		return createBootstrapScript(packager);
 	}
 
 }
