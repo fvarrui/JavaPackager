@@ -60,10 +60,12 @@ public class CreateTarball extends ArtifactGenerator<Packager> {
 				copySpec.include(appFolder.getName() + "/**");
 				copySpec.exclude(appFolder.getName() + "/" + executable.getName());
 				copySpec.exclude(appFolder.getName() + "/" + jreDirectoryName + "/bin/*");
+				copySpec.exclude(appFolder.getName() + "/scripts/*");
 			});
 			tarTask.from(appFolder.getParentFile(), copySpec -> {
 				copySpec.include(appFolder.getName() + "/" + executable.getName());
 				copySpec.include(appFolder.getName() + "/" + jreDirectoryName + "/bin/*");
+				copySpec.include(appFolder.getName() + "/scripts/*");
 				copySpec.setFileMode(0755);
 			});
 			
@@ -80,12 +82,14 @@ public class CreateTarball extends ArtifactGenerator<Packager> {
 				copySpec.exclude(appFile.getName() + "/Contents/MacOS/" + executable.getName());
 				copySpec.exclude(appFile.getName() + "/Contents/MacOS/universalJavaApplicationStub");
 				copySpec.exclude(appFile.getName() + "/Contents/PlugIns/" + jreDirectoryName + "/Contents/Home/bin/*");
+				copySpec.exclude(appFile.getName() + "/Contents/Resources/scripts/*");
 				
 			});
 			tarTask.from(appFolder, copySpec -> {
 				copySpec.include(appFile.getName() + "/Contents/MacOS/" + executable.getName());
 				copySpec.include(appFile.getName() + "/Contents/MacOS/universalJavaApplicationStub");
 				copySpec.include(appFile.getName() + "/Contents/PlugIns/" + jreDirectoryName + "/Contents/Home/bin/*");
+				copySpec.include(appFile.getName() + "/Contents/Resources/scripts/*");
 				copySpec.setFileMode(0755);
 			});
 			
