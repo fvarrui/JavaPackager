@@ -119,17 +119,17 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 | --------------------------------------- | ------------------------------------------------------------ |
 | `${name}`                               | Directory with the native application and other needed assets. |
 | `${name}-${version}-runnable.jar`       | Runnable JAR file.                                           |
-| `${name}_${version}.deb`                | DEB package file if it's executed on GNU/Linux (requires **dpkg-deb**). |
-| `${name}_${version}.rpm`                | RPM package file if it's executed on GNU/Linux (requires **rpmbuild**). |
+| `${name}_${version}.deb`                | DEB package file if it's executed on GNU/Linux.              |
+| `${name}_${version}.rpm`                | RPM package file if it's executed on GNU/Linux.              |
 | `${name}_${version}.exe`                | Setup file if it's executed on Windows (requires [**Inno Setup**](http://www.jrsoftware.org/isinfo.php)). |
 | `${name}_${version}.msi`                | MSI installer file if it's executed on Windows (requires **[WiX Toolset](https://wixtoolset.org/)**). |
 | `${name}_${version}.msm`                | MSI merge module file if it's executed on Windows (requires **[WiX Toolset](https://wixtoolset.org/)**). |
 | `${name}_${version}.dmg`                | Disk image file if it's executed on Mac OS X (requires **hdiutil**). |
 | `${name}_${version}.pkg`                | PKG installer file if it's executed on Mac OS X (requires **pkgbuild**) |
-| `${name}-${version}-${platform}.zip`    | Zipball containing generated directory `${name}`.****        |
+| `${name}-${version}-${platform}.zip`    | Zipball containing generated directory `${name}`.            |
 | `${name}-${version}-${platform}.tar.gz` | Compressed tarball containing generated directory `${name}`. |
 
->  :warning: **Installers generation will be ommited if target platform is different from current platform (see `platform` property), except DEB and RPM packages.**
+>  :warning: **Some installers generation will be ommited if target platform is different from current platform (see `platform` property), except for DEB and RPM packages.**
 
 ### Plugin configuration properties
 
@@ -167,6 +167,7 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 | `packagingJdk`             | :x:                | `${java.home}`                                               | JDK used in the execution of `jlink` and other JDK tools.    |
 | `platform`                 | :x:                | `auto`                                                       | Defines the target platform, which could be different to the execution platform. Possible values:  `auto`, `mac`, `linux`, `windows`. Use `auto`  for using execution platform as target. |
 | `runnableJar`              | :x:                |                                                              | Defines your own JAR file to be bundled. If it's ommited, the plugin packages your code in a runnable JAR and bundle it with the app. |
+| `scripts`                  | :x:                |                                                              | Specify bootstrap script. **Pre and post-install scripts comming soon!** |
 | `url`                      | :x:                |                                                              | App website URL.                                             |
 | `useResourcesAsWorkingDir` | :x:                | `true`                                                       | Uses app resources folder as default working directory (always `true` on Mac OS). |
 | ` version`                 | :x:                | `${project.version}`                                         | App version.                                                 |
@@ -186,7 +187,7 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 
 ### Plugin assets
 
-Some assets, such as application icons and Velocity templates, could be placed in `${assetsDir}` folder organized by platform.
+Some assets, such as application icons and templates, could be placed in `${assetsDir}` folder organized by platform.
 
 ```bash
 ${assetsDir}/
@@ -197,23 +198,22 @@ ${assetsDir}/
 
 #### Icons
 
-If icons are located in `${assetsDir}` folders, it would not be necessary to specify the `iconFile` property:
+If icons are located in `${assetsDir}` folder, it would not be necessary to use icon properties:
 
 ```bash
 ${assetsDir}/
 ├── linux/
-│   ├── ${name}.png     # on GNU/Linux it has to be a PNG file for DEB package
-│   └── ${name}.xpm     # and XPM file for RPM package
+│   └── ${name}.png     # on GNU/Linux it has to be a PNG file
 ├── mac/
 │   └── ${name}.icns    # on Mac OS X it has to be a ICNS file
 └── windows/
     └── ${name}.ico     # on Windows it has to be a ICO file
 ```
 
-> :warning: If `iconFile` plugin property is not specified and it can't find the correct icon in `${assetsDir}` folder, it will use an [icon by default](https://raw.githubusercontent.com/fvarrui/JavaPackager/master/src/main/resources/linux/default-icon.png) for all platforms.
+> :warning: If icon is not specified , it will use an [icon by default](https://raw.githubusercontent.com/fvarrui/JavaPackager/master/src/main/resources/linux/default-icon.png) for all platforms.
 >
 
-#### Velocity templates
+#### Templates
 
 [Velocity](https://velocity.apache.org/engine/2.0/user-guide.html) templates (`.vtl` files) are used to generate some artifacts which have to be bundled with the app.
 
@@ -236,6 +236,7 @@ ${assetsDir}/
     ├── exe.manifest.vtl               # exe.manifest template
     ├── iss.vtl                        # Inno Setup Script template
     ├── msm.wxs.vtl                    # WiX Toolset WXS template to generate Merge Module
+    ├── startup.vbs.vtl                # VBS bootstrap script template
     └── wxs.vtl                        # WiX Toolset WXS template to generate MSI
 ```
 
