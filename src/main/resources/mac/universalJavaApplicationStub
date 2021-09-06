@@ -242,6 +242,9 @@ if [ $exitcode -eq 0 ]; then
 	# read options file name
 	JVMOptionsFile=$(plist_get_java ':JVMOptionsFile')
 
+	# read bootstrap script file name
+	BootstrapScript=$(plist_get_java ':BootstrapScript')
+
 # read 'Info.plist' file in Oracle style
 else
 	stub_logger "[PlistStyle] Oracle"
@@ -305,6 +308,9 @@ else
 
 	# read options file name
 	JVMOptionsFile=$(plist_get ':JVMOptionsFile')
+
+	# read bootstrap script file name
+	BootstrapScript=$(plist_get ':BootstrapScript')
 
 fi
 
@@ -874,7 +880,7 @@ cd "${WorkingDirectory}" || exit 13
 stub_logger "[WorkingDirectory] ${WorkingDirectory}"
 
 # invoke bootstrap script
-Bootstrap=$ResourcesFolder/scripts/bootstrap && [ -x "$Bootstrap" ] && $Bootstrap
+[ -x "$BootstrapScript" ] && "$BootstrapScript"
 
 # execute Java and set
 # - classpath

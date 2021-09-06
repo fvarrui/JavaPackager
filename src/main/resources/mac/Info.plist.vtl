@@ -113,6 +113,10 @@
 #end
 			<key>JVMOptionsFile</key>
 			<string>$APP_PACKAGE/Contents/Resources/${info.name}.l4j.ini</string>
+#if ($info.scripts.bootstrap)			
+			<key>BootstrapScript</key>
+			<string>$APP_PACKAGE/Contents/Resources/scripts/${info.bootstrapFile.name}</string>
+#end
 		</dict>
 		<key>LSEnvironment</key>
 		<dict>
