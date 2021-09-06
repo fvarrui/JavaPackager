@@ -27,6 +27,18 @@ public class RegistryEntry implements Serializable {
 	 * Windows Registry value data
 	 */	
 	private String valueData = "";
+	
+	public RegistryEntry() {
+		super();
+	}
+
+	public RegistryEntry(String key, String valueName, ValueType valueType, String valueData) {
+		super();
+		this.key = key;
+		this.valueName = valueName;
+		this.valueType = valueType;
+		this.valueData = valueData;
+	}
 
 	public String getKey() {
 		return key;

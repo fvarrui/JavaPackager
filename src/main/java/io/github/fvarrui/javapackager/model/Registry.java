@@ -11,6 +11,15 @@ public class Registry implements Serializable {
 	private static final long serialVersionUID = 8310081277297116023L;
 	
 	private List<RegistryEntry> entries = new ArrayList<>();
+	
+	public Registry() {
+		super();
+	}
+	
+	public Registry(List<RegistryEntry> entries) {
+		super();
+		this.entries = entries;
+	}
 
 	public List<RegistryEntry> getEntries() {
 		return entries;

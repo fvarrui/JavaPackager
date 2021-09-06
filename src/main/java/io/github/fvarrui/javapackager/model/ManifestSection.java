@@ -13,6 +13,16 @@ public class ManifestSection implements Serializable {
 	private String name;
 	private Map<String, String> entries = new HashMap<>();
 
+	public ManifestSection() {
+		super();
+	}
+
+	public ManifestSection(String name, Map<String, String> entries) {
+		super();
+		this.name = name;
+		this.entries = entries;
+	}
+
 	public String getName() {
 		return name;
 	}
