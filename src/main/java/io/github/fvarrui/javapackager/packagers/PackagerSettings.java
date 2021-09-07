@@ -452,186 +452,371 @@ public class PackagerSettings {
 		return this;
 	}
 
+	/**
+	 * Set main class
+	 * @param mainClass Main class
+	 * @return Packager settings
+	 */
 	public PackagerSettings mainClass(String mainClass) {
 		this.mainClass = mainClass;
 		return this;
 	}
 
+	/**
+	 * Set name
+	 * @param name Name
+	 * @return Packager settings
+	 */
 	public PackagerSettings name(String name) {
 		this.name = name;
 		return this;
 	}
 
+	/**
+	 * Set display name
+	 * @param displayName Display name
+	 * @return Packager settings
+	 */
 	public PackagerSettings displayName(String displayName) {
 		this.displayName = displayName;
 		return this;
 	}
 
+	/**
+	 * Set version
+	 * @param version Version
+	 * @return Packager settings
+	 */
 	public PackagerSettings version(String version) {
 		this.version = version;
 		return this;
 	}
 
+	/**
+	 * Set description
+	 * @param description Description
+	 * @return Packager settings
+	 */
 	public PackagerSettings description(String description) {
 		this.description = description;
 		return this;
 	}
 
+	/**
+	 * Set URL
+	 * @param url URL
+	 * @return Packager settings
+	 */
 	public PackagerSettings url(String url) {
 		this.url = url;
 		return this;
 	}
 
+	/**
+	 *  Set administrator required
+	 * @param administratorRequired Administrator required
+	 * @return Packager settings
+	 */
 	public PackagerSettings administratorRequired(Boolean administratorRequired) {
 		this.administratorRequired = administratorRequired;
 		return this;
 	}
 
+	/**
+	 * Set organizstion name
+	 * @param organizationName Organization name
+	 * @return Packager settings
+	 */
 	public PackagerSettings organizationName(String organizationName) {
 		this.organizationName = organizationName;
 		return this;
 	}
 
+	/**
+	 * Set organization URL
+	 * @param organizationUrl Organization URL
+	 * @return Packager settings
+	 */
 	public PackagerSettings organizationUrl(String organizationUrl) {
 		this.organizationUrl = organizationUrl;
 		return this;
 	}
 
+	/**
+	 * Set organization email
+	 * @param organizationEmail
+	 * @return Packager settings
+	 */
 	public PackagerSettings organizationEmail(String organizationEmail) {
 		this.organizationEmail = organizationEmail;
 		return this;
 	}
 
+	/**
+	 * Set bundle JRE
+	 * @param bundleJre Bundle JRE
+	 * @return Packager settings
+	 */
 	public PackagerSettings bundleJre(Boolean bundleJre) {
 		this.bundleJre = bundleJre;
 		return this;
 	}
 
+	/**
+	 * Set customized JRE
+	 * @param customizedJre Customized JRE
+	 * @return Packager settings
+	 */
 	public PackagerSettings customizedJre(Boolean customizedJre) {
 		this.customizedJre = customizedJre;
 		return this;
 	}
 
+	/**
+	 * Set JRE path
+	 * @param jrePath JRE path
+	 * @return Packager settings
+	 */
 	public PackagerSettings jrePath(File jrePath) {
 		this.jrePath = jrePath;
 		return this;
 	}
 
+	/**
+	 * Set JDK path
+	 * @param jdkPath JDK path
+	 * @return Packager settings
+	 */
 	public PackagerSettings jdkPath(File jdkPath) {
 		this.jdkPath = jdkPath;
 		return this;
 	}
 
+	/**
+	 * Set additional resources list
+	 * @param additionalResources Additional resources list
+	 * @return Packager settings
+	 */
 	public PackagerSettings additionalResources(List<File> additionalResources) {
 		this.additionalResources = new ArrayList<>(additionalResources);
 		return this;
 	}
 
+	/**
+	 * Set modules list
+	 * @param modules Modules list
+	 * @return Packager settings
+	 */
 	public PackagerSettings modules(List<String> modules) {
 		this.modules = new ArrayList<>(modules);
 		return this;
 	}
 
+	/**
+	 * Set additional modules list
+	 * @param additionalModules Additional modules list
+	 * @return Packager settings
+	 */
 	public PackagerSettings additionalModules(List<String> additionalModules) {
 		this.additionalModules = new ArrayList<>(additionalModules);
 		return this;
 	}
 
+	/**
+	 * Set platform
+	 * @param platform Platform
+	 * @return Packager settings
+	 */
 	public PackagerSettings platform(Platform platform) {
 		this.platform = platform;
 		return this;
 	}
 
+	/**
+	 * Set ENV path
+	 * @param envPath ENV path
+	 * @return Packager settings
+	 */
 	public PackagerSettings envPath(String envPath) {
 		this.envPath = envPath;
 		return this;
 	}
 
+	/**
+	 * Set VM arguments
+	 * @param vmArgs VM arguments
+	 * @return Packager settings
+	 */
 	public PackagerSettings vmArgs(List<String> vmArgs) {
 		this.vmArgs = new ArrayList<>(vmArgs);
 		return this;
 	}
 
+	/**
+	 * Set runnable JAR
+	 * @param runnableJar Runnable JAR
+	 * @return Packager settings
+	 */
 	public PackagerSettings runnableJar(File runnableJar) {
 		this.runnableJar = runnableJar;
 		return this;
 	}
 
+	/**
+	 * Set copy dependencies
+	 * @param copyDependencies Copy dependencies
+	 * @return Packager settings
+	 */
 	public PackagerSettings copyDependencies(Boolean copyDependencies) {
 		this.copyDependencies = copyDependencies;
 		return this;
 	}
 
+	/**
+	 * Set JRE directory name
+	 * @param jreDirectoryName JRE directory name
+	 * @return Packager settings
+	 */
 	public PackagerSettings jreDirectoryName(String jreDirectoryName) {
 		this.jreDirectoryName = jreDirectoryName;
 		return this;
 	}
 
+	/**
+	 * Set Windows specific configuration
+	 * @param winConfig Windows specific configuration
+	 * @return Packager settings
+	 */
 	public PackagerSettings winConfig(WindowsConfig winConfig) {
 		this.winConfig = winConfig;
 		return this;
 	}
 
+	/**
+	 * Set GNU/Linux specific configuration
+	 * @param linuxConfig GNU/Linux specific configuration
+	 * @return Packager settings
+	 */
 	public PackagerSettings linuxConfig(LinuxConfig linuxConfig) {
 		this.linuxConfig = linuxConfig;
 		return this;
 	}
 
+	/**
+	 * Set Mac OS specific configuration
+	 * @param macConfig Mac OS specific configuration
+	 * @return Packager settings
+	 */
 	public PackagerSettings macConfig(MacConfig macConfig) {
 		this.macConfig = macConfig;
 		return this;
 	}
 
+	/**
+	 * Set create tarball
+	 * @param createTarball Create tarball
+	 * @return Packager settings
+	 */
 	public PackagerSettings createTarball(Boolean createTarball) {
 		this.createTarball = createTarball;
 		return this;
 	}
 
+	/**
+	 * Set create zipball
+	 * @param createZipball Create zipball
+	 * @return Packager settings
+	 */
 	public PackagerSettings createZipball(Boolean createZipball) {
 		this.createZipball = createZipball;
 		return this;
 	}
 
+	/**
+	 * Set extra parameters map
+	 * @param extra Extra parameters map
+	 * @return Packager settings
+	 */
 	public PackagerSettings extra(Map<String, String> extra) {
 		this.extra = extra;
 		return this;
 	}
 
+	/**
+	 * Set if it use resources folder as working directory
+	 * @param useResourcesAsWorkingDir Use resources folder as working directory
+	 * @return Packager settings
+	 */
 	public PackagerSettings useResourcesAsWorkingDir(boolean useResourcesAsWorkingDir) {
 		this.useResourcesAsWorkingDir = useResourcesAsWorkingDir;
 		return this;
 	}
 
+	/**
+	 * Set asstes directory
+	 * @param assetsDir Assets directory
+	 * @return Packager settings
+	 */
 	public PackagerSettings assetsDir(File assetsDir) {
 		this.assetsDir = assetsDir;
 		return this;
 	}
 
+	/**
+	 * Set classpath
+	 * @param classpath Classpath
+	 * @return Packager settings
+	 */
 	public PackagerSettings classpath(String classpath) {
 		this.classpath = classpath;
 		return this;
 	}
 
+	/**
+	 * Set minimal JRE version
+	 * @param jreMinVersion JRE minimal version
+	 * @return Packager settings
+	 */
 	public PackagerSettings jreMinVersion(String jreMinVersion) {
 		this.jreMinVersion = jreMinVersion;
 		return this;
 	}
 
+	/**
+	 * Set Manifest configuration
+	 * @param manifest Manifest
+	 * @return Packager settings
+	 */
 	public PackagerSettings manifest(Manifest manifest) {
 		this.manifest = manifest;
 		return this;
 	}
 
+	/**
+	 * Set additional module paths
+	 * @param additionalModulePaths Additional module path list
+	 * @return Packager settings
+	 */
 	public PackagerSettings additionalModulePaths(List<File> additionalModulePaths) {
 		this.additionalModulePaths = additionalModulePaths;
 		return this;
 	}
 
+	/**
+	 * Set file associations
+	 * @param fileAssociations File associations list
+	 * @return Packager settings
+	 */
 	public PackagerSettings fileAssociations(List<FileAssociation> fileAssociations) {
 		this.fileAssociations = fileAssociations;
 		return this;
 	}
 
+	/**
+	 * Set scripts
+	 * @param scripts Scripts
+	 * @return Packager settings
+	 */
 	public PackagerSettings scripts(Scripts scripts) {
 		this.scripts = scripts;
 		return this;
@@ -639,10 +824,19 @@ public class PackagerSettings {
 
 	// some helpful methods
 
+	/**
+	 * Checks if there are file associations specified
+	 * @return true if there are file asociations, otherwise false
+	 */
 	public boolean isThereFileAssociations() {
 		return fileAssociations != null && !fileAssociations.isEmpty();
 	}
 
+	/**
+	 * Mime types list to string
+	 * @param separator Character used to join mime types into one string
+	 * @return Mime type list string
+	 */
 	public String getMimeTypesListAsString(String separator) {
 		return StringUtils.join(fileAssociations.stream().map(fa -> fa.getMimeType()).collect(Collectors.toList()),
 				separator);
