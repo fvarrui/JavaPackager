@@ -121,7 +121,7 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 | `${name}-${version}-runnable.jar`       | Runnable JAR file.                                           | All      |                                                    |
 | `${name}_${version}.deb`                | DEB package file.                                            | All      |                                                    |
 | `${name}_${version}.rpm`                | RPM package file.                                            | All      |                                                    |
-| `${name}_${version}.exe`                | Setup file.                                                  | Window   | [Inno Setup](http://www.jrsoftware.org/isinfo.php) |
+| `${name}_${version}.exe`                | Setup file.                                                  | Windows  | [Inno Setup](http://www.jrsoftware.org/isinfo.php) |
 | `${name}_${version}.msi`                | MSI installer file.                                          | Windows  | [WiX Toolset](https://wixtoolset.org/)             |
 | `${name}_${version}.msm`                | MSI merge module file.                                       | Windows  | [WiX Toolset](https://wixtoolset.org/)             |
 | `${name}_${version}.dmg`                | Disk image file (uses **hdiutil**).                          | Mac OS   |                                                    |
