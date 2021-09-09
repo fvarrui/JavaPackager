@@ -32,6 +32,7 @@ public abstract class Context<T> {
 	// common properties
 	
 	public abstract File getRootDir();
+	public abstract File getBuildDir();
 	public abstract T getLogger();
 
 	// platform independent functions

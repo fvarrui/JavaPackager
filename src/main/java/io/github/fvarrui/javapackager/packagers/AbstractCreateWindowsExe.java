@@ -56,7 +56,7 @@ public abstract class AbstractCreateWindowsExe extends WindowsArtifactGenerator 
 
 	public void setGenericExe(File genericExe) {
 		this.genericExe = genericExe;
-	}
+	}	
 
 	/**
 	 * Renames assets required for launch4j to avoid unsupported characters
@@ -71,7 +71,7 @@ public abstract class AbstractCreateWindowsExe extends WindowsArtifactGenerator 
 		File iconFile = packager.getIconFile();
 		File jarFile = packager.getJarFile();
 
-		File launch4j = new File(Context.getGradleContext().getProject().getBuildDir(), "launch4j");
+		File launch4j = new File(Context.getContext().getBuildDir(), "launch4j");
 		FileUtils.mkdir(launch4j);
 
 		genericManifest = new File(launch4j, "app.exe.manifest");

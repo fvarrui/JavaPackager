@@ -30,10 +30,15 @@ public class MavenContext extends Context<Log> {
 	public Log getLogger() {
 		return logger;
 	}
-
+	
 	@Override
 	public File getRootDir() {
 		return env.getMavenProject().getBasedir();
+	}
+	
+	@Override
+	public File getBuildDir() {
+		return new File(env.getMavenProject().getBuild().getDirectory());
 	}
 
 	@Override

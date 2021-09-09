@@ -17,17 +17,17 @@ import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 
 /**
- * Gradle context 
+ * Gradle context
  */
 public class GradleContext extends Context<Logger> {
 
 	private Project project;
 
 	private Launch4jLibraryTask libraryTask;
-	
+
 	public GradleContext(Project project) {
 		super();
-		this.project = project;		
+		this.project = project;
 	}
 
 	public Logger getLogger() {
@@ -41,6 +41,11 @@ public class GradleContext extends Context<Logger> {
 	@Override
 	public File getRootDir() {
 		return project.getRootDir();
+	}
+	
+	@Override
+	public File getBuildDir() {
+		return project.getBuildDir();
 	}
 
 	@Override
@@ -68,10 +73,10 @@ public class GradleContext extends Context<Logger> {
 		// do nothing
 		return null;
 	}
-	
+
 	@Override
 	public File createWindowsExe(WindowsPackager packager) throws Exception {
-		return new CreateWindowsExe().apply(packager);	
+		return new CreateWindowsExe().apply(packager);
 	}
 
 	public Launch4jLibraryTask getLibraryTask() {
@@ -81,9 +86,10 @@ public class GradleContext extends Context<Logger> {
 	public void setLibraryTask(Launch4jLibraryTask libraryTask) {
 		this.libraryTask = libraryTask;
 	}
-	
+
 	/**
 	 * Returns project's default toolchain
+	 * 
 	 * @return Default toolchain
 	 */
 	public File getDefaultToolchain() {
