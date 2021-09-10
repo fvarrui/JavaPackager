@@ -53,28 +53,39 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 			
 			Logger.info("Embedding JRE from " + specificJreFolder);
 			
-			// fixes the path to the JRE on MacOS if "release" file not found
-			if (platform.equals(Platform.mac) && !FileUtils.folderContainsFile(specificJreFolder, "release")) {
-				specificJreFolder = new File(specificJreFolder, "Contents/Home");
-				Logger.warn("Specified jrePath fixed: " + specificJreFolder);				
+			if (!specificJreFolder.isDirectory()) {
+				throw new Exception("'" + specificJreFolder + "' is not a directory!");
 			}
-			
-			// checks if valid jre specified
+
+			// checks if the specified jre is valid (it looks for 'release' file into it, and if so, checks if it matches the right platform 
 			if (!JDKUtils.isValidJRE(platform, specificJreFolder)) {
-				throw new Exception("Invalid JRE specified for '" + platform + "' platform: " + specificJreFolder);
+
+				Logger.warn("An invalid JRE may have been specified for '" + platform + "' platform: " + specificJreFolder + " ('release' file not found)");
+
+				// try to fix the path to the JRE on MacOS adding Contents/Home to JRE path
+				if (platform.equals(Platform.mac)) {
+					
+					File fixedJreFolder = new File(specificJreFolder, "Contents/Home");
+					if (JDKUtils.isValidJRE(platform, fixedJreFolder)) {
+						specificJreFolder = fixedJreFolder;
+						Logger.warn("Specified 'jrePath' fixed: " + specificJreFolder);
+					}
+				
+				}
+				
 			}
-			
+
 			// removes old jre folder from bundle
 			if (destinationFolder.exists()) FileUtils.removeFolder(destinationFolder);
 
 			// copies JRE folder to bundle
 			FileUtils.copyFolderContentToFolder(specificJreFolder, destinationFolder);
 			
-			// sets execution permissions on executables in jre
+			// sets execute permissions on executables in jre
 			File binFolder = new File(destinationFolder, "bin");
 			Arrays.asList(binFolder.listFiles()).forEach(f -> f.setExecutable(true, false));
 			
-			// sets execution permissions on jspawnhelper in jre
+			// sets execute permissions on jspawnhelper in jre
 			File libFolder = new File(destinationFolder, "lib");
 			File jshFile = new File(libFolder, "jspawnhelper");
 			if (jshFile.exists()) {
