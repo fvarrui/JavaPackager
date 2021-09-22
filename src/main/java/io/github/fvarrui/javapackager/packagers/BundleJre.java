@@ -45,7 +45,7 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 		List<String> additionalModules = packager.getAdditionalModules();
 		List<File> additionalModulePaths = packager.getAdditionalModulePaths();
 		
-		File currentJdk = packager.packagingJdk;
+		File currentJdk = packager.getPackagingJdk();
 		
 		Logger.infoIndent("Bundling JRE ... with " + currentJdk);
 		

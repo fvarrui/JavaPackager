@@ -86,13 +86,21 @@ public class GradleContext extends Context<Logger> {
 	public void setLibraryTask(Launch4jLibraryTask libraryTask) {
 		this.libraryTask = libraryTask;
 	}
-
+	
 	/**
 	 * Returns project's default toolchain
 	 * 
 	 * @return Default toolchain
 	 */
 	public File getDefaultToolchain() {
+		if (project.getGradle().getGradleVersion().compareTo("7") >= 0)
+			return getToolchain();
+		else
+			return super.getDefaultToolchain();
+	}
+
+	private File getToolchain() {
+		
 		// Default toolchain
 		JavaToolchainSpec toolchain = project.getExtensions().getByType(JavaPluginExtension.class).getToolchain();
 
@@ -104,6 +112,7 @@ public class GradleContext extends Context<Logger> {
 			return defaultLauncher.get().getMetadata().getInstallationPath().getAsFile();
 		}
 		return super.getDefaultToolchain();
+		
 	}
 
 }

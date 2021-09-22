@@ -226,18 +226,6 @@ public class PackageTask extends AbstractPackageTask {
 		this.generateInstaller = generateInstaller;
 	}
 	
-	@InputFile
-	@Optional
-	private File iconFile;
-	
-	public File getIconFile() {
-		return iconFile;
-	}
-	
-	public void setIconFile(File iconFile) {
-		this.iconFile = iconFile;
-	}
-	
 	@InputDirectory
 	@Optional
 	private File jdkPath;
@@ -590,7 +578,6 @@ public class PackageTask extends AbstractPackageTask {
 					.extra(defaultIfNull(extra, extension.getExtra()))
 					.fileAssociations(defaultIfNull(fileAssociations, extension.getFileAssociations()))
 					.generateInstaller(defaultIfNull(generateInstaller, extension.getGenerateInstaller()))
-					.iconFile(defaultIfNull(iconFile, extension.getIconFile()))
 					.jdkPath(defaultIfNull(jdkPath, extension.getJdkPath()))
 					.jreDirectoryName(defaultIfBlank(jreDirectoryName, extension.getJreDirectoryName()))
 					.jreMinVersion(defaultIfBlank(jreMinVersion, extension.getJreMinVersion()))
@@ -606,7 +593,7 @@ public class PackageTask extends AbstractPackageTask {
 					.organizationName(defaultIfNull(organizationName, extension.getOrganizationName()))
 					.organizationUrl(defaultIfNull(organizationUrl, extension.getOrganizationUrl()))
 					.outputDirectory(defaultIfNull(outputDirectory, extension.getOutputDirectory()))
-					.packagingJdk(defaultIfNull(packagingJdk, extension.getPackagingJdk(), Context.getContext().getDefaultToolchain()))
+					.packagingJdk(defaultIfNull(packagingJdk, extension.getPackagingJdk(), Context.getGradleContext().getDefaultToolchain()))
 					.runnableJar(defaultIfNull(runnableJar, extension.getRunnableJar()))
 					.scripts(defaultIfNull(scripts, extension.getScripts()))
 					.useResourcesAsWorkingDir(defaultIfNull(useResourcesAsWorkingDir, extension.isUseResourcesAsWorkingDir()))
