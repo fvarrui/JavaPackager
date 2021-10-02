@@ -225,6 +225,7 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 					jdeps.getAbsolutePath(), 
 					"-q",
 					"--multi-release", JavaUtils.getJavaMajorVersion(),
+					"--ignore-missing-deps",					
 					"--list-deps",
 					additionalModulePathsToParams(additionalModulePaths),
 					jarLibs,
