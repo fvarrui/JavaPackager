@@ -33,6 +33,11 @@ DisableFinishedPage=yes
 #else
 DisableFinishedPage=no
 #end
+#if ($info.winConfig.disableWelcomePage)
+DisableWelcomePage=yes
+#else
+DisableWelcomePage=no
+#end
 #if ($info.winConfig.setupMode.name() == "installForAllUsers") 
 PrivilegesRequired=admin
 PrivilegesRequiredOverridesAllowed=commandline

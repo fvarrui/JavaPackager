@@ -33,6 +33,7 @@
 	<disableDirPage>true|false</disableDirPage>
 	<disableProgramGroupPage>true|false</disableProgramGroupPage>
 	<disableFinishedPage>true|false</disableFinishedPage>
+	<disableWelcomePage>true|false</disableWelcomePage>
 	<createDesktopIconTask>true|false</createDesktopIconTask>
 
 	<!-- signing properties -->
@@ -95,6 +96,7 @@
 | `disableDirPage`          | :x:       | `true`                                                       | If this is set to `yes`, Setup will not show the **Select Destination Location** wizard page. |
 | `disableProgramGroupPage` | :x:       | `true`                                                       | If this is set to `yes`, Setup will not show the **Select Start Menu Folder** wizard page. |
 | `disableFinishedPage`     | :x:       | `true`                                                       | If this is set to `yes`, Setup will not show the **Setup Completed** wizard page. |
+| `disableWelcomePage`      | :x:       | `true`                                                       | If this is set to `yes`, Setup will not show **Welcome Page**. |
 | `createDesktopIconTask`   | :x:       | `true`                                                       | If this is set to `yes`, Setup will not ask for **desktop icon creation**. |
 
 ### SetupMode

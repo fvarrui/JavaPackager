@@ -34,6 +34,7 @@ public class WindowsConfig implements Serializable {
 	private boolean disableProgramGroupPage = true;
 	private boolean disableFinishedPage = true;
 	private boolean disableRunAfterInstall = true;
+	private boolean disableWelcomePage = true;
 	private boolean createDesktopIconTask = true;
 	private boolean generateSetup = true;
 	private boolean generateMsi = true;
@@ -268,6 +269,14 @@ public class WindowsConfig implements Serializable {
 	public void setDisableRunAfterInstall(boolean disableRunAfterInstall) {
 		this.disableRunAfterInstall = disableRunAfterInstall;
 	}
+	
+	public void setDisableWelcomePage(boolean disableWelcomePage) {
+		this.disableWelcomePage = disableWelcomePage;
+	}
+	
+	public boolean isDisableWelcomePage() {
+		return disableWelcomePage;
+	}
 
 	@Override
 	public String toString() {
@@ -278,10 +287,10 @@ public class WindowsConfig implements Serializable {
 				+ ", txtFileVersion=" + txtFileVersion + ", txtProductVersion=" + txtProductVersion
 				+ ", disableDirPage=" + disableDirPage + ", disableProgramGroupPage=" + disableProgramGroupPage
 				+ ", disableFinishedPage=" + disableFinishedPage + ", disableRunAfterInstall=" + disableRunAfterInstall
-				+ ", createDesktopIconTask=" + createDesktopIconTask + ", generateSetup=" + generateSetup
-				+ ", generateMsi=" + generateMsi + ", generateMsm=" + generateMsm + ", msiUpgradeCode=" + msiUpgradeCode
-				+ ", wrapJar=" + wrapJar + ", setupLanguages=" + setupLanguages + ", setupMode=" + setupMode
-				+ ", signing=" + signing + ", registry=" + registry + "]";
+				+ ", disableWelcomePage=" + disableWelcomePage + ", createDesktopIconTask=" + createDesktopIconTask
+				+ ", generateSetup=" + generateSetup + ", generateMsi=" + generateMsi + ", generateMsm=" + generateMsm
+				+ ", msiUpgradeCode=" + msiUpgradeCode + ", wrapJar=" + wrapJar + ", setupLanguages=" + setupLanguages
+				+ ", setupMode=" + setupMode + ", signing=" + signing + ", registry=" + registry + "]";
 	}
 
 	/**
