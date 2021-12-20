@@ -116,7 +116,7 @@ begin
     installLocation := GetInstallLocation();
     if installLocation <> '' then 
     begin
-        libsLocation := installLocation + 'libs';
+        libsLocation := installLocation + '${info.libsFolder.name}';
         DelTree(libsLocation, True, True, True);
     end;
 end;
