@@ -45,6 +45,7 @@ public class WindowsConfig implements Serializable {
 	private SetupMode setupMode = SetupMode.installForAllUsers;
 	private WindowsSigning signing;
 	private Registry registry = new Registry();
+	private boolean removeOldLibs = false;
 
 	public File getIcoFile() {
 		return icoFile;
@@ -269,13 +270,21 @@ public class WindowsConfig implements Serializable {
 	public void setDisableRunAfterInstall(boolean disableRunAfterInstall) {
 		this.disableRunAfterInstall = disableRunAfterInstall;
 	}
-	
+
 	public void setDisableWelcomePage(boolean disableWelcomePage) {
 		this.disableWelcomePage = disableWelcomePage;
 	}
-	
+
 	public boolean isDisableWelcomePage() {
 		return disableWelcomePage;
+	}
+
+	public boolean isRemoveOldLibs() {
+		return removeOldLibs;
+	}
+
+	public void setRemoveOldLibs(boolean removeOldLibs) {
+		this.removeOldLibs = removeOldLibs;
 	}
 
 	@Override
@@ -290,7 +299,8 @@ public class WindowsConfig implements Serializable {
 				+ ", disableWelcomePage=" + disableWelcomePage + ", createDesktopIconTask=" + createDesktopIconTask
 				+ ", generateSetup=" + generateSetup + ", generateMsi=" + generateMsi + ", generateMsm=" + generateMsm
 				+ ", msiUpgradeCode=" + msiUpgradeCode + ", wrapJar=" + wrapJar + ", setupLanguages=" + setupLanguages
-				+ ", setupMode=" + setupMode + ", signing=" + signing + ", registry=" + registry + "]";
+				+ ", setupMode=" + setupMode + ", signing=" + signing + ", registry=" + registry + ", removeOldLibs="
+				+ removeOldLibs + "]";
 	}
 
 	/**

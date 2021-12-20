@@ -92,3 +92,42 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilen
 #if (!$info.winConfig.disableRunAfterInstall)
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent runascurrentuser
 #end
+
+[Code]
+
+function GetInstallLocation(): String;
+var
+    unInstPath: String;
+    installLocation: String;
+begin
+    unInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}_is1');
+    installLocation := '';
+    if not RegQueryStringValue(HKLM, unInstPath, 'InstallLocation', installLocation) then
+        RegQueryStringValue(HKCU, unInstPath, 'InstallLocation', installLocation);
+    Result := RemoveQuotes(installLocation);
+end;
+
+#if ($info.winConfig.removeOldLibs)
+procedure RemoveOldLibs();
+var
+    installLocation: String;
+    libsLocation: String;
+begin
+    installLocation := GetInstallLocation();
+    if installLocation <> '' then 
+    begin
+        libsLocation := installLocation + 'libs';
+        DelTree(libsLocation, True, True, True);
+    end;
+end;
+#end
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+    if CurStep = ssInstall then
+    begin
+#if ($info.winConfig.removeOldLibs)
+        RemoveOldLibs();
+#end
+    end;
+end;
