@@ -26,8 +26,12 @@ import io.github.fvarrui.javapackager.utils.FileUtils;
 /**
  * Creates Windows executable with Maven
  */
-public class CreateWindowsExe extends AbstractCreateWindowsExe {
+public class CreateWindowsExeLaunch4j extends AbstractCreateWindowsExe {
 	
+	public CreateWindowsExeLaunch4j() {
+		super("launch4j");
+	}
+
 	@Override
 	protected File doApply(WindowsPackager packager) throws Exception {
 		

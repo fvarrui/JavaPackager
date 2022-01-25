@@ -7,7 +7,6 @@ import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
-import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 
 /**
  * Maven context 
@@ -64,11 +63,6 @@ public class MavenContext extends Context<Log> {
 	@Override
 	public File resolveLicense(Packager packager) throws Exception {
 		return new ResolveLicenseFromPOM().apply(packager);
-	}
-	
-	@Override
-	public File createWindowsExe(WindowsPackager packager) throws Exception {
-		return new CreateWindowsExe().apply(packager);
 	}
 
 }

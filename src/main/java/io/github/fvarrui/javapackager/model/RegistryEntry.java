@@ -84,6 +84,7 @@ public class RegistryEntry implements Serializable {
 	/**
 	 * Returns value type as Inno Setup expects
 	 * https://jrsoftware.org/ishelp/index.php?topic=registrysection
+	 * @return Value type converted to IS format
 	 */
 	public String getValueTypeAsInnoSetupString() {
 		switch(valueType) {

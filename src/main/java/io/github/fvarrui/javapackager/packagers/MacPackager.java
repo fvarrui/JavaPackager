@@ -27,11 +27,6 @@ public class MacPackager extends Packager {
 	private File javaFolder;
 	private File macOSFolder;
 	
-	public MacPackager() {
-		super();
-		installerGenerators.addAll(Context.getContext().getMacInstallerGenerators());
-	}	
-	
 	public File getAppFile() {
 		return appFile;
 	}

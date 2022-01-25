@@ -77,8 +77,12 @@ public class FileUtils {
 	 * @throws Exception If the file cannot be copied
 	 */
 	public static void copyFileToFolder(File source, File destFolder) throws Exception {
+		copyFileToFolder(source, destFolder, false);
+	}
+	
+	public static void copyFileToFolder(File source, File destFolder, boolean overwrite) throws Exception {
 		Logger.info("Copying file [" + source + "] to folder [" + destFolder + "]");
-		if (new File(destFolder, source.getName()).exists()) return;
+		if (new File(destFolder, source.getName()).exists() && !overwrite) return;
 		try {
 			copyFileToDirectory(source, destFolder);
 		} catch (IOException e) {

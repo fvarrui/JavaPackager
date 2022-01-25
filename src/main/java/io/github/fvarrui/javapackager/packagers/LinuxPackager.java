@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
@@ -20,7 +21,7 @@ public class LinuxPackager extends Packager {
 	
 	public LinuxPackager() {
 		super();
-		installerGenerators.addAll(Context.getContext().getLinuxInstallerGenerators());
+		installerGenerators.addAll(Context.getContext().getInstallerGenerators(Platform.linux));
 	}
 	
 	public File getDesktopFile() {

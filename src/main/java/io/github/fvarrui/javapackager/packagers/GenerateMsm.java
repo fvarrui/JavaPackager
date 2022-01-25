@@ -9,15 +9,15 @@ import io.github.fvarrui.javapackager.utils.VelocityUtils;
 import io.github.fvarrui.javapackager.utils.XMLUtils;
 
 /**
- * Creates a MSI file including all app folder's content only for
- * Windows so app could be easily distributed
+ * Creates a MSI file including all app folder's content only for Windows so app
+ * could be easily distributed
  */
 public class GenerateMsm extends WindowsArtifactGenerator {
 
 	public GenerateMsm() {
 		super("MSI merge module");
 	}
-	
+
 	@Override
 	public boolean skip(WindowsPackager packager) {
 		
@@ -32,7 +32,7 @@ public class GenerateMsm extends WindowsArtifactGenerator {
 		
 		return false;
 	}
-	
+
 	@Override
 	protected File doApply(WindowsPackager packager) throws Exception {
 		
@@ -52,12 +52,12 @@ public class GenerateMsm extends WindowsArtifactGenerator {
 
 		// pretiffy wxs
 		XMLUtils.prettify(wxsFile);
-	
+
 		// candle wxs file
 		Logger.info("Compiling file " + wxsFile);
 		File wixobjFile = new File(assetsFolder, name + ".msm.wixobj");
 		CommandUtils.execute("candle", "-out", wixobjFile, wxsFile);
-		Logger.info("WIXOBJ file generated in " + wixobjFile +  "!");
+		Logger.info("WIXOBJ file generated in " + wixobjFile + "!");
 
 		// lighting wxs file
 		Logger.info("Linking file " + wixobjFile);
@@ -73,5 +73,5 @@ public class GenerateMsm extends WindowsArtifactGenerator {
 		
 		return msmFile;
 	}
-	
+
 }

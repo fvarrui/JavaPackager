@@ -12,9 +12,9 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 import java.io.File;
 
 import io.github.fvarrui.javapackager.model.Platform;
+import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
-import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
 /**

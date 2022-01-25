@@ -8,22 +8,15 @@ import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
 public abstract class AbstractCreateWindowsExe extends WindowsArtifactGenerator {
 
-	private File launch4jFolder;
+	private File outputFolder;
 	private File genericManifest;
 	private File genericIcon;
 	private File genericJar;
 	private File genericExe;
 	
-	public AbstractCreateWindowsExe() {
+	public AbstractCreateWindowsExe(String outputFolderName) {
 		super("Windows EXE");
-	}
-
-	public File getLaunch4jFolder() {
-		return launch4jFolder;
-	}
-
-	public void setLaunch4jFolder(File launch4jFolder) {
-		this.launch4jFolder = launch4jFolder;
+		this.outputFolder = new File(Context.getContext().getBuildDir(), outputFolderName);
 	}
 
 	public File getGenericManifest() {
@@ -56,10 +49,14 @@ public abstract class AbstractCreateWindowsExe extends WindowsArtifactGenerator 
 
 	public void setGenericExe(File genericExe) {
 		this.genericExe = genericExe;
-	}	
+	}
+	
+	public File getOutputFolder() {
+		return outputFolder;
+	}
 
 	/**
-	 * Renames assets required for launch4j to avoid unsupported characters
+	 * Renames assets required for exe generation to avoid unsupported characters
 	 * (chinese, e.g.)
 	 * 
 	 * @param packager Windows packager
@@ -71,13 +68,12 @@ public abstract class AbstractCreateWindowsExe extends WindowsArtifactGenerator 
 		File iconFile = packager.getIconFile();
 		File jarFile = packager.getJarFile();
 
-		File launch4j = new File(Context.getContext().getBuildDir(), "launch4j");
-		FileUtils.mkdir(launch4j);
+		FileUtils.mkdir(outputFolder);
 
-		genericManifest = new File(launch4j, "app.exe.manifest");
-		genericIcon = new File(launch4j, "app.ico");
-		genericJar = new File(launch4j, "app.jar");
-		genericExe = new File(launch4j, "app.exe");
+		genericManifest = new File(outputFolder, "app.exe.manifest");
+		genericIcon = new File(outputFolder, "app.ico");
+		genericJar = new File(outputFolder, "app.jar");
+		genericExe = new File(outputFolder, "app.exe");
 
 		FileUtils.copyFileToFile(manifestFile, genericManifest);
 		FileUtils.copyFileToFile(iconFile, genericIcon);

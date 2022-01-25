@@ -46,6 +46,7 @@ public class WindowsConfig implements Serializable {
 	private WindowsSigning signing;
 	private Registry registry = new Registry();
 	private boolean removeOldLibs = false;
+	private WindowsExeCreationTool exeCreationTool = WindowsExeCreationTool.launch4j;
 
 	public File getIcoFile() {
 		return icoFile;
@@ -287,6 +288,14 @@ public class WindowsConfig implements Serializable {
 		this.removeOldLibs = removeOldLibs;
 	}
 
+	public WindowsExeCreationTool getExeCreationTool() {
+		return exeCreationTool;
+	}
+
+	public void setExeCreationTool(WindowsExeCreationTool exeCreationTool) {
+		this.exeCreationTool = exeCreationTool;
+	}
+
 	@Override
 	public String toString() {
 		return "WindowsConfig [icoFile=" + icoFile + ", headerType=" + headerType + ", companyName=" + companyName
@@ -300,7 +309,7 @@ public class WindowsConfig implements Serializable {
 				+ ", generateSetup=" + generateSetup + ", generateMsi=" + generateMsi + ", generateMsm=" + generateMsm
 				+ ", msiUpgradeCode=" + msiUpgradeCode + ", wrapJar=" + wrapJar + ", setupLanguages=" + setupLanguages
 				+ ", setupMode=" + setupMode + ", signing=" + signing + ", registry=" + registry + ", removeOldLibs="
-				+ removeOldLibs + "]";
+				+ removeOldLibs + ", exeCreationTool=" + exeCreationTool + "]";
 	}
 
 	/**

@@ -1,0 +1,27 @@
+main.class=WinRun4JLauncher
+log.level=error
+ini.override=true
+classpath.1=libs\*.jar
+#set ($classpathCounter=2)
+#foreach ($cp in $info.classpaths)
+classpath.${classpathCounter}=$!{cp}
+#set ($classpathCounter=$classpathCounter+1)
+#end
+#if ($info.bundleJre)
+vm.location=${info.jreDirectoryName}\bin\client\jvm.dll
+#end
+#if (!$info.bundleJre && $info.jreMinVersion)
+vm.version.min=${info.jreMinVersion}
+#end
+#if ($info.useResourcesAsWorkingDir)
+working.directory=.
+#end
+#set ($vmArgsCounter=1)
+#foreach ($vmArg in $info.vmArgs)
+vmarg.${vmArgsCounter}=$!{vmArg}
+#set ($vmArgsCounter=$vmArgsCounter+1)
+#end
+
+[ErrorMessages]
+java.not.found=A suitable version of Java could not be found on your system. Please contact ${info.organizationName}.
+java.failed=Java failed to startup successfully. Please contact ${info.organizationName}.

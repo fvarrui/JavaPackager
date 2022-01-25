@@ -1,0 +1,17 @@
+plugins {
+	id 'java'
+}
+
+group = 'io.github.fvarrui'
+version = '0.0.1'
+description = 'WinRun4J launcher to work around https://github.com/poidasmith/winrun4j/issues/45'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+compileJava.options.encoding = 'UTF-8'
+
+jar {
+	archiveBaseName = 'winrun4j-launcher'
+	archiveVersion =  '0.0.1'
+}
