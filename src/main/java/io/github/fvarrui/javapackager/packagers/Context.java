@@ -8,7 +8,6 @@ import java.util.Map;
 import org.apache.commons.collections4.map.HashedMap;
 
 import io.github.fvarrui.javapackager.gradle.GradleContext;
-import io.github.fvarrui.javapackager.maven.CreateWindowsExeLaunch4j;
 import io.github.fvarrui.javapackager.maven.MavenContext;
 import io.github.fvarrui.javapackager.model.Platform;
 
@@ -44,23 +43,7 @@ public abstract class Context<T> {
 	public abstract File createTarball(Packager packager) throws Exception;
 	public abstract File createZipball(Packager packager) throws Exception;
 	public abstract File resolveLicense(Packager packager) throws Exception;
-	
-	public File createWindowsExe(WindowsPackager packager) throws Exception {
-		
-		AbstractCreateWindowsExe createWindowsExe;
-
-		switch (packager.getWinConfig().getExeCreationTool()) {
-			case launch4j: createWindowsExe = new CreateWindowsExeLaunch4j(); break;
-			case winrun4j: createWindowsExe = new CreateWindowsExeWinRun4j(); break;
-			default: return null;
-		}
-		
-		if (!createWindowsExe.skip(packager)) {
-			return createWindowsExe.apply(packager);
-		}
-		return null;
-		
-	}
+	public abstract File createWindowsExe(WindowsPackager packager) throws Exception;
 	
 	// installer producers
 	

@@ -5,8 +5,11 @@ import java.io.File;
 import org.apache.maven.plugin.logging.Log;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
+import io.github.fvarrui.javapackager.packagers.AbstractCreateWindowsExe;
 import io.github.fvarrui.javapackager.packagers.Context;
+import io.github.fvarrui.javapackager.packagers.CreateWindowsExeWinRun4j;
 import io.github.fvarrui.javapackager.packagers.Packager;
+import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 
 /**
  * Maven context 
@@ -64,5 +67,21 @@ public class MavenContext extends Context<Log> {
 	public File resolveLicense(Packager packager) throws Exception {
 		return new ResolveLicenseFromPOM().apply(packager);
 	}
+
+	@Override
+	public File createWindowsExe(WindowsPackager packager) throws Exception {
+		AbstractCreateWindowsExe createWindowsExe;
+		switch (packager.getWinConfig().getExeCreationTool()) {
+			case launch4j: createWindowsExe = new CreateWindowsExeLaunch4j(); break;
+			case winrun4j: createWindowsExe = new CreateWindowsExeWinRun4j(); break;
+			default: return null;
+		}
+		if (!createWindowsExe.skip(packager)) {
+			return createWindowsExe.apply(packager);
+		}
+		return null;
+	}
+	
+
 
 }
