@@ -7,16 +7,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.plexus.util.cli.CommandLineException;
 
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
-import io.github.fvarrui.javapackager.utils.InfoPlistUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
+import io.github.fvarrui.javapackager.utils.XMLUtils;
 
 /**
  * Packager for Mac OS X
@@ -132,7 +131,7 @@ public class MacPackager extends Packager {
 		// creates and write the Info.plist file
 		File infoPlistFile = new File(contentsFolder, "Info.plist");
 		VelocityUtils.render("mac/Info.plist.vtl", infoPlistFile, this);
-		InfoPlistUtils.prettifyInfoPlist(infoPlistFile);
+		XMLUtils.prettify(infoPlistFile);
 		Logger.info("Info.plist file created in " + infoPlistFile.getAbsolutePath());
 
 		// codesigns app folder
