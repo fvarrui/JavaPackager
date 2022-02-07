@@ -3,46 +3,60 @@
 ```xml
 <macConfig>
 
-	<!-- general properties -->
-	<appId>app unique identifier</appId>
-	<icnsFile>path/to/icon.icns</icnsFile>
-	<generateDmg>true|false</generateDmg>
-	<generatePkg>true|false</generatePkg>
-	<relocateJar>true|false</relocateJar>
-	
-	<!-- signing properties -->
-	<developerId>singning identity</developerId>
-	<entitlements>path/to/entitlements.plist</entitlements>
-	<codesignApp>true|false</codesignApp>
-	
-	<!-- properties used in DMG disk image generation -->
-	<backgroundImage>path/to/png</backgroundImage>
-	<windowX>x</windowX>
-	<windowY>y</windowY>
-	<windowWidth>width</windowWidth>
-	<windowHeight>height</windowHeight>
-	<iconSize>size</iconSize>
-	<textSize>size</textSize>
-	<iconX>x</iconX>
-	<iconY>y</iconY>
-	<appsLinkIconX>x</appsLinkIconX>
-	<appsLinkIconY>y</appsLinkIconY>
-	<volumeIcon>path/to/icns</volumeIcon>
-	<volumeName>${name}</volumeName>
-	
+    <!-- general properties -->
+    <appId>app unique identifier</appId>
+    <icnsFile>path/to/icon.icns</icnsFile>
+    <generateDmg>true|false</generateDmg>
+    <generatePkg>true|false</generatePkg>
+    <relocateJar>true|false</relocateJar>
+
+    <!-- signing properties -->
+    <developerId>singning identity</developerId>
+    <entitlements>path/to/entitlements.plist</entitlements>
+    <codesignApp>true|false</codesignApp>
+
+    <!-- properties used for DMG disk image generation -->
+    <backgroundImage>path/to/png</backgroundImage>
+    <windowX>x</windowX>
+    <windowY>y</windowY>
+    <windowWidth>width</windowWidth>
+    <windowHeight>height</windowHeight>
+    <iconSize>size</iconSize>
+    <textSize>size</textSize>
+    <iconX>x</iconX>
+    <iconY>y</iconY>
+    <appsLinkIconX>x</appsLinkIconX>
+    <appsLinkIconY>y</appsLinkIconY>
+    <volumeIcon>path/to/icns</volumeIcon>
+    <volumeName>${name}</volumeName>
+
+    <!-- properties used for Info.plist file generation -->
+    <infoPlist>
+        <bundlePackageType>BNDL|APPL|FMWK</bundlePackageType>
+        <additionalEntries>
+            <![CDATA[
+                <key>ThisIsABoolean</key>
+                <true/>
+                <key>ThisIsAString</key>
+                <string>value</string>
+                [...]
+            ]]>
+        </addtionalEntries>
+    </infoPlist>
+
 </macConfig>
 ```
 
-| Property       | Mandatory | Default value  | Description                                                  |
-| -------------- | --------- | -------------- | ------------------------------------------------------------ |
-| `icnsFile`     | :x:       | `null`         | Icon file.                                                   |
-| `generateDmg`  | :x:       | `true`         | Enables DMG disk image file generation.                      |
-| `generatePkg`  | :x:       | `true`         | Enables installation package generation.                     |
+| Property       | Mandatory | Default value  | Description                                                                                                                      |
+| -------------- | --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `icnsFile`     | :x:       | `null`         | Icon file.                                                                                                                       |
+| `generateDmg`  | :x:       | `true`         | Enables DMG disk image file generation.                                                                                          |
+| `generatePkg`  | :x:       | `true`         | Enables installation package generation.                                                                                         |
 | `relocateJar`  | :x:       | `true`         | If `true`, Jar files are located in `Contents/Resources/Java` folder, otherwise they are located in `Contents/Resources` folder. |
-| `appId`        | :x:       | `${mainClass}` | App unique identifier.                                       |
-| `developerId`  | :x:       | `null`         | Signing identity.                                            |
-| `entitlements` | :x:       | `null`         | Path to [entitlements](https://developer.apple.com/documentation/bundleresources/entitlements) file. |
-| `codesignApp`  | :x:       | `true`         | If it is set to `false`, generated app will not be codesigned. |
+| `appId`        | :x:       | `${mainClass}` | App unique identifier.                                                                                                           |
+| `developerId`  | :x:       | `null`         | Signing identity.                                                                                                                |
+| `entitlements` | :x:       | `null`         | Path to [entitlements](https://developer.apple.com/documentation/bundleresources/entitlements) file.                             |
+| `codesignApp`  | :x:       | `true`         | If it is set to `false`, generated app will not be codesigned.                                                                   |
 
 ## DMG generation properties
 
@@ -63,3 +77,10 @@
 | `volumeName`      | :x:       | `${displayName}`                | Volume name *(:warning: whitespaces are removed)*.         |
 
 ![DMG properties explained](dmg-properties-explained.png)
+
+## Info.plist generation properties
+
+| Property            | Mandatory | Default value | Description                                 |
+| ------------------- | --------- | ------------- | ------------------------------------------- |
+| `bundlePackageType` | :x:       | BNDL          | Bundle package type: BNDL, APPL, FMWK.      |
+| `additionalEntries` | :x:       | `""`          | String with `Info.plist`additional entries. |
