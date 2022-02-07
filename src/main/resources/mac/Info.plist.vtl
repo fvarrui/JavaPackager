@@ -133,5 +133,8 @@
 		<string>There was an error while launching the application. Please
 			click OK to display a dialog with more information or cancel and view
 			the syslog for details.</string>
+#if($info.macConfig.infoPlist && $info.macConfig.infoPlist.additionalEntries)
+	${info.macConfig.infoPlist.additionalEntries}
+#end
 	</dict>
 </plist>

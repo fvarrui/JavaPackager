@@ -308,8 +308,7 @@ public class PackageMojo extends AbstractMojo {
 	 */
 	@Parameter(property = "scripts", required = false)
 	private Scripts scripts;
-
-
+	
 	public void execute() throws MojoExecutionException {
 		
 		Context.setContext(

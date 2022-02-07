@@ -55,7 +55,9 @@ dependencies {
     implementation 'org.vafer:jdeb:1.9'
     implementation 'net.jsign:jsign-core:3.1'
     implementation 'org.redline-rpm:redline:1.2.10'
-	
+    implementation 'commons-configuration:commons-configuration:1.10'
+    implementation 'commons-beanutils:commons-beanutils:1.9.4'
+    
     testImplementation 'junit:junit:4.12'
     
     compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
