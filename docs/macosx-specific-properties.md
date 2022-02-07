@@ -80,7 +80,7 @@
 
 ## Info.plist generation properties
 
-| Property            | Mandatory | Default value | Description                                 |
-| ------------------- | --------- | ------------- | ------------------------------------------- |
-| `bundlePackageType` | :x:       | BNDL          | Bundle package type: BNDL, APPL, FMWK.      |
-| `additionalEntries` | :x:       | `""`          | String with `Info.plist`additional entries. |
+| Property            | Mandatory | Default value | Description                                                                                                                                       |
+| ------------------- | --------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bundlePackageType` | :x:       | BNDL          | [Bundle package type](https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundlepackagetype): BNDL, APPL, FMWK. |
+| `additionalEntries` | :x:       | `""`          | String with `Info.plist`additional entries.                                                                                                       |
