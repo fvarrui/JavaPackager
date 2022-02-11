@@ -1,4 +1,4 @@
-#set($moduleName = $info.name.replaceAll("-", "_") + "_Module")
+#set($moduleName = $info.name.replaceAll("[^A-Za-z0-9_.]", "_") + "_Module")
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Product Id="*" Codepage="1252" Language="1033" Manufacturer="${info.organizationName}" Name="${info.name}" UpgradeCode="${info.winConfig.msiUpgradeCode}" Version="${info.winConfig.productVersion}">

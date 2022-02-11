@@ -3,9 +3,13 @@ package io.github.fvarrui.javapackager.packagers;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections4.map.HashedMap;
 
 import io.github.fvarrui.javapackager.gradle.GradleContext;
 import io.github.fvarrui.javapackager.maven.MavenContext;
+import io.github.fvarrui.javapackager.model.Platform;
 
 /**
  * Building-tool context 
@@ -16,16 +20,13 @@ public abstract class Context<T> {
 		super();
 		
 		// building tool independent generators
-		
-		linuxInstallerGenerators.add(new GenerateDeb());
-		linuxInstallerGenerators.add(new GenerateRpm());
-		
-		macInstallerGenerators.add(new GenerateDmg());
-		macInstallerGenerators.add(new GeneratePkg());
-		
-		windowsInstallerGenerators.add(new GenerateSetup());
-		windowsInstallerGenerators.add(new GenerateMsm());
-		windowsInstallerGenerators.add(new GenerateMsi());		
+		getInstallerGenerators(Platform.linux).add(new GenerateDeb());
+		getInstallerGenerators(Platform.linux).add(new GenerateRpm());
+		getInstallerGenerators(Platform.mac).add(new GenerateDmg());
+		getInstallerGenerators(Platform.mac).add(new GeneratePkg());
+		getInstallerGenerators(Platform.windows).add(new GenerateSetup());
+		getInstallerGenerators(Platform.windows).add(new GenerateMsm());
+		getInstallerGenerators(Platform.windows).add(new GenerateMsi());
 		
 	}
 	
@@ -46,20 +47,15 @@ public abstract class Context<T> {
 	
 	// installer producers
 	
-	private List<ArtifactGenerator<LinuxPackager>> linuxInstallerGenerators = new ArrayList<>();
-	private List<ArtifactGenerator<MacPackager>> macInstallerGenerators = new ArrayList<>();
-	private List<ArtifactGenerator<WindowsPackager>> windowsInstallerGenerators = new ArrayList<>();
-
-	public List<ArtifactGenerator<LinuxPackager>> getLinuxInstallerGenerators() {
-		return linuxInstallerGenerators;
-	}
+	private Map<Platform, List<ArtifactGenerator<? extends Packager>>> installerGeneratorsMap = new HashedMap<>();
 	
-	public List<ArtifactGenerator<MacPackager>> getMacInstallerGenerators() {
-		return macInstallerGenerators;
-	}
-	
-	public List<ArtifactGenerator<WindowsPackager>> getWindowsInstallerGenerators() {
-		return windowsInstallerGenerators;
+	public List<ArtifactGenerator<? extends Packager>> getInstallerGenerators(Platform platform) {
+		List<ArtifactGenerator<? extends Packager>> platformInstallers = installerGeneratorsMap.get(platform);
+		if (platformInstallers == null) {
+			platformInstallers = new ArrayList<>();
+			installerGeneratorsMap.put(platform, platformInstallers);
+		}
+		return platformInstallers;
 	}
 	
 	// static context

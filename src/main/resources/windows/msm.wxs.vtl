@@ -1,4 +1,4 @@
-#set ($name = $info.name.replaceAll("-", "_"))
+#set ($name = $info.name.replaceAll("[^A-Za-z0-9_.]", "_"))
 #set ($id = 0)
 #macro(list $file)
 	#set($guid = $GUID.randomUUID())

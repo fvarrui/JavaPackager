@@ -16,8 +16,12 @@ import io.github.fvarrui.javapackager.utils.FileUtils;
 /**
  * Creates Windows native executable on Gradle context
  */
-public class CreateWindowsExe extends AbstractCreateWindowsExe {
-
+public class CreateWindowsExeLaunch4j extends AbstractCreateWindowsExe {
+	
+	public CreateWindowsExeLaunch4j() {
+		super("launch4j");
+	}
+	
 	@Override
 	protected File doApply(WindowsPackager packager) throws Exception {
 
@@ -62,7 +66,6 @@ public class CreateWindowsExe extends AbstractCreateWindowsExe {
 		l4jTask.setInternalName(winConfig.getInternalName());
 		l4jTask.setTrademarks(winConfig.getTrademarks());
 		l4jTask.setLanguage(winConfig.getLanguage());
-		// l4jTask.setLibraryDir("");
 		l4jTask.getActions().forEach(action -> action.execute(l4jTask));
 
 		sign(getGenericExe(), packager);

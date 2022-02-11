@@ -34,6 +34,7 @@ public class WindowsConfig implements Serializable {
 	private boolean disableProgramGroupPage = true;
 	private boolean disableFinishedPage = true;
 	private boolean disableRunAfterInstall = true;
+	private boolean disableWelcomePage = true;
 	private boolean createDesktopIconTask = true;
 	private boolean generateSetup = true;
 	private boolean generateMsi = true;
@@ -44,6 +45,8 @@ public class WindowsConfig implements Serializable {
 	private SetupMode setupMode = SetupMode.installForAllUsers;
 	private WindowsSigning signing;
 	private Registry registry = new Registry();
+	private boolean removeOldLibs = false;
+	private WindowsExeCreationTool exeCreationTool = WindowsExeCreationTool.launch4j;
 
 	public File getIcoFile() {
 		return icoFile;
@@ -269,6 +272,30 @@ public class WindowsConfig implements Serializable {
 		this.disableRunAfterInstall = disableRunAfterInstall;
 	}
 
+	public void setDisableWelcomePage(boolean disableWelcomePage) {
+		this.disableWelcomePage = disableWelcomePage;
+	}
+
+	public boolean isDisableWelcomePage() {
+		return disableWelcomePage;
+	}
+
+	public boolean isRemoveOldLibs() {
+		return removeOldLibs;
+	}
+
+	public void setRemoveOldLibs(boolean removeOldLibs) {
+		this.removeOldLibs = removeOldLibs;
+	}
+
+	public WindowsExeCreationTool getExeCreationTool() {
+		return exeCreationTool;
+	}
+
+	public void setExeCreationTool(WindowsExeCreationTool exeCreationTool) {
+		this.exeCreationTool = exeCreationTool;
+	}
+
 	@Override
 	public String toString() {
 		return "WindowsConfig [icoFile=" + icoFile + ", headerType=" + headerType + ", companyName=" + companyName
@@ -278,10 +305,11 @@ public class WindowsConfig implements Serializable {
 				+ ", txtFileVersion=" + txtFileVersion + ", txtProductVersion=" + txtProductVersion
 				+ ", disableDirPage=" + disableDirPage + ", disableProgramGroupPage=" + disableProgramGroupPage
 				+ ", disableFinishedPage=" + disableFinishedPage + ", disableRunAfterInstall=" + disableRunAfterInstall
-				+ ", createDesktopIconTask=" + createDesktopIconTask + ", generateSetup=" + generateSetup
-				+ ", generateMsi=" + generateMsi + ", generateMsm=" + generateMsm + ", msiUpgradeCode=" + msiUpgradeCode
-				+ ", wrapJar=" + wrapJar + ", setupLanguages=" + setupLanguages + ", setupMode=" + setupMode
-				+ ", signing=" + signing + ", registry=" + registry + "]";
+				+ ", disableWelcomePage=" + disableWelcomePage + ", createDesktopIconTask=" + createDesktopIconTask
+				+ ", generateSetup=" + generateSetup + ", generateMsi=" + generateMsi + ", generateMsm=" + generateMsm
+				+ ", msiUpgradeCode=" + msiUpgradeCode + ", wrapJar=" + wrapJar + ", setupLanguages=" + setupLanguages
+				+ ", setupMode=" + setupMode + ", signing=" + signing + ", registry=" + registry + ", removeOldLibs="
+				+ removeOldLibs + ", exeCreationTool=" + exeCreationTool + "]";
 	}
 
 	/**

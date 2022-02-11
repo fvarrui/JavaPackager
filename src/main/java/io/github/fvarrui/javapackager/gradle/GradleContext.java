@@ -12,7 +12,9 @@ import org.gradle.jvm.toolchain.JavaToolchainService;
 import org.gradle.jvm.toolchain.JavaToolchainSpec;
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
+import io.github.fvarrui.javapackager.packagers.AbstractCreateWindowsExe;
 import io.github.fvarrui.javapackager.packagers.Context;
+import io.github.fvarrui.javapackager.packagers.CreateWindowsExeWinRun4j;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 
@@ -74,11 +76,6 @@ public class GradleContext extends Context<Logger> {
 		return null;
 	}
 
-	@Override
-	public File createWindowsExe(WindowsPackager packager) throws Exception {
-		return new CreateWindowsExe().apply(packager);
-	}
-
 	public Launch4jLibraryTask getLibraryTask() {
 		return libraryTask;
 	}
@@ -114,5 +111,21 @@ public class GradleContext extends Context<Logger> {
 		return super.getDefaultToolchain();
 		
 	}
+
+	@Override
+	public File createWindowsExe(WindowsPackager packager) throws Exception {
+		AbstractCreateWindowsExe createWindowsExe;
+		switch (packager.getWinConfig().getExeCreationTool()) {
+			case launch4j: createWindowsExe = new CreateWindowsExeLaunch4j(); break;
+			case winrun4j: createWindowsExe = new CreateWindowsExeWinRun4j(); break;
+			default: return null;
+		}
+		if (!createWindowsExe.skip(packager)) {
+			return createWindowsExe.apply(packager);
+		}
+		return null;
+	}
+	
+
 
 }

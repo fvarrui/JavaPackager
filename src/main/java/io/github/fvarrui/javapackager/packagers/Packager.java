@@ -1,8 +1,8 @@
 package io.github.fvarrui.javapackager.packagers;
 
-import static org.apache.commons.collections4.CollectionUtils.addIgnoreNull;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static org.apache.commons.io.FilenameUtils.getExtension;
+import static org.apache.commons.collections4.CollectionUtils.addIgnoreNull;
 
 import java.io.File;
 import java.nio.file.InvalidPathException;
@@ -390,7 +390,7 @@ public abstract class Packager extends PackagerSettings {
 
 		// copies all dependencies to Java folder
 		Logger.infoIndent("Copying all dependencies ...");
-		libsFolder = Context.getContext().copyDependencies(this);
+		libsFolder = copyDependencies ? Context.getContext().copyDependencies(this) : null;
 		Logger.infoUnindent("Dependencies copied to " + libsFolder + "!");
 
 		// creates a runnable jar file
@@ -429,7 +429,8 @@ public abstract class Packager extends PackagerSettings {
 		assetsFolder = FileUtils.mkdir(outputDirectory, "assets");
 
 		// invokes installer producers
-		for (ArtifactGenerator<?> generator : installerGenerators) {
+		
+		for (ArtifactGenerator<?> generator : Context.getContext().getInstallerGenerators(platform)) {
 			try {
 				Logger.infoIndent("Generating " + generator.getArtifactName() + "...");
 				File artifact = generator.apply(this);
@@ -439,7 +440,6 @@ public abstract class Packager extends PackagerSettings {
 				} else {
 					Logger.warnUnindent(generator.getArtifactName() + " NOT generated!!!");
 				}
-
 			} catch (Exception e) {
 				Logger.errorUnindent(generator.getArtifactName() + " generation failed due to: " + e.getMessage(), e);
 			}

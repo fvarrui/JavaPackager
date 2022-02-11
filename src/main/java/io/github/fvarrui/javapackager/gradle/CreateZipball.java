@@ -6,10 +6,10 @@ import java.util.UUID;
 import org.gradle.api.tasks.bundling.Zip;
 
 import io.github.fvarrui.javapackager.model.Platform;
+import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.MacPackager;
 import io.github.fvarrui.javapackager.packagers.Packager;
-import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 
 /**
  * Creates zipball (zip file)  on Gradle context

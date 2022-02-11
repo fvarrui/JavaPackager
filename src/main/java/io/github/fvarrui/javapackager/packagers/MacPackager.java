@@ -15,6 +15,7 @@ import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
+import io.github.fvarrui.javapackager.utils.XMLUtils;
 
 /**
  * Packager for Mac OS X
@@ -26,11 +27,6 @@ public class MacPackager extends Packager {
 	private File resourcesFolder;
 	private File javaFolder;
 	private File macOSFolder;
-	
-	public MacPackager() {
-		super();
-		installerGenerators.addAll(Context.getContext().getMacInstallerGenerators());
-	}	
 	
 	public File getAppFile() {
 		return appFile;
@@ -135,6 +131,7 @@ public class MacPackager extends Packager {
 		// creates and write the Info.plist file
 		File infoPlistFile = new File(contentsFolder, "Info.plist");
 		VelocityUtils.render("mac/Info.plist.vtl", infoPlistFile, this);
+		XMLUtils.prettify(infoPlistFile);
 		Logger.info("Info.plist file created in " + infoPlistFile.getAbsolutePath());
 
 		// codesigns app folder

@@ -5,19 +5,19 @@ import java.io.File;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.Copy;
 
+import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
-import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 
 /**
- * Copies all dependencies to app folder on Maven context
+ * Copies all dependencies to app folder on Gradle context
  */
 public class CopyDependencies extends ArtifactGenerator<Packager> {
 	
 	public Copy copyLibsTask;
 	
 	public CopyDependencies() {
-		super("Dependencies");
+		super("Libs folder");
 	}
 	
 	@Override

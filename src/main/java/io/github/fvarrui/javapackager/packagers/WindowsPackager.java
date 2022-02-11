@@ -18,11 +18,6 @@ public class WindowsPackager extends Packager {
 	private File manifestFile;
 	private File msmFile;
 	
-	public WindowsPackager() {
-		super();
-		installerGenerators.addAll(Context.getContext().getWindowsInstallerGenerators());
-	}
-	
 	public File getManifestFile() {
 		return manifestFile;
 	}

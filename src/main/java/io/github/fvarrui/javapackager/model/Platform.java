@@ -17,9 +17,9 @@ public enum Platform {
 	}
 	
 	public static Platform getCurrentPlatform() {
-		if (SystemUtils.IS_OS_WINDOWS) 		return windows; 
-		else if (SystemUtils.IS_OS_LINUX) 	return linux; 
-		else if (SystemUtils.IS_OS_MAC) 	return mac;
+		if (SystemUtils.IS_OS_WINDOWS)	return windows; 
+		if (SystemUtils.IS_OS_LINUX)	return linux; 
+		if (SystemUtils.IS_OS_MAC)		return mac;
 		return null;
 	}
 	

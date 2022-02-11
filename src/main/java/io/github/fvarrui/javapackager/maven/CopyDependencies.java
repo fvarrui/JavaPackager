@@ -13,9 +13,9 @@ import java.io.File;
 
 import org.apache.maven.plugin.MojoExecutionException;
 
+import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
-import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 
 /**
  * Copies all dependencies to app folder on Maven context
