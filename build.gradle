@@ -70,7 +70,7 @@ dependencies {
 }
 
 group = 'io.github.fvarrui'
-version = '1.6.3-SNAPSHOT'
+version = '1.6.3'
 description = 'Hybrid Maven/Gradle plugin to package Java applications as native Windows, Mac OS X or GNU/Linux executables and create installers for them'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -150,6 +150,9 @@ publishToMavenLocal.dependsOn(build)
     
 if (project.hasProperty('release')) {
 
+    apply plugin: 'signing'
+    apply plugin: 'maven'
+
 	task javadocJar(type: Jar) {
 	    classifier = 'javadoc'
 	    from javadoc
@@ -164,51 +167,46 @@ if (project.hasProperty('release')) {
 	    archives javadocJar, sourcesJar
 	}
 
-    allprojects {
-        apply plugin: 'signing'
-        apply plugin: 'maven'
+    // Signature of artifacts
+    signing {
+        sign configurations.archives
+    }
 
-        // Signature of artifacts
-        signing {
-            sign configurations.archives
-        }
+    // OSSRH publication
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                // POM signature
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                // Target repository
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUser, password: ossrhPassword)
+                }
+                pom.project {
+                    name project.name
+                    description project.description
+                    packaging = 'maven-plugin'
+                    url 'https://github.com/fvarrui/JavaPackager'
 
-        // OSSRH publication
-        uploadArchives {
-            repositories {
-                mavenDeployer {
-                    // POM signature
-                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-                    // Target repository
-                    repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                        authentication(userName: ossrhUser, password: ossrhPassword)
-                    }
-                    pom.project {
-                        name project.name
-                        description project.description
-                        packaging = 'maven-plugin'
+                    scm {
+                        connection 'scm:git:git://github.com/fvarrui/JavaPackager.git'
+                        developerConnection 'scm:git:git@github.com:fvarrui/fvarrui.git'
                         url 'https://github.com/fvarrui/JavaPackager'
+                    }
 
-                        scm {
-                            connection 'scm:git:git://github.com/fvarrui/JavaPackager.git'
-                            developerConnection 'scm:git:git@github.com:fvarrui/fvarrui.git'
-                            url 'https://github.com/fvarrui/JavaPackager'
+                    licenses {
+                        license {
+                            name 'GPL-v3.0'
+                            url 'http://www.gnu.org/licenses/gpl-3.0.txt'
+                            distribution 'repo'
                         }
+                    }
 
-                        licenses {
-                            license {
-                                name 'GPL-v3.0'
-                                url 'http://www.gnu.org/licenses/gpl-3.0.txt'
-                                distribution 'repo'
-                            }
-                        }
-
-                        developers {
-                            developer {
-                                id = 'fvarrui'
-                                name = 'Francisco Vargas Ruiz'
-                                url = 'https://github.com/fvarrui'
-                            }
+                    developers {
+                        developer {
+                            id = 'fvarrui'
+                            name = 'Francisco Vargas Ruiz'
+                            url = 'https://github.com/fvarrui'
                         }
                     }
                 }

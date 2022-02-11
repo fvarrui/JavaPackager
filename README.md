@@ -23,7 +23,7 @@ Add the following `plugin` tag to your `pom.xml`:
 <plugin>
     <groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
-    <version>1.6.3-SNAPSHOT</version>
+    <version>1.6.3</version>
     <executions>
         <execution>
             <phase>package</phase>
@@ -71,7 +71,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'io.github.fvarrui:javapackager:1.6.3-SNAPSHOT'
+        classpath 'io.github.fvarrui:javapackager:1.6.3'
     }
 }
 
