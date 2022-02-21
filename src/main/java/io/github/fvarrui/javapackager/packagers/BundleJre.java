@@ -130,6 +130,7 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 			CommandUtils.execute(
 					jlink, 
 					"--module-path", modulesDir, 
+					additionalModulePathsToParams(additionalModulePaths),
 					"--add-modules", modules, 
 					"--output", destinationFolder, 
 					"--no-header-files", 
