@@ -51,10 +51,12 @@ dependencies {
     implementation 'org.apache.commons:commons-collections4:4.1'
     implementation 'org.apache.commons:commons-compress:1.21'
     implementation 'org.apache.velocity:velocity-engine-core:2.0'
-    implementation 'io.github.fvarrui:gradle-launch4j:2.4.7' 
     implementation 'org.vafer:jdeb:1.9'
     implementation 'net.jsign:jsign-core:3.1'
     implementation 'org.redline-rpm:redline:1.2.10'
+
+    //implementation 'io.github.fvarrui:gradle-launch4j:2.4.7' 
+  	implementation 'edu.sc.seis.launch4j:launch4j:2.5.1'    
     
     testImplementation 'junit:junit:4.12'
     
