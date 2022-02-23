@@ -17,7 +17,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -84,7 +86,8 @@ public class FileUtils {
 		Logger.info("Copying file [" + source + "] to folder [" + destFolder + "]");
 		if (new File(destFolder, source.getName()).exists() && !overwrite) return;
 		try {
-			copyFileToDirectory(source, destFolder);
+			//copyFileToDirectory(source, destFolder);
+			Files.copy(source.toPath(), new File(destFolder, source.getName()).toPath(), StandardCopyOption.COPY_ATTRIBUTES);
 		} catch (IOException e) {
 			throw new Exception(e.getMessage(), e);
 		}
