@@ -8,7 +8,7 @@ You can install both tools in a simple way using [Chocolatey](https://chocolatey
 1. [Install Chocolatey](https://chocolatey.org/install)
 2. Run next command on CMD or PowerShell as Administrator to install both tools:
    
-   ```bash
+   ```
    choco install -y innosetup wixtoolset
    ```
 
@@ -20,7 +20,8 @@ You can also use [Scoop](https://github.com/ScoopInstaller/Scoop/wiki) to achiev
 1. [Install Scoop](https://scoop.sh/)
 2. Run in CMD or PowerShell (no need to be Administrator):
 
-```scoop bucket add extras
+```
+scoop bucket add extras
 scoop install inno-setup
 scoop install wixtoolset
 ```
