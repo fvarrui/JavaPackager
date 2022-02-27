@@ -149,6 +149,7 @@ public class MacPackager extends Packager {
 	private void codesign(String developerId, File entitlements, File appFile) throws IOException, CommandLineException {
 		List<Object> codesignArgs = new ArrayList<>();
 		codesignArgs.add("--force");
+		codesignArgs.add("--options runtime");
 		codesignArgs.add("--deep");
 		if (entitlements == null) {
 			Logger.warn("Entitlements file not specified");
