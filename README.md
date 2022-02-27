@@ -204,9 +204,9 @@ If icons are located in `${assetsDir}` folder, it would not be necessary to use 
 ```bash
 ${assetsDir}/
 ├── linux/
-│   └── ${name}.png     # on GNU/Linux it has to be a PNG file
+│   └── ${name}.png     # on GNU/Linux it has to be a PNG file
 ├── mac/
-│   └── ${name}.icns    # on Mac OS X it has to be a ICNS file
+│   └── ${name}.icns    # on Mac OS X it has to be a ICNS file
 └── windows/
     └── ${name}.ico     # on Windows it has to be a ICO file
 ```
