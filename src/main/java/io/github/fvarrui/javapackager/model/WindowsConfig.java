@@ -47,6 +47,7 @@ public class WindowsConfig implements Serializable {
 	private Registry registry = new Registry();
 	private boolean removeOldLibs = false;
 	private WindowsExeCreationTool exeCreationTool = WindowsExeCreationTool.launch4j;
+	private String vmLocation;
 
 	public File getIcoFile() {
 		return icoFile;
@@ -295,6 +296,14 @@ public class WindowsConfig implements Serializable {
 	public void setExeCreationTool(WindowsExeCreationTool exeCreationTool) {
 		this.exeCreationTool = exeCreationTool;
 	}
+	
+	public String getVmLocation() {
+		return vmLocation;
+	}
+	
+	public void setVmLocation(String vmLocation) {
+		this.vmLocation = vmLocation;
+	}
 
 	@Override
 	public String toString() {
@@ -309,7 +318,7 @@ public class WindowsConfig implements Serializable {
 				+ ", generateSetup=" + generateSetup + ", generateMsi=" + generateMsi + ", generateMsm=" + generateMsm
 				+ ", msiUpgradeCode=" + msiUpgradeCode + ", wrapJar=" + wrapJar + ", setupLanguages=" + setupLanguages
 				+ ", setupMode=" + setupMode + ", signing=" + signing + ", registry=" + registry + ", removeOldLibs="
-				+ removeOldLibs + ", exeCreationTool=" + exeCreationTool + "]";
+				+ removeOldLibs + ", exeCreationTool=" + exeCreationTool + ", vmLocation=" + vmLocation + "]";
 	}
 
 	/**
