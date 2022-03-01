@@ -150,11 +150,16 @@ public class MacPackager extends Packager {
 
 	private void codesign(String developerId, File entitlements, File appFile) throws IOException, CommandLineException {
 		
+		String warn = "Mac OS version detected: " + SystemUtils.OS_VERSION + " ... hardened runtime "; 
+		
 		List<String> flags = new ArrayList<>();
 		if (VersionUtils.compareVersions("10.13.6", SystemUtils.OS_VERSION) >= 0) {
-			Logger.warn("Hardened runtime enabled!");			
+			warn += "enabled!";			
 			flags.add("runtime"); // enable hardened runtime if Mac OS version >= 10.13.6 
+		} else {
+			warn += "disabled!";			
 		}
+		Logger.warn(warn);	
 		
 		List<Object> codesignArgs = new ArrayList<>();
 		codesignArgs.add("--force");
