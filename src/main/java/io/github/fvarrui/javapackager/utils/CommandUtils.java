@@ -21,6 +21,10 @@ public class CommandUtils {
 		return result.getOutput();
 	}
 
+	public static String execute(File executable, Object... arguments) throws IOException, CommandLineException {
+		return execute(executable.getAbsolutePath(), arguments);
+	}
+
 	public static String execute(String executable, Object... arguments) throws IOException, CommandLineException {
 		return execute(new File("."), executable, arguments);
 	}
