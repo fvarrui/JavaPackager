@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.codehaus.plexus.util.cli.CommandLineException;
 
 import io.github.fvarrui.javapackager.model.Platform;
@@ -15,6 +16,7 @@ import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
+import io.github.fvarrui.javapackager.utils.VersionUtils;
 import io.github.fvarrui.javapackager.utils.XMLUtils;
 
 /**
@@ -147,8 +149,18 @@ public class MacPackager extends Packager {
 	}
 
 	private void codesign(String developerId, File entitlements, File appFile) throws IOException, CommandLineException {
+		
+		List<String> flags = new ArrayList<>();
+		if (VersionUtils.compareVersions("10.13.6", SystemUtils.OS_VERSION) >= 0) {
+			Logger.warn("Hardened runtime enabled!");			
+			flags.add("runtime"); // enable hardened runtime if Mac OS version >= 10.13.6 
+		}
+		
 		List<Object> codesignArgs = new ArrayList<>();
 		codesignArgs.add("--force");
+		if (!flags.isEmpty()) {			
+			codesignArgs.add("--options " + StringUtils.join(",", flags));
+		}
 		codesignArgs.add("--deep");
 		if (entitlements == null) {
 			Logger.warn("Entitlements file not specified");
