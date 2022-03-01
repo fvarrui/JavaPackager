@@ -159,7 +159,8 @@ public class MacPackager extends Packager {
 		List<Object> codesignArgs = new ArrayList<>();
 		codesignArgs.add("--force");
 		if (!flags.isEmpty()) {			
-			codesignArgs.add("--options " + StringUtils.join(",", flags));
+			codesignArgs.add("--options");
+			codesignArgs.add(StringUtils.joinWith(",", flags));
 		}
 		codesignArgs.add("--deep");
 		if (entitlements == null) {
