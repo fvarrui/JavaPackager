@@ -11,7 +11,26 @@ targetCompatibility = 1.8
 
 compileJava.options.encoding = 'UTF-8'
 
-jar {
-	archiveBaseName = 'winrun4j-launcher'
-	archiveVersion =  '0.0.1'
+ext { 
+	baseName = 'winrun4j-launcher'
 }
+
+jar {
+	archiveBaseName = baseName
+	archiveVersion =  version
+}
+
+task copyArtifact {
+    doLast {
+        def DIST_DIR = "${rootDir}/src/main/resources/windows"
+        def SRC_DIR = "${buildDir}/libs"
+        def ARTIFACT = "${baseName}-${version}.jar"
+        ant.mkdir(dir: DIST_DIR)
+        ant.copy(todir: DIST_DIR) {
+            fileset(dir: SRC_DIR, includes: ARTIFACT)
+            globmapper(from: ARTIFACT, to: "${baseName}.jar")
+        }
+    }
+}
+
+build.dependsOn copyArtifact

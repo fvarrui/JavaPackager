@@ -64,8 +64,8 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 		Logger.info("INI file generated in " + genericIni.getAbsolutePath() + "!");
 
 		// process EXE with rcedit-x64.exe
-		CommandUtils.execute(rcedit.getAbsolutePath(), getGenericExe(), "--set-icon", getGenericIcon());
-		CommandUtils.execute(rcedit.getAbsolutePath(), getGenericExe(), "--application-manifest", getGenericManifest());
+		CommandUtils.execute(rcedit, getGenericExe(), "--set-icon", getGenericIcon());
+		CommandUtils.execute(rcedit, getGenericExe(), "--application-manifest", getGenericManifest());
 
 		// creates libs folder if it doesn't exist
 		if (libsFolder == null) {
@@ -76,8 +76,8 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 		FileUtils.copyFileToFolder(jarFile, libsFolder);
 
 		// copies winrun4j launcher helper library (needed to work around
-		File winrun4jJar = new File(libsFolder, "winrun4j-launcher-0.0.1.jar");
-		FileUtils.copyResourceToFile("/windows/winrun4j-launcher-0.0.1.jar", winrun4jJar);
+		File winrun4jJar = new File(libsFolder, "winrun4j-launcher.jar");
+		FileUtils.copyResourceToFile("/windows/winrun4j-launcher.jar", winrun4jJar);
 
 		// generates winrun4j properties pointing to main class
 		File propertiesFile = new File(getOutputFolder(), "winrun4j.properties");

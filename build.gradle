@@ -56,7 +56,7 @@ dependencies {
     implementation 'org.redline-rpm:redline:1.2.10'
 
     //implementation 'io.github.fvarrui:gradle-launch4j:2.4.7' 
-  	implementation 'edu.sc.seis.launch4j:launch4j:2.5.1'    
+  	implementation 'edu.sc.seis.launch4j:launch4j:2.5.1'
     
     testImplementation 'junit:junit:4.12'
     
@@ -68,7 +68,7 @@ dependencies {
     mavenEmbedder 'org.eclipse.aether:aether-connector-basic:1.1.0'
     mavenEmbedder 'org.eclipse.aether:aether-transport-wagon:1.1.0'
     mavenEmbedder 'org.apache.maven.wagon:wagon-http:3.4.1'
-    mavenEmbedder 'org.apache.maven.wagon:wagon-provider-api:3.4.1'    
+    mavenEmbedder 'org.apache.maven.wagon:wagon-provider-api:3.4.1'
 }
 
 group = 'io.github.fvarrui'
@@ -96,8 +96,11 @@ install.repositories.mavenInstaller.pom.with {
     packaging = 'maven-plugin'
 }
 
+build.dependsOn ':winrun4j-launcher:build'
+
 // runs the plugin description generator
 task generatePluginDescriptor(type: JavaExec, dependsOn: compileJava) {
+
     def pomFile = file("$buildDir/pom.xml")
     def pluginDescriptorFile = new File(project.compileJava.destinationDir, 'META-INF/maven/plugin.xml')
     def directory = buildDir.canonicalPath
