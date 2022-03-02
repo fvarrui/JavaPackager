@@ -149,17 +149,19 @@ public class MacPackager extends Packager {
 	}
 
 	private void codesign(String developerId, File entitlements, File appFile) throws IOException, CommandLineException {
-		
+
 		List<String> flags = new ArrayList<>();
 		if (VersionUtils.compareVersions("10.13.6", SystemUtils.OS_VERSION) >= 0) {
-			Logger.warn("Hardened runtime enabled!");			
 			flags.add("runtime"); // enable hardened runtime if Mac OS version >= 10.13.6 
+		} else {
+			Logger.warn("Mac OS version detected: " + SystemUtils.OS_VERSION + " ... hardened runtime disabled!"); 		
 		}
 		
 		List<Object> codesignArgs = new ArrayList<>();
 		codesignArgs.add("--force");
 		if (!flags.isEmpty()) {			
-			codesignArgs.add("--options " + StringUtils.join(",", flags));
+			codesignArgs.add("--options");
+			codesignArgs.add(StringUtils.join(flags, ","));
 		}
 		codesignArgs.add("--deep");
 		if (entitlements == null) {
