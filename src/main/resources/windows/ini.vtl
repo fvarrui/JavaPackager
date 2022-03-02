@@ -8,7 +8,7 @@ classpath.${classpathCounter}=$!{cp}
 #set ($classpathCounter=$classpathCounter+1)
 #end
 #if ($info.bundleJre)
-vm.location=${info.jreDirectoryName}\bin\client\jvm.dll
+vm.location=${info.jreDirectoryName}\\${info.winConfig.vmLocation}
 #end
 #if (!$info.bundleJre && $info.jreMinVersion)
 vm.version.min=${info.jreMinVersion}
