@@ -260,6 +260,18 @@ The options should be separated with spaces or new lines:
 -Xms16m
 ```
 
+>  An VM argument per line.
+
+And then bundle this file with your app:
+
+```xml
+<additionalResources>
+    <additionalResource>${name}.l4j.ini</additionalResource>
+</additionalResources>
+```
+
+> Last property copies `${name}.l4j.ini` file next to the EXE/binary on Windows/Linux, and in `Resources` folder on MacOS.
+
 ## How to build and install the plugin
 
 > Useful to try SNAPSHOT versions.
