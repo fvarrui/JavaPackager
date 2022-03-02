@@ -13,8 +13,8 @@ import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.JDKUtils;
-import io.github.fvarrui.javapackager.utils.JavaUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
+import io.github.fvarrui.javapackager.utils.VersionUtils;
 
 /**
  * Bundles a Java Runtime Enrironment (JRE) with the app
@@ -92,7 +92,7 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 				jshFile.setExecutable(true, false);
 			}
 
-		} else if (JavaUtils.getJavaMajorVersion() <= 8) {
+		} else if (VersionUtils.getJavaMajorVersion() <= 8) {
 			
 			throw new Exception("Could not create a customized JRE due to JDK version is " + SystemUtils.JAVA_VERSION + ". Must use jrePath property to specify JRE location to be embedded");
 			
@@ -198,13 +198,13 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 					.map(module -> module.trim())
 					.collect(Collectors.toList());
 		
-		} else if (customizedJre && JavaUtils.getJavaMajorVersion() >= 13) { 
+		} else if (customizedJre && VersionUtils.getJavaMajorVersion() >= 13) { 
 			
 			String modules = 
 				CommandUtils.execute(
 					jdeps.getAbsolutePath(), 
 					"-q",
-					"--multi-release", JavaUtils.getJavaMajorVersion(),
+					"--multi-release", VersionUtils.getJavaMajorVersion(),
 					"--ignore-missing-deps",
 					"--print-module-deps",
 					additionalModulePathsToParams(additionalModulePaths),
@@ -219,13 +219,13 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 					.filter(module -> !module.isEmpty())
 					.collect(Collectors.toList());
 			
-		} else if (customizedJre && JavaUtils.getJavaMajorVersion() >= 9) { 
+		} else if (customizedJre && VersionUtils.getJavaMajorVersion() >= 9) { 
 		
 			String modules = 
 				CommandUtils.execute(
 					jdeps.getAbsolutePath(), 
 					"-q",
-					"--multi-release", JavaUtils.getJavaMajorVersion(),
+					"--multi-release", VersionUtils.getJavaMajorVersion(),
 					"--ignore-missing-deps",					
 					"--list-deps",
 					additionalModulePathsToParams(additionalModulePaths),
