@@ -150,6 +150,12 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 		if (legalFolder.exists()) {
 			FileUtils.removeFolder(legalFolder);
 		}
+
+		// removes jre/man folder as it causes problems when codesigning from Mac OS
+		File manFolder = new File(destinationFolder, "man");
+		if (manFolder.exists()) {
+			FileUtils.removeFolder(manFolder);
+		}
 	
 		if (bundleJre) {
 			Logger.infoUnindent("JRE bundled in " + destinationFolder.getAbsolutePath() + "!");
