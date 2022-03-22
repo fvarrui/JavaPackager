@@ -85,7 +85,11 @@ public class FileUtils {
 		if (new File(destFolder, source.getName()).exists() && !overwrite) return;
 		try {
 			//copyFileToDirectory(source, destFolder);
-			Files.copy(source.toPath(), new File(destFolder, source.getName()).toPath(), StandardCopyOption.COPY_ATTRIBUTES);
+			File destFile = new File(destFolder, source.getName());
+			Files.copy(source.toPath(), destFile.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
+			if (source.canExecute()) {
+				destFile.setExecutable(true, false); // set execution permissions for all (ugo+x)
+			}
 		} catch (IOException e) {
 			throw new Exception(e.getMessage(), e);
 		}
