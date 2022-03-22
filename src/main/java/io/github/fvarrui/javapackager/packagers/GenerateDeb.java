@@ -92,7 +92,7 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 		Data appFolderData = new Data();
 		appFolderData.setType("directory");
 		appFolderData.setSrc(appFolder);
-		appFolderData.setExcludes(executable.getName() + (bundleJre ? "," + jreDirectoryName + "/bin/java" : ""));
+		appFolderData.setExcludes(executable.getName() + (bundleJre ? "," + jreDirectoryName + "/bin/java" + "," + jreDirectoryName + "/lib/jspawnhelper" : ""));
 		appFolderData.addMapper(appFolderMapper);
 
 		dataProducers.add(appFolderData);
