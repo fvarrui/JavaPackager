@@ -226,6 +226,18 @@ public class PackageTask extends AbstractPackageTask {
 		this.generateInstaller = generateInstaller;
 	}
 	
+	@Input
+	@Optional
+	private Boolean forceInstaller;
+	
+	public Boolean isForceInstaller() {
+		return forceInstaller;
+	}
+	
+	public void setForceInstaller(Boolean forceInstaller) {
+		this.forceInstaller = forceInstaller;
+	}
+	
 	@InputDirectory
 	@Optional
 	private File jdkPath;
@@ -577,6 +589,7 @@ public class PackageTask extends AbstractPackageTask {
 					.envPath(defaultIfNull(envPath, extension.getEnvPath()))
 					.extra(defaultIfNull(extra, extension.getExtra()))
 					.fileAssociations(defaultIfNull(fileAssociations, extension.getFileAssociations()))
+					.forceInstaller(defaultIfNull(forceInstaller, extension.isForceInstaller()))					
 					.generateInstaller(defaultIfNull(generateInstaller, extension.getGenerateInstaller()))
 					.jdkPath(defaultIfNull(jdkPath, extension.getJdkPath()))
 					.jreDirectoryName(defaultIfBlank(jreDirectoryName, extension.getJreDirectoryName()))
