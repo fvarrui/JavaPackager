@@ -2,6 +2,7 @@ package io.github.fvarrui.javapackager.gradle;
 
 import java.io.File;
 
+import io.github.fvarrui.javapackager.packagers.*;
 import org.gradle.api.Project;
 import org.gradle.api.internal.provider.Providers;
 import org.gradle.api.logging.Logger;
@@ -12,11 +13,6 @@ import org.gradle.jvm.toolchain.JavaToolchainService;
 import org.gradle.jvm.toolchain.JavaToolchainSpec;
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
-import io.github.fvarrui.javapackager.packagers.AbstractCreateWindowsExe;
-import io.github.fvarrui.javapackager.packagers.Context;
-import io.github.fvarrui.javapackager.packagers.CreateWindowsExeWinRun4j;
-import io.github.fvarrui.javapackager.packagers.Packager;
-import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 
 /**
  * Gradle context
@@ -118,6 +114,7 @@ public class GradleContext extends Context<Logger> {
 		switch (packager.getWinConfig().getExeCreationTool()) {
 			case launch4j: createWindowsExe = new CreateWindowsExeLaunch4j(); break;
 			case winrun4j: createWindowsExe = new CreateWindowsExeWinRun4j(); break;
+			case why: createWindowsExe = new CreateWindowsExeWhy(); break;
 			default: return null;
 		}
 		if (!createWindowsExe.skip(packager)) {

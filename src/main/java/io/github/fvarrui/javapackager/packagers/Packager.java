@@ -62,6 +62,10 @@ public abstract class Packager extends PackagerSettings {
 		return jarFile;
 	}
 
+	public String getJarName() {
+		return jarFile.getName();
+	}
+
 	public File getJarFileDestinationFolder() {
 		return jarFileDestinationFolder;
 	}
