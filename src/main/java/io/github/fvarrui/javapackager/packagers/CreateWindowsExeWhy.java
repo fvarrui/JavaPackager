@@ -30,6 +30,7 @@ public class CreateWindowsExeWhy extends AbstractCreateWindowsExe {
 	@Override
 	protected File doApply(WindowsPackager packager) throws Exception {
 
+		String name = packager.getName();
 		File executable = packager.getExecutable();
 		File manifestFile = packager.getManifestFile();
 		File iconFile = packager.getIconFile();
@@ -58,6 +59,7 @@ public class CreateWindowsExeWhy extends AbstractCreateWindowsExe {
 		// process EXE with rcedit-x64.exe
 		CommandUtils.execute(rcedit.getAbsolutePath(), getGenericExe(), "--set-icon", getGenericIcon());
 		CommandUtils.execute(rcedit.getAbsolutePath(), getGenericExe(), "--application-manifest", getGenericManifest());
+		CommandUtils.execute(rcedit.getAbsolutePath(), getGenericExe(), "--set-version-string", "FileDescription", name);
 
 		// generates why properties
 		/*File propertiesFile = new File(getOutputFolder(), "launcher.ini");
