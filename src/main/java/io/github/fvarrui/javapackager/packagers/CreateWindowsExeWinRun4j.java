@@ -121,6 +121,7 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 		// process EXE with rcedit-x64.exe
 		CommandUtils.execute(rcedit, getGenericExe(), "--set-icon", getGenericIcon());
 		CommandUtils.execute(rcedit, getGenericExe(), "--application-manifest", getGenericManifest());
+		CommandUtils.execute(rcedit.getAbsolutePath(), getGenericExe(), "--set-version-string", "FileDescription", name);
 
 		// creates libs folder if it doesn't exist
 		if (libsFolder == null) {
