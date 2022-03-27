@@ -35,7 +35,7 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 
 		File appFolder = packager.getAppFolder();
 		String name = packager.getName();
-		String version = packager.getVersion();
+		String version = packager.getVersion().replaceAll("-", "_");
 		String description = packager.getDescription();
 		String organizationName = packager.getOrganizationName();
 		File outputDirectory = packager.getOutputDirectory();
