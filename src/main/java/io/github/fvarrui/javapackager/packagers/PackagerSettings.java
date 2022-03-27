@@ -25,6 +25,7 @@ public class PackagerSettings {
 	protected File licenseFile;
 	protected File iconFile;
 	protected Boolean generateInstaller;
+	protected boolean forceInstaller;
 	protected String mainClass;
 	protected String name;
 	protected String displayName;
@@ -102,6 +103,14 @@ public class PackagerSettings {
 	 */
 	public Boolean getGenerateInstaller() {
 		return generateInstaller;
+	}
+	
+	/**
+	 * Get force installer
+	 * @return Force installer
+	 */
+	public boolean isForceInstaller() {
+		return forceInstaller;
 	}
 
 	/**
@@ -449,6 +458,16 @@ public class PackagerSettings {
 	 */
 	public PackagerSettings generateInstaller(Boolean generateInstaller) {
 		this.generateInstaller = generateInstaller;
+		return this;
+	}
+	
+	/**
+	 * Set force installer
+	 * @param forceInstaller Force installer
+	 * @return Packager settings
+	 */
+	public PackagerSettings forceInstaller(Boolean forceInstaller) {
+		this.forceInstaller = forceInstaller;
 		return this;
 	}
 
@@ -845,11 +864,12 @@ public class PackagerSettings {
 	@Override
 	public String toString() {
 		return "PackagerSettings [outputDirectory=" + outputDirectory + ", licenseFile=" + licenseFile + ", iconFile="
-				+ iconFile + ", generateInstaller=" + generateInstaller + ", mainClass=" + mainClass + ", name=" + name
-				+ ", displayName=" + displayName + ", version=" + version + ", description=" + description + ", url="
-				+ url + ", administratorRequired=" + administratorRequired + ", organizationName=" + organizationName
-				+ ", organizationUrl=" + organizationUrl + ", organizationEmail=" + organizationEmail + ", bundleJre="
-				+ bundleJre + ", customizedJre=" + customizedJre + ", jrePath=" + jrePath + ", jdkPath=" + jdkPath
+				+ iconFile + ", generateInstaller=" + generateInstaller + ", forceInstaller=" + forceInstaller
+				+ ", mainClass=" + mainClass + ", name=" + name + ", displayName=" + displayName + ", version="
+				+ version + ", description=" + description + ", url=" + url + ", administratorRequired="
+				+ administratorRequired + ", organizationName=" + organizationName + ", organizationUrl="
+				+ organizationUrl + ", organizationEmail=" + organizationEmail + ", bundleJre=" + bundleJre
+				+ ", customizedJre=" + customizedJre + ", jrePath=" + jrePath + ", jdkPath=" + jdkPath
 				+ ", additionalResources=" + additionalResources + ", modules=" + modules + ", additionalModules="
 				+ additionalModules + ", platform=" + platform + ", envPath=" + envPath + ", vmArgs=" + vmArgs
 				+ ", runnableJar=" + runnableJar + ", copyDependencies=" + copyDependencies + ", jreDirectoryName="
@@ -859,6 +879,4 @@ public class PackagerSettings {
 				+ ", classpath=" + classpath + ", jreMinVersion=" + jreMinVersion + ", manifest=" + manifest
 				+ ", additionalModulePaths=" + additionalModulePaths + ", fileAssociations=" + fileAssociations
 				+ ", packagingJdk=" + packagingJdk + ", scripts=" + scripts + "]";
-	}
-
-}
+	}}

@@ -73,6 +73,12 @@ public class PackageMojo extends AbstractMojo {
 	private Boolean generateInstaller;
 
 	/**
+	 * Forces installer generation.
+	 */
+	@Parameter(defaultValue = "false", property = "forceInstaller", required = false)
+	private Boolean forceInstaller;
+
+	/**
 	 * Full path to your app main class.
 	 */
 	@Parameter(defaultValue = "${exec.mainClass}", property = "mainClass", required = true)
@@ -339,6 +345,7 @@ public class PackageMojo extends AbstractMojo {
 						.envPath(envPath)
 						.extra(extra)
 						.fileAssociations(fileAssociations)
+						.forceInstaller(forceInstaller)
 						.generateInstaller(generateInstaller)
 						.iconFile(iconFile)
 						.jdkPath(jdkPath)

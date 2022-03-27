@@ -33,6 +33,7 @@ public class DefaultPackageTask extends AbstractPackageTask {
 					.envPath(extension.getEnvPath())
 					.extra(extension.getExtra())
 					.fileAssociations(extension.getFileAssociations())
+					.forceInstaller(extension.isForceInstaller())
 					.generateInstaller(extension.getGenerateInstaller())
 					.jdkPath(extension.getJdkPath())
 					.jreDirectoryName(extension.getJreDirectoryName())
