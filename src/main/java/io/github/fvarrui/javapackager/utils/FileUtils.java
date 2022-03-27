@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import io.github.fvarrui.javapackager.model.Platform;
+
 /**
  * Common files and folders utils
  */
@@ -82,10 +84,14 @@ public class FileUtils {
 	
 	public static void copyFileToFolder(File source, File destFolder, boolean overwrite) throws Exception {
 		Logger.info("Copying file [" + source + "] to folder [" + destFolder + "]");
-		if (new File(destFolder, source.getName()).exists() && !overwrite) return;
+		File destFile = new File(destFolder, source.getName());
+		if (destFile.exists() && !overwrite) return;
 		try {
-			//copyFileToDirectory(source, destFolder);
-			Files.copy(source.toPath(), new File(destFolder, source.getName()).toPath(), StandardCopyOption.COPY_ATTRIBUTES);
+			if (Platform.windows.isCurrentPlatform())
+				Files.copy(source.toPath(), destFile.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
+			else {
+				CommandUtils.execute("cp", source, destFile);
+			}			
 		} catch (IOException e) {
 			throw new Exception(e.getMessage(), e);
 		}
@@ -117,7 +123,11 @@ public class FileUtils {
 		Logger.info("Copying folder [" + from + "] to folder [" + to + "]");
 		if (!from.isDirectory()) throw new Exception("Source folder " + from + " is not a directory");
 		try {
-			copyDirectoryToDirectory(from, to);
+			if (Platform.windows.isCurrentPlatform())
+				copyDirectoryToDirectory(from, to);
+			else {
+				CommandUtils.execute("cp", "-R", from, to);
+			}
 		} catch (IOException e) {
 			throw new Exception(e.getMessage(), e);
 		}
