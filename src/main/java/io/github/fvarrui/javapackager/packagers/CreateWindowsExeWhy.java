@@ -1,11 +1,13 @@
 package io.github.fvarrui.javapackager.packagers;
 
-import io.github.fvarrui.javapackager.model.Platform;
-import io.github.fvarrui.javapackager.utils.*;
-
 import java.io.File;
-import java.io.FileOutputStream;
-import java.util.Properties;
+
+import io.github.fvarrui.javapackager.model.Platform;
+import io.github.fvarrui.javapackager.model.WindowsConfig;
+import io.github.fvarrui.javapackager.utils.CommandUtils;
+import io.github.fvarrui.javapackager.utils.FileUtils;
+import io.github.fvarrui.javapackager.utils.Logger;
+import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
 /**
  * Creates Windows executable with WinRun4j
@@ -35,6 +37,12 @@ public class CreateWindowsExeWhy extends AbstractCreateWindowsExe {
 		File manifestFile = packager.getManifestFile();
 		File iconFile = packager.getIconFile();
 		File appFolder = packager.getAppFolder();
+		File jarFile = packager.getJarFile();
+		WindowsConfig winConfig = packager.getWinConfig(); 
+		
+		if (winConfig.isWrapJar()) {
+			Logger.warn("'wrapJar' property ignored when building EXE with " + getArtifactName());
+		}
 		
 		createAssets(packager);
 
@@ -57,19 +65,15 @@ public class CreateWindowsExeWhy extends AbstractCreateWindowsExe {
 		Logger.info("INI file generated in " + genericIni.getAbsolutePath() + "!");
 
 		// process EXE with rcedit-x64.exe
-		CommandUtils.execute(rcedit.getAbsolutePath(), getGenericExe(), "--set-icon", getGenericIcon());
-		CommandUtils.execute(rcedit.getAbsolutePath(), getGenericExe(), "--application-manifest", getGenericManifest());
-		CommandUtils.execute(rcedit.getAbsolutePath(), getGenericExe(), "--set-version-string", "FileDescription", name);
+		CommandUtils.execute(rcedit, getGenericExe(), "--set-icon", getGenericIcon());
+		CommandUtils.execute(rcedit, getGenericExe(), "--application-manifest", getGenericManifest());
+		CommandUtils.execute(rcedit, getGenericExe(), "--set-version-string", "FileDescription", name);
 
-		// generates why properties
-		/*File propertiesFile = new File(getOutputFolder(), "launcher.ini");
-		Properties properties = new Properties();
-		properties.setProperty("mainclass", mainClass);
-		properties.store(new FileOutputStream(propertiesFile), "Why Java Launcher Properties");*/
-
+		// copies JAR to app folder
+		FileUtils.copyFileToFolder(jarFile, appFolder);
+		
 		// copies ini file to app folder
-		File iniFile = new File(appFolder, "launcher.ini");
-		FileUtils.copyFileToFile(genericIni, iniFile);
+		FileUtils.copyFileToFolder(genericIni, appFolder);
 
 		// signs generated exe file
 		sign(getGenericExe(), packager);
