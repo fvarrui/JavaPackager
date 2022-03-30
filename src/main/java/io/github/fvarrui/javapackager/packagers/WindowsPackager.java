@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
@@ -55,13 +54,8 @@ public class WindowsPackager extends Packager {
 	@Override
 	public File doCreateApp() throws Exception {
 		
-		Logger.infoIndent("Creating windows EXE ...");
+		Logger.infoIndent("Creating windows EXE ... with " + getWinConfig().getExeCreationTool());
 
-		// copies JAR to app folder
-		if (!winConfig.isWrapJar()) {
-			FileUtils.copyFileToFolder(jarFile, appFolder);
-		}
-		
 		// generates manifest file to require administrator privileges from velocity template
 		manifestFile = new File(assetsFolder, name + ".exe.manifest");
 		VelocityUtils.render("windows/exe.manifest.vtl", manifestFile, this);
