@@ -45,10 +45,18 @@ public class CreateWindowsExeLaunch4j extends AbstractCreateWindowsExe {
 		String classpath = packager.getClasspath();
 		String jreMinVersion = packager.getJreMinVersion();
 		File jarFile = packager.getJarFile();
+		File appFolder = packager.getAppFolder();
 		
 		createAssets(packager);
 		
-		String jarPath = winConfig.isWrapJar() ? getGenericJar().getAbsolutePath() : jarFile.getName();
+		// copies JAR to app folder
+		String jarPath;
+		if (winConfig.isWrapJar()) {
+			jarPath = getGenericJar().getAbsolutePath();
+		} else {
+			FileUtils.copyFileToFolder(jarFile, appFolder);
+			jarPath = jarFile.getName();
+		}
 	
 		List<Element> optsElements = vmArgs.stream().map(arg -> element("opt", arg)).collect(Collectors.toList());
 		

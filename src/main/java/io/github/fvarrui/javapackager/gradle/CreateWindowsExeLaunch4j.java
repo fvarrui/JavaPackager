@@ -34,10 +34,18 @@ public class CreateWindowsExeLaunch4j extends AbstractCreateWindowsExe {
 		String jreDirectoryName = packager.getJreDirectoryName();
 		String jreMinVersion = packager.getJreMinVersion();
 		File jarFile = packager.getJarFile();
+		File appFolder = packager.getAppFolder();
 
 		createAssets(packager); // creates a folder only for launch4j assets
 
-		String jarPath = winConfig.isWrapJar() ? getGenericJar().getAbsolutePath() : jarFile.getName();
+		// copies JAR to app folder
+		String jarPath;
+		if (winConfig.isWrapJar()) {
+			jarPath = getGenericJar().getAbsolutePath();
+		} else {
+			FileUtils.copyFileToFolder(jarFile, appFolder);
+			jarPath = jarFile.getName();
+		}
 
 		Launch4jLibraryTask l4jTask = Context.getGradleContext().getLibraryTask();
 		l4jTask.getOutputs().upToDateWhen(task -> false);
