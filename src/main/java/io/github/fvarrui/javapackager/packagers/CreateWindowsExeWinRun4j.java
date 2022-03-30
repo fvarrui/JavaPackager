@@ -10,6 +10,7 @@ import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
 
 import io.github.fvarrui.javapackager.model.Platform;
+import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.JarUtils;
@@ -55,6 +56,11 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 		File jreDestinationFolder = packager.getJreDestinationFolder();
 		boolean bundleJre = packager.getBundleJre();
 		String vmLocation = packager.getWinConfig().getVmLocation();
+		WindowsConfig winConfig = packager.getWinConfig(); 
+		
+		if (winConfig.isWrapJar()) {
+			Logger.warn("'wrapJar' property ignored when building EXE with " + getArtifactName());
+		}
 		
 		createAssets(packager);
 
@@ -120,7 +126,7 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 		// process EXE with rcedit-x64.exe
 		CommandUtils.execute(rcedit, getGenericExe(), "--set-icon", getGenericIcon());
 		CommandUtils.execute(rcedit, getGenericExe(), "--application-manifest", getGenericManifest());
-		CommandUtils.execute(rcedit.getAbsolutePath(), getGenericExe(), "--set-version-string", "FileDescription", name);
+		CommandUtils.execute(rcedit, getGenericExe(), "--set-version-string", "FileDescription", name);
 
 		// creates libs folder if it doesn't exist
 		if (libsFolder == null) {
