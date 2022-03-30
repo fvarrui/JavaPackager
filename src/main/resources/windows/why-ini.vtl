@@ -1,8 +1,9 @@
 mainclass=$info.mainClass
-classpath=$info.jarName
+#set($classpath = $info.jarFile.name) 
 #foreach ($cp in $info.classpaths)
-classpath=;$!{cp}
+#set($classpath = $classpath + ";" + $cp)
 #end
+classpath=${classpath}
 #if ($info.bundleJre)
 jvm_path=${info.jreDirectoryName}
 #end

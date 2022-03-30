@@ -66,7 +66,7 @@ public class WindowsPackager extends Packager {
 		
 		// process classpath
 		if (classpath != null) {
-			classpaths = Arrays.asList(classpath.split(";"));
+			classpaths = Arrays.asList(classpath.split("[;:]"));
 			if (!isUseResourcesAsWorkingDir()) {
 				classpaths = classpaths.stream().map(cp -> new File(cp).isAbsolute() ? cp : "%EXEDIR%/" + cp).collect(Collectors.toList());
 			}
