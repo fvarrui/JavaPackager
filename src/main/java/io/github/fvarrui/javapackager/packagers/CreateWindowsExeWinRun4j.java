@@ -128,13 +128,8 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 		CommandUtils.execute(rcedit, getGenericExe(), "--application-manifest", getGenericManifest());
 		CommandUtils.execute(rcedit, getGenericExe(), "--set-version-string", "FileDescription", name);
 
-		// creates libs folder if it doesn't exist
-		if (libsFolder == null) {
-			libsFolder = FileUtils.mkdir(appFolder, "libs");
-		}
-
 		// copies JAR to libs folder
-		FileUtils.copyFileToFolder(jarFile, libsFolder);
+		FileUtils.copyFileToFolder(jarFile, appFolder);
 
 		// copies winrun4j launcher helper library (needed to work around
 		File winrun4jJar = new File(libsFolder, "winrun4j-launcher.jar");
