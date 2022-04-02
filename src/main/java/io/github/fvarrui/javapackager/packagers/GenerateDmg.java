@@ -32,7 +32,7 @@ public class GenerateDmg extends ArtifactGenerator<MacPackager> {
 			return true;
 		}
 		
-		if (!packager.getPlatform().isCurrentPlatform()) {
+		if (!packager.getPlatform().isCurrentPlatform() && !packager.isForceInstaller()) {
 			Logger.warn(getArtifactName() + " cannot be generated due to the target platform (" + packager.getPlatform() + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
 			return true;
 		}

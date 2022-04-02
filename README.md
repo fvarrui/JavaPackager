@@ -23,7 +23,7 @@ Add the following `plugin` tag to your `pom.xml`:
 <plugin>
     <groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
-    <version>1.6.6-SNAPSHOT</version>
+    <version>1.6.6</version>
     <executions>
         <execution>
             <phase>package</phase>
@@ -71,7 +71,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'io.github.fvarrui:javapackager:1.6.5'
+        classpath 'io.github.fvarrui:javapackager:1.6.6'
     }
 }
 
@@ -151,6 +151,7 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 | `displayName`              | :x:                | `${project.name}` or `${name}`                                                   | App name to show.                                                                                                                                                                         |
 | `envPath`                  | :x:                |                                                                                  | Defines PATH environment variable in GNU/Linux and Mac OS X startup scripts.                                                                                                              |
 | `extra`                    | :x:                |                                                                                  | Map with extra properties to be used in customized Velocity templates, accesible through `$info.extra` variable.                                                                          |
+| `forceInstaller`           | :x:                | `false`                                                                          | If `true`, skips operating system check when generating installers.                                                                                                                       |
 | `generateInstaller`        | :x:                | `true`                                                                           | Generates an installer for the app.                                                                                                                                                       |
 | `jdkPath`                  | :x:                | `${java.home}`                                                                   | JDK used to generate a customized JRE. It allows to bundle customized JREs for different platforms.                                                                                       |
 | `jreDirectoryName`         | :x:                | `"jre"`                                                                          | Bundled JRE directory name.                                                                                                                                                               |
