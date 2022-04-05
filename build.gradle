@@ -1,11 +1,11 @@
 plugins {
-    id 'java'    
-    id 'maven'
-    id 'maven-publish'
-    id 'java-gradle-plugin'
+	id 'java'    
+	id 'maven'
+	id 'maven-publish'
+	id 'java-gradle-plugin'
 	id 'com.gradle.plugin-publish' version '0.12.0'
-    id 'io.codearte.nexus-staging' version '0.21.2'
-    id 'eclipse'
+	id 'io.codearte.nexus-staging' version '0.21.2'
+	id 'eclipse'
 	id 'de.undercouch.download' version '4.1.1'
 }
 
@@ -18,12 +18,12 @@ repositories {
 }
 
 gradlePlugin {
-    plugins {
-        javaPackagerPlugin {
-            id = 'io.github.fvarrui.javapackager.plugin'
-            implementationClass = 'io.github.fvarrui.javapackager.gradle.PackagePlugin'
-        }
-    }
+	plugins {
+		javaPackagerPlugin {
+			id = 'io.github.fvarrui.javapackager.plugin'
+			implementationClass = 'io.github.fvarrui.javapackager.gradle.PackagePlugin'
+		}
+	}
 }
 
 pluginBundle {
@@ -39,38 +39,38 @@ pluginBundle {
 }
 
 configurations {
-    mavenEmbedder
+	mavenEmbedder
 }
 
 dependencies {
-    implementation 'org.apache.maven:maven-plugin-api:3.6.0'
-    implementation 'org.codehaus.plexus:plexus-utils:3.1.1'
-    implementation 'org.twdata.maven:mojo-executor:2.3.0'
-    implementation 'commons-io:commons-io:2.6'
-    implementation 'org.apache.commons:commons-lang3:3.9'
-    implementation 'org.apache.commons:commons-collections4:4.1'
-    implementation 'org.apache.commons:commons-compress:1.21'
-    implementation 'org.apache.velocity:velocity-engine-core:2.0'
-    implementation 'org.vafer:jdeb:1.9'
-    implementation 'net.jsign:jsign-core:3.1'
-    implementation 'org.redline-rpm:redline:1.2.10'
-    implementation 'io.github.fvarrui:launch4j:2.5.2' 
-    
-    testImplementation 'junit:junit:4.12'
-    
-    compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
-    
-    mavenEmbedder 'org.apache.maven:maven-embedder:3.6.0'
-    mavenEmbedder 'org.apache.maven:maven-compat:3.6.0'	
-    mavenEmbedder 'org.slf4j:slf4j-simple:1.7.30'
-    mavenEmbedder 'org.eclipse.aether:aether-connector-basic:1.1.0'
-    mavenEmbedder 'org.eclipse.aether:aether-transport-wagon:1.1.0'
-    mavenEmbedder 'org.apache.maven.wagon:wagon-http:3.4.1'
-    mavenEmbedder 'org.apache.maven.wagon:wagon-provider-api:3.4.1'
+	implementation 'org.apache.maven:maven-plugin-api:3.6.0'
+	implementation 'org.codehaus.plexus:plexus-utils:3.1.1'
+	implementation 'org.twdata.maven:mojo-executor:2.3.0'
+	implementation 'commons-io:commons-io:2.6'
+	implementation 'org.apache.commons:commons-lang3:3.9'
+	implementation 'org.apache.commons:commons-collections4:4.1'
+	implementation 'org.apache.commons:commons-compress:1.21'
+	implementation 'org.apache.velocity:velocity-engine-core:2.0'
+	implementation 'org.vafer:jdeb:1.9'
+	implementation 'net.jsign:jsign-core:3.1'
+	implementation 'org.redline-rpm:redline:1.2.10'
+	implementation 'io.github.fvarrui:launch4j:2.5.2'
+
+	testImplementation 'junit:junit:4.12'
+
+	compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
+
+	mavenEmbedder 'org.apache.maven:maven-embedder:3.6.0'
+	mavenEmbedder 'org.apache.maven:maven-compat:3.6.0'	
+	mavenEmbedder 'org.slf4j:slf4j-simple:1.7.30'
+	mavenEmbedder 'org.eclipse.aether:aether-connector-basic:1.1.0'
+	mavenEmbedder 'org.eclipse.aether:aether-transport-wagon:1.1.0'
+	mavenEmbedder 'org.apache.maven.wagon:wagon-http:3.4.1'
+	mavenEmbedder 'org.apache.maven.wagon:wagon-provider-api:3.4.1'
 }
 
 group = 'io.github.fvarrui'
-version = '1.6.6'
+version = '1.6.7-SNAPSHOT'
 description = 'Hybrid Maven/Gradle plugin to package Java applications as native Windows, Mac OS X or GNU/Linux executables and create installers for them'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -79,19 +79,19 @@ targetCompatibility = JavaVersion.VERSION_1_8
 compileJava.options.encoding = 'UTF-8'
 
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from(components.java)
+	publications {
+		mavenJava(MavenPublication) {
+			from(components.java)
 		}
-    }
+	}
 }
 
 install.repositories.mavenInstaller.pom.with {
-    groupId = project.group
-    artifactId = project.name
-    version = project.version
+	groupId = project.group
+	artifactId = project.name
+	version = project.version
 	description = project.description
-    packaging = 'maven-plugin'
+	packaging = 'maven-plugin'
 }
 
 build.dependsOn ':winrun4j-launcher:build'
@@ -99,53 +99,53 @@ build.dependsOn ':winrun4j-launcher:build'
 // runs the plugin description generator
 task generatePluginDescriptor(type: JavaExec, dependsOn: compileJava) {
 
-    def pomFile = file("$buildDir/pom.xml")
-    def pluginDescriptorFile = new File(project.compileJava.destinationDir, 'META-INF/maven/plugin.xml')
-    def directory = buildDir.canonicalPath
-    def outputDirectory = compileJava.destinationDir.canonicalPath
+	def pomFile = file("$buildDir/pom.xml")
+	def pluginDescriptorFile = new File(project.compileJava.destinationDir, 'META-INF/maven/plugin.xml')
+	def directory = buildDir.canonicalPath
+	def outputDirectory = compileJava.destinationDir.canonicalPath
 
-    // FIXME: this does not seem to be working
-    inputs.files project.compileJava.outputs.files
-    outputs.file pluginDescriptorFile
+	// FIXME: this does not seem to be working
+	inputs.files project.compileJava.outputs.files
+	outputs.file pluginDescriptorFile
 
-    classpath = configurations.mavenEmbedder
-    main = 'org.apache.maven.cli.MavenCli'
-    systemProperties['maven.multiModuleProjectDirectory'] = projectDir
-    args = [
-            '--errors',
-            '--batch-mode',
-            '--file', "${buildDir}/pom.xml",
-            'org.apache.maven.plugins:maven-plugin-plugin:3.6.0:descriptor',
-            '-Dproject.build.sourceEncoding=' + compileJava.options.encoding
-    ]
+	classpath = configurations.mavenEmbedder
+	main = 'org.apache.maven.cli.MavenCli'
+	systemProperties['maven.multiModuleProjectDirectory'] = projectDir
+	args = [
+			'--errors',
+			'--batch-mode',
+			'--file', "${buildDir}/pom.xml",
+			'org.apache.maven.plugins:maven-plugin-plugin:3.6.0:descriptor',
+			'-Dproject.build.sourceEncoding=' + compileJava.options.encoding
+	]
 
-    doFirst {
-        install.repositories
-               .mavenInstaller
-               .pom
-               .withXml {
-                    asNode().appendNode('repositories').appendNode('repository')
-                    		.with {
-                                appendNode('id', 'gradle')
-                                appendNode('name', 'Gradle Plugin Portal')
-                                appendNode('url', 'https://plugins.gradle.org/m2/')                    		
-                    		}
-                    asNode().appendNode('build')
-                            .with {
-                                appendNode('directory', directory)
-                                appendNode('outputDirectory', outputDirectory)
-                            }
-               }
-               .writeTo(pomFile)
+	doFirst {
+		install.repositories
+				.mavenInstaller
+				.pom
+				.withXml {
+					asNode().appendNode('repositories').appendNode('repository')
+						.with {
+							appendNode('id', 'gradle')
+							appendNode('name', 'Gradle Plugin Portal')
+							appendNode('url', 'https://plugins.gradle.org/m2/')                    		
+						}
+					asNode().appendNode('build')
+						.with {
+							appendNode('directory', directory)
+							appendNode('outputDirectory', outputDirectory)
+						}
+				}
+				.writeTo(pomFile)
 
-        assert pomFile.file, "${pomFile.canonicalPath}: was not generated"
-        logger.info("POM is generated in ${pomFile.canonicalPath}")
-    }
+		assert pomFile.file, "${pomFile.canonicalPath}: was not generated"
+		logger.info("POM is generated in ${pomFile.canonicalPath}")
+	}
 
-    doLast {
-        assert pluginDescriptorFile.file, "${pluginDescriptorFile.canonicalPath}: was not generated"
-        logger.info("Plugin descriptor is generated in ${pluginDescriptorFile.canonicalPath}")
-    }
+	doLast {
+		assert pluginDescriptorFile.file, "${pluginDescriptorFile.canonicalPath}: was not generated"
+		logger.info("Plugin descriptor is generated in ${pluginDescriptorFile.canonicalPath}")
+	}
 }
 
 project.jar.dependsOn(generatePluginDescriptor)
@@ -153,71 +153,70 @@ publishToMavenLocal.dependsOn(build)
     
 if (project.hasProperty('release')) {
 
-    apply plugin: 'signing'
-    apply plugin: 'maven'
+	apply plugin: 'signing'
+	apply plugin: 'maven'
 
 	task javadocJar(type: Jar) {
-	    classifier = 'javadoc'
-	    from javadoc
+		classifier = 'javadoc'
+		from javadoc
 	}
 	
 	task sourcesJar(type: Jar) {
-	    classifier = 'sources'
-	    from sourceSets.main.allSource
+		classifier = 'sources'
+		from sourceSets.main.allSource
 	}
 	
 	artifacts {
-	    archives javadocJar, sourcesJar
+		archives javadocJar, sourcesJar
 	}
 
-    // Signature of artifacts
-    signing {
-        sign configurations.archives
-    }
+	// Signature of artifacts
+	signing {
+		sign configurations.archives
+	}
 
-    // OSSRH publication
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                // POM signature
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-                // Target repository
-                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                    authentication(userName: ossrhUser, password: ossrhPassword)
-                }
-                pom.project {
-                    name project.name
-                    description project.description
-                    packaging = 'maven-plugin'
-                    url 'https://github.com/fvarrui/JavaPackager'
+	// OSSRH publication
+	uploadArchives {
+		repositories {
+			mavenDeployer {
+				// POM signature
+				beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+				// Target repository
+				repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+					authentication(userName: ossrhUser, password: ossrhPassword)
+				}
+				pom.project {
+					name project.name
+					description project.description
+					packaging = 'maven-plugin'
+					url 'https://github.com/fvarrui/JavaPackager'
 
-                    scm {
-                        connection 'scm:git:git://github.com/fvarrui/JavaPackager.git'
-                        developerConnection 'scm:git:git@github.com:fvarrui/fvarrui.git'
-                        url 'https://github.com/fvarrui/JavaPackager'
-                    }
+					scm {
+						connection 'scm:git:git://github.com/fvarrui/JavaPackager.git'
+						developerConnection 'scm:git:git@github.com:fvarrui/fvarrui.git'
+						url 'https://github.com/fvarrui/JavaPackager'
+					}
 
-                    licenses {
-                        license {
-                            name 'GPL-v3.0'
-                            url 'http://www.gnu.org/licenses/gpl-3.0.txt'
-                            distribution 'repo'
-                        }
-                    }
+					licenses {
+						license {
+							name 'GPL-v3.0'
+							url 'http://www.gnu.org/licenses/gpl-3.0.txt'
+							distribution 'repo'
+						}
+					}
 
-                    developers {
-                        developer {
-                            id = 'fvarrui'
-                            name = 'Francisco Vargas Ruiz'
-                            url = 'https://github.com/fvarrui'
-                        }
-                    }
-                }
-            }
-        }
-
-    }
-    
+					developers {
+						developer {
+							id = 'fvarrui'
+							name = 'Francisco Vargas Ruiz'
+							url = 'https://github.com/fvarrui'
+						}
+					}
+				}
+			}
+		}
+	}
+	
 }
 
 nexusStaging {
