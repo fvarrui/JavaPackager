@@ -23,13 +23,13 @@ import io.github.fvarrui.javapackager.utils.XMLUtils;
  * Packager for Mac OS X
  */
 public class MacPackager extends Packager {
-	
+
 	private File appFile;
 	private File contentsFolder;
 	private File resourcesFolder;
 	private File javaFolder;
 	private File macOSFolder;
-	
+
 	public File getAppFile() {
 		return appFile;
 	}
@@ -38,18 +38,20 @@ public class MacPackager extends Packager {
 	public void doInit() throws Exception {
 
 		this.macConfig.setDefaults(this);
-	
-		// FIX useResourcesAsWorkingDir=false doesn't work fine on Mac OS (option disabled) 
+
+		// FIX useResourcesAsWorkingDir=false doesn't work fine on Mac OS (option
+		// disabled)
 		if (!this.isUseResourcesAsWorkingDir()) {
 			this.useResourcesAsWorkingDir = true;
-			Logger.warn("'useResourcesAsWorkingDir' property disabled on Mac OS (useResourcesAsWorkingDir is always true)");
+			Logger.warn(
+					"'useResourcesAsWorkingDir' property disabled on Mac OS (useResourcesAsWorkingDir is always true)");
 		}
-		
+
 	}
 
 	@Override
 	protected void doCreateAppStructure() throws Exception {
-		
+
 		// initializes the references to the app structure folders
 		this.appFile = new File(appFolder, name + ".app");
 		this.contentsFolder = new File(appFile, "Contents");
@@ -58,19 +60,19 @@ public class MacPackager extends Packager {
 		this.macOSFolder = new File(contentsFolder, "MacOS");
 
 		// makes dirs
-		
+
 		FileUtils.mkdir(this.appFile);
 		Logger.info("App file folder created: " + appFile.getAbsolutePath());
-		
+
 		FileUtils.mkdir(this.contentsFolder);
 		Logger.info("Contents folder created: " + contentsFolder.getAbsolutePath());
-		
+
 		FileUtils.mkdir(this.resourcesFolder);
 		Logger.info("Resources folder created: " + resourcesFolder.getAbsolutePath());
-		
+
 		FileUtils.mkdir(this.javaFolder);
 		Logger.info("Java folder created: " + javaFolder.getAbsolutePath());
-		
+
 		FileUtils.mkdir(this.macOSFolder);
 		Logger.info("MacOS folder created: " + macOSFolder.getAbsolutePath());
 
@@ -81,35 +83,34 @@ public class MacPackager extends Packager {
 		this.resourcesDestinationFolder = resourcesFolder;
 
 	}
-	
+
 	/**
 	 * Creates a native MacOS app bundle
 	 */
 	@Override
 	public File doCreateApp() throws Exception {
-		
 
 		// copies jarfile to Java folder
 		FileUtils.copyFileToFolder(jarFile, javaFolder);
-		
+
 		if (this.administratorRequired) {
 
 			// sets startup file
-			this.executable = new File(macOSFolder, "startup");			
-			
+			this.executable = new File(macOSFolder, "startup");
+
 			// creates startup file to boot java app
 			VelocityUtils.render("mac/startup.vtl", executable, this);
 			executable.setExecutable(true, false);
 			Logger.info("Startup script file created in " + executable.getAbsolutePath());
 
 		} else {
-			
+
 			// sets startup file
-			this.executable = new File(macOSFolder, "universalJavaApplicationStub");						
+			this.executable = new File(macOSFolder, "universalJavaApplicationStub");
 			Logger.info("Using " + executable.getAbsolutePath() + " as startup script");
-			
+
 		}
-		
+
 		// copies universalJavaApplicationStub startup file to boot java app
 		File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
 		FileUtils.copyResourceToFile("/mac/universalJavaApplicationStub", appStubFile, true);
@@ -121,12 +122,15 @@ public class MacPackager extends Packager {
 			return content;
 		});
 		appStubFile.setExecutable(true, false);
-		
+
 		// process classpath
 		classpath = (this.macConfig.isRelocateJar() ? "Java/" : "") + this.jarFile.getName() + (classpath != null ? ":" + classpath : "");
 		classpaths = Arrays.asList(classpath.split("[:;]"));
 		if (!isUseResourcesAsWorkingDir()) {
-			classpaths = classpaths.stream().map(cp -> new File(cp).isAbsolute() ? cp : "$ResourcesFolder/" + cp).collect(Collectors.toList());
+			classpaths = classpaths
+					.stream()
+					.map(cp -> new File(cp).isAbsolute() ? cp : "$ResourcesFolder/" + cp)
+					.collect(Collectors.toList());
 		}
 		classpath = StringUtils.join(classpaths, ":");
 
@@ -144,22 +148,23 @@ public class MacPackager extends Packager {
 		} else {
 			codesign(this.macConfig.getDeveloperId(), this.macConfig.getEntitlements(), this.appFile);
 		}
-		
+
 		return appFile;
 	}
 
-	private void codesign(String developerId, File entitlements, File appFile) throws IOException, CommandLineException {
+	private void codesign(String developerId, File entitlements, File appFile)
+			throws IOException, CommandLineException {
 
 		List<String> flags = new ArrayList<>();
 		if (VersionUtils.compareVersions("10.13.6", SystemUtils.OS_VERSION) >= 0) {
-			flags.add("runtime"); // enable hardened runtime if Mac OS version >= 10.13.6 
+			flags.add("runtime"); // enable hardened runtime if Mac OS version >= 10.13.6
 		} else {
-			Logger.warn("Mac OS version detected: " + SystemUtils.OS_VERSION + " ... hardened runtime disabled!"); 		
+			Logger.warn("Mac OS version detected: " + SystemUtils.OS_VERSION + " ... hardened runtime disabled!");
 		}
-		
+
 		List<Object> codesignArgs = new ArrayList<>();
 		codesignArgs.add("--force");
-		if (!flags.isEmpty()) {			
+		if (!flags.isEmpty()) {
 			codesignArgs.add("--options");
 			codesignArgs.add(StringUtils.join(flags, ","));
 		}

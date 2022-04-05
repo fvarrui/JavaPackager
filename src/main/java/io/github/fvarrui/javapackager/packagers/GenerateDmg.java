@@ -83,20 +83,13 @@ public class GenerateDmg extends ArtifactGenerator<MacPackager> {
 		File volumeIcon = (macConfig.getVolumeIcon() != null) ? macConfig.getVolumeIcon() : iconFile;  
 		FileUtils.copyFileToFile(volumeIcon, new File(appFolder, ".VolumeIcon.icns"));
 
-
-
 		// creates image
 		Logger.info("Creating image: " + tempDmgFile.getAbsolutePath());
 		String osArchitecture = System.getProperty("os.arch");
-		if (osArchitecture.toLowerCase().equals("aarch64")) {
-
-			execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", volumeName, "-ov", "-fs", "APFS", "-format", "UDRW", tempDmgFile);
-
-		} else {
-
-			execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", volumeName, "-ov", "-fs", "HFS+", "-format", "UDRW", tempDmgFile);
-
-		}
+		boolean isAarch64 = osArchitecture.toLowerCase().equals("aarch64");
+		String fileSystem = isAarch64 ? "APFS" : "HFS+";
+		Logger.warn(osArchitecture + " architecture detected. Using " + fileSystem + " filesystem");
+		execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", volumeName, "-ov", "-fs", fileSystem, "-format", "UDRW", tempDmgFile);
 
 		if (mountFolder.exists()) {
 			Logger.info("Unmounting volume: " + mountFolder);
@@ -138,7 +131,7 @@ public class GenerateDmg extends ArtifactGenerator<MacPackager> {
 		Logger.info("Fixing permissions...");
 		execute("chmod", "-Rf", "u+r,go-w", mountFolder);
 
-		if (!osArchitecture.toLowerCase().equals("aarch64")) {
+		if (!isAarch64) {
 			// makes the top window open itself on mount:
 			Logger.info("Blessing ...");
 			execute("bless", "--folder", mountFolder, "--openfolder", mountFolder);
