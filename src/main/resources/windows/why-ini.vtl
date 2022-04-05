@@ -1,0 +1,13 @@
+mainclass=$info.mainClass
+#set($classpath = $info.jarFile.name) 
+#foreach ($cp in $info.classpaths)
+#set($classpath = $classpath + ";" + $cp)
+#end
+classpath=${classpath}
+#if ($info.bundleJre)
+jvm_path=${info.jreDirectoryName}
+#end
+#if (!$info.bundleJre && $info.jreMinVersion)
+min_java=${info.jreMinVersion}
+#end
+launch_options_file=${info.name}.l4j.ini

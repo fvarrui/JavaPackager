@@ -13,6 +13,10 @@ JavaPackager is a hybrid plugin for **Maven** and **Gradle** which provides an e
 
 It was born while teaching to my students how to build and distribute their Java apps, and after seeing that a chain of several plugins was needed to achieve this task, I decided to develop a plugin :ring: to govern them all.
 
+## Apps packaged with JavaPackager
+
+- [Spektar Design Lab](https://spektar.io/)
+
 ## How to use this plugin
 
 ### Package your app with Maven
@@ -23,7 +27,7 @@ Add the following `plugin` tag to your `pom.xml`:
 <plugin>
     <groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
-    <version>1.6.5</version>
+    <version>1.6.6</version>
     <executions>
         <execution>
             <phase>package</phase>
@@ -71,7 +75,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'io.github.fvarrui:javapackager:1.6.5'
+        classpath 'io.github.fvarrui:javapackager:1.6.6'
     }
 }
 
@@ -151,6 +155,7 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 | `displayName`              | :x:                | `${project.name}` or `${name}`                                                   | App name to show.                                                                                                                                                                         |
 | `envPath`                  | :x:                |                                                                                  | Defines PATH environment variable in GNU/Linux and Mac OS X startup scripts.                                                                                                              |
 | `extra`                    | :x:                |                                                                                  | Map with extra properties to be used in customized Velocity templates, accesible through `$info.extra` variable.                                                                          |
+| `forceInstaller`           | :x:                | `false`                                                                          | If `true`, skips operating system check when generating installers.                                                                                                                       |
 | `generateInstaller`        | :x:                | `true`                                                                           | Generates an installer for the app.                                                                                                                                                       |
 | `jdkPath`                  | :x:                | `${java.home}`                                                                   | JDK used to generate a customized JRE. It allows to bundle customized JREs for different platforms.                                                                                       |
 | `jreDirectoryName`         | :x:                | `"jre"`                                                                          | Bundled JRE directory name.                                                                                                                                                               |
@@ -318,6 +323,8 @@ And then, run (ommit `./` on Windows):
 ```
 
 > Related [guide](https://plugins.gradle.org/docs/submit).
+
+
 
 ## Future features
 

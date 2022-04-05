@@ -2,14 +2,9 @@ package io.github.fvarrui.javapackager.maven;
 
 import java.io.File;
 
+import io.github.fvarrui.javapackager.packagers.*;
 import org.apache.maven.plugin.logging.Log;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
-
-import io.github.fvarrui.javapackager.packagers.AbstractCreateWindowsExe;
-import io.github.fvarrui.javapackager.packagers.Context;
-import io.github.fvarrui.javapackager.packagers.CreateWindowsExeWinRun4j;
-import io.github.fvarrui.javapackager.packagers.Packager;
-import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 
 /**
  * Maven context 
@@ -73,6 +68,7 @@ public class MavenContext extends Context<Log> {
 		AbstractCreateWindowsExe createWindowsExe;
 		switch (packager.getWinConfig().getExeCreationTool()) {
 			case launch4j: createWindowsExe = new CreateWindowsExeLaunch4j(); break;
+			case why: createWindowsExe = new CreateWindowsExeWhy(); break;
 			case winrun4j: createWindowsExe = new CreateWindowsExeWinRun4j(); break;
 			default: return null;
 		}

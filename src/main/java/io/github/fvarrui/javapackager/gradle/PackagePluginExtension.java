@@ -51,6 +51,7 @@ public class PackagePluginExtension extends PackagerSettings {
 		this.winConfig = new WindowsConfig();
 		this.outputDirectory = project.getBuildDir();
 		this.scripts = new Scripts();
+		this.forceInstaller = false;
 	}
 	
     public LinuxConfig linuxConfig(Closure<LinuxConfig> closure) {

@@ -92,7 +92,7 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 		Data appFolderData = new Data();
 		appFolderData.setType("directory");
 		appFolderData.setSrc(appFolder);
-		appFolderData.setExcludes(executable.getName() + (bundleJre ? "," + jreDirectoryName + "/bin/java" : ""));
+		appFolderData.setExcludes(executable.getName() + (bundleJre ? "," + jreDirectoryName + "/bin/java" + "," + jreDirectoryName + "/lib/jspawnhelper" : ""));
 		appFolderData.addMapper(appFolderMapper);
 
 		dataProducers.add(appFolderData);
@@ -139,6 +139,21 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 			javaBinaryData.addMapper(javaBinaryMapper);
 
 			dataProducers.add(javaBinaryData);
+			
+			// set correct permissions on jre/lib/jspawnhelper
+			Mapper javaSpawnHelperMapper = new Mapper();
+			javaSpawnHelperMapper.setType("perm");
+			javaSpawnHelperMapper.setFileMode("755");
+			javaSpawnHelperMapper.setPrefix("/opt/" + name + "/" + jreDirectoryName + "/lib");
+
+			File jSpawnHelperFile = new File(appFolder, jreDirectoryName + "/lib/jspawnhelper");
+
+			Data javaSpawnHelperData = new Data();
+			javaSpawnHelperData.setType("file");
+			javaSpawnHelperData.setSrc(jSpawnHelperFile);
+			javaSpawnHelperData.addMapper(javaSpawnHelperMapper);
+
+			dataProducers.add(javaSpawnHelperData);
 			
 		}
 		

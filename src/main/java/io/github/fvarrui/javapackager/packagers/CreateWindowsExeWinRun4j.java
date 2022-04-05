@@ -4,13 +4,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 
 import io.github.fvarrui.javapackager.model.Platform;
+import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.JarUtils;
@@ -56,6 +56,11 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 		File jreDestinationFolder = packager.getJreDestinationFolder();
 		boolean bundleJre = packager.getBundleJre();
 		String vmLocation = packager.getWinConfig().getVmLocation();
+		WindowsConfig winConfig = packager.getWinConfig(); 
+		
+		if (winConfig.isWrapJar()) {
+			Logger.warn("'wrapJar' property ignored when building EXE with " + getArtifactName());
+		}
 		
 		createAssets(packager);
 
@@ -121,14 +126,10 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 		// process EXE with rcedit-x64.exe
 		CommandUtils.execute(rcedit, getGenericExe(), "--set-icon", getGenericIcon());
 		CommandUtils.execute(rcedit, getGenericExe(), "--application-manifest", getGenericManifest());
-
-		// creates libs folder if it doesn't exist
-		if (libsFolder == null) {
-			libsFolder = FileUtils.mkdir(appFolder, "libs");
-		}
+		CommandUtils.execute(rcedit, getGenericExe(), "--set-version-string", "FileDescription", name);
 
 		// copies JAR to libs folder
-		FileUtils.copyFileToFolder(jarFile, libsFolder);
+		FileUtils.copyFileToFolder(jarFile, appFolder);
 
 		// copies winrun4j launcher helper library (needed to work around
 		File winrun4jJar = new File(libsFolder, "winrun4j-launcher.jar");
