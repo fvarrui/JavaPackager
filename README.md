@@ -13,6 +13,10 @@ JavaPackager is a hybrid plugin for **Maven** and **Gradle** which provides an e
 
 It was born while teaching to my students how to build and distribute their Java apps, and after seeing that a chain of several plugins was needed to achieve this task, I decided to develop a plugin :ring: to govern them all.
 
+## Apps packaged with JavaPackager
+
+- [Spektar Design Lab](https://spektar.io/)
+
 ## How to use this plugin
 
 ### Package your app with Maven
@@ -319,6 +323,8 @@ And then, run (ommit `./` on Windows):
 ```
 
 > Related [guide](https://plugins.gradle.org/docs/submit).
+
+
 
 ## Future features
 
