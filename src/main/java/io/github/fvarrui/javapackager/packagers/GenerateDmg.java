@@ -82,10 +82,21 @@ public class GenerateDmg extends ArtifactGenerator<MacPackager> {
 		Logger.info("Copying icon file: " + iconFile.getAbsolutePath());
 		File volumeIcon = (macConfig.getVolumeIcon() != null) ? macConfig.getVolumeIcon() : iconFile;  
 		FileUtils.copyFileToFile(volumeIcon, new File(appFolder, ".VolumeIcon.icns"));
-		
+
+
+
 		// creates image
 		Logger.info("Creating image: " + tempDmgFile.getAbsolutePath());
-		execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", volumeName, "-ov", "-fs", "HFS+", "-format", "UDRW", tempDmgFile);
+		String osArchitecture = System.getProperty("os.arch");
+		if (osArchitecture.toLowerCase().equals("aarch64")) {
+
+			execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", volumeName, "-ov", "-fs", "APFS", "-format", "UDRW", tempDmgFile);
+
+		} else {
+
+			execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", volumeName, "-ov", "-fs", "HFS+", "-format", "UDRW", tempDmgFile);
+
+		}
 
 		if (mountFolder.exists()) {
 			Logger.info("Unmounting volume: " + mountFolder);
@@ -126,10 +137,12 @@ public class GenerateDmg extends ArtifactGenerator<MacPackager> {
 		// makes sure it's not world writeable and user readable
 		Logger.info("Fixing permissions...");
 		execute("chmod", "-Rf", "u+r,go-w", mountFolder);
-		
-		// makes the top window open itself on mount:
-		Logger.info("Blessing ...");
-		execute("bless", "--folder", mountFolder, "--openfolder", mountFolder);
+
+		if (!osArchitecture.toLowerCase().equals("aarch64")) {
+			// makes the top window open itself on mount:
+			Logger.info("Blessing ...");
+			execute("bless", "--folder", mountFolder, "--openfolder", mountFolder);
+		}
 
 		// tells the volume that it has a special file attribute
 		execute("SetFile", "-a", "C", mountFolder);
