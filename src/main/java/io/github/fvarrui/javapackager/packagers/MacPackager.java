@@ -156,10 +156,12 @@ public class MacPackager extends Packager {
 			throws IOException, CommandLineException {
 
 		List<String> flags = new ArrayList<>();
-		if (VersionUtils.compareVersions("10.13.6", SystemUtils.OS_VERSION) >= 0) {
-			flags.add("runtime"); // enable hardened runtime if Mac OS version >= 10.13.6
-		} else {
-			Logger.warn("Mac OS version detected: " + SystemUtils.OS_VERSION + " ... hardened runtime disabled!");
+		if (macConfig.isHardenedCodesign()) {
+			if (VersionUtils.compareVersions("10.13.6", SystemUtils.OS_VERSION) >= 0) {
+				flags.add("runtime"); // enable hardened runtime if Mac OS version >= 10.13.6
+			} else {
+				Logger.warn("Mac OS version detected: " + SystemUtils.OS_VERSION + " ... hardened runtime disabled!");
+			}
 		}
 
 		List<Object> codesignArgs = new ArrayList<>();

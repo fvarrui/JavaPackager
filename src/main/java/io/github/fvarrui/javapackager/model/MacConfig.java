@@ -35,6 +35,7 @@ public class MacConfig implements Serializable {
 	private File entitlements;
 	private boolean codesignApp = true;
 	private InfoPlist infoPlist = new InfoPlist();
+	private boolean hardenedCodesign = true;
 
 	public File getIcnsFile() {
 		return icnsFile;
@@ -212,6 +213,14 @@ public class MacConfig implements Serializable {
 		this.infoPlist = infoPlist;
 	}
 
+	public void setHardenedCodesign(boolean hardenedCodesign) {
+		this.hardenedCodesign = hardenedCodesign;
+	}
+
+	public boolean isHardenedCodesign() {
+		return hardenedCodesign;
+	}
+
 	@Override
 	public String toString() {
 		return "MacConfig [icnsFile=" + icnsFile + ", backgroundImage=" + backgroundImage + ", windowWidth="
@@ -220,7 +229,8 @@ public class MacConfig implements Serializable {
 				+ ", appsLinkIconX=" + appsLinkIconX + ", appsLinkIconY=" + appsLinkIconY + ", volumeIcon=" + volumeIcon
 				+ ", volumeName=" + volumeName + ", generateDmg=" + generateDmg + ", generatePkg=" + generatePkg
 				+ ", relocateJar=" + relocateJar + ", appId=" + appId + ", developerId=" + developerId
-				+ ", entitlements=" + entitlements + ", codesignApp=" + codesignApp + ", infoPlist=" + infoPlist + "]";
+				+ ", entitlements=" + entitlements + ", codesignApp=" + codesignApp + ", infoPlist=" + infoPlist
+				+ ", hardenedCodesign=" + hardenedCodesign + "]";
 	}
 
 	/**
