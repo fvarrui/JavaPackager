@@ -113,14 +113,59 @@ public class MacPackager extends Packager {
 
 		// copies universalJavaApplicationStub startup file to boot java app
 		File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
-		FileUtils.copyResourceToFile("/mac/universalJavaApplicationStub", appStubFile, true);
-		FileUtils.processFileContent(appStubFile, content -> {
+		File tempAppStubFile = new File(macOSFolder, "universalJavaApplicationStub.sh");
+		FileUtils.copyResourceToFile("/mac/universalJavaApplicationStub", tempAppStubFile, true);
+		FileUtils.processFileContent(tempAppStubFile, content -> {
 			if (!macConfig.isRelocateJar()) {
 				content = content.replaceAll("/Contents/Resources/Java", "/Contents/Resources");
 			}
 			content = content.replaceAll("\\$\\{info.name\\}", this.name);
 			return content;
 		});
+
+		// we now need to convert to a binary using shc https://github.com/neurobin/shc
+		// shc needs to be installed so it will be available on commandline
+		// if the user needs this to be done, for example if he uses JFileChooser in his project.
+		String[] env = new String[3];
+		env[0] = "SHELL=/bin/bash";
+		env[1] = "TERM=xterm";
+		env[2] = "LC_ALL=.utf8";
+
+		String[] compileStubCommandString = new String[6];
+		compileStubCommandString[0] = "shc";
+		compileStubCommandString[1] = "-r";
+		compileStubCommandString[2] = "-f"; // let op is symbolic link naar juiste versie
+		compileStubCommandString[3] = tempAppStubFile.getAbsolutePath();
+		compileStubCommandString[4] = "-o";
+		compileStubCommandString[5] = appStubFile.getAbsolutePath();
+
+		String[] removemScriptCommandString = new String[2];
+		removemScriptCommandString[0] = "rm";
+		removemScriptCommandString[1] =  tempAppStubFile.getAbsolutePath();
+
+		String[] removemBuildArtefactCommandString = new String[2];
+		removemBuildArtefactCommandString[0] = "rm";
+		removemBuildArtefactCommandString[1] =  tempAppStubFile.getAbsolutePath() + ".x.c";
+
+		Runtime rt = Runtime.getRuntime();
+
+		try {
+			Process compileProcess = rt.exec(compileStubCommandString, env, macOSFolder);
+			compileProcess.waitFor();
+
+			Process removeScriptProcess = rt.exec(removemScriptCommandString, env);
+			removeScriptProcess.waitFor();
+
+			Process removeBuildArtefactProcess = rt.exec(removemBuildArtefactCommandString, env);
+			removeBuildArtefactProcess.waitFor();
+
+			Logger.info("Succesfully compiled universalApplicationStub.sh bash startup script");
+		} catch (IOException e ) {
+			Logger.info("could not compile universalApplicationStub IO exception: " + e.getMessage());
+		} catch (InterruptedException e) {
+			Logger.info("could not compile universalApplicationStub Interrupted exception: " + e.getMessage());
+		}
+
 		appStubFile.setExecutable(true, false);
 
 		// process classpath
