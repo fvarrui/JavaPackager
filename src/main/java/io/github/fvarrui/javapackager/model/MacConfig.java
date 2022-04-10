@@ -36,6 +36,7 @@ public class MacConfig implements Serializable {
 	private boolean codesignApp = true;
 	private InfoPlist infoPlist = new InfoPlist();
 	private boolean hardenedCodesign = true;
+	private MacStartup macStartup = MacStartup.SCRIPT;
 
 	public File getIcnsFile() {
 		return icnsFile;
@@ -221,6 +222,14 @@ public class MacConfig implements Serializable {
 		return hardenedCodesign;
 	}
 
+	public MacStartup getMacStartup() {
+		return macStartup;
+	}
+
+	public void setMacStartup(MacStartup macStartup) {
+		this.macStartup = macStartup;
+	}
+
 	@Override
 	public String toString() {
 		return "MacConfig [icnsFile=" + icnsFile + ", backgroundImage=" + backgroundImage + ", windowWidth="
@@ -230,7 +239,7 @@ public class MacConfig implements Serializable {
 				+ ", volumeName=" + volumeName + ", generateDmg=" + generateDmg + ", generatePkg=" + generatePkg
 				+ ", relocateJar=" + relocateJar + ", appId=" + appId + ", developerId=" + developerId
 				+ ", entitlements=" + entitlements + ", codesignApp=" + codesignApp + ", infoPlist=" + infoPlist
-				+ ", hardenedCodesign=" + hardenedCodesign + "]";
+				+ ", hardenedCodesign=" + hardenedCodesign + ", macStartup=" + macStartup + "]";
 	}
 
 	/**
