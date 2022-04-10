@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <!-- 
+            Allow Execution of JIT-compiled Code Entitlement
+            https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_allow-jit
+        -->
+        <key>com.apple.security.cs.allow-jit</key>
+        <true/>
+        <!-- 
+            Allow Unsigned Executable Memory Entitlement
+            https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_allow-unsigned-executable-memory
+        -->
+        <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+        <true/>
+        <!--
+            Disable Executable Memory Protection Entitlement
+            https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_disable-executable-page-protection
+        -->
+        <key>com.apple.security.cs.disable-executable-page-protection</key>
+        <true/>
+        <!--
+            Allow DYLD Environment Variables Entitlement
+            https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_allow-dyld-environment-variables
+        -->
+        <key>com.apple.security.cs.allow-dyld-environment-variables</key>
+        <true/>
+        <!--
+            Disable Library Validation Entitlement
+            https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_disable-library-validation
+        -->
+        <key>com.apple.security.cs.disable-library-validation</key>
+        <true/>
+    </dict>
+</plist>
