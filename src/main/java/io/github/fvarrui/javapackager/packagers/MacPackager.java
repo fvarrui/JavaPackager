@@ -165,8 +165,8 @@ public class MacPackager extends Packager {
 		// if entitlements.plist file not specified, use a default one
 		if (entitlements == null) {	
 			Logger.warn("Entitlements file not specified. Using defaults!");			
-			File entitlementsFile = new File(assetsFolder, "entitlements.plist");
-			VelocityUtils.render("mac/entitlements.plist.vtl", entitlementsFile, this);
+			entitlements = new File(assetsFolder, "entitlements.plist");
+			VelocityUtils.render("mac/entitlements.plist.vtl", entitlements, this);
 		} else if (!entitlements.exists()) {
 			throw new Exception("Entitlements file doesn't exist: " + entitlements);
 		}
