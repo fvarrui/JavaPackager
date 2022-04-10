@@ -6,7 +6,7 @@ plugins {
 	id 'com.gradle.plugin-publish' version '0.12.0'
 	id 'io.codearte.nexus-staging' version '0.21.2'
 	id 'eclipse'
-	id 'de.undercouch.download' version '4.1.1'
+	id 'de.undercouch.download' version '5.0.4'
 }
 
 repositories {
@@ -224,10 +224,18 @@ nexusStaging {
 	password = project.findProperty('ossrhPassword') ?: ''
 }
 
-task updateUniversalJavaApplicationStub(type: Download) {
-	group 'Update'
-	description 'Downloads universalJavaApplicationStub to src/main/resources/mac and overrides the existing one.'
-	src 'https://raw.githubusercontent.com/fvarrui/universalJavaApplicationStub/master/src/universalJavaApplicationStub'
+
+task updateUniversalJavaApplicationStub(type : Download) {
+	def version = '20220410.162252'
+	group 'Update universalJavaApplicationStub'
+	description 'Downloads and ovewrites compiled and scripted versions of universalJavaApplicationStub to src/main/resources/mac and overrides the existing ones.'	
+	src([
+		"https://github.com/fvarrui/universalJavaApplicationStub/releases/download/${version}/universalJavaApplicationStub.sh",
+		"https://github.com/fvarrui/universalJavaApplicationStub/releases/download/${version}/universalJavaApplicationStub.x86_64",
+		"https://github.com/fvarrui/universalJavaApplicationStub/releases/download/${version}/universalJavaApplicationStub.arm64",
+		"https://github.com/fvarrui/universalJavaApplicationStub/releases/download/${version}/universalJavaApplicationStub"
+	])
 	dest file('src/main/resources/mac')
-	overwrite true
+    overwrite true
 }
+
