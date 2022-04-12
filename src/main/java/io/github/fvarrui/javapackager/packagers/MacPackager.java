@@ -118,7 +118,7 @@ public class MacPackager extends Packager {
 		case ARM64: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.arm64"; break;
 		case SCRIPT: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.sh"; break;
 		}
-		FileUtils.copyResourceToFile("/mac/" + universalJavaApplicationStubResource, appStubFile, true);
+		FileUtils.copyResourceToFile("/mac/" + universalJavaApplicationStubResource, appStubFile);
 		appStubFile.setExecutable(true, false);
 
 		// process classpath
