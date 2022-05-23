@@ -1,13 +1,16 @@
 package io.github.fvarrui.javapackager.model;
 
 import java.io.File;
+import java.io.Serializable;
 
 import org.apache.commons.lang3.StringUtils;
 
 /**
  * Info needed for signing EXEs on Windows 
  */
-public class WindowsSigning {
+public class WindowsSigning implements Serializable {
+
+	private static final long serialVersionUID = 2559089741502151307L;
 
 	private String storetype;
 	private File keystore;
