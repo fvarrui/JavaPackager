@@ -38,6 +38,7 @@
     <disableDirPage>true|false</disableDirPage>
     <disableProgramGroupPage>true|false</disableProgramGroupPage>
     <disableFinishedPage>true|false</disableFinishedPage>
+    <disableRunAfterInstall>true|false</disableRunAfterInstall>
     <disableWelcomePage>true|false</disableWelcomePage>
     <createDesktopIconTask>true|false</createDesktopIconTask>
     <removeOldLibs>true|false</removeOldLibs>
@@ -105,6 +106,7 @@
 | `disableDirPage`          | :x:       | `true`                                                                                     | If this is set to `true`, Setup will not show the **Select Destination Location** wizard page. |
 | `disableProgramGroupPage` | :x:       | `true`                                                                                     | If this is set to `true`, Setup will not show the **Select Start Menu Folder** wizard page.    |
 | `disableFinishedPage`     | :x:       | `true`                                                                                     | If this is set to `true`, Setup will not show the **Setup Completed** wizard page.             |
+| `disableRunAfterInstall`  | :x:       | `true`                                                                                     | If this is set to `true`, Setup will not **launch the application** after install.             |
 | `disableWelcomePage`      | :x:       | `true`                                                                                     | If this is set to `true`, Setup will not show **Welcome Page**.                                |
 | `createDesktopIconTask`   | :x:       | `true`                                                                                     | If this is set to `true`, Setup will ask for **desktop icon creation**.                        |
 | `removeOldLibs`           | :x:       | `false`                                                                                    | If there's a previous installation, removes old `libs` folder before install.                  |
