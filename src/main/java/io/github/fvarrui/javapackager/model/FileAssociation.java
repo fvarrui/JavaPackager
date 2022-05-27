@@ -1,6 +1,10 @@
 package io.github.fvarrui.javapackager.model;
 
-public class FileAssociation {
+import java.io.Serializable;
+
+public class FileAssociation implements Serializable {
+	private static final long serialVersionUID = -2777769245508048627L;
+	
 	private String mimeType;
 	private String extension;
 	private String description;
