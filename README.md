@@ -18,6 +18,7 @@ It was born while teaching to my students how to build and distribute their Java
 - [Spektar Design Lab](https://spektar.io/)
 - [Astro Pixel Processor](https://www.astropixelprocessor.com/)
 - [GistFX](https://github.com/RedmondSims/GistFX)
+- [AstroImageJ](http://astroimagej.com/)
 
 ## How to use this plugin
 
