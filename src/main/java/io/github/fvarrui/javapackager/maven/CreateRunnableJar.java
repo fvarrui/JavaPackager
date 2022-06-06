@@ -52,7 +52,8 @@ public class CreateRunnableJar extends ArtifactGenerator<Packager> {
 			element("manifest", 
 				element("addClasspath", "true"),
 				element("classpathPrefix", "libs/"),
-				element("mainClass", mainClass)
+				element("mainClass", mainClass),
+				element("useUniqueVersions", "false")
 			)
 		);
 		if (manifest != null) {
