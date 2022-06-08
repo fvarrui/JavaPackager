@@ -53,7 +53,7 @@ public class CreateWindowsExeWhy extends AbstractCreateWindowsExe {
 		FileUtils.copyFileToFile(iconFile, getGenericIcon());
 
 		// creates generic exe
-		FileUtils.copyResourceToFile("/windows/JavaLauncher.exe", getGenericExe());
+		FileUtils.copyResourceToFile("/windows/JavaLauncher.exe", getGenericExe(), packager);
 
 		// copies rcedit command line tool (needed to manipulate exe)
 		File rcedit = new File(getOutputFolder(), "rcedit.exe");

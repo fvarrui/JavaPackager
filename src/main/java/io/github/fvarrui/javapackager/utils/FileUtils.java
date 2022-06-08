@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import io.github.fvarrui.javapackager.packagers.Packager;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -191,9 +193,13 @@ public class FileUtils {
             throw new Exception("Could not copy input stream to " + dest, ex);
         }
 	}
-	
-	public static void copyResourceToFile(String resource, File dest, boolean unixStyleNewLines) throws Exception  {
-		copyResourceToFile(resource, dest);
+
+	public static void copyResourceToFile(String resource, File dest, boolean unixStyleNewLines) throws Exception {
+		copyResourceToFile(resource, dest, unixStyleNewLines, null);
+	}
+
+	public static void copyResourceToFile(String resource, File dest, boolean unixStyleNewLines, Packager packager) throws Exception  {
+		copyResourceToFile(resource, dest, packager);
 		if (unixStyleNewLines) {
 			try {
 				processFileContent(dest, c -> c.replaceAll("\\r\\n", "\n").replaceAll("\\r", "\n"));
@@ -208,8 +214,22 @@ public class FileUtils {
 		content = function.apply(content);
 		writeStringToFile(dest, content, StandardCharsets.UTF_8);
 	}
-	
-	public static void copyResourceToFile(String resource, File dest) throws Exception  {
+
+	public static void copyResourceToFile(String resource, File dest) throws Exception {
+		copyResourceToFile(resource, dest, null);
+	}
+
+	public static void copyResourceToFile(String resource, File dest, Packager packager) throws Exception  {
+		if (packager != null) {
+			String rsc = resource.startsWith("/") ? resource.substring(1) : resource;
+			Path asset = packager.getAssetsDir().toPath().resolve(rsc);
+			if (Files.exists(asset)) {
+				Logger.info("Copying resource [" + asset + "] to file [" + dest + "]");
+				copyFileToFile(asset.toFile(), dest);
+				return;
+			}
+		}
+
 		Logger.info("Copying resource [" + resource + "] to file [" + dest + "]");		
 		copyStreamToFile(FileUtils.class.getResourceAsStream(resource), dest);
 	}
