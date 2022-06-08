@@ -25,7 +25,6 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import io.github.fvarrui.javapackager.packagers.Packager;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -198,8 +197,8 @@ public class FileUtils {
 		copyResourceToFile(resource, dest, unixStyleNewLines, null);
 	}
 
-	public static void copyResourceToFile(String resource, File dest, boolean unixStyleNewLines, Packager packager) throws Exception  {
-		copyResourceToFile(resource, dest, packager);
+	public static void copyResourceToFile(String resource, File dest, boolean unixStyleNewLines, File assetsDir) throws Exception  {
+		copyResourceToFile(resource, dest, assetsDir);
 		if (unixStyleNewLines) {
 			try {
 				processFileContent(dest, c -> c.replaceAll("\\r\\n", "\n").replaceAll("\\r", "\n"));
@@ -219,17 +218,16 @@ public class FileUtils {
 		copyResourceToFile(resource, dest, null);
 	}
 
-	public static void copyResourceToFile(String resource, File dest, Packager packager) throws Exception  {
-		if (packager != null) {
+	public static void copyResourceToFile(String resource, File dest, File assetsDir) throws Exception  {
+		if (assetsDir != null) {
 			String rsc = resource.startsWith("/") ? resource.substring(1) : resource;
-			Path asset = packager.getAssetsDir().toPath().resolve(rsc);
+			Path asset = assetsDir.toPath().resolve(rsc);
 			if (Files.exists(asset)) {
 				Logger.info("Copying resource [" + asset + "] to file [" + dest + "]");
 				copyFileToFile(asset.toFile(), dest);
 				return;
 			}
 		}
-
 		Logger.info("Copying resource [" + resource + "] to file [" + dest + "]");		
 		copyStreamToFile(FileUtils.class.getResourceAsStream(resource), dest);
 	}
