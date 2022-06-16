@@ -1,9 +1,11 @@
 [Desktop Entry]
 Name=${info.displayName}
 GenericName=${info.displayName}
+#if ($info.description)
 Comment=${info.description}
+#end
 Exec=${info.name} %U
-Icon=usr/bin/${info.name}
+Icon=/usr/bin/${info.name}
 Terminal=false
 Type=Application
 StartupNotify=true
