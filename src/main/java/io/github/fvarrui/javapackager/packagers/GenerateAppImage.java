@@ -76,7 +76,7 @@ public class GenerateAppImage extends ArtifactGenerator<LinuxPackager> {
 		File assetsFolder = packager.getAssetsFolder();
 		File appImageTool = new File(assetsFolder, "appimagetool"); 
 		if (!appImageTool.exists()) {
-			String imageToolUrl = IMAGETOOL_URL.formatted(getOSArch()); 
+			String imageToolUrl = String.format(IMAGETOOL_URL, getOSArch()); 
 			try {
 				FileUtils.downloadFromUrl(imageToolUrl, appImageTool);
 			} catch (IOException e) {
