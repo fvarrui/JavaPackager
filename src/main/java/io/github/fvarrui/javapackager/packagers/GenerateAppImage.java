@@ -71,9 +71,8 @@ public class GenerateAppImage extends ArtifactGenerator<LinuxPackager> {
 		FileUtils.createSymlink(appRun, new File("usr/bin", executable.getName()));
 
 		// creates AppRun symlink to startup script
-		Logger.info("Creating symlink to icon ...");
-		File appIconFile = new File(appDir, iconFile.getName());
-		FileUtils.createSymlink(appIconFile, new File("usr/bin", iconFile.getName()));
+		Logger.info("Copying icon to AppDir ...");
+		FileUtils.copyFileToFolder(iconFile, appDir);
 		
 		// runs appimagetool on appFolder
 		Logger.info("Running appimagetool on " + appFolder);
