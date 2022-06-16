@@ -2,11 +2,12 @@
 Name=${info.displayName}
 GenericName=${info.displayName}
 Comment=${info.description}
-Exec=/opt/${info.name}/${info.name} %U
-Icon=/opt/${info.name}/${info.name}.png
+Exec=${info.name} %U
+Icon=${info.name}.png
 Terminal=false
 Type=Application
 StartupNotify=true
 #if ($info.isThereFileAssociations())
 MimeType=${info.getMimeTypesListAsString(";")}
 #end
+Categories=Utility

@@ -44,6 +44,7 @@ public class GenerateAppImage extends ArtifactGenerator<LinuxPackager> {
 		String name = packager.getName();
 		File executable = packager.getExecutable();
 		File assetsFolder = packager.getAssetsFolder();
+		File iconFile = packager.getIconFile();
 
 		// output AppImage file
 		File appImage = new File(outputFolder, name + ".AppImage");
@@ -56,18 +57,23 @@ public class GenerateAppImage extends ArtifactGenerator<LinuxPackager> {
 		File appImageTool = getAppImageTool(packager);
 		Logger.info("App image tool found! " + appImageTool);
 
-		// copies app folder to assets
-		FileUtils.copyFolderContentToFolder(appFolder, appDir);
+		// copies app folder to AppDir/usr/bin
+		FileUtils.copyFolderContentToFolder(appFolder, new File(appDir, "usr/bin"));
 				
-		// generates desktop file from velocity template
+		// generates AppImage desktop file from velocity template
 		File desktopFile = new File(appDir, name + ".desktop");
-		VelocityUtils.render("linux/desktop.vtl", desktopFile, packager);
+		VelocityUtils.render("linux/desktop-appimage.vtl", desktopFile, packager);
 		Logger.info("Desktop file rendered in " + desktopFile.getAbsolutePath());
 		
 		// creates AppRun symlink to startup script
 		Logger.info("Creating AppRun symlink to startup script...");
-		File appRun = new File(appDir, "AppRun");				
-		FileUtils.createSymlink(appRun, new File(executable.getName()));
+		File appRun = new File(appDir, "AppRun");
+		FileUtils.createSymlink(appRun, new File("usr/bin", executable.getName()));
+
+		// creates AppRun symlink to startup script
+		Logger.info("Creating symlink to icon ...");
+		File appIconFile = new File(appDir, iconFile.getName());
+		FileUtils.createSymlink(appIconFile, new File("usr/bin", iconFile.getName()));
 		
 		// runs appimagetool on appFolder
 		Logger.info("Running appimagetool on " + appFolder);
