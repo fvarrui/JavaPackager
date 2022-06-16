@@ -71,7 +71,7 @@ public class GenerateAppImage extends ArtifactGenerator<LinuxPackager> {
 		
 		// runs appimagetool on appFolder
 		Logger.info("Running appimagetool on " + appFolder);
-		CommandUtils.executeOnDirectory(
+		CommandUtils.execute(
 				appImageTool,
 				"--appimage-extract-and-run",
 				appDir,
