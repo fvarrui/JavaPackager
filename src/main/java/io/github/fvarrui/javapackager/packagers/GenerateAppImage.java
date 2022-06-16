@@ -13,7 +13,7 @@ import io.github.fvarrui.javapackager.utils.Logger;
 public class GenerateAppImage extends ArtifactGenerator<LinuxPackager> {
 	
 	private static final int IMAGETOOL_VERSION = 13;
-	private static final String IMAGETOOL_URL = "https://github.com/AppImage/AppImageKit/releases/download/" + IMAGETOOL_VERSION + "/appimagetool-" + SystemUtils.OS_ARCH + ".AppImage";
+	private static final String IMAGETOOL_URL = "https://github.com/AppImage/AppImageKit/releases/download/" + IMAGETOOL_VERSION + "/appimagetool-%s.AppImage";
 	
 	public GenerateAppImage() {
 		super("AppImage");
@@ -72,14 +72,30 @@ public class GenerateAppImage extends ArtifactGenerator<LinuxPackager> {
 		return appImage;
 	}
 	
-	private File getAppImageTool(LinuxPackager packager) throws IOException {
+	private File getAppImageTool(LinuxPackager packager) throws Exception {
 		File assetsFolder = packager.getAssetsFolder();
 		File appImageTool = new File(assetsFolder, "appimagetool"); 
 		if (!appImageTool.exists()) {
-			FileUtils.downloadFromUrl(IMAGETOOL_URL, appImageTool);
+			String imageToolUrl = IMAGETOOL_URL.formatted(getOSArch()); 
+			try {
+				FileUtils.downloadFromUrl(imageToolUrl, appImageTool);
+			} catch (IOException e) {
+				throw new Exception(imageToolUrl + "not found! ... Unsupported OS architecture " + getOSArch() + "?");
+			}
 			appImageTool.setExecutable(true);
 		}
 		return appImageTool;
 	}
-
+	
+	private String getOSArch() {
+		switch (SystemUtils.OS_ARCH) {
+		case "amd64": 
+			return "x86_64";
+		case "x86": 
+		case "i386": 
+			return "i686";
+		}
+		return SystemUtils.OS_ARCH;
+	}
+	
 }
