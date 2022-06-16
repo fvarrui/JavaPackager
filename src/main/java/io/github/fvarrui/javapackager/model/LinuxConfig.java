@@ -10,9 +10,10 @@ import io.github.fvarrui.javapackager.packagers.Packager;
  */
 public class LinuxConfig implements Serializable {
 	private static final long serialVersionUID = -1238166997019141904L;
-	
+
 	private boolean generateDeb = true;
 	private boolean generateRpm = true;
+	private boolean generateAppImage = true;
 	private File pngFile;
 	private boolean wrapJar = true;
 
@@ -32,26 +33,34 @@ public class LinuxConfig implements Serializable {
 		this.generateRpm = generateRpm;
 	}
 
+	public boolean isGenerateAppImage() {
+		return generateAppImage;
+	}
+
+	public void setGenerateAppImage(boolean generateAppImage) {
+		this.generateAppImage = generateAppImage;
+	}
+
 	public File getPngFile() {
-		return pngFile;	
+		return pngFile;
 	}
 
 	public void setPngFile(File pngFile) {
 		this.pngFile = pngFile;
 	}
-	
+
 	public boolean isWrapJar() {
 		return wrapJar;
 	}
-	
+
 	public void setWrapJar(boolean wrapJar) {
 		this.wrapJar = wrapJar;
 	}
 
 	@Override
 	public String toString() {
-		return "LinuxConfig [generateDeb=" + generateDeb + ", generateRpm=" + generateRpm + ", pngFile=" + pngFile
-				+ ", wrapJar=" + wrapJar + "]";
+		return "LinuxConfig [generateDeb=" + generateDeb + ", generateRpm=" + generateRpm + ", generateAppImage="
+				+ generateAppImage + ", pngFile=" + pngFile + ", wrapJar=" + wrapJar + "]";
 	}
 
 	/**

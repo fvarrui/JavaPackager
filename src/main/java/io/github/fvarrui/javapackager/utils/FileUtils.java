@@ -299,6 +299,16 @@ public class FileUtils {
 	}
 	
 	/**
+	 * Download a resource from an URL to a file
+	 * @param url URL to download
+	 * @param file File to copy the downloaded resource
+	 * @throws IOException Resource cannot be copied/downloaded
+	 */
+	public static void downloadFromUrl(String url, File file) throws IOException {
+		downloadFromUrl(new URL(url), file);
+	}
+	
+	/**
 	 * Checks if a file exists or is not null
 	 * @param file File
 	 * @return true if file exits, false if doesn't or is null

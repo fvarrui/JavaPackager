@@ -22,6 +22,7 @@ public abstract class Context<T> {
 		// building tool independent generators
 		getInstallerGenerators(Platform.linux).add(new GenerateDeb());
 		getInstallerGenerators(Platform.linux).add(new GenerateRpm());
+		getInstallerGenerators(Platform.linux).add(new GenerateAppImage());
 		getInstallerGenerators(Platform.mac).add(new GenerateDmg());
 		getInstallerGenerators(Platform.mac).add(new GeneratePkg());
 		getInstallerGenerators(Platform.windows).add(new GenerateSetup());
