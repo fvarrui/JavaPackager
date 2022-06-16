@@ -13,7 +13,7 @@ import io.github.fvarrui.javapackager.utils.Logger;
 public class GenerateAppImage extends ArtifactGenerator<LinuxPackager> {
 	
 	private static final int IMAGETOOL_VERSION = 13;
-	private static final String IMAGETOOL_URL = "https://github.com/AppImage/AppImageKit/releases/download/%d/appimagetool-%s.AppImage".formatted(IMAGETOOL_VERSION, SystemUtils.OS_ARCH);
+	private static final String IMAGETOOL_URL = "https://github.com/AppImage/AppImageKit/releases/download/" + IMAGETOOL_VERSION + "/appimagetool-" + SystemUtils.OS_ARCH + ".AppImage";
 	
 	public GenerateAppImage() {
 		super("AppImage");
