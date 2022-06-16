@@ -13,7 +13,7 @@ import org.codehaus.plexus.util.cli.CommandLineException;
  */
 public class CommandUtils {
 
-	public static String execute(File workingDirectory, String executable, Object... arguments) throws IOException, CommandLineException {
+	public static String executeOnDirectory(File workingDirectory, String executable, Object... arguments) throws IOException, CommandLineException {
 		ExecutionResult result = executeWithResult(workingDirectory, executable, arguments);
 		if (result.getExitCode() != 0) {
 			throw new CommandLineException("Command execution failed: " + executable + " " + StringUtils.join(arguments, " "));
@@ -26,7 +26,7 @@ public class CommandUtils {
 	}
 
 	public static String execute(String executable, Object... arguments) throws IOException, CommandLineException {
-		return execute(new File("."), executable, arguments);
+		return executeOnDirectory(new File("."), executable, arguments);
 	}
 	
 	public static ExecutionResult executeWithResult(File workingDirectory, String executable, Object... arguments) throws IOException, CommandLineException {
