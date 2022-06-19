@@ -1,3 +1,4 @@
+#set ($categories = $StringUtils.join($info.linuxConfig.categories, ";"))
 [Desktop Entry]
 Name=${info.displayName}
 GenericName=${info.displayName}
@@ -10,3 +11,4 @@ StartupNotify=true
 #if ($info.isThereFileAssociations())
 MimeType=${info.getMimeTypesListAsString(";")}
 #end
+Categories=${categories}

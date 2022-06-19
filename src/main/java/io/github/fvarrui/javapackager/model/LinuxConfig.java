@@ -2,6 +2,8 @@ package io.github.fvarrui.javapackager.model;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 
 import io.github.fvarrui.javapackager.packagers.Packager;
 
@@ -11,11 +13,20 @@ import io.github.fvarrui.javapackager.packagers.Packager;
 public class LinuxConfig implements Serializable {
 	private static final long serialVersionUID = -1238166997019141904L;
 
+	private List<String> categories;
 	private boolean generateDeb = true;
 	private boolean generateRpm = true;
 	private boolean generateAppImage = true;
 	private File pngFile;
 	private boolean wrapJar = true;
+	
+	public void setCategories(List<String> categories) {
+		this.categories = categories;
+	}
+	
+	public List<String> getCategories() {
+		return categories;
+	}
 
 	public boolean isGenerateDeb() {
 		return generateDeb;
@@ -59,8 +70,8 @@ public class LinuxConfig implements Serializable {
 
 	@Override
 	public String toString() {
-		return "LinuxConfig [generateDeb=" + generateDeb + ", generateRpm=" + generateRpm + ", generateAppImage="
-				+ generateAppImage + ", pngFile=" + pngFile + ", wrapJar=" + wrapJar + "]";
+		return "LinuxConfig [categories=" + categories + ", generateDeb=" + generateDeb + ", generateRpm=" + generateRpm
+				+ ", generateAppImage=" + generateAppImage + ", pngFile=" + pngFile + ", wrapJar=" + wrapJar + "]";
 	}
 
 	/**
@@ -69,7 +80,7 @@ public class LinuxConfig implements Serializable {
 	 * @param packager Packager
 	 */
 	public void setDefaults(Packager packager) {
-		// nothing
+		this.setCategories((categories == null || categories.isEmpty()) ? Arrays.asList("Utility") : categories);
 	}
 
 }
