@@ -1,6 +1,8 @@
 package io.github.fvarrui.javapackager.packagers;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
@@ -8,6 +10,10 @@ import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
+import org.twdata.maven.mojoexecutor.MojoExecutor;
+
+import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
+import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
 
 /**
  * Creates Windows executable with WinRun4j
@@ -68,6 +74,12 @@ public class CreateWindowsExeWhy extends AbstractCreateWindowsExe {
 		CommandUtils.execute(rcedit, getGenericExe(), "--set-icon", getGenericIcon());
 		CommandUtils.execute(rcedit, getGenericExe(), "--application-manifest", getGenericManifest());
 		CommandUtils.execute(rcedit, getGenericExe(), "--set-version-string", "FileDescription", name);
+		CommandUtils.execute(rcedit, getGenericExe(), "--set-file-version", winConfig.getFileVersion());
+		CommandUtils.execute(rcedit, getGenericExe(), "--set-product-version", winConfig.getProductVersion());
+		CommandUtils.execute(rcedit, getGenericExe(), "--set-version-string", "CompanyName", winConfig.getCompanyName());
+		CommandUtils.execute(rcedit, getGenericExe(), "--set-version-string", "InternalName", winConfig.getInternalName());
+		CommandUtils.execute(rcedit, getGenericExe(), "--set-version-string", "OriginalFilename",winConfig.getOriginalFilename());
+		CommandUtils.execute(rcedit, getGenericExe(), "--set-version-string", "ProductName", winConfig.getProductName());
 
 		// copies JAR to app folder
 		FileUtils.copyFileToFolder(jarFile, appFolder);
