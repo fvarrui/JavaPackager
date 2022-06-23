@@ -52,6 +52,7 @@ public class DefaultPackageTask extends AbstractPackageTask {
 					.outputDirectory(extension.getOutputDirectory())
 					.packagingJdk(extension.getPackagingJdk())
 					.runnableJar(extension.getRunnableJar())
+					.scripts(extension.getScripts())
 					.useResourcesAsWorkingDir(extension.isUseResourcesAsWorkingDir())
 					.url(extension.getUrl())
 					.version(defaultIfNull(extension.getVersion(), getProject().getVersion().toString()))
