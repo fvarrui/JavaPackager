@@ -24,6 +24,7 @@ public class DefaultPackageTask extends AbstractPackageTask {
 					.administratorRequired(extension.getAdministratorRequired())
 					.assetsDir(extension.getAssetsDir())
 					.bundleJre(extension.getBundleJre())
+					.classpath(extension.getClasspath())					
 					.copyDependencies(extension.getCopyDependencies())
 					.createTarball(extension.getCreateTarball())
 					.createZipball(extension.getCreateZipball())
