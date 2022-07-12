@@ -24,7 +24,7 @@
     <originalFilename>${name}.exe</originalFilename>
 
     <!-- choose EXE creation tool -->
-    <exeCreationTool>launch4j|winrun4j</exeCreationTool>
+    <exeCreationTool>launch4j|winrun4j|why</exeCreationTool>
     <vmLocation>relative/path/to/jvm.dll</vmLocation>
 
     <!-- setup generation properties -->
@@ -76,24 +76,24 @@
 
 ## Exe creation properties
 
-| Property            | Mandatory | Default value         | Description                                                                                                          |
-| ------------------- | --------- | --------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `headerType`        | :x:       | `"gui"`               | EXE header type: `console` or `gui`.                                                                                 |
-| `wrapJar`           | :x:       | `true`                | Wrap JAR file in native EXE.                                                                                         |
-| `companyName`       | :x:       | `${organizationName}` | EXE company name.                                                                                                    |
-| `fileVersion`       | :x:       | `"1.0.0.0"`           | EXE file version.                                                                                                    |
-| `txtFileVersion`    | :x:       | `${version}`          | EXE txt file version.                                                                                                |
-| `productVersion`    | :x:       | `"1.0.0.0"`           | EXE product version.                                                                                                 |
-| `txtProductVersion` | :x:       | `${version}`          | EXE txt product version.                                                                                             |
-| `fileDescription`   | :x:       | `${description}`      | EXE file description.                                                                                                |
-| `copyright`         | :x:       | `${organizationName}` | EXE copyright.                                                                                                       |
-| `productName`       | :x:       | `${name}`             | EXE product name.                                                                                                    |
-| `internalName`      | :x:       | `${name}`             | EXE internal name.                                                                                                   |
-| `originalFilename`  | :x:       | `${name}.exe`         | EXE original filename.                                                                                               |
-| `trademark`         | :x:       |                       | EXE trademark.                                                                                                       |
-| `language`          | :x:       |                       | EXE language.                                                                                                        |
-| `exeCreationTool`   | :x:       | `launch4j`            | EXE creation tool: [`launch4j`](http://launch4j.sourceforge.net/) or [`winrun4j`](http://winrun4j.sourceforge.net/). |
-| `vmLocation`        | :x:       |                       | `jvm.dll` path relative to the bundled JRE. **Only for WinRun4J**. \*1                                               |
+| Property            | Mandatory | Default value         | Description                                                                                                                                                       |
+| ------------------- | --------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `headerType`        | :x:       | `"gui"`               | EXE header type: `console` or `gui`.                                                                                                                              |
+| `wrapJar`           | :x:       | `true`                | Wrap JAR file in native EXE.                                                                                                                                      |
+| `companyName`       | :x:       | `${organizationName}` | EXE company name.                                                                                                                                                 |
+| `fileVersion`       | :x:       | `"1.0.0.0"`           | EXE file version.                                                                                                                                                 |
+| `txtFileVersion`    | :x:       | `${version}`          | EXE txt file version.                                                                                                                                             |
+| `productVersion`    | :x:       | `"1.0.0.0"`           | EXE product version.                                                                                                                                              |
+| `txtProductVersion` | :x:       | `${version}`          | EXE txt product version.                                                                                                                                          |
+| `fileDescription`   | :x:       | `${description}`      | EXE file description.                                                                                                                                             |
+| `copyright`         | :x:       | `${organizationName}` | EXE copyright.                                                                                                                                                    |
+| `productName`       | :x:       | `${name}`             | EXE product name.                                                                                                                                                 |
+| `internalName`      | :x:       | `${name}`             | EXE internal name.                                                                                                                                                |
+| `originalFilename`  | :x:       | `${name}.exe`         | EXE original filename.                                                                                                                                            |
+| `trademark`         | :x:       |                       | EXE trademark.                                                                                                                                                    |
+| `language`          | :x:       |                       | EXE language.                                                                                                                                                     |
+| `exeCreationTool`   | :x:       | `launch4j`            | EXE creation tool: [`launch4j`](http://launch4j.sourceforge.net/), [`winrun4j`](http://winrun4j.sourceforge.net/) or [`why`](https://github.com/AstroImageJ/Why). |
+| `vmLocation`        | :x:       |                       | `jvm.dll` path relative to the bundled JRE. **Only for WinRun4J**. \*1                                                                                            |
 
 > \*1: If a JRE is bundled and `vmLocation` is not specified, it uses `bin\client\jvm.dll` or `bin\server\jvm.dll` as VM location by default.
 

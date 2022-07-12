@@ -30,7 +30,7 @@ Add the following `plugin` tag to your `pom.xml`:
 <plugin>
     <groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
-    <version>1.6.6</version>
+    <version>1.6.7</version>
     <executions>
         <execution>
             <phase>package</phase>
@@ -78,7 +78,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'io.github.fvarrui:javapackager:1.6.6'
+        classpath 'io.github.fvarrui:javapackager:1.6.7'
     }
 }
 
@@ -141,62 +141,63 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 
 ### Plugin configuration properties
 
-| Property                   | Mandatory          | Default value                                                                    | Description                                                                                                                                                                               |
-| -------------------------- | ------------------ | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `additionalModulePaths`    | :x:                | `[]`                                                                             | Additional module paths for `jdeps`.                                                                                                                                                      |
-| `additionalModules`        | :x:                | `[]`                                                                             | Additional modules to the ones identified by `jdeps` or the specified with `modules` property.                                                                                            |
-| `additionalResources`      | :x:                | `[]`                                                                             | Additional files and folders to include in the bundled app.                                                                                                                               |
-| `administratorRequired`    | :x:                | `false`                                                                          | App will run as administrator (with elevated privileges).                                                                                                                                 |
-| `assetsDir`                | :x:                | `${basedir}/assets` or `${projectdir}/assets`                                    | Assets location (icons and custom Velocity templates).                                                                                                                                    |
-| `bundleJre`                | :x:                | `false`                                                                          | Embeds a customized JRE with the app.                                                                                                                                                     |
-| `classpath`                | :x:                |                                                                                  | List of additional paths to JVM classpath, separated with `;` (recommended) or `:`.                                                                                                       |
-| `copyDependencies`         | :x:                | `true`                                                                           | Bundles all dependencies (JAR files) with the app.                                                                                                                                        |
-| `createTarball`            | :x:                | `false`                                                                          | Bundles app folder in tarball.                                                                                                                                                            |
-| `createZipball`            | :x:                | `false`                                                                          | Bundles app folder in zipball.                                                                                                                                                            |
-| `customizedJre`            | :x:                | `true`                                                                           | Generates a customized JRE, including only identified or specified modules. Otherwise, all modules will be included.                                                                      |
-| `description`              | :x:                | `${project.description}` or `${displayName}`                                     | Project description.                                                                                                                                                                      |
-| `displayName`              | :x:                | `${project.name}` or `${name}`                                                   | App name to show.                                                                                                                                                                         |
-| `envPath`                  | :x:                |                                                                                  | Defines PATH environment variable in GNU/Linux and Mac OS X startup scripts.                                                                                                              |
-| `extra`                    | :x:                |                                                                                  | Map with extra properties to be used in customized Velocity templates, accesible through `$info.extra` variable.                                                                          |
-| `forceInstaller`           | :x:                | `false`                                                                          | If `true`, skips operating system check when generating installers.                                                                                                                       |
-| `generateInstaller`        | :x:                | `true`                                                                           | Generates an installer for the app.                                                                                                                                                       |
-| `jdkPath`                  | :x:                | `${java.home}`                                                                   | JDK used to generate a customized JRE. It allows to bundle customized JREs for different platforms.                                                                                       |
-| `jreDirectoryName`         | :x:                | `"jre"`                                                                          | Bundled JRE directory name.                                                                                                                                                               |
-| `jreMinVersion`            | :x:                |                                                                                  | JRE minimum version. If an appropriate version cannot be found display error message. Disabled if a JRE is bundled.                                                                       |
-| `jrePath`                  | :x:                | `""`                                                                             | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least.                                                 |
-| `licenseFile`              | :x:                | `${project.licenses[0].url}`  or `${basedir}/LICENSE` or `${projectdir}/LICENSE` | Path to project license file.                                                                                                                                                             |
-| `mainClass`                | :heavy_check_mark: | `${exec.mainClass}`                                                              | Full path to your app main class.                                                                                                                                                         |
-| `manifest`                 | :x:                |                                                                                  | [Allows adding additional entries to MANIFEST.MF file.](docs/manifest.md)                                                                                                                 |
-| `modules`                  | :x:                | `[]`                                                                             | Modules to customize the bundled JRE. Don't use `jdeps` to get module dependencies.                                                                                                       |
-| `name`                     | :x:                | `${project.name}` or `${project.artifactId}`                                     | App name.                                                                                                                                                                                 |
-| `organizationName`         | :x:                | `${project.organization.name}` or `"ACME"`                                       | Organization name.                                                                                                                                                                        |
-| `organizationUrl`          | :x:                | `${project.organization.url}`                                                    | Organization website URL.                                                                                                                                                                 |
-| `organizationEmail`        | :x:                |                                                                                  | Organization email.                                                                                                                                                                       |
-| `outputDirectory`          | :x:                | `${project.build.directory}` or `${project.builddir}`                            | Output directory (where the artifacts will be generated).                                                                                                                                 |
-| `packagingJdk`             | :x:                | `${java.home}`                                                                   | JDK used in the execution of `jlink` and other JDK tools.                                                                                                                                 |
-| `platform`                 | :x:                | `auto`                                                                           | Defines the target platform, which could be different to the execution platform. Possible values:  `auto`, `mac`, `linux`, `windows`. Use `auto`  for using execution platform as target. |
-| `runnableJar`              | :x:                |                                                                                  | Defines your own JAR file to be bundled. If it's ommited, the plugin packages your code in a runnable JAR and bundle it with the app.                                                     |
-| `scripts`                  | :x:                |                                                                                  | Specify bootstrap script. **Pre and post-install scripts comming soon!**                                                                                                                  |
-| `url`                      | :x:                |                                                                                  | App website URL.                                                                                                                                                                          |
-| `useResourcesAsWorkingDir` | :x:                | `true`                                                                           | Uses app resources folder as default working directory (always `true` on Mac OS).                                                                                                         |
-| `version`                  | :x:                | `${project.version}`                                                             | App version.                                                                                                                                                                              |
-| `vmArgs`                   | :x:                | `[]`                                                                             | VM arguments.                                                                                                                                                                             |
+| Property                   | Mandatory          | Default value                                                                                                                                      | Description                                                                                                                                                                               |
+| -------------------------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `additionalModulePaths`    | :x:                | `[]`                                                                                                                                               | Additional module paths for `jdeps`.                                                                                                                                                      |
+| `additionalModules`        | :x:                | `[]`                                                                                                                                               | Additional modules to the ones identified by `jdeps` or the specified with `modules` property.                                                                                            |
+| `additionalResources`      | :x:                | `[]`                                                                                                                                               | Additional files and folders to include in the bundled app.                                                                                                                               |
+| `administratorRequired`    | :x:                | `false`                                                                                                                                            | App will run as administrator (with elevated privileges).                                                                                                                                 |
+| `assetsDir`                | :x:                | `${basedir}/assets` or `${projectdir}/assets`                                                                                                      | Assets location (icons and custom Velocity templates).                                                                                                                                    |
+| `bundleJre`                | :x:                | `false`                                                                                                                                            | Embeds a customized JRE with the app.                                                                                                                                                     |
+| `classpath`                | :x:                |                                                                                                                                                    | List of additional paths to JVM classpath, separated with `;` (recommended) or `:`.                                                                                                       |
+| `copyDependencies`         | :x:                | `true`                                                                                                                                             | Bundles all dependencies (JAR files) with the app.                                                                                                                                        |
+| `createTarball`            | :x:                | `false`                                                                                                                                            | Bundles app folder in tarball.                                                                                                                                                            |
+| `createZipball`            | :x:                | `false`                                                                                                                                            | Bundles app folder in zipball.                                                                                                                                                            |
+| `customizedJre`            | :x:                | `true`                                                                                                                                             | Generates a customized JRE, including only identified or specified modules. Otherwise, all modules will be included.                                                                      |
+| `description`              | :x:                | `${project.description}` or `${displayName}`                                                                                                       | Project description.                                                                                                                                                                      |
+| `displayName`              | :x:                | `${project.name}` or `${name}`                                                                                                                     | App name to show.                                                                                                                                                                         |
+| `envPath`                  | :x:                |                                                                                                                                                    | Defines PATH environment variable in GNU/Linux and Mac OS X startup scripts.                                                                                                              |
+| `extra`                    | :x:                |                                                                                                                                                    | Map with extra properties to be used in customized Velocity templates, accesible through `$info.extra` variable.                                                                          |
+| `fileAssociations`         | :x:                | [`FileAssociation[]`](https://github.com/fvarrui/JavaPackager/blob/master/src/main/java/io/github/fvarrui/javapackager/model/FileAssociation.java) | Associate file extensions or MIME types to the app.                                                                                                                                       |
+| `forceInstaller`           | :x:                | `false`                                                                                                                                            | If `true`, skips operating system check when generating installers.                                                                                                                       |
+| `generateInstaller`        | :x:                | `true`                                                                                                                                             | Generates an installer for the app.                                                                                                                                                       |
+| `jdkPath`                  | :x:                | `${java.home}`                                                                                                                                     | JDK used to generate a customized JRE. It allows to bundle customized JREs for different platforms.                                                                                       |
+| `jreDirectoryName`         | :x:                | `"jre"`                                                                                                                                            | Bundled JRE directory name.                                                                                                                                                               |
+| `jreMinVersion`            | :x:                |                                                                                                                                                    | JRE minimum version. If an appropriate version cannot be found display error message. Disabled if a JRE is bundled.                                                                       |
+| `jrePath`                  | :x:                | `""`                                                                                                                                               | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least.                                                 |
+| `licenseFile`              | :x:                | `${project.licenses[0].url}`  or `${basedir}/LICENSE` or `${projectdir}/LICENSE`                                                                   | Path to project license file.                                                                                                                                                             |
+| `mainClass`                | :heavy_check_mark: | `${exec.mainClass}`                                                                                                                                | Full path to your app main class.                                                                                                                                                         |
+| `manifest`                 | :x:                |                                                                                                                                                    | [Allows adding additional entries to MANIFEST.MF file.](docs/manifest.md)                                                                                                                 |
+| `modules`                  | :x:                | `[]`                                                                                                                                               | Modules to customize the bundled JRE. Don't use `jdeps` to get module dependencies.                                                                                                       |
+| `name`                     | :x:                | `${project.name}` or `${project.artifactId}`                                                                                                       | App name.                                                                                                                                                                                 |
+| `organizationName`         | :x:                | `${project.organization.name}` or `"ACME"`                                                                                                         | Organization name.                                                                                                                                                                        |
+| `organizationUrl`          | :x:                | `${project.organization.url}`                                                                                                                      | Organization website URL.                                                                                                                                                                 |
+| `organizationEmail`        | :x:                |                                                                                                                                                    | Organization email.                                                                                                                                                                       |
+| `outputDirectory`          | :x:                | `${project.build.directory}` or `${project.builddir}`                                                                                              | Output directory (where the artifacts will be generated).                                                                                                                                 |
+| `packagingJdk`             | :x:                | `${java.home}`                                                                                                                                     | JDK used in the execution of `jlink` and other JDK tools.                                                                                                                                 |
+| `platform`                 | :x:                | `auto`                                                                                                                                             | Defines the target platform, which could be different to the execution platform. Possible values:  `auto`, `mac`, `linux`, `windows`. Use `auto`  for using execution platform as target. |
+| `runnableJar`              | :x:                |                                                                                                                                                    | Defines your own JAR file to be bundled. If it's ommited, the plugin packages your code in a runnable JAR and bundle it with the app.                                                     |
+| `scripts`                  | :x:                |                                                                                                                                                    | Specify bootstrap script. **Pre and post-install scripts comming soon!**                                                                                                                  |
+| `url`                      | :x:                |                                                                                                                                                    | App website URL.                                                                                                                                                                          |
+| `useResourcesAsWorkingDir` | :x:                | `true`                                                                                                                                             | Uses app resources folder as default working directory (always `true` on Mac OS).                                                                                                         |
+| `version`                  | :x:                | `${project.version}`                                                                                                                               | App version.                                                                                                                                                                              |
+| `vmArgs`                   | :x:                | `[]`                                                                                                                                               | VM arguments.                                                                                                                                                                             |
 
 > Some default values depends on the used building tool.
 
 **Platform specific properties**
 
-| Property      | Mandatory | Default | Description                                                         |
-| ------------- | --------- | ------- | ------------------------------------------------------------------- |
-| `linuxConfig` | :x:       |         | [GNU/Linux specific properties](docs/linux-specific-properties.md). |
-| `macConfig`   | :x:       |         | [Mac OS X specific properties](docs/macosx-specific-properties.md). |
-| `winConfig`   | :x:       |         | [Windows specific properties](docs/windows-specific-properties.md). |
+| Property      | Mandatory | Description                                                         |
+| ------------- | --------- | ------------------------------------------------------------------- |
+| `linuxConfig` | :x:       | [GNU/Linux specific properties](docs/linux-specific-properties.md). |
+| `macConfig`   | :x:       | [Mac OS X specific properties](docs/macosx-specific-properties.md). |
+| `winConfig`   | :x:       | [Windows specific properties](docs/windows-specific-properties.md). |
 
 > :warning: Be careful when using the `platform` property if your project uses platform dependent libraries, so the libraries of the current platform will be copied, not those required for the target platform. You can solve this problem using `classifiers`.
 
 ### Plugin assets
 
-Some assets, such as application icons and templates, could be placed in `${assetsDir}` folder organized by platform.
+Any [asset used by JavaPackager]([JavaPackager/src/main/resources at master · fvarrui/JavaPackager · GitHub](https://github.com/fvarrui/JavaPackager/tree/master/src/main/resources)), such as application icons or templates, can be replaced just by placing a file with the same name in `${assetsDir}` folder organized by platform.
 
 ```bash
 ${assetsDir}/
@@ -233,6 +234,8 @@ ${assetsDir}/
 |   ├── assembly.xml.vtl               # maven-assembly-plugin template to generate ZIP/TGZ bundles for GNU/Linux
 |   ├── control.vtl                    # DEB control template
 |   ├── desktop.vtl                    # Desktop template
+|   ├── desktop-appimage.vtl           # AppImage format Desktop template
+|   ├── mime.xml.vtl                   # MIME.XML template
 │   └── startup.sh.vtl                 # Startup script template
 ├── mac/
 |   ├── assembly.xml.vtl               # maven-assembly-plugin template to generate ZIP/TGZ bundles for Mac OS X
@@ -246,6 +249,7 @@ ${assetsDir}/
     ├── iss.vtl                        # Inno Setup Script template
     ├── msm.wxs.vtl                    # WiX Toolset WXS template to generate Merge Module
     ├── startup.vbs.vtl                # Startup script template (VB Script)
+    ├── why-ini.vtl                    # WHY INI template
     └── wxs.vtl                        # WiX Toolset WXS template to generate MSI
 ```
 
@@ -282,7 +286,7 @@ And then bundle this file with your app:
 
 ## How to build and install the plugin
 
-> Useful to try SNAPSHOT versions.
+Useful to try SNAPSHOT versions.
 
 Execute next commands in BASH (GNU/Linux or macOS) or CMD (Windows):
 
@@ -310,24 +314,6 @@ Run next command (ommit `./` on Windows):
 ```
 
 > Related [guide](https://nemerosa.ghost.io/2015/07/01/publishing-to-the-maven-central-using-gradle/).
-
-## How to release the plugin to Gradle plugin portal
-
-Only the first time, run next command:
-
-```bash
-./gradlew login
-```
-
-And then, run (ommit `./` on Windows):
-
-```bash
-./gradlew publishPlugins
-```
-
-> Related [guide](https://plugins.gradle.org/docs/submit).
-
-
 
 ## Future features
 
