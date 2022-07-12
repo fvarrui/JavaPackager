@@ -65,7 +65,7 @@ export PATH=${info.envPath}
 
 JVMDefaultOptions="${vmArgs}"
 JVMOptionsFile="$SCRIPTPATH/${info.name}.l4j.ini"
-[ -f $JVMOptionsFile ] && while read -r option; do JVMDefaultOptions+=" $option"; done <<< $(sed "/^#.*$/d" $JVMOptionsFile)
+[ -f "${JVMOptionsFile}" ] && while read -r option; do JVMDefaultOptions+=" $option"; done <<< $(sed "/^#.*$/d" "${JVMOptionsFile}")
 
 JVMClassPath="$BINARY"
 #foreach ($classpath in $info.classpaths)
@@ -78,7 +78,7 @@ cd "$SCRIPTPATH"
 
 #if ($info.scripts.bootstrap)
 # invoke bootstrap script
-Bootstrap=$SCRIPTPATH/scripts/${info.bootstrapFile.name} && [ -x "$Bootstrap" ] && $Bootstrap
+Bootstrap="$SCRIPTPATH/scripts/${info.bootstrapFile.name}" && [ -x "$Bootstrap" ] && "$Bootstrap"
 #end
 
 #if ($info.administratorRequired)
