@@ -180,10 +180,10 @@ public class MacPackager extends Packager {
 		}
 		codesignArgs.add("--deep");		
 		codesignArgs.add("--entitlements");
-		codesignArgs.add(entitlements);
+		codesignArgs.add("\'"+entitlements+"\'");
 		codesignArgs.add("--sign");
-		codesignArgs.add(developerId);
-		codesignArgs.add(appFile);
+		codesignArgs.add("\'"+developerId+"\'");
+		codesignArgs.add("\'"+appFile+"\'");
 		
 		// run codesign
 		CommandUtils.execute("codesign", codesignArgs.toArray(new Object[codesignArgs.size()]));
