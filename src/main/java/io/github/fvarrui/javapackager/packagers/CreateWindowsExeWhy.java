@@ -1,8 +1,6 @@
 package io.github.fvarrui.javapackager.packagers;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
@@ -10,10 +8,6 @@ import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
-import org.twdata.maven.mojoexecutor.MojoExecutor;
-
-import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
 
 /**
  * Creates Windows executable with WinRun4j
