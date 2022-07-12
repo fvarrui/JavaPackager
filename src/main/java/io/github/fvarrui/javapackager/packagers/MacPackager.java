@@ -1,7 +1,6 @@
 package io.github.fvarrui.javapackager.packagers;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.codehaus.plexus.util.cli.CommandLineException;
 
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
@@ -113,14 +111,14 @@ public class MacPackager extends Packager {
 
 		// copies universalJavaApplicationStub startup file to boot java app
 		File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
-		FileUtils.copyResourceToFile("/mac/universalJavaApplicationStub", appStubFile, true, this.getAssetsDir());
-		FileUtils.processFileContent(appStubFile, content -> {
-			if (!macConfig.isRelocateJar()) {
-				content = content.replaceAll("/Contents/Resources/Java", "/Contents/Resources");
-			}
-			content = content.replaceAll("\\$\\{info.name\\}", this.name);
-			return content;
-		});
+		String universalJavaApplicationStubResource = null;
+		switch (macConfig.getMacStartup()) {
+		case UNIVERSAL:	universalJavaApplicationStubResource = "universalJavaApplicationStub"; break;
+		case X86_64:	universalJavaApplicationStubResource = "universalJavaApplicationStub.x86_64"; break;
+		case ARM64: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.arm64"; break;
+		case SCRIPT: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.sh"; break;
+		}
+		FileUtils.copyResourceToFile("/mac/" + universalJavaApplicationStubResource, appStubFile);
 		appStubFile.setExecutable(true, false);
 
 		// process classpath
@@ -152,9 +150,9 @@ public class MacPackager extends Packager {
 		return appFile;
 	}
 
-	private void codesign(String developerId, File entitlements, File appFile)
-			throws IOException, CommandLineException {
+	private void codesign(String developerId, File entitlements, File appFile) throws Exception {
 
+		// checks --option flags
 		List<String> flags = new ArrayList<>();
 		if (macConfig.isHardenedCodesign()) {
 			if (VersionUtils.compareVersions("10.13.6", SystemUtils.OS_VERSION) >= 0) {
@@ -163,25 +161,31 @@ public class MacPackager extends Packager {
 				Logger.warn("Mac OS version detected: " + SystemUtils.OS_VERSION + " ... hardened runtime disabled!");
 			}
 		}
+		
+		// if entitlements.plist file not specified, use a default one
+		if (entitlements == null) {	
+			Logger.warn("Entitlements file not specified. Using defaults!");			
+			entitlements = new File(assetsFolder, "entitlements.plist");
+			VelocityUtils.render("mac/entitlements.plist.vtl", entitlements, this);
+		} else if (!entitlements.exists()) {
+			throw new Exception("Entitlements file doesn't exist: " + entitlements);
+		}
 
+		// prepare params array
 		List<Object> codesignArgs = new ArrayList<>();
 		codesignArgs.add("--force");
 		if (!flags.isEmpty()) {
 			codesignArgs.add("--options");
 			codesignArgs.add(StringUtils.join(flags, ","));
 		}
-		codesignArgs.add("--deep");
-		if (entitlements == null) {
-			Logger.warn("Entitlements file not specified");
-		} else if (!entitlements.exists()) {
-			Logger.warn("Entitlements file doesn't exist: " + entitlements);
-		} else {
-			codesignArgs.add("--entitlements");
-			codesignArgs.add(entitlements);
-		}
+		codesignArgs.add("--deep");		
+		codesignArgs.add("--entitlements");
+		codesignArgs.add(entitlements);
 		codesignArgs.add("--sign");
 		codesignArgs.add(developerId);
 		codesignArgs.add(appFile);
+		
+		// run codesign
 		CommandUtils.execute("codesign", codesignArgs.toArray(new Object[codesignArgs.size()]));
 	}
 

@@ -117,6 +117,12 @@
 			<key>BootstrapScript</key>
 			<string>$APP_PACKAGE/Contents/Resources/scripts/${info.bootstrapFile.name}</string>
 #end
+			<key>RelocateJar</key>
+#if ($info.macConfig.relocateJar)			
+			<true/>
+#else
+			<false/>
+#end
 		</dict>
 		<key>LSEnvironment</key>
 		<dict>
