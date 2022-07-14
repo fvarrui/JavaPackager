@@ -11,7 +11,7 @@
     <relocateJar>true|false</relocateJar>
 
     <!-- signing properties -->
-    <developerId>singning identity</developerId>
+    <developerCertificateName>singning identity</developerCertificateName>
     <entitlements>path/to/entitlements.plist</entitlements>
     <codesignApp>true|false</codesignApp>
 
@@ -48,13 +48,13 @@
 ```
 
 | Property       | Mandatory | Default value  | Description                                                                                                                      |
-| -------------- | --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| -------------- | --------- | -------------- |----------------------------------------------------------------------------------------------------------------------------------|
 | `icnsFile`     | :x:       | `null`         | Icon file.                                                                                                                       |
 | `generateDmg`  | :x:       | `true`         | Enables DMG disk image file generation.                                                                                          |
 | `generatePkg`  | :x:       | `true`         | Enables installation package generation.                                                                                         |
 | `relocateJar`  | :x:       | `true`         | If `true`, Jar files are located in `Contents/Resources/Java` folder, otherwise they are located in `Contents/Resources` folder. |
 | `appId`        | :x:       | `${mainClass}` | App unique identifier.                                                                                                           |
-| `developerId`  | :x:       | `null`         | Signing identity.                                                                                                                |
+| `developerCertificateName`  | :x:       | `null`         | Name of the signing certificate. For example: `3rd Party Mac Developer Application: Max Musterman (6W37Y3F4CM)`                  |
 | `entitlements` | :x:       | `null`         | Path to [entitlements](https://developer.apple.com/documentation/bundleresources/entitlements) file.                             |
 | `codesignApp`  | :x:       | `true`         | If it is set to `false`, generated app will not be codesigned.                                                                   |
 

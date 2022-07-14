@@ -31,7 +31,7 @@ public class MacConfig implements Serializable {
 	private boolean generatePkg = true;
 	private boolean relocateJar = true;
 	private String appId;
-	private String developerId = "-";
+	private String developerCertificateName = "-";
 	private File entitlements;
 	private boolean codesignApp = true;
 	private InfoPlist infoPlist = new InfoPlist();
@@ -182,12 +182,12 @@ public class MacConfig implements Serializable {
 		this.appId = appId;
 	}
 
-	public String getDeveloperId() {
-		return developerId;
+	public String getDeveloperCertificateName() {
+		return developerCertificateName;
 	}
 
-	public void setDeveloperId(String developerId) {
-		this.developerId = developerId;
+	public void setDeveloperCertificateName(String developerCertificateName) {
+		this.developerCertificateName = developerCertificateName;
 	}
 
 	public File getEntitlements() {
@@ -237,7 +237,7 @@ public class MacConfig implements Serializable {
 				+ ", iconSize=" + iconSize + ", textSize=" + textSize + ", iconX=" + iconX + ", iconY=" + iconY
 				+ ", appsLinkIconX=" + appsLinkIconX + ", appsLinkIconY=" + appsLinkIconY + ", volumeIcon=" + volumeIcon
 				+ ", volumeName=" + volumeName + ", generateDmg=" + generateDmg + ", generatePkg=" + generatePkg
-				+ ", relocateJar=" + relocateJar + ", appId=" + appId + ", developerId=" + developerId
+				+ ", relocateJar=" + relocateJar + ", appId=" + appId + ", developerId=" + developerCertificateName
 				+ ", entitlements=" + entitlements + ", codesignApp=" + codesignApp + ", infoPlist=" + infoPlist
 				+ ", hardenedCodesign=" + hardenedCodesign + ", macStartup=" + macStartup + "]";
 	}
