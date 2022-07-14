@@ -138,6 +138,12 @@ public class MacPackager extends Packager {
 		XMLUtils.prettify(infoPlistFile);
 		Logger.info("Info.plist file created in " + infoPlistFile.getAbsolutePath());
 
+		// copy provisionprofile
+		if(macConfig.getProvisionProfile() != null) {
+			// file name must be 'embedded.provisionprofile'
+			FileUtils.copyFileToFile(macConfig.getProvisionProfile(), new File(contentsFolder, "embedded.provisionprofile"));
+		}
+
 		// codesigns app folder
 		if (!Platform.mac.isCurrentPlatform()) {
 			Logger.warn("Generated app could not be signed due to current platform is " + Platform.getCurrentPlatform());
