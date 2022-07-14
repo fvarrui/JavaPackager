@@ -33,6 +33,7 @@ public class MacConfig implements Serializable {
 	private String appId;
 	private String developerId = "-";
 	private File entitlements;
+	private File provisionProfile;
 	private boolean codesignApp = true;
 	private InfoPlist infoPlist = new InfoPlist();
 	private boolean hardenedCodesign = true;
@@ -188,6 +189,14 @@ public class MacConfig implements Serializable {
 
 	public void setDeveloperId(String developerId) {
 		this.developerId = developerId;
+	}
+
+	public File getProvisionProfile() {
+		return provisionProfile;
+	}
+
+	public void setProvisionProfile(File provisionProfile) {
+		this.provisionProfile = provisionProfile;
 	}
 
 	public File getEntitlements() {
