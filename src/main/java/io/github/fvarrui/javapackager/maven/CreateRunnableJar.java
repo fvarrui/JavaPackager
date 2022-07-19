@@ -33,9 +33,13 @@ public class CreateRunnableJar extends ArtifactGenerator<Packager> {
 	public CreateRunnableJar() {
 		super("Runnable JAR");
 	}
-	
+
 	@Override
 	protected File doApply(Packager packager) {
+
+		if(packager.getRunnableJar() != null){
+			return packager.getRunnableJar();
+		}
 		
 		String classifier = "runnable";
 		String name = packager.getName();
