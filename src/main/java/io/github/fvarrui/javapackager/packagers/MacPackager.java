@@ -139,9 +139,13 @@ public class MacPackager extends Packager {
 		Logger.info("Info.plist file created in " + infoPlistFile.getAbsolutePath());
 
 		// copy provisionprofile
-		if(macConfig.getProvisionProfile() != null) {
+		if (macConfig.getProvisionProfile() != null) {
 			// file name must be 'embedded.provisionprofile'
-			FileUtils.copyFileToFile(macConfig.getProvisionProfile(), new File(contentsFolder, "embedded.provisionprofile"));
+			File provisionProfile = new File(contentsFolder, "embedded.provisionprofile");
+			FileUtils.copyFileToFile(macConfig.getProvisionProfile(), provisionProfile);
+			Logger.info("Provision profile file created from " + "\n" +
+					macConfig.getProvisionProfile() + " to \n" +
+					provisionProfile.getAbsolutePath());
 		}
 
 		// codesigns app folder
