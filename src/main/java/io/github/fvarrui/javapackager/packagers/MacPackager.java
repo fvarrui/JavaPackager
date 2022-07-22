@@ -98,8 +98,11 @@ public class MacPackager extends Packager {
 
 			// creates startup file to boot java app
 			VelocityUtils.render("mac/startup.vtl", executable, this);
-			executable.setExecutable(true, false);
 			Logger.info("Startup script file created in " + executable.getAbsolutePath());
+			if(!executable.setExecutable(true, false)){
+				Logger.error("Failed to set executable permissions for " + executable);
+			}
+
 
 		} else {
 
@@ -119,7 +122,9 @@ public class MacPackager extends Packager {
 		case SCRIPT: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.sh"; break;
 		}
 		FileUtils.copyResourceToFile("/mac/" + universalJavaApplicationStubResource, appStubFile);
-		appStubFile.setExecutable(true, false);
+		if(!appStubFile.setExecutable(true, false)){
+			Logger.error("Failed to make app-stub executable");
+		}
 
 		// process classpath
 		classpath = (this.macConfig.isRelocateJar() ? "Java/" : "") + this.jarFile.getName() + (classpath != null ? ":" + classpath : "");
@@ -150,6 +155,7 @@ public class MacPackager extends Packager {
 
 		// codesigns app folder
 		if (!Platform.mac.isCurrentPlatform()) {
+			// TODO: is this check needed? We are in the *MacPackager*
 			Logger.warn("Generated app could not be signed due to current platform is " + Platform.getCurrentPlatform());
 		} else if (!getMacConfig().isCodesignApp()) {
 			Logger.warn("App codesigning disabled");
