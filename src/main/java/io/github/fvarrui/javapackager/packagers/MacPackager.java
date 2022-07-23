@@ -93,33 +93,37 @@ public class MacPackager extends Packager {
 
 		if (this.administratorRequired) {
 
+			// We need a helper script ("startup") in this case,
+			// which invokes the launcher script/ executable with administrator rights.
+			// TODO: admin script depends on launcher file name 'universalJavaApplicationStub'
+
 			// sets startup file
 			this.executable = new File(macOSFolder, "startup");
 
 			// creates startup file to boot java app
 			VelocityUtils.render("mac/startup.vtl", executable, this);
-			executable.setExecutable(true, false);
-			Logger.info("Startup script file created in " + executable.getAbsolutePath());
-
 		} else {
 
-			// sets startup file
-			this.executable = new File(macOSFolder, "universalJavaApplicationStub");
-			Logger.info("Using " + executable.getAbsolutePath() + " as startup script");
-
+			File launcher = macConfig.getCustomLauncher();
+			if(launcher != null && launcher.canRead() && launcher.isFile()){
+				FileUtils.copyFileToFolder(launcher, macOSFolder);
+				this.executable = new File(macOSFolder, launcher.getName());
+			} else {
+				// sets startup file
+				File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
+				String universalJavaApplicationStubResource = null;
+				switch (macConfig.getMacStartup()) {
+					case UNIVERSAL:	universalJavaApplicationStubResource = "universalJavaApplicationStub"; break;
+					case X86_64:	universalJavaApplicationStubResource = "universalJavaApplicationStub.x86_64"; break;
+					case ARM64: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.arm64"; break;
+					case SCRIPT: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.sh"; break;
+				}
+				FileUtils.copyResourceToFile("/mac/" + universalJavaApplicationStubResource, appStubFile);
+				this.executable = appStubFile;
+			}
 		}
-
-		// copies universalJavaApplicationStub startup file to boot java app
-		File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
-		String universalJavaApplicationStubResource = null;
-		switch (macConfig.getMacStartup()) {
-		case UNIVERSAL:	universalJavaApplicationStubResource = "universalJavaApplicationStub"; break;
-		case X86_64:	universalJavaApplicationStubResource = "universalJavaApplicationStub.x86_64"; break;
-		case ARM64: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.arm64"; break;
-		case SCRIPT: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.sh"; break;
-		}
-		FileUtils.copyResourceToFile("/mac/" + universalJavaApplicationStubResource, appStubFile);
-		appStubFile.setExecutable(true, false);
+		executable.setExecutable(true, false);
+		Logger.info("Startup script file created in " + executable.getAbsolutePath());
 
 		// process classpath
 		classpath = (this.macConfig.isRelocateJar() ? "Java/" : "") + this.jarFile.getName() + (classpath != null ? ":" + classpath : "");
