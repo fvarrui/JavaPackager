@@ -91,6 +91,20 @@ public class MacPackager extends Packager {
 		// copies jarfile to Java folder
 		FileUtils.copyFileToFolder(jarFile, javaFolder);
 
+		processStartupScript();
+
+		processClasspath();
+
+		processInfoPlistFile();
+
+		processProvisionProfileFile();
+
+		codesign();
+
+		return appFile;
+	}
+
+	private void processStartupScript() throws Exception {
 		if (this.administratorRequired) {
 
 			// We need a helper script ("startup") in this case,
@@ -109,23 +123,15 @@ public class MacPackager extends Packager {
 				FileUtils.copyFileToFolder(launcher, macOSFolder);
 				this.executable = new File(macOSFolder, launcher.getName());
 			} else {
-				// sets startup file
-				File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
-				String universalJavaApplicationStubResource = null;
-				switch (macConfig.getMacStartup()) {
-					case UNIVERSAL:	universalJavaApplicationStubResource = "universalJavaApplicationStub"; break;
-					case X86_64:	universalJavaApplicationStubResource = "universalJavaApplicationStub.x86_64"; break;
-					case ARM64: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.arm64"; break;
-					case SCRIPT: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.sh"; break;
-				}
-				FileUtils.copyResourceToFile("/mac/" + universalJavaApplicationStubResource, appStubFile);
-				this.executable = appStubFile;
+				this.executable = preparePrecompiledStartupStub();
 			}
 		}
 		executable.setExecutable(true, false);
 		Logger.info("Startup script file created in " + executable.getAbsolutePath());
+	}
 
-		// process classpath
+	private void processClasspath() {
+		// TODO: Why are we doing this here? I do not see any usage of 'classpath' or 'classpaths' here.
 		classpath = (this.macConfig.isRelocateJar() ? "Java/" : "") + this.jarFile.getName() + (classpath != null ? ":" + classpath : "");
 		classpaths = Arrays.asList(classpath.split("[:;]"));
 		if (!isUseResourcesAsWorkingDir()) {
@@ -135,14 +141,30 @@ public class MacPackager extends Packager {
 					.collect(Collectors.toList());
 		}
 		classpath = StringUtils.join(classpaths, ":");
+	}
 
-		// creates and write the Info.plist file
+	/**
+	 * Creates and writes the Info.plist file
+	 * @throws Exception if anything goes wrong
+	 */
+	private void processInfoPlistFile() throws Exception {
 		File infoPlistFile = new File(contentsFolder, "Info.plist");
 		VelocityUtils.render("mac/Info.plist.vtl", infoPlistFile, this);
 		XMLUtils.prettify(infoPlistFile);
 		Logger.info("Info.plist file created in " + infoPlistFile.getAbsolutePath());
+	}
 
-		// copy provisionprofile
+	private void codesign() throws Exception {
+		if (!Platform.mac.isCurrentPlatform()) {
+			Logger.warn("Generated app could not be signed due to current platform is " + Platform.getCurrentPlatform());
+		} else if (!getMacConfig().isCodesignApp()) {
+			Logger.warn("App codesigning disabled");
+		} else {
+			codesign(this.macConfig.getDeveloperId(), this.macConfig.getEntitlements(), this.appFile);
+		}
+	}
+
+	private void processProvisionProfileFile() throws Exception {
 		if (macConfig.getProvisionProfile() != null) {
 			// file name must be 'embedded.provisionprofile'
 			File provisionProfile = new File(contentsFolder, "embedded.provisionprofile");
@@ -151,17 +173,20 @@ public class MacPackager extends Packager {
 					macConfig.getProvisionProfile() + " to \n" +
 					provisionProfile.getAbsolutePath());
 		}
+	}
 
-		// codesigns app folder
-		if (!Platform.mac.isCurrentPlatform()) {
-			Logger.warn("Generated app could not be signed due to current platform is " + Platform.getCurrentPlatform());
-		} else if (!getMacConfig().isCodesignApp()) {
-			Logger.warn("App codesigning disabled");
-		} else {
-			codesign(this.macConfig.getDeveloperId(), this.macConfig.getEntitlements(), this.appFile);
+	private File preparePrecompiledStartupStub() throws Exception {
+		// sets startup file
+		File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
+		String universalJavaApplicationStubResource = null;
+		switch (macConfig.getMacStartup()) {
+			case UNIVERSAL:	universalJavaApplicationStubResource = "universalJavaApplicationStub"; break;
+			case X86_64:	universalJavaApplicationStubResource = "universalJavaApplicationStub.x86_64"; break;
+			case ARM64: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.arm64"; break;
+			case SCRIPT: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.sh"; break;
 		}
-
-		return appFile;
+		FileUtils.copyResourceToFile("/mac/" + universalJavaApplicationStubResource, appStubFile);
+		return appStubFile;
 	}
 
 	private void codesign(String developerId, File entitlements, File appFile) throws Exception {
