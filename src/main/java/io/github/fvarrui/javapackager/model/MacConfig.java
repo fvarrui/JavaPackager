@@ -35,6 +35,7 @@ public class MacConfig implements Serializable {
 	private File entitlements;
 	private File provisionProfile;
 	private File customLauncher;
+	private File customInfoPlist;
 	private boolean codesignApp = true;
 	private InfoPlist infoPlist = new InfoPlist();
 	private boolean hardenedCodesign = true;
@@ -198,6 +199,14 @@ public class MacConfig implements Serializable {
 
 	public void setCustomLauncher(File customLauncher) {
 		this.customLauncher = customLauncher;
+	}
+
+	public File getCustomInfoPlist() {
+		return customInfoPlist;
+	}
+
+	public void setCustomInfoPlist(File customInfoPlist) {
+		this.customInfoPlist = customInfoPlist;
 	}
 
 	public File getProvisionProfile() {
