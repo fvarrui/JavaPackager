@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
+import io.github.fvarrui.javapackager.model.MacStartup;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
@@ -105,6 +106,7 @@ public class MacPackager extends Packager {
 	}
 
 	private void processStartupScript() throws Exception {
+		
 		if (this.administratorRequired) {
 
 			// We need a helper script ("startup") in this case,
@@ -116,6 +118,7 @@ public class MacPackager extends Packager {
 
 			// creates startup file to boot java app
 			VelocityUtils.render("mac/startup.vtl", executable, this);
+			
 		} else {
 
 			File launcher = macConfig.getCustomLauncher();
@@ -126,6 +129,7 @@ public class MacPackager extends Packager {
 				this.executable = preparePrecompiledStartupStub();
 			}
 		}
+		
 		executable.setExecutable(true, false);
 		Logger.info("Startup script file created in " + executable.getAbsolutePath());
 	}
@@ -189,7 +193,8 @@ public class MacPackager extends Packager {
 			case ARM64: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.arm64"; break;
 			case SCRIPT: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.sh"; break;
 		}
-		FileUtils.copyResourceToFile("/mac/" + universalJavaApplicationStubResource, appStubFile);
+		// unixStyleNewLinux=true if startup is a script (this will replace '\r\n' with '\n')
+		FileUtils.copyResourceToFile("/mac/" + universalJavaApplicationStubResource, appStubFile, macConfig.getMacStartup() == MacStartup.SCRIPT);
 		return appStubFile;
 	}
 
