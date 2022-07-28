@@ -70,7 +70,7 @@ dependencies {
 }
 
 group = 'io.github.fvarrui'
-version = '1.6.7'
+version = '1.7.0-SNAPSHOT'
 description = 'Hybrid Maven/Gradle plugin to package Java applications as native Windows, Mac OS X or GNU/Linux executables and create installers for them'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -88,7 +88,7 @@ publishing {
 
 java {
 	withSourcesJar()
-	// and/or analogously use “withJavadocJar()” to get a “javadocJar” task
+	// and/or analogously use â€œwithJavadocJar()â€� to get a â€œjavadocJarâ€� task
 }
 
 install.repositories.mavenInstaller.pom.with {
