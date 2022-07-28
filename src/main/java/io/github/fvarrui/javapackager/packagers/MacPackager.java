@@ -144,13 +144,17 @@ public class MacPackager extends Packager {
 	}
 
 	/**
-	 * Creates and writes the Info.plist file
+	 * Creates and writes the Info.plist file if no custom file is specified.
 	 * @throws Exception if anything goes wrong
 	 */
 	private void processInfoPlistFile() throws Exception {
 		File infoPlistFile = new File(contentsFolder, "Info.plist");
-		VelocityUtils.render("mac/Info.plist.vtl", infoPlistFile, this);
-		XMLUtils.prettify(infoPlistFile);
+		if(macConfig.getCustomInfoPlist() != null && macConfig.getCustomInfoPlist().isFile() && macConfig.getCustomInfoPlist().canRead()){
+			FileUtils.copyFileToFile(macConfig.getCustomInfoPlist(), infoPlistFile);
+		} else {
+			VelocityUtils.render("mac/Info.plist.vtl", infoPlistFile, this);
+			XMLUtils.prettify(infoPlistFile);
+		}
 		Logger.info("Info.plist file created in " + infoPlistFile.getAbsolutePath());
 	}
 
@@ -165,7 +169,7 @@ public class MacPackager extends Packager {
 	}
 
 	private void processProvisionProfileFile() throws Exception {
-		if (macConfig.getProvisionProfile() != null) {
+		if (macConfig.getProvisionProfile() != null && macConfig.getProvisionProfile().isFile() && macConfig.getProvisionProfile().canRead()) {
 			// file name must be 'embedded.provisionprofile'
 			File provisionProfile = new File(contentsFolder, "embedded.provisionprofile");
 			FileUtils.copyFileToFile(macConfig.getProvisionProfile(), provisionProfile);
