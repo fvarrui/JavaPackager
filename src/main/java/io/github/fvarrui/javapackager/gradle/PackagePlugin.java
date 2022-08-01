@@ -24,7 +24,7 @@ public class PackagePlugin implements Plugin<Project> {
 		project.getPluginManager().apply("java");
 		project.getPluginManager().apply("edu.sc.seis.launch4j");		
 		
-		project.getExtensions().create(SETTINGS_EXT_NAME, PackagePluginExtension.class, project);
+		project.getExtensions().create(SETTINGS_EXT_NAME, GradlePackagerSettings.class, project);
 		project.getTasks().create(PACKAGE_TASK_NAME, DefaultPackageTask.class).dependsOn("build");
 
 		Context.getGradleContext().setLibraryTask(project.getTasks().create("launch4j_" + UUID.randomUUID(), Launch4jLibraryTask.class));

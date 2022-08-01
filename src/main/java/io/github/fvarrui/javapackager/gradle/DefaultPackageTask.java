@@ -12,8 +12,8 @@ public class DefaultPackageTask extends AbstractPackageTask {
 	
 	@Override
 	protected Packager createPackager() throws Exception {
-		
-		PackagePluginExtension extension = getProject().getExtensions().findByType(PackagePluginExtension.class);
+
+		GradlePackagerSettings extension = getProject().getExtensions().findByType(GradlePackagerSettings.class);
 		
 		return 
 			(Packager) PackagerFactory

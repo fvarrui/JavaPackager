@@ -82,6 +82,12 @@ public class PackagerSettings {
 	protected File jdkPath;
 	@Input
 	@Optional
+	protected String jdkVersion;
+	@Input
+	@Optional
+	protected String jdkVendor;
+	@Input
+	@Optional
 	protected List<File> additionalResources;
 	@Input
 	@Optional
