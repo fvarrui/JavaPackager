@@ -15,6 +15,7 @@ import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.IconUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
+import io.github.fvarrui.javapackager.utils.updater.TaskJavaUpdater;
 
 /**
  * Packager base class
@@ -123,7 +124,9 @@ public abstract class Packager extends PackagerSettings {
 
 		// sets jdkPath by default if not specified
 		if (jdkPath == null) {
-			jdkPath = new File(System.getProperty("java.home"));
+			TaskJavaUpdater taskJavaUpdater = new TaskJavaUpdater(platform);
+			taskJavaUpdater.execute(jdkVersion);
+			jdkPath = taskJavaUpdater.jdkPath;
 		}
 		if (!jdkPath.exists()) {
 			throw new Exception("JDK path doesn't exist: " + jdkPath);

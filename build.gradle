@@ -55,6 +55,9 @@ dependencies {
 	implementation 'net.jsign:jsign-core:3.1'
 	implementation 'org.redline-rpm:redline:1.2.10'
 	implementation 'io.github.fvarrui:launch4j:2.5.2'
+	implementation 'com.google.code.gson:gson:2.9.0'
+	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+	implementation 'org.rauschig:jarchivelib:1.2.0'
 
 	testImplementation 'junit:junit:4.12'
 

@@ -82,10 +82,10 @@ public class PackagerSettings {
 	protected File jdkPath;
 	@Input
 	@Optional
-	protected String jdkVersion;
+	protected String jdkVersion = "8";
 	@Input
 	@Optional
-	protected String jdkVendor;
+	protected String jdkVendor = "temurin";
 	@Input
 	@Optional
 	protected List<File> additionalResources;
