@@ -143,6 +143,7 @@ public class TaskJavaUpdater {
             archiver = ArchiverFactory.createArchiver(ArchiveFormat.ZIP);
 
         archiver.extract(download.getNewCacheDest(), final_dir_dest);
+        setBuildID(latestBuildId);
         FileUtils.deleteDirectory(downloadsDir);
         Logger.info("Java update was installed successfully (" + currentBuildId + " -> " + latestBuildId + ") at "+jdkPath);
     }
