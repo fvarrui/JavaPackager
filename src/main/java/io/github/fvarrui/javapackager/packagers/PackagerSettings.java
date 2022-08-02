@@ -40,8 +40,8 @@ public class PackagerSettings {
 	protected Boolean customizedJre;
 	protected File jrePath;
 	protected File jdkPath;
-	protected String jdkVersion = "8";
-	protected String jdkVendor = "adoptium";
+	protected String jdkVersion;
+	protected String jdkVendor;
 	protected List<File> additionalResources;
 	protected List<String> modules;
 	protected List<String> additionalModules;

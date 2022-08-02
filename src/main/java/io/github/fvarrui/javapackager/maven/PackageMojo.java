@@ -165,13 +165,13 @@ public class PackageMojo extends AbstractMojo {
 	/**
 	 * The JDK version. Supported versions differ from vendor to vendor, thus its recommended checking the vendors' website first before doing any changes.
 	 */
-	@Parameter(property = "jdkVersion", required = false)
+	@Parameter(defaultValue = "8", property = "jdkVersion", required = false)
 	private String jdkVersion;
 
 	/**
 	 * The JDK vendor.
 	 */
-	@Parameter(property = "jdkVendor", required = false)
+	@Parameter(defaultValue = "adoptium", property = "jdkVendor", required = false)
 	private String jdkVendor;
 
 	/**
