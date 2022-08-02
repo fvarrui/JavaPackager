@@ -23,6 +23,7 @@ import org.rauschig.jarchivelib.CompressionType;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -53,7 +54,10 @@ public class TaskJavaUpdater {
         jdkPath.mkdirs();
     }
 
-    public void execute(String javaVersion) throws Exception {
+    public void execute(String javaVersion, String javaVendor) throws Exception {
+        Objects.requireNonNull(javaVersion);
+        Objects.requireNonNull(javaVendor);
+        if(!javaVendor.equals("temurin")) throw new IllegalArgumentException("The provided Java vendor '"+javaVendor+"' is currently not supported!");
         Logger.info("Checking java installation...");
         AdoptV3API.OperatingSystemArchitectureType osArchitectureType = AdoptV3API.OperatingSystemArchitectureType.X64;
         boolean isLargeHeapSize = false;

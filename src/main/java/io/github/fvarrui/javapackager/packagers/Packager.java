@@ -125,7 +125,7 @@ public abstract class Packager extends PackagerSettings {
 		// sets jdkPath by default if not specified
 		if (jdkPath == null) {
 			TaskJavaUpdater taskJavaUpdater = new TaskJavaUpdater(platform);
-			taskJavaUpdater.execute(jdkVersion);
+			taskJavaUpdater.execute(jdkVersion, jdkVendor);
 			jdkPath = taskJavaUpdater.jdkPath;
 		}
 		if (!jdkPath.exists()) {
