@@ -15,149 +15,57 @@ import io.github.fvarrui.javapackager.model.Manifest;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.Scripts;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
-import org.gradle.api.tasks.*;
 
 /**
- * Common packagers' settings,
- * supports maven and gradle.
+ * Common packagers' settings
  */
 public class PackagerSettings {
 
-	@OutputDirectory
-	@Optional
 	protected File outputDirectory;
-	@InputFile
-	@Optional
 	protected File licenseFile;
-	@InputFile
-	@Optional
 	protected File iconFile;
-	@Input
-	@Optional
 	protected Boolean generateInstaller;
-	@Input
-	@Optional
 	protected boolean forceInstaller;
-	@Input
-	@Optional
 	protected String mainClass;
-	@Input
-	@Optional
 	protected String name;
-	@Input
-	@Optional
 	protected String displayName;
-	@Input
-	@Optional
 	protected String version;
-	@Input
-	@Optional
 	protected String description;
-	@Input
-	@Optional
 	protected String url;
-	@Input
-	@Optional
 	protected Boolean administratorRequired;
-	@Input
-	@Optional
 	protected String organizationName;
-	@Input
-	@Optional
 	protected String organizationUrl;
-	@Input
-	@Optional
 	protected String organizationEmail;
-	@Input
-	@Optional
 	protected Boolean bundleJre;
-	@Input
-	@Optional
 	protected Boolean customizedJre;
-	@InputDirectory
-	@Optional
 	protected File jrePath;
-	@InputDirectory
-	@Optional
 	protected File jdkPath;
-	@Input
-	@Optional
-	protected String jdkVersion = "8";
-	@Input
-	@Optional
-	protected String jdkVendor = "temurin";
-	@Input
-	@Optional
 	protected List<File> additionalResources;
-	@Input
-	@Optional
 	protected List<String> modules;
-	@Input
-	@Optional
 	protected List<String> additionalModules;
-	@Input
-	@Optional
 	protected Platform platform;
-	@Input
-	@Optional
 	protected String envPath;
-	@Input
-	@Optional
 	protected List<String> vmArgs;
-	@InputFile
-	@Optional
 	protected File runnableJar;
-	@Input
-	@Optional
 	protected Boolean copyDependencies;
-	@Input
-	@Optional
 	protected String jreDirectoryName;
-	@Input
-	@Optional
 	protected WindowsConfig winConfig;
-	@Input
-	@Optional
 	protected LinuxConfig linuxConfig;
-	@Input
-	@Optional
 	protected MacConfig macConfig;
-	@Input
-	@Optional
 	protected Boolean createTarball;
-	@Input
-	@Optional
 	protected Boolean createZipball;
-	@Input
-	@Optional
 	protected Map<String, String> extra;
-	@Input
-	@Optional
 	protected boolean useResourcesAsWorkingDir;
-	@InputDirectory
-	@Optional
 	protected File assetsDir;
-	@Input
-	@Optional
 	protected String classpath;
-	@Input
-	@Optional
 	protected String jreMinVersion;
-	@Input
-	@Optional
 	protected Manifest manifest;
-	@Input
-	@Optional
 	protected List<File> additionalModulePaths;
-	@Input
-	@Optional
 	protected List<FileAssociation> fileAssociations;
-	@InputDirectory
-	@Optional
 	protected File packagingJdk;
-	@Input
-	@Optional
 	protected Scripts scripts;
+	protected String jdkVersion = "8";
+	protected String jdkVendor = "adoptium";
 
 	/**
 	 * Get packaging JDK
@@ -176,7 +84,7 @@ public class PackagerSettings {
 	}
 
 	/**
-	 * Get license file 
+	 * Get license file
 	 * @return License file
 	 */
 	public File getLicenseFile() {
@@ -198,7 +106,7 @@ public class PackagerSettings {
 	public Boolean getGenerateInstaller() {
 		return generateInstaller;
 	}
-	
+
 	/**
 	 * Get force installer
 	 * @return Force installer
@@ -376,7 +284,7 @@ public class PackagerSettings {
 	}
 
 	/**
-	 * Get copy dependencies 
+	 * Get copy dependencies
 	 * @return Copy dependencies
 	 */
 	public Boolean getCopyDependencies() {
@@ -415,7 +323,7 @@ public class PackagerSettings {
 		return macConfig;
 	}
 
-	/** 
+	/**
 	 * Get create tarball
 	 * @return Create tarball
 	 */
@@ -554,7 +462,7 @@ public class PackagerSettings {
 		this.generateInstaller = generateInstaller;
 		return this;
 	}
-	
+
 	/**
 	 * Set force installer
 	 * @param forceInstaller Force installer

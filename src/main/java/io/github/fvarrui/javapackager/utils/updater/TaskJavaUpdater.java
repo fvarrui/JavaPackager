@@ -57,7 +57,7 @@ public class TaskJavaUpdater {
     public void execute(String javaVersion, String javaVendor) throws Exception {
         Objects.requireNonNull(javaVersion);
         Objects.requireNonNull(javaVendor);
-        if(!javaVendor.equals("temurin")) throw new IllegalArgumentException("The provided Java vendor '"+javaVendor+"' is currently not supported!");
+        if(!javaVendor.equals("adoptium")) throw new IllegalArgumentException("The provided Java vendor '"+javaVendor+"' is currently not supported!");
         Logger.info("Checking java installation...");
         AdoptV3API.OperatingSystemArchitectureType osArchitectureType = AdoptV3API.OperatingSystemArchitectureType.X64;
         boolean isLargeHeapSize = false;
