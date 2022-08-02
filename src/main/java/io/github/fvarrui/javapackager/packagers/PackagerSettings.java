@@ -40,6 +40,8 @@ public class PackagerSettings {
 	protected Boolean customizedJre;
 	protected File jrePath;
 	protected File jdkPath;
+	protected String jdkVersion = "8";
+	protected String jdkVendor = "adoptium";
 	protected List<File> additionalResources;
 	protected List<String> modules;
 	protected List<String> additionalModules;
@@ -64,8 +66,6 @@ public class PackagerSettings {
 	protected List<FileAssociation> fileAssociations;
 	protected File packagingJdk;
 	protected Scripts scripts;
-	protected String jdkVersion = "8";
-	protected String jdkVendor = "adoptium";
 
 	/**
 	 * Get packaging JDK
@@ -225,6 +225,22 @@ public class PackagerSettings {
 	 */
 	public File getJdkPath() {
 		return jdkPath;
+	}
+
+	/**
+	 * Get JDK version
+	 * @return JDK version
+	 */
+	public String getJdkVersion() {
+		return jdkVersion;
+	}
+
+	/**
+	 * Get JDK vendor
+	 * @return JDK vendor
+	 */
+	public String getJdkVendor() {
+		return jdkVendor;
 	}
 
 	/**
@@ -610,6 +626,26 @@ public class PackagerSettings {
 	 */
 	public PackagerSettings jdkPath(File jdkPath) {
 		this.jdkPath = jdkPath;
+		return this;
+	}
+
+	/**
+	 * Set JDK version
+	 * @param jdkVersion JDK version
+	 * @return Packager settings
+	 */
+	public PackagerSettings jdkVersion(String jdkVersion) {
+		this.jdkVersion = jdkVersion;
+		return this;
+	}
+
+	/**
+	 * Set JDK vendor
+	 * @param jdkVendor JDK vendor
+	 * @return Packager settings
+	 */
+	public PackagerSettings jdkVendor(String jdkVendor) {
+		this.jdkVendor = jdkVendor;
 		return this;
 	}
 

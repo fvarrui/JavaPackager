@@ -163,6 +163,18 @@ public class PackageMojo extends AbstractMojo {
 	private File jdkPath;
 
 	/**
+	 * The JDK version. Supported versions differ from vendor to vendor, thus its recommended checking the vendors' website first before doing any changes.
+	 */
+	@Parameter(property = "jdkVersion", required = false)
+	private String jdkVersion;
+
+	/**
+	 * The JDK vendor.
+	 */
+	@Parameter(property = "jdkVendor", required = false)
+	private String jdkVendor;
+
+	/**
 	 * Additional files and folders to include in the bundled app.
 	 */
 	@Parameter(property = "additionalResources", required = false)
@@ -349,6 +361,8 @@ public class PackageMojo extends AbstractMojo {
 						.generateInstaller(generateInstaller)
 						.iconFile(iconFile)
 						.jdkPath(jdkPath)
+						.jdkVersion(jdkVersion)
+						.jdkVendor(jdkVendor)
 						.jreDirectoryName(jreDirectoryName)
 						.jreMinVersion(jreMinVersion)
 						.jrePath(jrePath)

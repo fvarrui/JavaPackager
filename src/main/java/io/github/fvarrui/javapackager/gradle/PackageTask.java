@@ -250,6 +250,30 @@ public class PackageTask extends AbstractPackageTask {
 		this.jdkPath = jdkPath;
 	}
 
+	@InputDirectory
+	@Optional
+	private String jdkVersion;
+
+	public String getJdkVersion() {
+		return jdkVersion;
+	}
+
+	public void setJdkVersion(String jdkVersion) {
+		this.jdkVersion = jdkVersion;
+	}
+
+	@InputDirectory
+	@Optional
+	private String jdkVendor;
+
+	public String getJdkVendor() {
+		return jdkVendor;
+	}
+
+	public void setJdkPath(String jdkVendor) {
+		this.jdkVendor = jdkVendor;
+	}
+
 	@Input
 	@Optional
 	private String jreDirectoryName;
@@ -592,6 +616,8 @@ public class PackageTask extends AbstractPackageTask {
 						.forceInstaller(defaultIfNull(forceInstaller, extension.isForceInstaller()))
 						.generateInstaller(defaultIfNull(generateInstaller, extension.getGenerateInstaller()))
 						.jdkPath(defaultIfNull(jdkPath, extension.getJdkPath()))
+						.jdkVersion(defaultIfNull(jdkVersion, extension.getJdkVersion()))
+						.jdkVendor(defaultIfNull(jdkVendor, extension.getJdkVendor()))
 						.jreDirectoryName(defaultIfBlank(jreDirectoryName, extension.getJreDirectoryName()))
 						.jreMinVersion(defaultIfBlank(jreMinVersion, extension.getJreMinVersion()))
 						.jrePath(defaultIfNull(jrePath, extension.getJrePath()))
