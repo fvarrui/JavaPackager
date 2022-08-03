@@ -15,6 +15,7 @@ repositories {
 	maven { 
 		url 'https://plugins.gradle.org/m2/'
 	}
+	maven { url 'https://jitpack.io' }
 }
 
 gradlePlugin {
@@ -42,6 +43,13 @@ configurations {
 	mavenEmbedder
 }
 
+configurations {
+	// Makes sure that the right dependency gets taken. Author: https://stackoverflow.com/questions/31698510/can-i-force-the-order-of-dependencies-in-my-classpath-with-gradle
+	priority
+	sourceSets.main.compileClasspath = configurations.priority + sourceSets.main.compileClasspath
+}
+
+
 dependencies {
 	implementation 'org.apache.maven:maven-plugin-api:3.6.0'
 	implementation 'org.codehaus.plexus:plexus-utils:3.1.1'
@@ -58,8 +66,10 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.9.0'
 	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 	implementation 'org.rauschig:jarchivelib:1.2.0'
+	priority 'com.github.Osiris-Team:maven-plugin-tools:1.0.1'
 
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+	testImplementation 'org.apache.maven.shared:maven-invoker:3.2.0'
 
 	compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
 

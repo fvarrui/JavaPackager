@@ -30,7 +30,7 @@ public class Json {
      *
      * @param url The url which leads to the json file.
      * @return JsonElement
-     * @throws Exception When status code other than 200.
+     * @throws IOException When status code other than 200.
      */
     public static JsonElement fromUrl(String url) throws IOException {
         HttpURLConnection con = null;
