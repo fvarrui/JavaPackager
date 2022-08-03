@@ -273,7 +273,7 @@ public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
     @Parameter(property = "forceInstaller")
     @Input
     @Optional
-    protected boolean forceInstaller;
+    protected Boolean forceInstaller;
 
     /**
      * Full path to your app main class.
@@ -536,7 +536,7 @@ public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
     @Parameter(property = "useResourcesAsWorkingDir", required = false)
     @Input
     @Optional
-    protected boolean useResourcesAsWorkingDir;
+    protected Boolean useResourcesAsWorkingDir;
 
     /**
      * Assets directory
@@ -645,7 +645,7 @@ public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
      * Get force installer
      * @return Force installer
      */
-    public boolean isForceInstaller() {
+    public Boolean isForceInstaller() {
         return forceInstaller;
     }
 
@@ -901,7 +901,7 @@ public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
      * Get if it has to use resources folder as working directory
      * @return Use resources folder as working directory
      */
-    public boolean isUseResourcesAsWorkingDir() {
+    public Boolean isUseResourcesAsWorkingDir() {
         return useResourcesAsWorkingDir;
     }
 
