@@ -59,7 +59,7 @@ dependencies {
 	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 	implementation 'org.rauschig:jarchivelib:1.2.0'
 
-	testImplementation 'junit:junit:4.12'
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
 
 	compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
 
@@ -70,6 +70,10 @@ dependencies {
 	mavenEmbedder 'org.eclipse.aether:aether-transport-wagon:1.1.0'
 	mavenEmbedder 'org.apache.maven.wagon:wagon-http:3.4.1'
 	mavenEmbedder 'org.apache.maven.wagon:wagon-provider-api:3.4.1'
+}
+
+test {
+	useJUnitPlatform()
 }
 
 group = 'io.github.fvarrui'

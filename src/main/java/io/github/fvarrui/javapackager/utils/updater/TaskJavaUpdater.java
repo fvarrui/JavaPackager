@@ -8,6 +8,7 @@
 
 package io.github.fvarrui.javapackager.utils.updater;
 
+import com.google.common.io.Files;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -146,8 +147,20 @@ public class TaskJavaUpdater {
         else // A zip
             archiver = ArchiverFactory.createArchiver(ArchiveFormat.ZIP);
 
+        // Extracts to /jdk8+189 thus we need to move its content to its parent dir
         archiver.extract(download.getNewCacheDest(), final_dir_dest);
         setBuildID(latestBuildId);
+        File actualJdkPath = null;
+        for (File file : jdkPath.listFiles()) {
+            if(file.isDirectory()){
+                actualJdkPath = file;
+                break;
+            }
+        }
+        for (File file : actualJdkPath.listFiles()) {
+            Files.move(file, new File(jdkPath+"/"+file.getName()));
+        }
+        FileUtils.deleteDirectory(actualJdkPath);
         FileUtils.deleteDirectory(downloadsDir);
         Logger.info("Java update was installed successfully (" + currentBuildId + " -> " + latestBuildId + ") at "+jdkPath);
     }
