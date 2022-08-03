@@ -7,8 +7,24 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TaskJavaUpdaterTest {
     @Test
-    void execute() throws Exception {
-        TaskJavaUpdater taskJavaUpdater = new TaskJavaUpdater(Platform.getCurrentPlatform());
+    void testWindows() throws Exception {
+        TaskJavaUpdater taskJavaUpdater = new TaskJavaUpdater(Platform.windows);
+        taskJavaUpdater.execute("8", "adoptium");
+        assertNotNull(taskJavaUpdater.jdkPath);
+        assertTrue(taskJavaUpdater.jdkPath.listFiles().length != 0);
+        System.out.println(taskJavaUpdater.jdkPath);
+    }
+    @Test
+    void testLinux() throws Exception {
+        TaskJavaUpdater taskJavaUpdater = new TaskJavaUpdater(Platform.linux);
+        taskJavaUpdater.execute("8", "adoptium");
+        assertNotNull(taskJavaUpdater.jdkPath);
+        assertTrue(taskJavaUpdater.jdkPath.listFiles().length != 0);
+        System.out.println(taskJavaUpdater.jdkPath);
+    }
+    @Test
+    void testMac() throws Exception {
+        TaskJavaUpdater taskJavaUpdater = new TaskJavaUpdater(Platform.mac);
         taskJavaUpdater.execute("8", "adoptium");
         assertNotNull(taskJavaUpdater.jdkPath);
         assertTrue(taskJavaUpdater.jdkPath.listFiles().length != 0);
