@@ -66,6 +66,10 @@ task packageForWindows(type: PackageTask, dependsOn: build) {
     }
 }
 
+taskMyTask(type: MyPackageTask, dependsOn: build){
+	getName() { return "name" }
+}
+
 task packageForLinux(type: PackageTask, dependsOn: build) {
 	description = 'Packages the application as a native GNU/Linux executable and bundles it in a tarball'
 	platform = 'linux'

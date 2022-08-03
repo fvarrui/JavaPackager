@@ -1,6 +1,7 @@
 package io.github.fvarrui.javapackager.gradle;
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
+import io.github.fvarrui.javapackager.PackageTask;
 import io.github.fvarrui.javapackager.packagers.Context;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -24,8 +25,8 @@ public class PackagePlugin implements Plugin<Project> {
 		project.getPluginManager().apply("java");
 		project.getPluginManager().apply("edu.sc.seis.launch4j");		
 		
-		project.getExtensions().create(SETTINGS_EXT_NAME, PackagePluginExtension.class, project);
-		project.getTasks().create(PACKAGE_TASK_NAME, DefaultPackageTask.class).dependsOn("build");
+		project.getExtensions().create(SETTINGS_EXT_NAME, PackageTask.class, project);
+		project.getTasks().create(PACKAGE_TASK_NAME, PackageTask.class).dependsOn("build");
 
 		Context.getGradleContext().setLibraryTask(project.getTasks().create("launch4j_" + UUID.randomUUID(), Launch4jLibraryTask.class));
 

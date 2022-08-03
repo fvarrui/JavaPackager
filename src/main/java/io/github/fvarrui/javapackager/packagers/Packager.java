@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.fvarrui.javapackager.PackageTask;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.IconUtils;
@@ -20,7 +21,7 @@ import io.github.fvarrui.javapackager.utils.updater.TaskJavaUpdater;
 /**
  * Packager base class
  */
-public abstract class Packager extends PackagerSettings {
+public abstract class Packager extends PackageTask {
 
 	private static final String DEFAULT_ORGANIZATION_NAME = "ACME";
 
