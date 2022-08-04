@@ -45,7 +45,7 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 	@Override
 	protected File doApply(WindowsPackager packager) throws Exception {
 
-		String name = packager.task.getName();
+		String name = packager.task.getAppName();
 		File executable = packager.getExecutable();
 		File jarFile = packager.getJarFile();
 		File manifestFile = packager.getManifestFile();

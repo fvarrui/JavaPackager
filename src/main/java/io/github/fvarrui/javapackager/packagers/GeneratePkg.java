@@ -35,7 +35,7 @@ public class GeneratePkg extends ArtifactGenerator<MacPackager> {
 	protected File doApply(MacPackager packager) throws Exception {
 
 		File appFile = packager.getAppFile();
-		String name = packager.task.getName();
+		String name = packager.task.getAppName();
 		File outputDirectory = packager.task.getOutputDirectory();
 		String version = packager.task.getVersion();
 		

@@ -5,7 +5,10 @@ import io.github.fvarrui.javapackager.PackageTask;
 import io.github.fvarrui.javapackager.packagers.Context;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Parameter;
 import java.util.UUID;
 
 /**
@@ -23,13 +26,17 @@ public class PackagePlugin implements Plugin<Project> {
 		Context.setContext(new GradleContext(project));
 		
 		project.getPluginManager().apply("java");
-		project.getPluginManager().apply("edu.sc.seis.launch4j");		
-		
-		project.getExtensions().create(SETTINGS_EXT_NAME, PackageTask.class, project);
-		project.getTasks().create(PACKAGE_TASK_NAME, PackageTask.class).dependsOn("build");
+		project.getPluginManager().apply("edu.sc.seis.launch4j");
+
+		PackageTask task = (PackageTask) project.getTasks().create(PACKAGE_TASK_NAME, PackageTask.class).dependsOn("build");
+		project.getExtensions().add(SETTINGS_EXT_NAME, task); // Use task instance as extension
 
 		Context.getGradleContext().setLibraryTask(project.getTasks().create("launch4j_" + UUID.randomUUID(), Launch4jLibraryTask.class));
 
+		System.out.println("TASKS: "+project.getTasks().size());
+		for (Task t : project.getTasks()) {
+			System.out.println("name: "+t.getName()+" desc: "+t.getDescription());
+		}
 	}
 
 }

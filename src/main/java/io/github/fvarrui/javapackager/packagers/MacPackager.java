@@ -56,7 +56,7 @@ public class MacPackager extends Packager {
 	protected void doCreateAppStructure() throws Exception {
 
 		// initializes the references to the app structure folders
-		this.appFile = new File(appFolder, task.getName() + ".app");
+		this.appFile = new File(appFolder, task.getAppName() + ".app");
 		this.contentsFolder = new File(appFile, "Contents");
 		this.resourcesFolder = new File(contentsFolder, "Resources");
 		this.javaFolder = new File(resourcesFolder, this.task.getMacConfig().isRelocateJar() ? "Java" : "");

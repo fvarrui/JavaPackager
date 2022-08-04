@@ -41,7 +41,7 @@ public class GenerateMsi extends WindowsArtifactGenerator {
 		Logger.info("MSM file generated in " + msmFile);
 
 		File assetsFolder = packager.getAssetsFolder();
-		String name = packager.task.getName();
+		String name = packager.task.getAppName();
 		File outputDirectory = packager.task.getOutputDirectory();
 		String version = packager.task.getVersion();
 		

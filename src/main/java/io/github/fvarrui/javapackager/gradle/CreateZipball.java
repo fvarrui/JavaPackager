@@ -28,7 +28,7 @@ public class CreateZipball extends ArtifactGenerator<Packager> {
 	@Override
 	protected File doApply(Packager packager) throws Exception {
 		
-		String name = packager.task.getName();
+		String name = packager.task.getAppName();
 		String version = packager.task.getVersion();
 		Platform platform = packager.task.getPlatform();
 		File outputDirectory = packager.task.getOutputDirectory();

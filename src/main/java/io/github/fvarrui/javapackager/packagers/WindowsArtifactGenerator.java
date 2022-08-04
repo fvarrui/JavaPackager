@@ -34,7 +34,7 @@ public abstract class WindowsArtifactGenerator extends ArtifactGenerator<Windows
 		String alias = packager.task.getWinConfig().getSigning().getAlias();
 		String keypass = packager.task.getWinConfig().getSigning().getKeypass();
 		String tsa = TIMESTAMPING_AUTHORITY;
-		String displayName = packager.task.getDisplayName();
+		String displayName = packager.task.getAppDisplayName();
 		String url = packager.task.getUrl();
 
 		try {

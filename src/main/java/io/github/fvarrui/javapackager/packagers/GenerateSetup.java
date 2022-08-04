@@ -41,7 +41,7 @@ public class GenerateSetup extends WindowsArtifactGenerator {
 		
 		File iconFile = packager.task.getIconFile();
 		File assetsFolder = packager.getAssetsFolder();
-		String name = packager.task.getName();
+		String name = packager.task.getAppName();
 		File outputDirectory = packager.task.getOutputDirectory();
 		String version = packager.task.getVersion();
 		Registry registry = packager.task.getWinConfig().getRegistry();

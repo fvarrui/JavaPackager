@@ -45,7 +45,7 @@ public class GenerateDmg extends ArtifactGenerator<MacPackager> {
 
 		File appFolder = packager.getAppFolder();
 		File assetsFolder = packager.getAssetsFolder();
-		String name = packager.task.getName();
+		String name = packager.task.getAppName();
 		File outputDirectory = packager.task.getOutputDirectory();
 		File iconFile = packager.task.getIconFile();
 		String version = packager.task.getVersion();

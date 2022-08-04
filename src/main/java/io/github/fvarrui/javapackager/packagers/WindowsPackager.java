@@ -62,12 +62,12 @@ public class WindowsPackager extends Packager {
 		Logger.infoIndent("Creating windows EXE ... with " + task.getWinConfig().getExeCreationTool());
 
 		// generates manifest file to require administrator privileges from velocity template
-		manifestFile = new File(assetsFolder, task.getName() + ".exe.manifest");
+		manifestFile = new File(assetsFolder, task.getAppName() + ".exe.manifest");
 		VelocityUtils.render("windows/exe.manifest.vtl", manifestFile, this);
 		Logger.info("Exe manifest file generated in " + manifestFile.getAbsolutePath() + "!");
 
 		// sets executable file
-		executable = new File(appFolder, task.getName() + ".exe");
+		executable = new File(appFolder, task.getAppName() + ".exe");
 		
 		// process classpath
 		if (task.getClasspath() != null) {

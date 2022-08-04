@@ -93,7 +93,7 @@ public abstract class AbstractCreateWindowsExe extends WindowsArtifactGenerator 
 		if (FileUtils.exists(packager.task.getScripts().getBootstrap())) {
 
 			// generates startup VBS script file
-			File vbsFile = new File(packager.getAppFolder(), packager.task.getName() + ".vbs");
+			File vbsFile = new File(packager.getAppFolder(), packager.task.getAppName() + ".vbs");
 			VelocityUtils.render(Platform.windows + "/startup.vbs.vtl", vbsFile, packager);
 			executable = vbsFile;
 

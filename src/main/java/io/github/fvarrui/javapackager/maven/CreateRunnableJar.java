@@ -38,7 +38,7 @@ public class CreateRunnableJar extends ArtifactGenerator<Packager> {
 	protected File doApply(Packager packager) {
 		
 		String classifier = "runnable";
-		String name = packager.task.getName();
+		String name = packager.task.getAppName();
 		String version = packager.task.getVersion();
 		String mainClass = packager.task.getMainClass();
 		File outputDirectory = packager.task.getOutputDirectory();

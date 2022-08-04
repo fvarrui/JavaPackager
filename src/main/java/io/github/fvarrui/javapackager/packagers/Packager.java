@@ -113,10 +113,10 @@ public abstract class Packager {
 		VelocityUtils.setAssetsDir(task.getAssetsDir());
 
 		// using name as displayName, if it's not specified
-		task.displayName(defaultIfBlank(task.getDisplayName(), task.getName()));
+		task.appDisplayName(defaultIfBlank(task.getAppDisplayName(), task.getAppName()));
 
 		// using displayName as description, if it's not specified
-		task.description(defaultIfBlank(task.getDescription(), task.getDisplayName()));
+		task.description(defaultIfBlank(task.getDescription(), task.getAppDisplayName()));
 
 		// using "ACME" as organizationName, if it's not specified
 		task.organizationName(defaultIfBlank(task.getOrganizationName(), DEFAULT_ORGANIZATION_NAME));
@@ -141,13 +141,13 @@ public abstract class Packager {
 
 		// check if name is valid as filename
 		try {
-			Paths.get(task.getName());
-			if (task.getName().contains("/"))
-				throw new InvalidPathException(task.getName(), "Illegal char </>");
-			if (task.getName().contains("\\"))
-				throw new InvalidPathException(task.getName(), "Illegal char <\\>");
+			Paths.get(task.getAppName());
+			if (task.getAppName().contains("/"))
+				throw new InvalidPathException(task.getAppName(), "Illegal char </>");
+			if (task.getAppName().contains("\\"))
+				throw new InvalidPathException(task.getAppName(), "Illegal char <\\>");
 		} catch (InvalidPathException e) {
-			throw new Exception("Invalid name specified: " + task.getName(), e);
+			throw new Exception("Invalid name specified: " + task.getAppName(), e);
 		}
 
 		// init setup languages
@@ -189,7 +189,7 @@ public abstract class Packager {
 		task.licenseFile(resolveLicense(task.getLicenseFile()));
 
 		// locates icon file
-		task.iconFile(resolveIcon(task.getIconFile(), task.getName(), assetsFolder));
+		task.iconFile(resolveIcon(task.getIconFile(), task.getAppName(), assetsFolder));
 
 		// adds to additional resources
 		if (task.getAdditionalResources() != null) {
@@ -368,12 +368,12 @@ public abstract class Packager {
 		}
 
 		// creates app destination folder
-		appFolder = new File(task.getOutputDirectory(), task.getName());
+		appFolder = new File(task.getOutputDirectory(), task.getAppName());
 		if (appFolder.exists()) {
 			FileUtils.removeFolder(appFolder);
 			Logger.info("Old app folder removed " + appFolder.getAbsolutePath());
 		}
-		appFolder = FileUtils.mkdir(task.getOutputDirectory(), task.getName());
+		appFolder = FileUtils.mkdir(task.getOutputDirectory(), task.getAppName());
 		Logger.info("App folder created: " + appFolder.getAbsolutePath());
 
 		// creates folder for intermmediate assets

@@ -34,7 +34,7 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 	protected File doApply(LinuxPackager packager) throws Exception {
 
 		File appFolder = packager.getAppFolder();
-		String name = packager.task.getName();
+		String name = packager.task.getAppName();
 		String version = packager.task.getVersion().replaceAll("-", "_");
 		String description = packager.task.getDescription();
 		String organizationName = packager.task.getOrganizationName();

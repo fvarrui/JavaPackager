@@ -55,7 +55,7 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 	protected File doApply(LinuxPackager packager) throws Exception {
 		
 		File assetsFolder = packager.getAssetsFolder();
-		String name = packager.task.getName();
+		String name = packager.task.getAppName();
 		File appFolder = packager.getAppFolder();
 		File outputDirectory = packager.task.getOutputDirectory();
 		String version = packager.task.getVersion();

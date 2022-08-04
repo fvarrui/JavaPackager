@@ -335,9 +335,9 @@ public class WindowsConfig implements Serializable {
 		this.setCompanyName(defaultIfBlank(this.getCompanyName(), packager.task.getOrganizationName()));
 		this.setCopyright(defaultIfBlank(this.getCopyright(), packager.task.getOrganizationName()));
 		this.setFileDescription(defaultIfBlank(this.getFileDescription(), packager.task.getDescription()));
-		this.setProductName(defaultIfBlank(this.getProductName(), packager.task.getName()));
-		this.setInternalName(defaultIfBlank(this.getInternalName(), packager.task.getName()));
-		this.setOriginalFilename(defaultIfBlank(this.getOriginalFilename(), packager.task.getName() + ".exe"));
+		this.setProductName(defaultIfBlank(this.getProductName(), packager.task.getAppName()));
+		this.setInternalName(defaultIfBlank(this.getInternalName(), packager.task.getAppName()));
+		this.setOriginalFilename(defaultIfBlank(this.getOriginalFilename(), packager.task.getAppName() + ".exe"));
 		this.setMsiUpgradeCode(defaultIfBlank(this.getMsiUpgradeCode(), UUID.randomUUID().toString()));
 	}
 

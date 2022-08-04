@@ -57,8 +57,8 @@ public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
         this.modules = new ArrayList<>();
         this.forceInstaller = false;
         this.mainClass = "${exec.mainClass}"; //TODO gradle?
-        this.name = (isGradle ? project.getName() : "${project.name}");
-        this.displayName = (isGradle ? project.getName() : "${project.name}");
+        this.appName = (isGradle ? project.getName() : "${project.name}");
+        this.appDisplayName = (isGradle ? project.getName() : "${project.name}");
         this.version = (isGradle ? (String) project.getVersion() : "${project.version}");
         this.description = (isGradle ? project.getDescription(): "${project.description}");
         this.url = "${project.url}"; //TODO gradle?
@@ -284,18 +284,18 @@ public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
     /**
      * App name.
      */
-    @Parameter(property = "name")
+    @Parameter(property = "appName")
     @Input
     @Optional
-    protected String name ;
+    protected String appName;
 
     /**
      * App name to show.
      */
-    @Parameter(property = "displayName")
+    @Parameter(property = "appDisplayName")
     @Input
     @Optional
-    protected String displayName;
+    protected String appDisplayName;
 
     /**
      * Project version.
@@ -656,19 +656,19 @@ public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
     }
 
     /**
-     * Get name
-     * @return Name
+     * Get app name
+     * @return App name
      */
-    public String getName() {
-        return name;
+    public String getAppName() {
+        return appName;
     }
 
     /**
      * Get display name
      * @return Display name
      */
-    public String getDisplayName() {
-        return displayName;
+    public String getAppDisplayName() {
+        return appDisplayName;
     }
 
     /**
@@ -1033,21 +1033,21 @@ public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
 
     /**
      * Set name
-     * @param name Name
+     * @param appName Name
      * @return Packager settings
      */
-    public PackageTask name(String name) {
-        this.name = name;
+    public PackageTask appName(String appName) {
+        this.appName = appName;
         return this;
     }
 
     /**
      * Set display name
-     * @param displayName Display name
+     * @param appDisplayName Display name
      * @return Packager settings
      */
-    public PackageTask displayName(String displayName) {
-        this.displayName = displayName;
+    public PackageTask appDisplayName(String appDisplayName) {
+        this.appDisplayName = appDisplayName;
         return this;
     }
 
@@ -1435,7 +1435,7 @@ public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
     public String toString() {
         return "PackageTask [outputDirectory=" + outputDirectory + ", licenseFile=" + licenseFile + ", iconFile="
                 + iconFile + ", generateInstaller=" + generateInstaller + ", forceInstaller=" + forceInstaller
-                + ", mainClass=" + mainClass + ", name=" + name + ", displayName=" + displayName + ", version="
+                + ", mainClass=" + mainClass + ", name=" + appName + ", displayName=" + appDisplayName + ", version="
                 + version + ", description=" + description + ", url=" + url + ", administratorRequired="
                 + administratorRequired + ", organizationName=" + organizationName + ", organizationUrl="
                 + organizationUrl + ", organizationEmail=" + organizationEmail + ", bundleJre=" + bundleJre

@@ -32,7 +32,7 @@ public class CreateWindowsExeWhy extends AbstractCreateWindowsExe {
 	@Override
 	protected File doApply(WindowsPackager packager) throws Exception {
 
-		String name = packager.task.getName();
+		String name = packager.task.getAppName();
 		File executable = packager.getExecutable();
 		File manifestFile = packager.getManifestFile();
 		File iconFile = packager.task.getIconFile();

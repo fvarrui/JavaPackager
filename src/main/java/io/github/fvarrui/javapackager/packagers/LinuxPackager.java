@@ -61,7 +61,7 @@ public class LinuxPackager extends Packager {
 		Logger.infoIndent("Creating GNU/Linux executable ...");
 
 		// sets executable file
-		this.executable = new File(appFolder, task.getName());
+		this.executable = new File(appFolder, task.getAppName());
 		
 		// process classpath
 		if (task.getClasspath() != null) {
@@ -73,13 +73,13 @@ public class LinuxPackager extends Packager {
 		}
 		
 		// generates desktop file from velocity template
-		desktopFile = new File(assetsFolder, task.getName() + ".desktop");
+		desktopFile = new File(assetsFolder, task.getAppName() + ".desktop");
 		VelocityUtils.render("linux/desktop.vtl", desktopFile, this);
 		Logger.info("Rendering desktop file to " + desktopFile.getAbsolutePath());
 
 		// generates mime.xml file from velocity template
 		if (task.isThereFileAssociations()) {
-			mimeXmlFile = new File(assetsFolder, task.getName() + ".xml");
+			mimeXmlFile = new File(assetsFolder, task.getAppName() + ".xml");
 			VelocityUtils.render("linux/mime.xml.vtl", mimeXmlFile, this);
 			Logger.info("Rendering mime.xml file to " + mimeXmlFile.getAbsolutePath());
 		}
