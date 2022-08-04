@@ -10,23 +10,16 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class RealTest {
+
     @Test
-    void test() throws Exception {
+    void testMavenAndGradle() throws Exception  {
+        testMaven();
+        testGradle();
+    }
 
-        // PUBLISH CURRENT JAVA PACKAGER TO LOCAL MAVEN REPO TO BE USED BY THE HELLO WORLD PROJECTS
-        File gradlew = new File(System.getProperty("user.dir") +
-                "/gradlew" + (Platform.getCurrentPlatform() == Platform.windows ? ".bat" : ".sh"));
-        if (getBuilder(gradlew.getAbsolutePath(), "build", "publishToMavenLocal", "-x", "validatePlugins", "-x", "test", "-x", "javadoc", "--stacktrace")
-                .start().waitFor()
-                != 0) throw new Exception("Failed! Exit code is not 0, see details further below:");
-
-        // PACKAGE GRADLE HELLO WORLD WITH CURRENT JAVA PACKAGER
-        if (getBuilder(gradlew.getAbsolutePath(),
-                "clean", "package", "-x", "test", "-x", "javadoc", "--stacktrace")
-                .directory(new File(System.getProperty("user.dir") + "/test/hello-world-gradle"))
-                .inheritIO().start().waitFor()
-                != 0) throw new Exception("Failed! Exit code is not 0, see details further below:");
-
+    @Test
+    void testMaven() throws Exception  {
+        publishPluginLocally();
         // PACKAGE MAVEN HELLO WORLD WITH CURRENT JAVA PACKAGER
         InvocationRequest request = new DefaultInvocationRequest();
         request.setMavenHome(findMavenHome());
@@ -39,6 +32,30 @@ public class RealTest {
         InvocationResult result = invoker.execute(request);
         if(result.getExitCode() != 0 || result.getExecutionException() != null)
             throw new RuntimeException("Maven exit code != 0, see the cause below for details.", result.getExecutionException());
+    }
+
+    @Test
+    void testGradle() throws Exception  {
+        publishPluginLocally();
+        // PACKAGE GRADLE HELLO WORLD WITH CURRENT JAVA PACKAGER
+        if (getBuilder(getGradlew().getAbsolutePath(),
+                "clean", "package", "-x", "test", "-x", "javadoc", "--stacktrace")
+                .directory(new File(System.getProperty("user.dir") + "/test/hello-world-gradle"))
+                .inheritIO().start().waitFor()
+                != 0) throw new Exception("Failed! Exit code is not 0, see details further below:");
+    }
+
+    @Test
+    void publishPluginLocally() throws Exception {
+        // PUBLISH CURRENT JAVA PACKAGER TO LOCAL MAVEN REPO TO BE USED BY THE HELLO WORLD PROJECTS
+        if (getBuilder(getGradlew().getAbsolutePath(), "build", "publishToMavenLocal", "-x", "validatePlugins", "-x", "test", "-x", "javadoc", "--stacktrace")
+                .start().waitFor()
+                != 0) throw new Exception("Failed! Exit code is not 0, see details further below:");
+    }
+
+    private File getGradlew(){
+        return new File(System.getProperty("user.dir") +
+                "/gradlew" + (Platform.getCurrentPlatform() == Platform.windows ? ".bat" : ".sh"));
     }
 
     private File findMavenHome() {
