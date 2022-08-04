@@ -23,9 +23,7 @@ import org.rauschig.jarchivelib.CompressionType;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Objects;
-import java.util.Properties;
 
 /**
  * Searches for updates and installs them is AUTOMATIC profile is selected.
@@ -55,6 +53,8 @@ public class TaskJavaUpdater {
         jdkPath.mkdirs();
     }
 
+    private String javaVersion, javaVendor;
+
     public void execute(String javaVersion, String javaVendor) throws Exception {
         Objects.requireNonNull(javaVersion);
         Objects.requireNonNull(javaVendor);
@@ -62,7 +62,7 @@ public class TaskJavaUpdater {
         Logger.info("Checking java installation...");
         AdoptV3API.OperatingSystemArchitectureType osArchitectureType = AdoptV3API.OperatingSystemArchitectureType.X64;
         boolean isLargeHeapSize = false;
-        int currentBuildId = getBuildID();
+        int currentBuildId = getBuildID(javaVersion, javaVendor);
         AdoptV3API.ImageType imageType = AdoptV3API.ImageType.JDK;
 
         JsonObject jsonReleases = new AdoptV3API().getReleases(
@@ -149,7 +149,7 @@ public class TaskJavaUpdater {
 
         // Extracts to /jdk8+189 thus we need to move its content to its parent dir
         archiver.extract(download.getNewCacheDest(), final_dir_dest);
-        setBuildID(latestBuildId);
+        setBuildID(latestBuildId, javaVersion, javaVendor);
         File actualJdkPath = null;
         for (File file : jdkPath.listFiles()) {
             if(file.isDirectory()){
@@ -165,23 +165,27 @@ public class TaskJavaUpdater {
         Logger.info("Java update was installed successfully (" + currentBuildId + " -> " + latestBuildId + ") at "+jdkPath);
     }
 
-    private int getBuildID() throws IOException {
+    private String getFileNameWithoutID(String javaVersion, String javaVendor){
+        return "java_packager_jdk_"+javaVersion+"_"+javaVendor+"_build_id";
+    }
+
+    private int getBuildID(String javaVersion, String javaVendor) throws IOException {
         for (File file : jdkPath.listFiles()) {
-            if(file.getName().startsWith("java_packager_build_id ")){
+            if(file.getName().startsWith(getFileNameWithoutID(javaVersion, javaVendor))){
                 return Integer.parseInt(file.getName().split(" ")[1]);
             }
         }
-        setBuildID(0);
+        setBuildID(0, javaVersion, javaVendor);
         return 0;
     }
 
-    private void setBuildID(int id) throws IOException {
+    private void setBuildID(int id, String javaVersion, String javaVendor) throws IOException {
         for (File file : jdkPath.listFiles()) {
-            if(file.getName().startsWith("java_packager_build_id ")){
+            if(file.getName().startsWith(getFileNameWithoutID(javaVersion, javaVendor))){
                 file.delete();
             }
         }
-        File file = new File(jdkPath+"/java_packager_build_id "+id);
+        File file = new File(jdkPath+"/"+getFileNameWithoutID(javaVersion, javaVendor)+" "+id);
         file.createNewFile();
     }
 
