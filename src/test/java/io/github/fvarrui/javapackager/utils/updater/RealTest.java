@@ -1,10 +1,7 @@
 package io.github.fvarrui.javapackager.utils.updater;
 
 import io.github.fvarrui.javapackager.model.Platform;
-import org.apache.maven.shared.invoker.DefaultInvocationRequest;
-import org.apache.maven.shared.invoker.DefaultInvoker;
-import org.apache.maven.shared.invoker.InvocationRequest;
-import org.apache.maven.shared.invoker.Invoker;
+import org.apache.maven.shared.invoker.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -32,10 +29,27 @@ public class RealTest {
 
         // PACKAGE MAVEN HELLO WORLD WITH CURRENT JAVA PACKAGER
         InvocationRequest request = new DefaultInvocationRequest();
+        request.setMavenHome(findMavenHome());
+        request.setJavaHome(new File(System.getProperty("java.home")));
         request.setPomFile(new File(System.getProperty("user.dir") + "/test/hello-world-maven/pom.xml"));
-        request.setGoals(Arrays.asList("clean", "package", "-Dmaven.javadoc.skip=true", "-Dmaven.test.skip=true"));
+        request.setGoals(Arrays.asList("clean", "package"));
+        request.addArg("-Dmaven.javadoc.skip=true");
+        request.addArg("-Dmaven.test.skip=true");
         Invoker invoker = new DefaultInvoker();
-        invoker.execute(request);
+        InvocationResult result = invoker.execute(request);
+        if(result.getExitCode() != 0 || result.getExecutionException() != null)
+            throw new RuntimeException("Maven exit code != 0, see the cause below for details.", result.getExecutionException());
+    }
+
+    private File findMavenHome() {
+        File startDir;
+        if(Platform.getCurrentPlatform() == Platform.windows){
+            startDir = new File(System.getProperty("user.home") + "\\.m2\\wrapper\\dists");
+            return startDir.listFiles()[0].listFiles()[0].listFiles()[0];
+        } else{ // LINUX OR MAC
+            // TODO
+            throw new RuntimeException("Failed to determine maven home folder! Linux is currently not supported.");
+        }
     }
 
     private ProcessBuilder getBuilder(String... arguments) throws IOException {
