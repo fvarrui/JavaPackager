@@ -66,6 +66,7 @@
 			<plugin>
 				<groupId>io.github.fvarrui</groupId>
 				<artifactId>javapackager</artifactId>
+				<!-- by entering no version we make sure the latest version is picked by maven-->
 				<executions>
 					<execution>
 						<phase>package</phase>
