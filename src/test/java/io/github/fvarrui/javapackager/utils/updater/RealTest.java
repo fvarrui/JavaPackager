@@ -19,7 +19,7 @@ public class RealTest {
         // PUBLISH CURRENT JAVA PACKAGER TO LOCAL MAVEN REPO TO BE USED BY THE HELLO WORLD PROJECTS
         File gradlew = new File(System.getProperty("user.dir") +
                 "/gradlew" + (Platform.getCurrentPlatform() == Platform.windows ? ".bat" : ".sh"));
-        if (getBuilder(gradlew.getAbsolutePath(), "build", "publishToMavenLocal", "-x", "test", "-x", "javadoc")
+        if (getBuilder(gradlew.getAbsolutePath(), "build", "publishToMavenLocal", "-x", "validatePlugins", "-x", "test", "-x", "javadoc", "--stacktrace")
                 .start().waitFor()
                 != 0) throw new Exception("Failed! Exit code is not 0, see details further below:");
 

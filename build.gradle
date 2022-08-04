@@ -87,7 +87,7 @@ test {
 }
 
 group = 'io.github.fvarrui'
-version = '1.6.7'
+version = '1.7.0'
 description = 'Hybrid Maven/Gradle plugin to package Java applications as native Windows, Mac OS X or GNU/Linux executables and create installers for them'
 
 sourceCompatibility = JavaVersion.VERSION_1_8

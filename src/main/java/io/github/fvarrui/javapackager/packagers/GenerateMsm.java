@@ -21,12 +21,12 @@ public class GenerateMsm extends WindowsArtifactGenerator {
 	@Override
 	public boolean skip(WindowsPackager packager) {
 		
-		if (!packager.getWinConfig().isGenerateMsm() && !packager.getWinConfig().isGenerateMsi()) {
+		if (!packager.task.getWinConfig().isGenerateMsm() && !packager.task.getWinConfig().isGenerateMsi()) {
 			return true;
 		}
 		
-		if (!packager.getPlatform().isCurrentPlatform() && !packager.isForceInstaller()) {
-			Logger.warn(getArtifactName() + " cannot be generated due to the target platform (" + packager.getPlatform() + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
+		if (!packager.task.getPlatform().isCurrentPlatform() && !packager.task.isForceInstaller()) {
+			Logger.warn(getArtifactName() + " cannot be generated due to the target platform (" + packager.task.getPlatform() + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
 			return true;
 		}
 		
@@ -41,9 +41,9 @@ public class GenerateMsm extends WindowsArtifactGenerator {
 		}
 
 		File assetsFolder = packager.getAssetsFolder();
-		String name = packager.getName();
-		File outputDirectory = packager.getOutputDirectory();
-		String version = packager.getVersion();
+		String name = packager.task.getName();
+		File outputDirectory = packager.task.getOutputDirectory();
+		String version = packager.task.getVersion();
 		
 		// generates WXS file from velocity template
 		File wxsFile = new File(assetsFolder, name + ".msm.wxs");

@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.github.fvarrui.javapackager.PackageTask;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -28,6 +29,10 @@ public class MacPackager extends Packager {
 	private File javaFolder;
 	private File macOSFolder;
 
+	public MacPackager(PackageTask task) {
+		super(task);
+	}
+
 	public File getAppFile() {
 		return appFile;
 	}
@@ -35,12 +40,12 @@ public class MacPackager extends Packager {
 	@Override
 	public void doInit() throws Exception {
 
-		this.macConfig.setDefaults(this);
+		this.task.getMacConfig().setDefaults(this);
 
 		// FIX useResourcesAsWorkingDir=false doesn't work fine on Mac OS (option
 		// disabled)
-		if (!this.isUseResourcesAsWorkingDir()) {
-			this.useResourcesAsWorkingDir = true;
+		if (!this.task.isUseResourcesAsWorkingDir()) {
+			this.task.useResourcesAsWorkingDir(true);
 			Logger.warn(
 					"'useResourcesAsWorkingDir' property disabled on Mac OS (useResourcesAsWorkingDir is always true)");
 		}
@@ -51,10 +56,10 @@ public class MacPackager extends Packager {
 	protected void doCreateAppStructure() throws Exception {
 
 		// initializes the references to the app structure folders
-		this.appFile = new File(appFolder, name + ".app");
+		this.appFile = new File(appFolder, task.getName() + ".app");
 		this.contentsFolder = new File(appFile, "Contents");
 		this.resourcesFolder = new File(contentsFolder, "Resources");
-		this.javaFolder = new File(resourcesFolder, this.macConfig.isRelocateJar() ? "Java" : "");
+		this.javaFolder = new File(resourcesFolder, this.task.getMacConfig().isRelocateJar() ? "Java" : "");
 		this.macOSFolder = new File(contentsFolder, "MacOS");
 
 		// makes dirs
@@ -77,7 +82,7 @@ public class MacPackager extends Packager {
 		// sets common folders
 		this.executableDestinationFolder = macOSFolder;
 		this.jarFileDestinationFolder = javaFolder;
-		this.jreDestinationFolder = new File(contentsFolder, "PlugIns/" + jreDirectoryName + "/Contents/Home");
+		this.jreDestinationFolder = new File(contentsFolder, "PlugIns/" + task.getJreDirectoryName() + "/Contents/Home");
 		this.resourcesDestinationFolder = resourcesFolder;
 
 	}
@@ -91,7 +96,7 @@ public class MacPackager extends Packager {
 		// copies jarfile to Java folder
 		FileUtils.copyFileToFolder(jarFile, javaFolder);
 
-		if (this.administratorRequired) {
+		if (this.task.getAdministratorRequired()) {
 
 			// sets startup file
 			this.executable = new File(macOSFolder, "startup");
@@ -112,7 +117,7 @@ public class MacPackager extends Packager {
 		// copies universalJavaApplicationStub startup file to boot java app
 		File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
 		String universalJavaApplicationStubResource = null;
-		switch (macConfig.getMacStartup()) {
+		switch (task.getMacConfig().getMacStartup()) {
 		case UNIVERSAL:	universalJavaApplicationStubResource = "universalJavaApplicationStub"; break;
 		case X86_64:	universalJavaApplicationStubResource = "universalJavaApplicationStub.x86_64"; break;
 		case ARM64: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.arm64"; break;
@@ -122,15 +127,15 @@ public class MacPackager extends Packager {
 		appStubFile.setExecutable(true, false);
 
 		// process classpath
-		classpath = (this.macConfig.isRelocateJar() ? "Java/" : "") + this.jarFile.getName() + (classpath != null ? ":" + classpath : "");
-		classpaths = Arrays.asList(classpath.split("[:;]"));
-		if (!isUseResourcesAsWorkingDir()) {
+		task.classpath((task.getMacConfig().isRelocateJar() ? "Java/" : "") + this.jarFile.getName() + (task.getClasspath() != null ? ":" + task.getClasspath() : ""));
+		classpaths = Arrays.asList(task.getClasspath().split("[:;]"));
+		if (!task.isUseResourcesAsWorkingDir()) {
 			classpaths = classpaths
 					.stream()
 					.map(cp -> new File(cp).isAbsolute() ? cp : "$ResourcesFolder/" + cp)
 					.collect(Collectors.toList());
 		}
-		classpath = StringUtils.join(classpaths, ":");
+		task.classpath(StringUtils.join(classpaths, ":"));
 
 		// creates and write the Info.plist file
 		File infoPlistFile = new File(contentsFolder, "Info.plist");
@@ -139,18 +144,18 @@ public class MacPackager extends Packager {
 		Logger.info("Info.plist file created in " + infoPlistFile.getAbsolutePath());
 
 		// copy provisionprofile
-		if(macConfig.getProvisionProfile() != null) {
+		if(task.getMacConfig().getProvisionProfile() != null) {
 			// file name must be 'embedded.provisionprofile'
-			FileUtils.copyFileToFile(macConfig.getProvisionProfile(), new File(contentsFolder, "embedded.provisionprofile"));
+			FileUtils.copyFileToFile(task.getMacConfig().getProvisionProfile(), new File(contentsFolder, "embedded.provisionprofile"));
 		}
 
 		// codesigns app folder
 		if (!Platform.mac.isCurrentPlatform()) {
 			Logger.warn("Generated app could not be signed due to current platform is " + Platform.getCurrentPlatform());
-		} else if (!getMacConfig().isCodesignApp()) {
+		} else if (!task.getMacConfig().isCodesignApp()) {
 			Logger.warn("App codesigning disabled");
 		} else {
-			codesign(this.macConfig.getDeveloperId(), this.macConfig.getEntitlements(), this.appFile);
+			codesign(task.getMacConfig().getDeveloperId(), task.getMacConfig().getEntitlements(), this.appFile);
 		}
 
 		return appFile;
@@ -160,7 +165,7 @@ public class MacPackager extends Packager {
 
 		// checks --option flags
 		List<String> flags = new ArrayList<>();
-		if (macConfig.isHardenedCodesign()) {
+		if (task.getMacConfig().isHardenedCodesign()) {
 			if (VersionUtils.compareVersions("10.13.6", SystemUtils.OS_VERSION) >= 0) {
 				flags.add("runtime"); // enable hardened runtime if Mac OS version >= 10.13.6
 			} else {

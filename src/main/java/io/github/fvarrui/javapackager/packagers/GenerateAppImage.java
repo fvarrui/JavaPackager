@@ -23,12 +23,12 @@ public class GenerateAppImage extends ArtifactGenerator<LinuxPackager> {
 	@Override
 	public boolean skip(LinuxPackager packager) {
 
-		if (!packager.getLinuxConfig().isGenerateAppImage()) {
+		if (!packager.task.getLinuxConfig().isGenerateAppImage()) {
 			return true;
 		}
 		
-		if (!packager.getPlatform().isCurrentPlatform() && !packager.isForceInstaller()) {
-			Logger.warn(getArtifactName() + " cannot be generated due to the target platform (" + packager.getPlatform() + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
+		if (!packager.task.getPlatform().isCurrentPlatform() && !packager.task.isForceInstaller()) {
+			Logger.warn(getArtifactName() + " cannot be generated due to the target platform (" + packager.task.getPlatform() + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
 			return true;
 		}
 		
@@ -40,11 +40,11 @@ public class GenerateAppImage extends ArtifactGenerator<LinuxPackager> {
 	protected File doApply(LinuxPackager packager) throws Exception {
 
 		File appFolder = packager.getAppFolder();
-		File outputFolder = packager.getOutputDirectory();
-		String name = packager.getName();
+		File outputFolder = packager.task.getOutputDirectory();
+		String name = packager.task.getName();
 		File executable = packager.getExecutable();
 		File assetsFolder = packager.getAssetsFolder();
-		File iconFile = packager.getIconFile();
+		File iconFile = packager.task.getIconFile();
 
 		// output AppImage file
 		File appImage = new File(outputFolder, name + ".AppImage");

@@ -19,12 +19,12 @@ public class GeneratePkg extends ArtifactGenerator<MacPackager> {
 	@Override
 	public boolean skip(MacPackager packager) {
 		
-		if (!packager.getMacConfig().isGeneratePkg()) {
+		if (!packager.task.getMacConfig().isGeneratePkg()) {
 			return true;
 		}
 		
-		if (!packager.getPlatform().isCurrentPlatform() && !packager.isForceInstaller()) {
-			Logger.warn(getArtifactName() + " cannot be generated due to the target platform (" + packager.getPlatform() + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
+		if (!packager.task.getPlatform().isCurrentPlatform() && !packager.task.isForceInstaller()) {
+			Logger.warn(getArtifactName() + " cannot be generated due to the target platform (" + packager.task.getPlatform() + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
 			return true;
 		}
 		
@@ -35,9 +35,9 @@ public class GeneratePkg extends ArtifactGenerator<MacPackager> {
 	protected File doApply(MacPackager packager) throws Exception {
 
 		File appFile = packager.getAppFile();
-		String name = packager.getName();
-		File outputDirectory = packager.getOutputDirectory();
-		String version = packager.getVersion();
+		String name = packager.task.getName();
+		File outputDirectory = packager.task.getOutputDirectory();
+		String version = packager.task.getVersion();
 		
 		File pkgFile = new File(outputDirectory, name + "_" + version + ".pkg");
 		

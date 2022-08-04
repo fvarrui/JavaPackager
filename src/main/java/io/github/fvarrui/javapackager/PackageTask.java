@@ -117,7 +117,6 @@ public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
     public void doPackage() throws Exception {
 
         Packager packager = this.createPackager();
-        new PackageTask();
         // generates app, installers and bundles
         File app = packager.createApp();
         List<File> installers = packager.generateInstallers();
@@ -187,15 +186,14 @@ public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
         Packager packager = null;
         switch (platform) {
             case mac:
-                packager = new MacPackager(); break;
+                packager = new MacPackager(this); break;
             case linux:
-                packager = new LinuxPackager(); break;
+                packager = new LinuxPackager(this); break;
             case windows:
-                packager = new WindowsPackager(); break;
+                packager = new WindowsPackager(this); break;
             default:
                 throw new RuntimeException("Unsupported operating system: " + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION + " " + SystemUtils.OS_ARCH);
         }
-        packager.platform(platform);
         return packager;
     }
 

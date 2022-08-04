@@ -28,12 +28,12 @@ public class GenerateDmg extends ArtifactGenerator<MacPackager> {
 	@Override
 	public boolean skip(MacPackager packager) {
 		
-		if (!packager.getMacConfig().isGenerateDmg()) {
+		if (!packager.task.getMacConfig().isGenerateDmg()) {
 			return true;
 		}
 		
-		if (!packager.getPlatform().isCurrentPlatform() && !packager.isForceInstaller()) {
-			Logger.warn(getArtifactName() + " cannot be generated due to the target platform (" + packager.getPlatform() + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
+		if (!packager.task.getPlatform().isCurrentPlatform() && !packager.task.isForceInstaller()) {
+			Logger.warn(getArtifactName() + " cannot be generated due to the target platform (" + packager.task.getPlatform() + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
 			return true;
 		}
 		
@@ -45,11 +45,11 @@ public class GenerateDmg extends ArtifactGenerator<MacPackager> {
 
 		File appFolder = packager.getAppFolder();
 		File assetsFolder = packager.getAssetsFolder();
-		String name = packager.getName();
-		File outputDirectory = packager.getOutputDirectory();
-		File iconFile = packager.getIconFile();
-		String version = packager.getVersion();
-		MacConfig macConfig = packager.getMacConfig();
+		String name = packager.task.getName();
+		File outputDirectory = packager.task.getOutputDirectory();
+		File iconFile = packager.task.getIconFile();
+		String version = packager.task.getVersion();
+		MacConfig macConfig = packager.task.getMacConfig();
 		
 		// sets volume name if blank
 		String volumeName = defaultIfBlank(macConfig.getVolumeName(), name);

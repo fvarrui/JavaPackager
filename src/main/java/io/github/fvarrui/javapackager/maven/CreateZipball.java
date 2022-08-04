@@ -28,17 +28,17 @@ public class CreateZipball extends ArtifactGenerator<Packager> {
 
 	@Override
 	public boolean skip(Packager packager) {
-		return !packager.getCreateZipball();
+		return !packager.task.getCreateZipball();
 	}
 
 	@Override
 	protected File doApply(Packager packager) {
 		
 		File assetsFolder = packager.getAssetsFolder();
-		String name = packager.getName();
-		String version = packager.getVersion();
-		Platform platform = packager.getPlatform();
-		File outputDirectory = packager.getOutputDirectory(); 
+		String name = packager.task.getName();
+		String version = packager.task.getVersion();
+		Platform platform = packager.task.getPlatform();
+		File outputDirectory = packager.task.getOutputDirectory();
 
 		try {
 

@@ -21,8 +21,8 @@ public class CreateWindowsExeWhy extends AbstractCreateWindowsExe {
 	@Override
 	public boolean skip(WindowsPackager packager) {
 
-		if (!packager.getPlatform().isCurrentPlatform()) {
-			Logger.error(getArtifactName() + " cannot be generated with Why due to the target platform (" + packager.getPlatform() + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
+		if (!packager.task.getPlatform().isCurrentPlatform()) {
+			Logger.error(getArtifactName() + " cannot be generated with Why due to the target platform (" + packager.task.getPlatform() + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
 			return true;
 		}
 		
@@ -32,13 +32,13 @@ public class CreateWindowsExeWhy extends AbstractCreateWindowsExe {
 	@Override
 	protected File doApply(WindowsPackager packager) throws Exception {
 
-		String name = packager.getName();
+		String name = packager.task.getName();
 		File executable = packager.getExecutable();
 		File manifestFile = packager.getManifestFile();
-		File iconFile = packager.getIconFile();
+		File iconFile = packager.task.getIconFile();
 		File appFolder = packager.getAppFolder();
 		File jarFile = packager.getJarFile();
-		WindowsConfig winConfig = packager.getWinConfig(); 
+		WindowsConfig winConfig = packager.task.getWinConfig();
 		
 		if (winConfig.isWrapJar()) {
 			Logger.warn("'wrapJar' property ignored when building EXE with " + getArtifactName());
@@ -53,7 +53,7 @@ public class CreateWindowsExeWhy extends AbstractCreateWindowsExe {
 		FileUtils.copyFileToFile(iconFile, getGenericIcon());
 
 		// creates generic exe
-		FileUtils.copyResourceToFile("/windows/JavaLauncher.exe", getGenericExe(), packager.getAssetsDir());
+		FileUtils.copyResourceToFile("/windows/JavaLauncher.exe", getGenericExe(), packager.task.getAssetsDir());
 
 		// copies rcedit command line tool (needed to manipulate exe)
 		File rcedit = new File(getOutputFolder(), "rcedit.exe");

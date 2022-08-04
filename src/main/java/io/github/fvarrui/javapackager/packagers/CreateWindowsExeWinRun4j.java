@@ -34,8 +34,8 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 	@Override
 	public boolean skip(WindowsPackager packager) {
 
-		if (!packager.getPlatform().isCurrentPlatform()) {
-			Logger.error(getArtifactName() + " cannot be generated with WinRun4J due to the target platform (" + packager.getPlatform() + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
+		if (!packager.task.getPlatform().isCurrentPlatform()) {
+			Logger.error(getArtifactName() + " cannot be generated with WinRun4J due to the target platform (" + packager.task.getPlatform() + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
 			return true;
 		}
 		
@@ -45,18 +45,18 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 	@Override
 	protected File doApply(WindowsPackager packager) throws Exception {
 
-		String name = packager.getName();
+		String name = packager.task.getName();
 		File executable = packager.getExecutable();
 		File jarFile = packager.getJarFile();
 		File manifestFile = packager.getManifestFile();
-		File iconFile = packager.getIconFile();
+		File iconFile = packager.task.getIconFile();
 		File libsFolder = packager.getLibsFolder();
 		File appFolder = packager.getAppFolder();
-		String mainClass = packager.getMainClass();
+		String mainClass = packager.task.getMainClass();
 		File jreDestinationFolder = packager.getJreDestinationFolder();
-		boolean bundleJre = packager.getBundleJre();
-		String vmLocation = packager.getWinConfig().getVmLocation();
-		WindowsConfig winConfig = packager.getWinConfig(); 
+		boolean bundleJre = packager.task.getBundleJre();
+		String vmLocation = packager.task.getWinConfig().getVmLocation();
+		WindowsConfig winConfig = packager.task.getWinConfig();
 		
 		if (winConfig.isWrapJar()) {
 			Logger.warn("'wrapJar' property ignored when building EXE with " + getArtifactName());
@@ -112,7 +112,7 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 			}
 
 			// sets vmLocation in winConfig, so it will be used when rendering INI file
-			packager.getWinConfig().setVmLocation(vmLocation);
+			packager.task.getWinConfig().setVmLocation(vmLocation);
 			
 			Logger.info("Using 'vmLocation=" + vmLocation + "'!");
 			

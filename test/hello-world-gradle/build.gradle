@@ -20,7 +20,7 @@ dependencies {
     implementation 'commons-io:commons-io:2.6'
 }
 
-import io.github.fvarrui.javapackager.gradle.PackageTask;
+import io.github.fvarrui.javapackager.PackageTask;
 import io.github.fvarrui.javapackager.model.*;
 
 group = 'io.github.fvarrui'
@@ -64,10 +64,6 @@ task packageForWindows(type: PackageTask, dependsOn: build) {
         disableWelcomePage = false
         createDesktopIconTask = false
     }
-}
-
-taskMyTask(type: MyPackageTask, dependsOn: build){
-	getName() { return "name" }
 }
 
 task packageForLinux(type: PackageTask, dependsOn: build) {

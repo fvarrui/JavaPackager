@@ -48,19 +48,19 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 	
 	@Override
 	public boolean skip(LinuxPackager packager) {
-		return !packager.getLinuxConfig().isGenerateDeb();
+		return !packager.task.getLinuxConfig().isGenerateDeb();
 	}
 	
 	@Override
 	protected File doApply(LinuxPackager packager) throws Exception {
 		
 		File assetsFolder = packager.getAssetsFolder();
-		String name = packager.getName();
+		String name = packager.task.getName();
 		File appFolder = packager.getAppFolder();
-		File outputDirectory = packager.getOutputDirectory();
-		String version = packager.getVersion();
-		boolean bundleJre = packager.getBundleJre();
-		String jreDirectoryName = packager.getJreDirectoryName();
+		File outputDirectory = packager.task.getOutputDirectory();
+		String version = packager.task.getVersion();
+		boolean bundleJre = packager.task.getBundleJre();
+		String jreDirectoryName = packager.task.getJreDirectoryName();
 		File executable = packager.getExecutable();
 		File javaFile = new File(appFolder, jreDirectoryName + "/bin/java");
 
