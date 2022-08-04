@@ -70,7 +70,7 @@ public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
         this.customizedJre = true;
         this.jrePath = null;
         this.jdkPath = null;
-        this.jdkVersion = "8";
+        this.jdkVersion = "17";
         this.jdkVendor = "adoptium";
         this.additionalResources = new ArrayList<>();
         this.modules = new ArrayList<>();
