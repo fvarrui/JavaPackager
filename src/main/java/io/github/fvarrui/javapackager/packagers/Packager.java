@@ -134,6 +134,7 @@ public abstract class Packager {
 			TaskJavaUpdater taskJavaUpdater = new TaskJavaUpdater(task.getPlatform());
 			taskJavaUpdater.execute(task.getJdkVersion(), task.getJdkVendor());
 			task.jdkPath(taskJavaUpdater.jdkPath);
+			if(task.getPackagingJdk() == null) task.packagingJdk(taskJavaUpdater.jdkPath);
 		}
 		if (!task.getJdkPath().exists()) {
 			throw new Exception("JDK path doesn't exist: " + task.getJdkPath());

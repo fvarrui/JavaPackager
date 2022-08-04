@@ -93,7 +93,7 @@ public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
         manifest(new Manifest());
         this.additionalModulePaths = new ArrayList<>();
         this.fileAssociations = null;
-        this.packagingJdk = (isGradle ? null : new File("${java.home}")); // todo gradle
+        this.packagingJdk = null;
         scripts(new Scripts());
     }
 
