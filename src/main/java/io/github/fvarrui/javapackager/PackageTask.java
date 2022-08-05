@@ -36,20 +36,20 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
 public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
     public PackageTask() {
         this.isGradle = Context.isGradle();
-        this.project = (isGradle ? Context.getGradleContext().getProject() : null);
+        this.gradleProject = (isGradle ? Context.getGradleContext().getProject() : null);
         if(isGradle){
             setGroup(PackagePlugin.GROUP_NAME);
             setDescription("Packages the application as a native Windows, Mac OS X or GNU/Linux executable and creates an installer");
             getOutputs().upToDateWhen(o -> false);
         }
 
-        this.outputDirectory = (isGradle ? project.getBuildDir() : new File("${project.build.directory}"));
+        this.outputDirectory = (isGradle ? gradleProject.getBuildDir() : new File("${project.build.directory}"));
         this.platform = Platform.getCurrentPlatform();
         this.bundleJre = true;
         this.copyDependencies = true;
         this.createTarball = false;
         this.createZipball = false;
-        this.description = project.getDescription();
+        this.description = gradleProject.getDescription();
         this.generateInstaller = true;
         this.linuxConfig = new LinuxConfig();
         this.macConfig = new MacConfig();
@@ -57,10 +57,10 @@ public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
         this.modules = new ArrayList<>();
         this.forceInstaller = false;
         this.mainClass = "${exec.mainClass}"; //TODO gradle?
-        this.appName = (isGradle ? project.getName() : "${project.name}");
-        this.appDisplayName = (isGradle ? project.getName() : "${project.name}");
-        this.version = (isGradle ? (String) project.getVersion() : "${project.version}");
-        this.description = (isGradle ? project.getDescription(): "${project.description}");
+        this.appName = (isGradle ? gradleProject.getName() : "${project.name}");
+        this.appDisplayName = (isGradle ? gradleProject.getName() : "${project.name}");
+        this.version = (isGradle ? (String) gradleProject.getVersion() : "${project.version}");
+        this.description = (isGradle ? gradleProject.getDescription(): "${project.description}");
         this.url = "${project.url}"; //TODO gradle?
         this.administratorRequired = false;
         this.organizationName = (isGradle ? null : "${project.organization.name}");
@@ -87,7 +87,7 @@ public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
         this.createZipball = false;
         this.extra = new HashMap<>();
         this.useResourcesAsWorkingDir = true;
-        this.assetsDir = (isGradle ? new File(project.getProjectDir(), "assets") : new File("${project.basedir}/assets"));
+        this.assetsDir = (isGradle ? new File(gradleProject.getProjectDir(), "assets") : new File("${project.basedir}/assets"));
         this.classpath = null;
         this.jreMinVersion = null;
         manifest(new Manifest());
@@ -101,7 +101,7 @@ public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
     GRADLE SPECIFIC
      */
     private boolean isGradle;
-    private Project project;
+    private Project gradleProject;
     private List<File> outputFiles;
 
     @OutputFiles
@@ -204,31 +204,31 @@ public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
     // GRADLE SPECIFIC START
     public LinuxConfig linuxConfig(Closure<LinuxConfig> closure) {
         linuxConfig = new LinuxConfig();
-        project.configure(linuxConfig, closure);
+        gradleProject.configure(linuxConfig, closure);
         return linuxConfig;
     }
 
     public MacConfig macConfig(Closure<MacConfig> closure) {
         macConfig = new MacConfig();
-        project.configure(macConfig, closure);
+        gradleProject.configure(macConfig, closure);
         return macConfig;
     }
 
     public WindowsConfig winConfig(Closure<WindowsConfig> closure) {
         winConfig = new WindowsConfig();
-        project.configure(winConfig, closure);
+        gradleProject.configure(winConfig, closure);
         return winConfig;
     }
 
     public Manifest manifest(Closure<Manifest> closure) {
         manifest = new Manifest();
-        project.configure(manifest, closure);
+        gradleProject.configure(manifest, closure);
         return manifest;
     }
 
     public Scripts scripts(Closure<Scripts> closure) {
         scripts = new Scripts();
-        project.configure(scripts, closure);
+        gradleProject.configure(scripts, closure);
         return scripts;
     }
     // GRADLE SPECIFIC END

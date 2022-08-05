@@ -12,13 +12,7 @@ import java.util.Map;
 public class RealTest {
 
     @Test
-    void testMavenAndGradle() throws Exception  {
-        testMaven();
-        testGradle();
-    }
-
-    @Test
-    void testMaven() throws Exception  {
+    void helloWorldMaven() throws Exception  {
         publishPluginLocally();
         // PACKAGE MAVEN HELLO WORLD WITH CURRENT JAVA PACKAGER
         InvocationRequest request = new DefaultInvocationRequest();
@@ -35,7 +29,7 @@ public class RealTest {
     }
 
     @Test
-    void testGradle() throws Exception  {
+    void helloWorldGradle() throws Exception  {
         publishPluginLocally();
         // PACKAGE GRADLE HELLO WORLD WITH CURRENT JAVA PACKAGER
         if (getBuilder(getGradlew().getAbsolutePath(),

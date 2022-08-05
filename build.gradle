@@ -7,12 +7,13 @@ plugins {
 	id 'io.codearte.nexus-staging' version '0.21.2'
 	id 'eclipse'
 	id 'de.undercouch.download' version '5.0.4'
+	id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 repositories {
 	mavenLocal()
 	mavenCentral()
-	maven { 
+	maven {
 		url 'https://plugins.gradle.org/m2/'
 	}
 	maven { url 'https://jitpack.io' }
@@ -43,14 +44,9 @@ configurations {
 	mavenEmbedder
 }
 
-configurations {
-	// Makes sure that the right dependency gets taken. Author: https://stackoverflow.com/questions/31698510/can-i-force-the-order-of-dependencies-in-my-classpath-with-gradle
-	priority
-	sourceSets.main.compileClasspath = configurations.priority + sourceSets.main.compileClasspath
-}
-
-
 dependencies {
+	shadow localGroovy()
+	shadow gradleApi()
 	implementation 'org.apache.maven:maven-plugin-api:3.6.0'
 	implementation 'org.codehaus.plexus:plexus-utils:3.1.1'
 	implementation 'org.twdata.maven:mojo-executor:2.3.0'
@@ -66,7 +62,6 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.9.0'
 	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 	implementation 'org.rauschig:jarchivelib:1.2.0'
-	priority 'com.github.Osiris-Team:maven-plugin-tools:1.0.1'
 
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
 	testImplementation 'org.apache.maven.shared:maven-invoker:3.2.0'
@@ -74,13 +69,22 @@ dependencies {
 	compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
 
 	mavenEmbedder 'org.apache.maven:maven-embedder:3.6.0'
-	mavenEmbedder 'org.apache.maven:maven-compat:3.6.0'	
+	mavenEmbedder 'org.apache.maven:maven-compat:3.6.0'
 	mavenEmbedder 'org.slf4j:slf4j-simple:1.7.30'
 	mavenEmbedder 'org.eclipse.aether:aether-connector-basic:1.1.0'
 	mavenEmbedder 'org.eclipse.aether:aether-transport-wagon:1.1.0'
 	mavenEmbedder 'org.apache.maven.wagon:wagon-http:3.4.1'
 	mavenEmbedder 'org.apache.maven.wagon:wagon-provider-api:3.4.1'
 }
+shadowJar{
+	archiveClassifier.set('') // removes '-all' from the file name, to replace the regular plugin jar with the shaded one
+	minimize()
+}
+task relocateShadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation) {
+	target = tasks.shadowJar
+}
+
+tasks.shadowJar.dependsOn tasks.relocateShadowJar
 
 test {
 	useJUnitPlatform()

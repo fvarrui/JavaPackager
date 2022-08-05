@@ -13,18 +13,6 @@
 		<exec.mainClass>io.github.fvarrui.helloworld.Main</exec.mainClass>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>local</id>
-			<url>file:~/.m2/repository</url>
-		</repository>
-		<repository>
-			<id>central</id>
-			<name>Maven Central</name>
-			<url>https://repo1.maven.org/maven2/</url>
-		</repository>
-	</repositories>
-
 	<dependencies>
 		<dependency>
 			<groupId>commons-io</groupId>
