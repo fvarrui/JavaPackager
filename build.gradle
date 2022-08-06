@@ -63,7 +63,8 @@ dependencies {
 	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 	implementation 'org.rauschig:jarchivelib:1.2.0'
 
-	testImplementation 'junit:junit:4.13.1'
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0'
+	testImplementation 'org.apache.maven.shared:maven-invoker:3.2.0'
 
 	compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
 
