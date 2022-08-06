@@ -25,14 +25,14 @@ public class CreateWindowsExeLaunch4j extends AbstractCreateWindowsExe {
 	@Override
 	protected File doApply(WindowsPackager packager) throws Exception {
 
-		List<String> vmArgs = packager.getVmArgs();
-		WindowsConfig winConfig = packager.getWinConfig();
+		List<String> vmArgs = packager.task.getVmArgs();
+		WindowsConfig winConfig = packager.task.getWinConfig();
 		File executable = packager.getExecutable();
-		String mainClass = packager.getMainClass();
-		boolean useResourcesAsWorkingDir = packager.isUseResourcesAsWorkingDir();
-		boolean bundleJre = packager.getBundleJre();
-		String jreDirectoryName = packager.getJreDirectoryName();
-		String jreMinVersion = packager.getJreMinVersion();
+		String mainClass = packager.task.getMainClass();
+		boolean useResourcesAsWorkingDir = packager.task.isUseResourcesAsWorkingDir();
+		boolean bundleJre = packager.task.getBundleJre();
+		String jreDirectoryName = packager.task.getJreDirectoryName();
+		String jreMinVersion = packager.task.getJreMinVersion();
 		File jarFile = packager.getJarFile();
 		File appFolder = packager.getAppFolder();
 

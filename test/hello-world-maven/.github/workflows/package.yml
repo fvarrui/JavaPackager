@@ -1,0 +1,24 @@
+name: Packaging for Windows
+on: workflow_dispatch # manually triggered
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Set path for candle and light
+        run: echo "C:\Program Files (x86)\WiX Toolset v3.11\bin" >> $GITHUB_PATH
+        shell: bash
+      - name: Package app
+        run: mvn clean package
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Windows Setup Installer (.exe)
+          path: target/HelloWorldMaven_*.exe
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Windows MSI Installer (.msi)
+          path: target/HelloWorldMaven_*.msi

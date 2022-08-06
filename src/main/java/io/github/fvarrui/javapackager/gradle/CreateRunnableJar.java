@@ -28,13 +28,13 @@ public class CreateRunnableJar extends ArtifactGenerator<Packager> {
 	protected File doApply(Packager packager) {
 
 		String classifier = "runnable";
-		String name = packager.getName();
-		String version = packager.getVersion();
-		String mainClass = packager.getMainClass();
-		File outputDirectory = packager.getOutputDirectory();
+		String name = packager.task.getAppName();
+		String version = packager.task.getVersion();
+		String mainClass = packager.task.getMainClass();
+		File outputDirectory = packager.task.getOutputDirectory();
 		Project project = Context.getGradleContext().getProject();
 		File libsFolder = packager.getLibsFolder();
-		Manifest manifest = packager.getManifest();
+		Manifest manifest = packager.task.getManifest();
 		
 		List<String> dependencies = new ArrayList<>();
 		if (libsFolder != null && libsFolder.exists()) {

@@ -7,14 +7,16 @@ plugins {
 	id 'io.codearte.nexus-staging' version '0.21.2'
 	id 'eclipse'
 	id 'de.undercouch.download' version '5.0.4'
+	id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 repositories {
 	mavenLocal()
 	mavenCentral()
-	maven { 
+	maven {
 		url 'https://plugins.gradle.org/m2/'
 	}
+	maven { url 'https://jitpack.io' }
 }
 
 gradlePlugin {
@@ -43,6 +45,8 @@ configurations {
 }
 
 dependencies {
+	shadow localGroovy()
+	shadow gradleApi()
 	implementation 'org.apache.maven:maven-plugin-api:3.6.0'
 	implementation 'org.codehaus.plexus:plexus-utils:3.1.1'
 	implementation 'org.twdata.maven:mojo-executor:2.3.0'
@@ -55,18 +59,36 @@ dependencies {
 	implementation 'net.jsign:jsign-core:3.1'
 	implementation 'org.redline-rpm:redline:1.2.10'
 	implementation 'io.github.fvarrui:launch4j:2.5.2'
+	implementation 'com.google.code.gson:gson:2.9.0'
+	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+	implementation 'org.rauschig:jarchivelib:1.2.0'
 
 	testImplementation 'junit:junit:4.13.1'
 
 	compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
 
 	mavenEmbedder 'org.apache.maven:maven-embedder:3.6.0'
-	mavenEmbedder 'org.apache.maven:maven-compat:3.6.0'	
+	mavenEmbedder 'org.apache.maven:maven-compat:3.6.0'
 	mavenEmbedder 'org.slf4j:slf4j-simple:1.7.30'
 	mavenEmbedder 'org.eclipse.aether:aether-connector-basic:1.1.0'
 	mavenEmbedder 'org.eclipse.aether:aether-transport-wagon:1.1.0'
 	mavenEmbedder 'org.apache.maven.wagon:wagon-http:3.4.1'
 	mavenEmbedder 'org.apache.maven.wagon:wagon-provider-api:3.4.1'
+}
+shadowJar{
+	// Minimal shading is needed to include some gradle classes
+	// since otherwise when running this as a maven plugin we will get errors.
+	archiveClassifier.set('') // removes '-all' from the file name, to replace the regular plugin jar with the shaded one
+	minimize()
+}
+task relocateShadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation) {
+	target = tasks.shadowJar
+}
+
+tasks.shadowJar.dependsOn tasks.relocateShadowJar
+
+test {
+	useJUnitPlatform()
 }
 
 group = 'io.github.fvarrui'
@@ -88,7 +110,7 @@ publishing {
 
 java {
 	withSourcesJar()
-	// and/or analogously use â€œwithJavadocJar()â€� to get a â€œjavadocJarâ€� task
+	// and/or analogously use "withJavadocJar()" to get a "javadocJar" task
 }
 
 install.repositories.mavenInstaller.pom.with {

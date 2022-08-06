@@ -27,7 +27,7 @@ public class ResolveLicenseFromPOM extends ArtifactGenerator<Packager> {
 	protected File doApply(Packager packager) {
 		Logger.infoIndent("Trying to resolve license from POM ...");
 		
-		File licenseFile = packager.getLicenseFile();
+		File licenseFile = packager.task.getLicenseFile();
 		List<License> licenses = Context.getMavenContext().getEnv().getMavenProject().getLicenses();
 		File assetsFolder = packager.getAssetsFolder();
 		
