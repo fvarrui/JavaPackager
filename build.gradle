@@ -50,11 +50,11 @@ dependencies {
 	implementation 'org.apache.maven:maven-plugin-api:3.6.0'
 	implementation 'org.codehaus.plexus:plexus-utils:3.1.1'
 	implementation 'org.twdata.maven:mojo-executor:2.3.0'
-	implementation 'commons-io:commons-io:2.6'
+	implementation 'commons-io:commons-io:2.7'
 	implementation 'org.apache.commons:commons-lang3:3.9'
 	implementation 'org.apache.commons:commons-collections4:4.1'
 	implementation 'org.apache.commons:commons-compress:1.21'
-	implementation 'org.apache.velocity:velocity-engine-core:2.0'
+	implementation 'org.apache.velocity:velocity-engine-core:2.3'
 	implementation 'org.vafer:jdeb:1.9'
 	implementation 'net.jsign:jsign-core:3.1'
 	implementation 'org.redline-rpm:redline:1.2.10'
@@ -63,8 +63,7 @@ dependencies {
 	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 	implementation 'org.rauschig:jarchivelib:1.2.0'
 
-	testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
-	testImplementation 'org.apache.maven.shared:maven-invoker:3.2.0'
+	testImplementation 'junit:junit:4.13.1'
 
 	compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
 
@@ -93,7 +92,7 @@ test {
 }
 
 group = 'io.github.fvarrui'
-version = '1.7.0'
+version = '1.7.0-SNAPSHOT'
 description = 'Hybrid Maven/Gradle plugin to package Java applications as native Windows, Mac OS X or GNU/Linux executables and create installers for them'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -107,6 +106,11 @@ publishing {
 			from(components.java)
 		}
 	}
+}
+
+java {
+	withSourcesJar()
+	// and/or analogously use "withJavadocJar()" to get a "javadocJar" task
 }
 
 install.repositories.mavenInstaller.pom.with {
