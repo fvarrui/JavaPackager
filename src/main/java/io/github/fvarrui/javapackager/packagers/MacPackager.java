@@ -112,7 +112,7 @@ public class MacPackager extends Packager {
 
 	private void processStartupScript() throws Exception {
 		
-		if (this.administratorRequired) {
+		if (task.getAdministratorRequired()) {
 
 			// We need a helper script ("startup") in this case,
 			// which invokes the launcher script/ executable with administrator rights.
@@ -126,7 +126,7 @@ public class MacPackager extends Packager {
 			
 		} else {
 
-			File launcher = macConfig.getCustomLauncher();
+			File launcher = task.getMacConfig().getCustomLauncher();
 			if(launcher != null && launcher.canRead() && launcher.isFile()){
 				FileUtils.copyFileToFolder(launcher, macOSFolder);
 				this.executable = new File(macOSFolder, launcher.getName());
@@ -141,15 +141,15 @@ public class MacPackager extends Packager {
 
 	private void processClasspath() {
 		// TODO: Why are we doing this here? I do not see any usage of 'classpath' or 'classpaths' here.
-		classpath = (this.macConfig.isRelocateJar() ? "Java/" : "") + this.jarFile.getName() + (classpath != null ? ":" + classpath : "");
-		classpaths = Arrays.asList(classpath.split("[:;]"));
-		if (!isUseResourcesAsWorkingDir()) {
+		task.classpath((task.getMacConfig().isRelocateJar() ? "Java/" : "") + this.jarFile.getName() + (task.getClasspath() != null ? ":" + task.getClasspath() : ""));
+		classpaths = Arrays.asList(task.getClasspath().split("[:;]"));
+		if (!task.isUseResourcesAsWorkingDir()) {
 			classpaths = classpaths
 					.stream()
 					.map(cp -> new File(cp).isAbsolute() ? cp : "$ResourcesFolder/" + cp)
 					.collect(Collectors.toList());
 		}
-		classpath = StringUtils.join(classpaths, ":");
+		task.classpath(StringUtils.join(classpaths, ":"));
 	}
 
 	/**
@@ -158,8 +158,8 @@ public class MacPackager extends Packager {
 	 */
 	private void processInfoPlistFile() throws Exception {
 		File infoPlistFile = new File(contentsFolder, "Info.plist");
-		if(macConfig.getCustomInfoPlist() != null && macConfig.getCustomInfoPlist().isFile() && macConfig.getCustomInfoPlist().canRead()){
-			FileUtils.copyFileToFile(macConfig.getCustomInfoPlist(), infoPlistFile);
+		if(task.getMacConfig().getCustomInfoPlist() != null && task.getMacConfig().getCustomInfoPlist().isFile() && task.getMacConfig().getCustomInfoPlist().canRead()){
+			FileUtils.copyFileToFile(task.getMacConfig().getCustomInfoPlist(), infoPlistFile);
 		} else {
 			VelocityUtils.render("mac/Info.plist.vtl", infoPlistFile, this);
 			XMLUtils.prettify(infoPlistFile);
@@ -178,12 +178,12 @@ public class MacPackager extends Packager {
 	}
 
 	private void processProvisionProfileFile() throws Exception {
-		if (macConfig.getProvisionProfile() != null && macConfig.getProvisionProfile().isFile() && macConfig.getProvisionProfile().canRead()) {
+		if (task.getMacConfig().getProvisionProfile() != null && task.getMacConfig().getProvisionProfile().isFile() && task.getMacConfig().getProvisionProfile().canRead()) {
 			// file name must be 'embedded.provisionprofile'
 			File provisionProfile = new File(contentsFolder, "embedded.provisionprofile");
-			FileUtils.copyFileToFile(macConfig.getProvisionProfile(), provisionProfile);
+			FileUtils.copyFileToFile(task.getMacConfig().getProvisionProfile(), provisionProfile);
 			Logger.info("Provision profile file created from " + "\n" +
-					macConfig.getProvisionProfile() + " to \n" +
+					task.getMacConfig().getProvisionProfile() + " to \n" +
 					provisionProfile.getAbsolutePath());
 		}
 	}
@@ -192,14 +192,14 @@ public class MacPackager extends Packager {
 		// sets startup file
 		File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
 		String universalJavaApplicationStubResource = null;
-		switch (macConfig.getMacStartup()) {
+		switch (task.getMacConfig().getMacStartup()) {
 			case UNIVERSAL:	universalJavaApplicationStubResource = "universalJavaApplicationStub"; break;
 			case X86_64:	universalJavaApplicationStubResource = "universalJavaApplicationStub.x86_64"; break;
 			case ARM64: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.arm64"; break;
 			case SCRIPT: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.sh"; break;
 		}
 		// unixStyleNewLinux=true if startup is a script (this will replace '\r\n' with '\n')
-		FileUtils.copyResourceToFile("/mac/" + universalJavaApplicationStubResource, appStubFile, macConfig.getMacStartup() == MacStartup.SCRIPT);
+		FileUtils.copyResourceToFile("/mac/" + universalJavaApplicationStubResource, appStubFile, task.getMacConfig().getMacStartup() == MacStartup.SCRIPT);
 		return appStubFile;
 	}
 

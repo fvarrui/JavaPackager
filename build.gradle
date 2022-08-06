@@ -79,7 +79,9 @@ shadowJar{
 	// Minimal shading is needed to include some gradle classes
 	// since otherwise when running this as a maven plugin we will get errors.
 	archiveClassifier.set('') // removes '-all' from the file name, to replace the regular plugin jar with the shaded one
-	minimize()
+	minimize { // Executes minimize for all dependencies except the below:
+		exclude(dependency('io.github.fvarrui:launch4j:.*'))
+	}
 }
 task relocateShadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation) {
 	target = tasks.shadowJar
