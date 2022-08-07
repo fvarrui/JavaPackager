@@ -1,4 +1,4 @@
-package io.github.fvarrui.javapackager.utils.updater;
+package io.github.fvarrui.javapackager;
 
 import io.github.fvarrui.javapackager.model.Platform;
 import org.apache.maven.shared.invoker.*;
