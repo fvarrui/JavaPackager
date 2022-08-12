@@ -30,7 +30,7 @@ Add the following `plugin` tag to your `pom.xml`:
 <plugin>
     <groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.7.0</version>
     <executions>
         <execution>
             <phase>package</phase>

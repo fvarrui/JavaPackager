@@ -7,7 +7,6 @@ plugins {
 	id 'io.codearte.nexus-staging' version '0.21.2'
 	id 'eclipse'
 	id 'de.undercouch.download' version '5.0.4'
-	id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 repositories {
@@ -16,7 +15,6 @@ repositories {
 	maven {
 		url 'https://plugins.gradle.org/m2/'
 	}
-	maven { url 'https://jitpack.io' }
 }
 
 gradlePlugin {
@@ -45,8 +43,6 @@ configurations {
 }
 
 dependencies {
-	shadow localGroovy()
-	shadow gradleApi()
 	implementation 'org.apache.maven:maven-plugin-api:3.6.0'
 	implementation 'org.codehaus.plexus:plexus-utils:3.1.1'
 	implementation 'org.twdata.maven:mojo-executor:2.3.0'
@@ -76,26 +72,13 @@ dependencies {
 	mavenEmbedder 'org.apache.maven.wagon:wagon-http:3.4.1'
 	mavenEmbedder 'org.apache.maven.wagon:wagon-provider-api:3.4.1'
 }
-shadowJar{
-	// Minimal shading is needed to include some gradle classes
-	// since otherwise when running this as a maven plugin we will get errors.
-	archiveClassifier.set('') // removes '-all' from the file name, to replace the regular plugin jar with the shaded one
-	minimize { // Executes minimize for all dependencies except the below:
-		exclude(dependency('io.github.fvarrui:launch4j:.*'))
-	}
-}
-task relocateShadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation) {
-	target = tasks.shadowJar
-}
-
-tasks.shadowJar.dependsOn tasks.relocateShadowJar
 
 test {
 	useJUnitPlatform()
 }
 
 group = 'io.github.fvarrui'
-version = '1.7.0-SNAPSHOT'
+version = '1.7.0'
 description = 'Hybrid Maven/Gradle plugin to package Java applications as native Windows, Mac OS X or GNU/Linux executables and create installers for them'
 
 sourceCompatibility = JavaVersion.VERSION_1_8

@@ -41,10 +41,12 @@ public class RealTest {
 
     @Test
     void publishPluginLocally() throws Exception {
+        System.out.println("Building and publishing plugin locally...");
         // PUBLISH CURRENT JAVA PACKAGER TO LOCAL MAVEN REPO TO BE USED BY THE HELLO WORLD PROJECTS
         if (getBuilder(getGradlew().getAbsolutePath(), "build", "publishToMavenLocal", "-x", "validatePlugins", "-x", "test", "-x", "javadoc", "--stacktrace")
                 .start().waitFor()
                 != 0) throw new Exception("Failed! Exit code is not 0, see details further below:");
+        System.out.println("Successfully built and published plugin locally.");
     }
 
     private File getGradlew(){
