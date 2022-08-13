@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import groovy.lang.Closure;
+import io.github.fvarrui.javapackager.gradle.GradleContext;
 import io.github.fvarrui.javapackager.gradle.PackagePlugin;
 import io.github.fvarrui.javapackager.maven.MavenContext;
 import io.github.fvarrui.javapackager.model.*;
@@ -204,7 +205,7 @@ public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
     // GRADLE SPECIFIC START
     public LinuxConfig linuxConfig(Closure<LinuxConfig> closure) {
         linuxConfig = new LinuxConfig();
-        gradleProject.configure(linuxConfig, closure);
+        GradleContext.getGradleContext().getProject().configure(linuxConfig, closure);
         return linuxConfig;
     }
 

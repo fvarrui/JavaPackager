@@ -32,11 +32,6 @@ public class PackagePlugin implements Plugin<Project> {
 		project.getExtensions().add(SETTINGS_EXT_NAME, task); // Use task instance as extension
 
 		Context.getGradleContext().setLibraryTask(project.getTasks().create("launch4j_" + UUID.randomUUID(), Launch4jLibraryTask.class));
-
-		System.out.println("TASKS: "+project.getTasks().size());
-		for (Task t : project.getTasks()) {
-			System.out.println("name: "+t.getName()+" desc: "+t.getDescription());
-		}
 	}
 
 }

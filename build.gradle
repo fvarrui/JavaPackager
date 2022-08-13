@@ -58,6 +58,7 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.9.0'
 	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 	implementation 'org.rauschig:jarchivelib:1.2.0'
+	implementation 'com.squareup:javapoet:1.13.0'
 
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0'
 	testImplementation 'org.apache.maven.shared:maven-invoker:3.2.0'
