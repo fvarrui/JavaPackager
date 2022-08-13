@@ -11,8 +11,10 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -20,9 +22,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFile;
+import org.gradle.api.tasks.TaskAction;
 
 import javax.lang.model.element.Modifier;
 
@@ -32,7 +37,7 @@ import javax.lang.model.element.Modifier;
  */
 public class Main {
 
-    public static void newMain(String[] args) throws IOException, ClassNotFoundException {
+    public static void newMain(String[] args) throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         File dir = new File(System.getProperty("user.dir")+"/src/main/java/io/github/fvarrui/javapackager");
         List<PluginClassFile> pluginClasses = getPluginClasses(dir);
         for (PluginClassFile pluginClassFile : pluginClasses) {
@@ -134,11 +139,67 @@ public class Main {
     }
 
     /**
+     * Expects a class with the {@link io.github.fvarrui.javapackager.generator.Plugin} annotation
+     * to generate the maven plugin class from in the desired output directory.
+     */
+    private static void generateMavenPluginClass(PluginClassFile pluginClassFile) throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        Class<?> pluginClass = pluginClassFile.loadClass();
+        Object pluginClassInstance = pluginClass.getDeclaredConstructor().newInstance();
+        Field[] fields = pluginClass.getFields();
+        Plugin pluginAnnotation = pluginClass.getAnnotation(Plugin.class);
+
+        String simpleClassName = "Maven"+pluginClass.getSimpleName();
+        TypeSpec.Builder genClass = TypeSpec.classBuilder(simpleClassName)
+                .addJavadoc("This is a generated class thus modifying it, is not recommended." +
+                        " Instead the actual class {@link "+pluginClass.getName()+"} should be edited.")
+                .addModifiers(Modifier.PUBLIC)
+                .superclass(AbstractMojo.class)
+                .addAnnotation(AnnotationSpec.builder(Mojo.class)
+                        .addMember("name", "$L", pluginAnnotation.name())
+                        .addMember("defaultPhase", "$L", pluginAnnotation.defaultPhase())
+                        .addMember("requiresDependencyResolution", "$L", pluginAnnotation.requiresDependencyResolution())
+                        .build());
+
+        for (Field field : getFieldsWithAnnotation(fields, Input.class)) {
+            AnnotationSpec.Builder annotation = AnnotationSpec.builder(org.apache.maven.plugins.annotations.Parameter.class)
+                    .addMember("property", "$L", field.getName());
+
+            if(field.isAnnotationPresent(Required.class))
+                annotation.addMember("required", "true");
+
+            genClass.addField(FieldSpec.builder(field.getType(), field.getName()).addModifiers(Modifier.PRIVATE)
+                            .addAnnotation(annotation.build())
+                    .initializer("$L", field.get(pluginClassInstance)).build());
+            genClass.addMethod(getter(field.getType(), field.getName()).build());
+            genClass.addMethod(modernSetter(field.getName()).build());
+        }
+
+        for (Field field : getFieldsWithAnnotation(fields, Output.class)) {
+            AnnotationSpec.Builder annotation = AnnotationSpec.builder(org.apache.maven.plugins.annotations.Parameter.class)
+                    .addMember("property", "$L", field.getName());
+
+            if(field.isAnnotationPresent(Required.class))
+                annotation.addMember("required", "true");
+
+            genClass.addField(FieldSpec.builder(field.getType(), field.getName()).addModifiers(Modifier.PRIVATE)
+                    .addAnnotation(annotation.build())
+                    .initializer("$L", field.get(pluginClassInstance)).build());
+            genClass.addMethod(getter(field.getType(), field.getName()).build());
+            genClass.addMethod(modernSetter(field.getName()).build());
+        }
+
+        JavaFile javaFile = JavaFile.builder(pluginClassFile.packageName, genClass.build())
+                .build();
+        javaFile.writeTo(new File(pluginClassFile.getParentFile()+"/"+simpleClassName+".java"));
+    }
+
+    /**
      * Expects a class with the {@link Plugin} annotation
      * to generate the gradle plugin class from in the desired output directory.
      */
-    private static void generateGradlePluginClass(PluginClassFile pluginClassFile) throws IOException, ClassNotFoundException {
+    private static void generateGradlePluginClass(PluginClassFile pluginClassFile) throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Class<?> pluginClass = pluginClassFile.loadClass();
+        Object pluginClassInstance = pluginClass.getDeclaredConstructor().newInstance();
         Field[] fields = pluginClass.getFields();
         Plugin pluginAnnotation = pluginClass.getAnnotation(Plugin.class);
 
@@ -146,9 +207,11 @@ public class Main {
         TypeSpec.Builder genClass = TypeSpec.classBuilder(simpleClassName)
                 .addJavadoc("This is a generated class thus modifying it, is not recommended." +
                         " Instead the actual class {@link "+pluginClass.getName()+"} should be edited.")
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addModifiers(Modifier.PUBLIC)
                 .superclass(DefaultTask.class)
                 .addSuperinterface(ParameterizedTypeName.get(org.gradle.api.Plugin.class, org.gradle.api.Project.class));
+
+        //TypeSpec.Builder genClassInterface = TypeSpec.interfaceBuilder(pluginClass.getSimpleName() + "Methods");
 
         genClass.addMethod(MethodSpec.constructorBuilder()
                         .addStatement("setGroup($S)", pluginAnnotation.groupName())
@@ -162,10 +225,28 @@ public class Main {
                 .addParameter(org.gradle.api.Project.class, "project")
                 .addStatement("$T.setContext(new $T(project))", Context.class, GradleContext.class)
                 .addCode("project.getPluginManager().apply(\"java\");\n" +
-                        "\t\tproject.getPluginManager().apply(\"edu.sc.seis.launch4j\");")
+                        "project.getPluginManager().apply(\"edu.sc.seis.launch4j\");\n")
                 .addStatement(simpleClassName+" task = ("+simpleClassName+") project.getTasks().create($S, "+simpleClassName+".class).dependsOn(\"build\")", pluginAnnotation.taskName())
-                .addCode("project.getExtensions().add("+pluginAnnotation.settingsExtName()+", task); // Use task instance as extension")
-                .addStatement("$T.getGradleContext().setLibraryTask(project.getTasks().create(\"launch4j_\" + UUID.randomUUID(), $T.class));", Context.class, Launch4jLibraryTask.class)
+                .addCode("project.getExtensions().add("+pluginAnnotation.settingsExtName()+", task); // Use task instance as extension\n")
+                .addStatement("$T.getGradleContext().setLibraryTask(project.getTasks().create(\"launch4j_\" + UUID.randomUUID(), $T.class))", Context.class, Launch4jLibraryTask.class)
+                .build());
+
+        genClass.addMethod(MethodSpec.methodBuilder("execute")
+                .addModifiers(Modifier.PUBLIC)
+                .returns(void.class)
+                .addException(Exception.class)
+                        .addAnnotation(TaskAction.class)
+                        .addCode("Packager packager = this.createPackager();\n" +
+                                "// generates app, installers and bundles\n" +
+                                "File app = packager.createApp();\n" +
+                                "List<File> installers = packager.generateInstallers();\n" +
+                                "List<File> bundles = packager.createBundles();\n" +
+                                "\n" +
+                                "// sets generated files as output\n" +
+                                "outputFiles = new ArrayList<>();\n" +
+                                "outputFiles.add(app);\n" +
+                                "outputFiles.addAll(installers);\n" +
+                                "outputFiles.addAll(bundles);\n")
                 .build());
 
         for (Field field : getFieldsWithAnnotation(fields, Input.class)) {
@@ -181,7 +262,29 @@ public class Main {
             if(!field.isAnnotationPresent(Required.class))
                 annotations.add(org.gradle.api.tasks.Optional.class);
 
-            genClass.addField(fieldWithAnnotations(field.getType(), field.getName(), annotations).build());
+            genClass.addField(fieldWithAnnotations(field.getType(), field.getName(), annotations).addModifiers(Modifier.PRIVATE)
+                    .initializer("$L", field.get(pluginClassInstance)).build());
+            genClass.addMethod(getter(field.getType(), field.getName()).build());
+            genClass.addMethod(modernSetter(field.getName()).build());
+            if(field.isAnnotationPresent(Closure.class))
+                genClass.addMethod(gradleClosureSetter(field.getType(), field.getName()).build());
+        }
+
+        for (Field field : getFieldsWithAnnotation(fields, Output.class)) {
+            List<Class<?>> annotations = new ArrayList<>();
+            if(field.getType().equals(File.class))
+                if(field.isAnnotationPresent(Directory.class))
+                    annotations.add(org.gradle.api.tasks.OutputDirectory.class);
+                else
+                    annotations.add(org.gradle.api.tasks.OutputFile.class);
+            //else
+                //annotations.add(org.gradle.api.tasks.Output.class);
+
+            if(!field.isAnnotationPresent(Required.class))
+                annotations.add(org.gradle.api.tasks.Optional.class);
+
+            genClass.addField(fieldWithAnnotations(field.getType(), field.getName(), annotations).addModifiers(Modifier.PRIVATE)
+                    .initializer("$L", field.get(pluginClassInstance)).build());
             genClass.addMethod(getter(field.getType(), field.getName()).build());
             genClass.addMethod(modernSetter(field.getName()).build());
             if(field.isAnnotationPresent(Closure.class))
@@ -200,7 +303,7 @@ public class Main {
                 .addParameter(ParameterSpec.builder(ParameterizedTypeName.get(groovy.lang.Closure.class, type), "closure").build())
                 .addCode("this."+fieldName+" = new "+type.getName()+"();\n" +
                         GradleContext.class.getName()+".getGradleContext().getProject().configure("+fieldName+", closure);\n" +
-                        "return "+fieldName+";");
+                        "return "+fieldName+";\n");
     }
 
     private static FieldSpec.Builder fieldWithAnnotations(Class<?> type, String name, List<Class<?>> annotations) {
@@ -217,7 +320,7 @@ public class Main {
         return MethodSpec.methodBuilder(fieldName)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class)
-                .addCode("this."+fieldName+" = "+fieldName+";");
+                .addCode("this."+fieldName+" = "+fieldName+";\n");
     }
 
     // getter for field
@@ -226,7 +329,7 @@ public class Main {
         return MethodSpec.methodBuilder("get"+methodName)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(returnType)
-                .addCode("return "+fieldName+";");
+                .addCode("return "+fieldName+";\n");
     }
 
     private static List<Field> getFieldsWithAnnotation(Field[] fields, Class<? extends Annotation> annotationClass) {
@@ -237,14 +340,6 @@ public class Main {
             }
         }
         return list;
-    }
-
-    /**
-     * Expects a class with the {@link io.github.fvarrui.javapackager.generator.Plugin} annotation
-     * to generate the maven plugin class from in the desired output directory.
-     */
-    private static void generateMavenPluginClass(PluginClassFile pluginClass) {
-
     }
 
     /**
