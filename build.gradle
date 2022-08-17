@@ -46,7 +46,7 @@ dependencies {
 	implementation 'org.apache.maven:maven-plugin-api:3.6.0'
 	implementation 'org.codehaus.plexus:plexus-utils:3.1.1'
 	implementation 'org.twdata.maven:mojo-executor:2.3.0'
-	implementation 'commons-io:commons-io:2.7'
+	implementation 'commons-io:commons-io:2.11.0'
 	implementation 'org.apache.commons:commons-lang3:3.9'
 	implementation 'org.apache.commons:commons-collections4:4.1'
 	implementation 'org.apache.commons:commons-compress:1.21'
@@ -88,7 +88,7 @@ publishing {
 
 java {
 	withSourcesJar()
-	// and/or analogously use â€œwithJavadocJar()â€� to get a â€œjavadocJarâ€� task
+	// and/or analogously use “withJavadocJar()” to get a “javadocJar” task
 }
 
 install.repositories.mavenInstaller.pom.with {
