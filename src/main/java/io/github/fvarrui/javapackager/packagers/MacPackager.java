@@ -35,12 +35,10 @@ public class MacPackager extends Packager {
 
 		this.macConfig.setDefaults(this);
 
-		// FIX useResourcesAsWorkingDir=false doesn't work fine on Mac OS (option
-		// disabled)
+		// FIX useResourcesAsWorkingDir=false doesn't work fine on Mac OS (option disabled)
 		if (!this.isUseResourcesAsWorkingDir()) {
 			this.useResourcesAsWorkingDir = true;
-			Logger.warn(
-					"'useResourcesAsWorkingDir' property disabled on Mac OS (useResourcesAsWorkingDir is always true)");
+			Logger.warn("'useResourcesAsWorkingDir' property disabled on Mac OS (useResourcesAsWorkingDir is always true)");
 		}
 
 	}
@@ -119,7 +117,7 @@ public class MacPackager extends Packager {
 		} else {
 
 			File launcher = macConfig.getCustomLauncher();
-			if(launcher != null && launcher.canRead() && launcher.isFile()){
+			if (launcher != null && launcher.canRead() && launcher.isFile()){
 				FileUtils.copyFileToFolder(launcher, macOSFolder);
 				this.executable = new File(macOSFolder, launcher.getName());
 			} else {
@@ -237,28 +235,28 @@ public class MacPackager extends Packager {
 		CommandUtils.execute("find", findCommandArgs.toArray(new Object[0]));
 
 		// make sure the executable is signed last
-		List<Object> codeSignCommandArgs = new ArrayList<>();
-		codeSignCommandArgs.add("-f");
-		addHardenedCodesign(codeSignCommandArgs);
-		codeSignCommandArgs.add("--entitlements");
-		codeSignCommandArgs.add(entitlements);
-		codeSignCommandArgs.add("-s");
-		codeSignCommandArgs.add(developerCertificateName);
-		codeSignCommandArgs.add(this.executable);
+		List<Object> codeSignExe = new ArrayList<>();
+		codeSignExe.add("-f");
+		addHardenedCodesign(codeSignExe);
+		codeSignExe.add("--entitlements");
+		codeSignExe.add(entitlements);
+		codeSignExe.add("-s");
+		codeSignExe.add(developerCertificateName);
+		codeSignExe.add(this.executable);
 
-		CommandUtils.execute("codesign", codeSignCommandArgs.toArray(new Object[0]));
+		CommandUtils.execute("codesign", codeSignExe.toArray(new Object[0]));
 
 		// finally, sign the top level directory
-		List<Object> codeSignArgs2 = new ArrayList<>();
-		codeSignArgs2.add("-f");
-		addHardenedCodesign(codeSignArgs2);
-		codeSignArgs2.add("--entitlements");
-		codeSignArgs2.add(entitlements);
-		codeSignArgs2.add("-s");
-		codeSignArgs2.add(developerCertificateName);
-		codeSignArgs2.add(appFolder);
+		List<Object> codeSignTopLevelDir = new ArrayList<>();
+		codeSignTopLevelDir.add("-f");
+		addHardenedCodesign(codeSignTopLevelDir);
+		codeSignTopLevelDir.add("--entitlements");
+		codeSignTopLevelDir.add(entitlements);
+		codeSignTopLevelDir.add("-s");
+		codeSignTopLevelDir.add(developerCertificateName);
+		codeSignTopLevelDir.add(appFolder);
 
-		CommandUtils.execute("codesign", codeSignArgs2.toArray(new Object[0]));
+		CommandUtils.execute("codesign", codeSignTopLevelDir.toArray(new Object[0]));
 
 	}
 
