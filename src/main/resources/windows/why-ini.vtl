@@ -5,7 +5,10 @@ mainclass=$info.mainClass
 #end
 classpath=${classpath}
 #if ($info.bundleJre)
-jvm_path=${info.jreDirectoryName}
+jvm_install=${info.jreDirectoryName}
+allow_system_java=false
+allow_java_location_lookup=false
+check_main_class=false
 #end
 #if (!$info.bundleJre && $info.jreMinVersion)
 min_java=${info.jreMinVersion}
