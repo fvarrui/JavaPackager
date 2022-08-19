@@ -20,7 +20,7 @@ dependencies {
     implementation 'commons-io:commons-io:2.6'
 }
 
-import io.github.fvarrui.javapackager.PackageTask;
+import io.github.fvarrui.javapackager.GradlePackageTask;
 import io.github.fvarrui.javapackager.model.*;
 
 group = 'io.github.fvarrui'
@@ -38,61 +38,69 @@ javapackager {
     administratorRequired = false
 }
 
-task packageForWindows(type: PackageTask, dependsOn: build) {
-	description = 'Packages the application as a native Windows executable and bundles it in a zipball'
-	platform = 'windows'
-	winConfig {
-		exeCreationTool = 'winrun4j'
-		vmArgs = ["-Dprism.maxvram=512m -XX:+UseG1GC"]
-		generateSetup = false
-		generateMsi = false
-		registry = new Registry([
-			entries: [
-				new RegistryEntry([
-					key: "HKCU:MyGradleApp",		
-					valueName: "greeting",		
-					valueType: ValueType.REG_SZ,		
-					valueData: "hello"
-				])
-			]
-		])
-        icoFile = file("windows/HelloWorldGradle.ico")
-        setupMode = SetupMode.askTheUser
-        removeOldLibs = true
-        disableDirPage = false
-        disableFinishedPage = false
-        disableWelcomePage = false
-        createDesktopIconTask = false
-    }
-}
-
-task packageForLinux(type: PackageTask, dependsOn: build) {
-	description = 'Packages the application as a native GNU/Linux executable and bundles it in a tarball'
-	platform = 'linux'
-	bundleJre = true
-	createTarball = true
-	scripts {
-		bootstrap = file('assets/bootstrap.sh')
+task packageForWindows(type: GradlePackageTask, dependsOn: build) {
+	javapackager{
+		description = 'Packages the application as a native Windows executable and bundles it in a zipball'
+		platform = 'windows'
+		winConfig {
+			exeCreationTool = 'winrun4j'
+			vmArgs = ["-Dprism.maxvram=512m -XX:+UseG1GC"]
+			generateSetup = false
+			generateMsi = false
+			registry = new Registry([
+					entries: [
+							new RegistryEntry([
+									key: "HKCU:MyGradleApp",
+									valueName: "greeting",
+									valueType: ValueType.REG_SZ,
+									valueData: "hello"
+							])
+					]
+			])
+			icoFile = file("windows/HelloWorldGradle.ico")
+			setupMode = SetupMode.askTheUser
+			removeOldLibs = true
+			disableDirPage = false
+			disableFinishedPage = false
+			disableWelcomePage = false
+			createDesktopIconTask = false
+		}
 	}
 }
 
-task packageForMac(type: PackageTask, dependsOn: build) {
-	description = 'Packages the application as a native Mac OS app and bundles it in a tarball'
-	platform = 'mac'
-	createTarball = true
-	scripts {
-		bootstrap = file('assets/bootstrap.sh')
+task packageForLinux(type: GradlePackageTask, dependsOn: build) {
+	javapackager{
+		description = 'Packages the application as a native GNU/Linux executable and bundles it in a tarball'
+		platform = 'linux'
+		bundleJre = true
+		createTarball = true
+		scripts {
+			bootstrap = file('assets/bootstrap.sh')
+		}
 	}
-	macConfig {
-		infoPlist.additionalEntries = '''
+}
+
+task packageForMac(type: GradlePackageTask, dependsOn: build) {
+	javapackager{
+		description = 'Packages the application as a native Mac OS app and bundles it in a tarball'
+		platform = 'mac'
+		createTarball = true
+		scripts {
+			bootstrap = file('assets/bootstrap.sh')
+		}
+		macConfig {
+			infoPlist.additionalEntries = '''
 			<key>LSUIElement</key>
 			<true/>
 		'''
+		}
 	}
 }
 
 task packageForAllPlatforms(dependsOn: [ packageForWindows, packageForMac, packageForLinux ]) {
-	description = 'Packages the application for all platforms'
-	group = 'JavaPackager'
+	javapackager{
+		description = 'Packages the application for all platforms'
+		group = 'JavaPackager'
+	}
 }
 

@@ -10,7 +10,7 @@ import org.apache.commons.lang3.SystemUtils;
 public interface PackagerFactory {
     default Packager createPackager(PackageTask task){
         Packager packager = null;
-        switch (Platform.getCurrentPlatform()) {
+        switch (task.platform) {
             case mac:
                 packager = new MacPackager(task); break;
             case linux:
