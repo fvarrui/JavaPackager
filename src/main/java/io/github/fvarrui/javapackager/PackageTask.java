@@ -1,5 +1,10 @@
 package io.github.fvarrui.javapackager;
 
+import io.github.fvarrui.javapackager.model.*;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.gradle.api.tasks.*;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,50 +12,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import groovy.lang.Closure;
-import io.github.fvarrui.javapackager.gradle.GradleContext;
-import io.github.fvarrui.javapackager.gradle.PackagePlugin;
-import io.github.fvarrui.javapackager.maven.MavenContext;
-import io.github.fvarrui.javapackager.model.*;
-import io.github.fvarrui.javapackager.packagers.*;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.*;
-import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugin.logging.SystemStreamLog;
-import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
-import org.gradle.api.DefaultTask;
-import org.gradle.api.Project;
-import org.gradle.api.tasks.*;
-
-import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
-
 /**
  * Package task that gets detected by maven and gradle.
  */
-@org.apache.maven.plugins.annotations.Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.RUNTIME)
-public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
-    public PackageTask() {
-        this.isGradle = Context.isGradle();
-        this.gradleProject = (isGradle ? Context.getGradleContext().getProject() : null);
-        if(isGradle){
-            setGroup(PackagePlugin.GROUP_NAME);
-            setDescription("Packages the application as a native Windows, Mac OS X or GNU/Linux executable and creates an installer");
-            getOutputs().upToDateWhen(o -> false);
-        }
 
-        this.outputDirectory = (isGradle ? gradleProject.getBuildDir() : new File("${project.build.directory}"));
+public class PackageTask {
+    public PackageTask() {
+        //this.outputDirectory = (isGradle ? gradleProject.getBuildDir() : new File("${project.build.directory}"));
         this.platform = Platform.getCurrentPlatform();
         this.bundleJre = true;
         this.copyDependencies = true;
         this.createTarball = false;
         this.createZipball = false;
-        this.description = gradleProject.getDescription();
+        //this.description = gradleProject.getDescription(); // TODO maven?
         this.generateInstaller = true;
         this.linuxConfig = new LinuxConfig();
         this.macConfig = new MacConfig();
@@ -58,14 +32,14 @@ public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
         this.modules = new ArrayList<>();
         this.forceInstaller = false;
         this.mainClass = "${exec.mainClass}"; //TODO gradle?
-        this.appName = (isGradle ? gradleProject.getName() : "${project.name}");
-        this.appDisplayName = (isGradle ? gradleProject.getName() : "${project.name}");
-        this.version = (isGradle ? (String) gradleProject.getVersion() : "${project.version}");
-        this.description = (isGradle ? gradleProject.getDescription(): "${project.description}");
+        //this.appName = (isGradle ? gradleProject.getName() : "${project.name}");
+        //this.appDisplayName = (isGradle ? gradleProject.getName() : "${project.name}");
+        //this.version = (isGradle ? (String) gradleProject.getVersion() : "${project.version}");
+        //this.description = (isGradle ? gradleProject.getDescription(): "${project.description}");
         this.url = "${project.url}"; //TODO gradle?
         this.administratorRequired = false;
-        this.organizationName = (isGradle ? null : "${project.organization.name}");
-        this.organizationUrl = (isGradle ? null : "${project.organization.url}");
+        //this.organizationName = (isGradle ? null : "${project.organization.name}");
+        //this.organizationUrl = (isGradle ? null : "${project.organization.url}");
         this.organizationEmail = "";
         this.bundleJre = false;
         this.customizedJre = true;
@@ -81,158 +55,22 @@ public class PackageTask extends DefaultTask implements Mojo, ContextEnabled {
         this.runnableJar = null;
         this.copyDependencies = true;
         this.jreDirectoryName = "jre";
-        winConfig(new WindowsConfig());
-        linuxConfig(new LinuxConfig());
-        macConfig(new MacConfig());
+        this.winConfig = new WindowsConfig();
+        this.linuxConfig = new LinuxConfig();
+        this.macConfig = new MacConfig();
         this.createTarball = false;
         this.createZipball = false;
         this.extra = new HashMap<>();
         this.useResourcesAsWorkingDir = true;
-        this.assetsDir = (isGradle ? new File(gradleProject.getProjectDir(), "assets") : new File("${project.basedir}/assets"));
+        //this.assetsDir = (isGradle ? new File(gradleProject.getProjectDir(), "assets") : new File("${project.basedir}/assets"));
         this.classpath = null;
         this.jreMinVersion = null;
-        manifest(new Manifest());
+        this.manifest = new Manifest();
         this.additionalModulePaths = new ArrayList<>();
         this.fileAssociations = null;
         this.packagingJdk = null;
         scripts(new Scripts());
     }
-
-    /*
-    GRADLE SPECIFIC
-     */
-    private boolean isGradle;
-    private Project gradleProject;
-    private List<File> outputFiles;
-
-    @OutputFiles
-    public List<File> getOutputFiles() {
-        return outputFiles != null ? outputFiles : new ArrayList<>();
-    }
-
-    /**
-     * Packaging task action
-     * @throws Exception Throwed if something went wrong
-     */
-    @TaskAction
-    public void doPackage() throws Exception {
-
-        Packager packager = this.createPackager();
-        // generates app, installers and bundles
-        File app = packager.createApp();
-        List<File> installers = packager.generateInstallers();
-        List<File> bundles = packager.createBundles();
-
-        // sets generated files as output
-        outputFiles = new ArrayList<>();
-        outputFiles.add(app);
-        outputFiles.addAll(installers);
-        outputFiles.addAll(bundles);
-
-    }
-    
-    /*
-    MAVEN SPECIFIC
-     */
-    @Parameter(defaultValue = "${project}", readonly = true)
-    private MavenProject mavenProject;
-    @Parameter(defaultValue = "${session}", readonly = true)
-    private MavenSession mavenSession;
-    @Component
-    private BuildPluginManager pluginManager;
-
-    private Log log;
-    private Map pluginContext;
-
-    @Override
-    public void execute() throws MojoExecutionException {
-        Context.setContext(
-                new MavenContext(
-                        executionEnvironment(mavenProject, mavenSession, pluginManager),
-                        getLog()
-                )
-        );
-        try {
-            Packager packager = this.createPackager();
-            // generate app, installers and bundles
-            packager.createApp();
-            packager.generateInstallers();
-            packager.createBundles();
-        } catch (Exception e) {
-            throw new MojoExecutionException(e.getMessage(), e);
-        }
-    }
-
-    public void setLog(Log log) {
-        this.log = log;
-    }
-
-    public Log getLog() {
-        if (this.log == null) {
-            this.log = new SystemStreamLog();
-        }
-
-        return this.log;
-    }
-
-    public Map getPluginContext() {
-        return this.pluginContext;
-    }
-
-    public void setPluginContext(Map pluginContext) {
-        this.pluginContext = pluginContext;
-    }
-
-    public Packager createPackager(){
-        Packager packager = null;
-        switch (platform) {
-            case mac:
-                packager = new MacPackager(this); break;
-            case linux:
-                packager = new LinuxPackager(this); break;
-            case windows:
-                packager = new WindowsPackager(this); break;
-            default:
-                throw new RuntimeException("Unsupported operating system: " + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION + " " + SystemUtils.OS_ARCH);
-        }
-        return packager;
-    }
-
-    /*
-    CONFIGURATION OF TASK
-     */
-
-    // GRADLE SPECIFIC START
-    public LinuxConfig linuxConfig(Closure<LinuxConfig> closure) {
-        linuxConfig = new LinuxConfig();
-        GradleContext.getGradleContext().getProject().configure(linuxConfig, closure);
-        return linuxConfig;
-    }
-
-    public MacConfig macConfig(Closure<MacConfig> closure) {
-        macConfig = new MacConfig();
-        gradleProject.configure(macConfig, closure);
-        return macConfig;
-    }
-
-    public WindowsConfig winConfig(Closure<WindowsConfig> closure) {
-        winConfig = new WindowsConfig();
-        gradleProject.configure(winConfig, closure);
-        return winConfig;
-    }
-
-    public Manifest manifest(Closure<Manifest> closure) {
-        manifest = new Manifest();
-        gradleProject.configure(manifest, closure);
-        return manifest;
-    }
-
-    public Scripts scripts(Closure<Scripts> closure) {
-        scripts = new Scripts();
-        gradleProject.configure(scripts, closure);
-        return scripts;
-    }
-    // GRADLE SPECIFIC END
 
     /**
      * Output directory.
