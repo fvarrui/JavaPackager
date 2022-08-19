@@ -48,16 +48,16 @@ public class MavenPackageTask extends PackageTask implements Mojo, ContextEnable
         }
     }
 
-    public void setLog(Log log) {
-        this.log = log;
-    }
-
     public Log getLog() {
         if (this.log == null) {
             this.log = new SystemStreamLog();
         }
 
         return this.log;
+    }
+
+    public void setLog(Log log) {
+        this.log = log;
     }
 
     public Map getPluginContext() {

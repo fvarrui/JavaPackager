@@ -17,6 +17,331 @@ import java.util.stream.Collectors;
  */
 
 public class PackageTask {
+    /**
+     * Output directory.
+     */
+    @Parameter(property = "outputDirectory", defaultValue = "${project.build.directory}")
+    @OutputDirectory
+    @Optional
+    protected File outputDirectory;
+    /**
+     * Path to project license file.
+     */
+    @Parameter(property = "licenseFile")
+    @InputFile
+    @Optional
+    protected File licenseFile;
+    /**
+     * Path to the app icon file (PNG, ICO or ICNS).
+     */
+    @Parameter(property = "iconFile")
+    @InputFile
+    @Optional
+    protected File iconFile;
+    /**
+     * Generates an installer for the app.
+     */
+    @Parameter(property = "generateInstaller")
+    @Input
+    @Optional
+    protected Boolean generateInstaller;
+    /**
+     * Forces installer generation.
+     */
+    @Parameter(property = "forceInstaller")
+    @Input
+    @Optional
+    protected Boolean forceInstaller;
+    /**
+     * Full path to your app main class.
+     */
+    @Parameter(property = "mainClass", required = true, defaultValue = "${exec.mainClass}")
+    @Input
+    @Optional
+    protected String mainClass;
+    /**
+     * App name.
+     */
+    @Parameter(property = "appName", defaultValue = "${project.name}")
+    @Input
+    @Optional
+    protected String appName;
+    /**
+     * App name to show.
+     */
+    @Parameter(property = "appDisplayName", defaultValue = "${project.name}")
+    @Input
+    @Optional
+    protected String appDisplayName;
+    /**
+     * Project version.
+     */
+    @Parameter(property = "version", defaultValue = "${project.version}")
+    @Input
+    @Optional
+    protected String version;
+    /**
+     * Project description.
+     */
+    @Parameter(property = "description", defaultValue = "${project.description}")
+    @Input
+    @Optional
+    protected String description;
+    /**
+     * App website URL.
+     */
+    @Parameter(property = "url", defaultValue = "${project.url}")
+    @Input
+    @Optional
+    protected String url;
+    /**
+     * App will run as administrator (with elevated privileges).
+     */
+    @Parameter(property = "administratorRequired")
+    @Input
+    @Optional
+    protected Boolean administratorRequired;
+    /**
+     * Organization name.
+     */
+    @Parameter(property = "organizationName", defaultValue = "${project.organization.name}")
+    @Input
+    @Optional
+    protected String organizationName;
+    /**
+     * Organization website URL.
+     */
+    @Parameter(property = "organizationUrl", defaultValue = "${project.organization.url}")
+    @Input
+    @Optional
+    protected String organizationUrl;
+    /**
+     * Organization email.
+     */
+    @Parameter(property = "organizationEmail", required = false)
+    @Input
+    @Optional
+    protected String organizationEmail;
+    /**
+     * Embeds a customized JRE with the app.
+     */
+    @Parameter(property = "bundleJre", required = false)
+    @Input
+    @Optional
+    protected Boolean bundleJre;
+    /**
+     * Generates a customized JRE, including only identified or specified modules. Otherwise, all modules will be included.
+     */
+    @Parameter(property = "customizedJre", required = false)
+    @Input
+    @Optional
+    protected Boolean customizedJre;
+    /**
+     * Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least.
+     */
+    @Parameter(property = "jrePath", required = false)
+    @InputDirectory
+    @Optional
+    protected File jrePath;
+    /**
+     * Path to JDK folder. If specified, it will use this JDK modules to generate a customized JRE. Allows generating JREs for different platforms.
+     */
+    @Parameter(property = "jdkPath", required = false)
+    @InputDirectory
+    @Optional
+    protected File jdkPath;
+    /**
+     * The JDK version. Supported versions differ from vendor to vendor, thus its recommended checking the vendors' website first before doing any changes.
+     */
+    @Parameter(property = "jdkVersion", required = false)
+    @Input
+    @Optional
+    protected String jdkVersion = "8";
+    /**
+     * The JDK vendor.
+     */
+    @Parameter(property = "jdkVendor", required = false)
+    @Input
+    @Optional
+    protected String jdkVendor = "adoptium";
+    /**
+     * Additional files and folders to include in the bundled app.
+     */
+    @Parameter(property = "additionalResources", required = false)
+    @Input
+    @Optional
+    protected List<File> additionalResources;
+    /**
+     * Defines modules to customize the bundled JRE. Don't use jdeps to get module dependencies.
+     */
+    @Parameter(property = "modules", required = false)
+    @Input
+    @Optional
+    protected List<String> modules;
+    /**
+     * Additional modules to the ones identified by jdeps or the specified with modules property.
+     */
+    @Parameter(property = "additionalModules", required = false)
+    @Input
+    @Optional
+    protected List<String> additionalModules;
+    /**
+     * Which platform to build, one of:
+     * <ul>
+     * <li><tt>auto</tt> - automatically detect based on the host OS (the default)</li>
+     * <li><tt>mac</tt></li>
+     * <li><tt>linux</tt></li>
+     * <li><tt>windows</tt></li>
+     * </ul>
+     * To build for multiple platforms at once, add multiple executions to the plugin's configuration.
+     */
+    @Parameter(property = "platform", required = true)
+    @Input
+    @Optional
+    protected Platform platform;
+    /**
+     * Defines PATH environment variable in GNU/Linux and Mac OS X startup scripts.
+     */
+    @Parameter(property = "envPath", required = false)
+    @Input
+    @Optional
+    protected String envPath;
+    /**
+     * Additional arguments to provide to the JVM (for example <tt>-Xmx2G</tt>).
+     */
+    @Parameter(property = "vmArgs", required = false)
+    @Input
+    @Optional
+    protected List<String> vmArgs;
+    /**
+     * Provide your own runnable .jar (for example, a shaded .jar) instead of letting this plugin create one via
+     * the <tt>maven-jar-plugin</tt>.
+     */
+    @Parameter(property = "runnableJar", required = false)
+    @InputFile
+    @Optional
+    protected File runnableJar;
+    /**
+     * Whether or not to copy dependencies into the bundle. Generally, you will only disable this if you specified
+     * a <tt>runnableJar</tt> with all dependencies shaded into the .jar itself.
+     */
+    @Parameter(property = "copyDependencies", required = true)
+    @Input
+    @Optional
+    protected Boolean copyDependencies;
+    /**
+     * Bundled JRE directory name
+     */
+    @Parameter(property = "jreDirectoryName", required = false)
+    @Input
+    @Optional
+    protected String jreDirectoryName;
+    /**
+     * Windows specific config
+     */
+    @Parameter(property = "winConfig", required = false)
+    @Input
+    @Optional
+    protected WindowsConfig winConfig;
+    /**
+     * GNU/Linux specific config
+     */
+    @Parameter(property = "linuxConfig", required = false)
+    @Input
+    @Optional
+    protected LinuxConfig linuxConfig;
+    /**
+     * Mac OS X specific config
+     */
+    @Parameter(property = "macConfig", required = false)
+    @Input
+    @Optional
+    protected MacConfig macConfig;
+    /**
+     * Bundles app in a tarball file
+     */
+    @Parameter(property = "createTarball", required = false)
+    @Input
+    @Optional
+    protected Boolean createTarball;
+    /**
+     * Bundles app in a zipball file
+     */
+    @Parameter(property = "createZipball", required = false)
+    @Input
+    @Optional
+    protected Boolean createZipball;
+    /**
+     * Extra properties for customized Velocity templates, accesible through '$this.extra' map.
+     */
+    @Parameter(required = false)
+    @Input
+    @Optional
+    protected Map<String, String> extra;
+    /**
+     * Uses app resources folder as default working directory.
+     */
+    @Parameter(property = "useResourcesAsWorkingDir", required = false)
+    @Input
+    @Optional
+    protected Boolean useResourcesAsWorkingDir;
+    /**
+     * Assets directory
+     */
+    @Parameter(property = "assetsDir", defaultValue = "${project.basedir}/assets")
+    @InputDirectory
+    @Optional
+    protected File assetsDir;
+    /**
+     * Classpath
+     */
+    @Parameter(property = "classpath", required = false)
+    @Input
+    @Optional
+    protected String classpath;
+    /**
+     * JRE min version
+     */
+    @Parameter(property = "jreMinVersion", required = false)
+    @Input
+    @Optional
+    protected String jreMinVersion;
+    /**
+     * Additional JAR manifest entries
+     */
+    @Parameter(required = false)
+    @Input
+    @Optional
+    protected Manifest manifest;
+    /**
+     * Additional module paths
+     */
+    @Parameter(property = "additionalModulePaths", required = false)
+    @Input
+    @Optional
+    protected List<File> additionalModulePaths;
+    /**
+     * Additional module paths
+     */
+    @Parameter(property = "fileAssociations", required = false)
+    @Input
+    @Optional
+    protected List<FileAssociation> fileAssociations;
+    /**
+     * Packaging JDK
+     */
+    @Parameter(property = "packagingJdk", required = false)
+    @InputDirectory
+    @Optional
+    protected File packagingJdk;
+    /**
+     * Scripts
+     */
+    @Parameter(property = "scripts", required = false)
+    @Input
+    @Optional
+    protected Scripts scripts;
+
     public PackageTask() {
         //this.outputDirectory = (isGradle ? gradleProject.getBuildDir() : new File("${project.build.directory}"));
         this.platform = Platform.getCurrentPlatform();
@@ -73,373 +398,8 @@ public class PackageTask {
     }
 
     /**
-     * Output directory.
-     */
-    @Parameter(property = "outputDirectory", defaultValue = "${project.build.directory}")
-    @OutputDirectory
-    @Optional
-    protected File outputDirectory;
-
-    /**
-     * Path to project license file.
-     */
-    @Parameter(property = "licenseFile")
-    @InputFile
-    @Optional
-    protected File licenseFile;
-
-    /**
-     * Path to the app icon file (PNG, ICO or ICNS).
-     */
-    @Parameter(property = "iconFile")
-    @InputFile
-    @Optional
-    protected File iconFile;
-
-    /**
-     * Generates an installer for the app.
-     */
-    @Parameter(property = "generateInstaller")
-    @Input
-    @Optional
-    protected Boolean generateInstaller;
-
-    /**
-     * Forces installer generation.
-     */
-    @Parameter(property = "forceInstaller")
-    @Input
-    @Optional
-    protected Boolean forceInstaller;
-
-    /**
-     * Full path to your app main class.
-     */
-    @Parameter(property = "mainClass", required = true, defaultValue = "${exec.mainClass}")
-    @Input
-    @Optional
-    protected String mainClass;
-
-    /**
-     * App name.
-     */
-    @Parameter(property = "appName", defaultValue = "${project.name}")
-    @Input
-    @Optional
-    protected String appName;
-
-    /**
-     * App name to show.
-     */
-    @Parameter(property = "appDisplayName", defaultValue = "${project.name}")
-    @Input
-    @Optional
-    protected String appDisplayName;
-
-    /**
-     * Project version.
-     */
-    @Parameter(property = "version", defaultValue = "${project.version}")
-    @Input
-    @Optional
-    protected String version;
-
-    /**
-     * Project description.
-     */
-    @Parameter(property = "description", defaultValue = "${project.description}")
-    @Input
-    @Optional
-    protected String description;
-
-    /**
-     * App website URL.
-     */
-    @Parameter(property = "url", defaultValue = "${project.url}")
-    @Input
-    @Optional
-    protected String url;
-
-    /**
-     * App will run as administrator (with elevated privileges).
-     */
-    @Parameter(property = "administratorRequired")
-    @Input
-    @Optional
-    protected Boolean administratorRequired;
-
-    /**
-     * Organization name.
-     */
-    @Parameter(property = "organizationName", defaultValue = "${project.organization.name}")
-    @Input
-    @Optional
-    protected String organizationName;
-
-    /**
-     * Organization website URL.
-     */
-    @Parameter(property = "organizationUrl", defaultValue = "${project.organization.url}")
-    @Input
-    @Optional
-    protected String organizationUrl;
-
-    /**
-     * Organization email.
-     */
-    @Parameter(property = "organizationEmail", required = false)
-    @Input
-    @Optional
-    protected String organizationEmail;
-    /**
-     * Embeds a customized JRE with the app.
-     */
-    @Parameter(property = "bundleJre", required = false)
-    @Input
-    @Optional
-    protected Boolean bundleJre;
-
-    /**
-     * Generates a customized JRE, including only identified or specified modules. Otherwise, all modules will be included.
-     */
-    @Parameter(property = "customizedJre", required = false)
-    @Input
-    @Optional
-    protected Boolean customizedJre;
-
-    /**
-     * Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least.
-     */
-    @Parameter(property = "jrePath", required = false)
-    @InputDirectory
-    @Optional
-    protected File jrePath;
-
-    /**
-     * Path to JDK folder. If specified, it will use this JDK modules to generate a customized JRE. Allows generating JREs for different platforms.
-     */
-    @Parameter(property = "jdkPath", required = false)
-    @InputDirectory
-    @Optional
-    protected File jdkPath;
-
-    /**
-     * The JDK version. Supported versions differ from vendor to vendor, thus its recommended checking the vendors' website first before doing any changes.
-     */
-    @Parameter(property = "jdkVersion", required = false)
-    @Input
-    @Optional
-    protected String jdkVersion = "8";
-
-    /**
-     * The JDK vendor.
-     */
-    @Parameter(property = "jdkVendor", required = false)
-    @Input
-    @Optional
-    protected String jdkVendor = "adoptium";
-
-    /**
-     * Additional files and folders to include in the bundled app.
-     */
-    @Parameter(property = "additionalResources", required = false)
-    @Input
-    @Optional
-    protected List<File> additionalResources;
-
-    /**
-     * Defines modules to customize the bundled JRE. Don't use jdeps to get module dependencies.
-     */
-    @Parameter(property = "modules", required = false)
-    @Input
-    @Optional
-    protected List<String> modules;
-
-    /**
-     * Additional modules to the ones identified by jdeps or the specified with modules property.
-     */
-    @Parameter(property = "additionalModules", required = false)
-    @Input
-    @Optional
-    protected List<String> additionalModules;
-
-    /**
-     * Which platform to build, one of:
-     * <ul>
-     * <li><tt>auto</tt> - automatically detect based on the host OS (the default)</li>
-     * <li><tt>mac</tt></li>
-     * <li><tt>linux</tt></li>
-     * <li><tt>windows</tt></li>
-     * </ul>
-     * To build for multiple platforms at once, add multiple executions to the plugin's configuration.
-     */
-    @Parameter(property = "platform", required = true)
-    @Input
-    @Optional
-    protected Platform platform;
-
-    /**
-     * Defines PATH environment variable in GNU/Linux and Mac OS X startup scripts.
-     */
-    @Parameter(property = "envPath", required = false)
-    @Input
-    @Optional
-    protected String envPath;
-
-    /**
-     * Additional arguments to provide to the JVM (for example <tt>-Xmx2G</tt>).
-     */
-    @Parameter(property = "vmArgs", required = false)
-    @Input
-    @Optional
-    protected List<String> vmArgs;
-
-    /**
-     * Provide your own runnable .jar (for example, a shaded .jar) instead of letting this plugin create one via
-     * the <tt>maven-jar-plugin</tt>.
-     */
-    @Parameter(property = "runnableJar", required = false)
-    @InputFile
-    @Optional
-    protected File runnableJar;
-
-    /**
-     * Whether or not to copy dependencies into the bundle. Generally, you will only disable this if you specified
-     * a <tt>runnableJar</tt> with all dependencies shaded into the .jar itself.
-     */
-    @Parameter(property = "copyDependencies", required = true)
-    @Input
-    @Optional
-    protected Boolean copyDependencies;
-
-    /**
-     * Bundled JRE directory name
-     */
-    @Parameter(property = "jreDirectoryName", required = false)
-    @Input
-    @Optional
-    protected String jreDirectoryName;
-    /**
-     * Windows specific config
-     */
-    @Parameter(property = "winConfig", required = false)
-    @Input
-    @Optional
-    protected WindowsConfig winConfig;
-
-    /**
-     * GNU/Linux specific config
-     */
-    @Parameter(property = "linuxConfig", required = false)
-    @Input
-    @Optional
-    protected LinuxConfig linuxConfig;
-
-    /**
-     * Mac OS X specific config
-     */
-    @Parameter(property = "macConfig", required = false)
-    @Input
-    @Optional
-    protected MacConfig macConfig;
-
-    /**
-     * Bundles app in a tarball file
-     */
-    @Parameter(property = "createTarball", required = false)
-    @Input
-    @Optional
-    protected Boolean createTarball;
-
-    /**
-     * Bundles app in a zipball file
-     */
-    @Parameter(property = "createZipball", required = false)
-    @Input
-    @Optional
-    protected Boolean createZipball;
-
-    /**
-     * Extra properties for customized Velocity templates, accesible through '$this.extra' map.
-     */
-    @Parameter(required = false)
-    @Input
-    @Optional
-    protected Map<String, String> extra;
-
-    /**
-     * Uses app resources folder as default working directory.
-     */
-    @Parameter(property = "useResourcesAsWorkingDir", required = false)
-    @Input
-    @Optional
-    protected Boolean useResourcesAsWorkingDir;
-
-    /**
-     * Assets directory
-     */
-    @Parameter(property = "assetsDir", defaultValue = "${project.basedir}/assets")
-    @InputDirectory
-    @Optional
-    protected File assetsDir;
-
-    /**
-     * Classpath
-     */
-    @Parameter(property = "classpath", required = false)
-    @Input
-    @Optional
-    protected String classpath;
-    /**
-     * JRE min version
-     */
-    @Parameter(property = "jreMinVersion", required = false)
-    @Input
-    @Optional
-    protected String jreMinVersion;
-
-    /**
-     * Additional JAR manifest entries
-     */
-    @Parameter(required = false)
-    @Input
-    @Optional
-    protected Manifest manifest;
-
-    /**
-     * Additional module paths
-     */
-    @Parameter(property = "additionalModulePaths", required = false)
-    @Input
-    @Optional
-    protected List<File> additionalModulePaths;
-
-    /**
-     * Additional module paths
-     */
-    @Parameter(property = "fileAssociations", required = false)
-    @Input
-    @Optional
-    protected List<FileAssociation> fileAssociations;
-
-    /**
-     * Packaging JDK
-     */
-    @Parameter(property = "packagingJdk", required = false)
-    @InputDirectory
-    @Optional
-    protected File packagingJdk;
-
-    /**
-     * Scripts
-     */
-    @Parameter(property = "scripts", required = false)
-    @Input
-    @Optional
-    protected Scripts scripts;
-
-    /**
      * Get packaging JDK
+     *
      * @return Packaging JDK
      */
     public File getPackagingJdk() {
@@ -448,6 +408,7 @@ public class PackageTask {
 
     /**
      * Get output directory
+     *
      * @return Output directory
      */
     public File getOutputDirectory() {
@@ -456,6 +417,7 @@ public class PackageTask {
 
     /**
      * Get license file
+     *
      * @return License file
      */
     public File getLicenseFile() {
@@ -464,6 +426,7 @@ public class PackageTask {
 
     /**
      * Get icon file
+     *
      * @return Icon file
      */
     public File getIconFile() {
@@ -472,6 +435,7 @@ public class PackageTask {
 
     /**
      * Get generate installer
+     *
      * @return Generate installer
      */
     public Boolean getGenerateInstaller() {
@@ -480,6 +444,7 @@ public class PackageTask {
 
     /**
      * Get force installer
+     *
      * @return Force installer
      */
     public Boolean isForceInstaller() {
@@ -488,6 +453,7 @@ public class PackageTask {
 
     /**
      * Get main class
+     *
      * @return Main class
      */
     public String getMainClass() {
@@ -496,6 +462,7 @@ public class PackageTask {
 
     /**
      * Get app name
+     *
      * @return App name
      */
     public String getAppName() {
@@ -504,6 +471,7 @@ public class PackageTask {
 
     /**
      * Get display name
+     *
      * @return Display name
      */
     public String getAppDisplayName() {
@@ -512,6 +480,7 @@ public class PackageTask {
 
     /**
      * Get version
+     *
      * @return Version
      */
     public String getVersion() {
@@ -520,6 +489,7 @@ public class PackageTask {
 
     /**
      * Get description
+     *
      * @return Description
      */
     public String getDescription() {
@@ -528,6 +498,7 @@ public class PackageTask {
 
     /**
      * Get URL
+     *
      * @return URL
      */
     public String getUrl() {
@@ -536,6 +507,7 @@ public class PackageTask {
 
     /**
      * Get administrator required
+     *
      * @return Administrator required
      */
     public Boolean getAdministratorRequired() {
@@ -544,6 +516,7 @@ public class PackageTask {
 
     /**
      * Get organization name
+     *
      * @return Organization name
      */
     public String getOrganizationName() {
@@ -552,6 +525,7 @@ public class PackageTask {
 
     /**
      * Get organization URL
+     *
      * @return Organization URL
      */
     public String getOrganizationUrl() {
@@ -560,6 +534,7 @@ public class PackageTask {
 
     /**
      * Get organization email
+     *
      * @return Organization email
      */
     public String getOrganizationEmail() {
@@ -568,6 +543,7 @@ public class PackageTask {
 
     /**
      * Get bundle JRE
+     *
      * @return Bundle JRE
      */
     public Boolean getBundleJre() {
@@ -576,6 +552,7 @@ public class PackageTask {
 
     /**
      * Get customized JRE
+     *
      * @return Customized JRE
      */
     public Boolean getCustomizedJre() {
@@ -584,6 +561,7 @@ public class PackageTask {
 
     /**
      * Get JRE path
+     *
      * @return JRE path
      */
     public File getJrePath() {
@@ -592,6 +570,7 @@ public class PackageTask {
 
     /**
      * Get JDK path
+     *
      * @return JDK path
      */
     public File getJdkPath() {
@@ -600,6 +579,7 @@ public class PackageTask {
 
     /**
      * Get JDK version
+     *
      * @return JDK version
      */
     public String getJdkVersion() {
@@ -608,6 +588,7 @@ public class PackageTask {
 
     /**
      * Get JDK vendor
+     *
      * @return JDK vendor
      */
     public String getJdkVendor() {
@@ -616,6 +597,7 @@ public class PackageTask {
 
     /**
      * Get additional resourcxes
+     *
      * @return Additional resources
      */
     public List<File> getAdditionalResources() {
@@ -624,6 +606,7 @@ public class PackageTask {
 
     /**
      * Get Modules
+     *
      * @return Modules
      */
     public List<String> getModules() {
@@ -632,6 +615,7 @@ public class PackageTask {
 
     /**
      * Get additional modules
+     *
      * @return Additional modules
      */
     public List<String> getAdditionalModules() {
@@ -640,6 +624,7 @@ public class PackageTask {
 
     /**
      * Get platform
+     *
      * @return Platform
      */
     public Platform getPlatform() {
@@ -648,6 +633,7 @@ public class PackageTask {
 
     /**
      * Get env path
+     *
      * @return Env path
      */
     public String getEnvPath() {
@@ -656,6 +642,7 @@ public class PackageTask {
 
     /**
      * Get VM args
+     *
      * @return VM args
      */
     public List<String> getVmArgs() {
@@ -664,6 +651,7 @@ public class PackageTask {
 
     /**
      * Get runnable JAR
+     *
      * @return Runnable JAR
      */
     public File getRunnableJar() {
@@ -672,6 +660,7 @@ public class PackageTask {
 
     /**
      * Get copy dependencies
+     *
      * @return Copy dependencies
      */
     public Boolean getCopyDependencies() {
@@ -680,6 +669,7 @@ public class PackageTask {
 
     /**
      * Get JRE directory name
+     *
      * @return JRE directory name
      */
     public String getJreDirectoryName() {
@@ -688,6 +678,7 @@ public class PackageTask {
 
     /**
      * Get Windows config
+     *
      * @return Windows config
      */
     public WindowsConfig getWinConfig() {
@@ -696,6 +687,7 @@ public class PackageTask {
 
     /**
      * Get Linux config
+     *
      * @return Linux config
      */
     public LinuxConfig getLinuxConfig() {
@@ -704,6 +696,7 @@ public class PackageTask {
 
     /**
      * Get Mac OS config
+     *
      * @return Mac OS config
      */
     public MacConfig getMacConfig() {
@@ -712,6 +705,7 @@ public class PackageTask {
 
     /**
      * Get create tarball
+     *
      * @return Create tarball
      */
     public Boolean getCreateTarball() {
@@ -720,6 +714,7 @@ public class PackageTask {
 
     /**
      * Get create zipball
+     *
      * @return Create zipball
      */
     public Boolean getCreateZipball() {
@@ -728,6 +723,7 @@ public class PackageTask {
 
     /**
      * Get extra parameters
+     *
      * @return Extra parameters
      */
     public Map<String, String> getExtra() {
@@ -736,6 +732,7 @@ public class PackageTask {
 
     /**
      * Get if it has to use resources folder as working directory
+     *
      * @return Use resources folder as working directory
      */
     public Boolean isUseResourcesAsWorkingDir() {
@@ -744,6 +741,7 @@ public class PackageTask {
 
     /**
      * Get assets dir
+     *
      * @return Assets dir
      */
     public File getAssetsDir() {
@@ -752,6 +750,7 @@ public class PackageTask {
 
     /**
      * Get classpath
+     *
      * @return Classpath
      */
     public String getClasspath() {
@@ -760,6 +759,7 @@ public class PackageTask {
 
     /**
      * Get JRE min version
+     *
      * @return JRE min version
      */
     public String getJreMinVersion() {
@@ -768,6 +768,7 @@ public class PackageTask {
 
     /**
      * Get Manifest
+     *
      * @return manifest
      */
     public Manifest getManifest() {
@@ -776,6 +777,7 @@ public class PackageTask {
 
     /**
      * Get additional modules paths
+     *
      * @return Additional module paths
      */
     public List<File> getAdditionalModulePaths() {
@@ -784,6 +786,7 @@ public class PackageTask {
 
     /**
      * Get file associations
+     *
      * @return File associations
      */
     public List<FileAssociation> getFileAssociations() {
@@ -792,6 +795,7 @@ public class PackageTask {
 
     /**
      * Get scripts
+     *
      * @return Scripts
      */
     public Scripts getScripts() {
@@ -802,6 +806,7 @@ public class PackageTask {
 
     /**
      * Set output directory
+     *
      * @param outputDirectory Output directory
      * @return Packager settings
      */
@@ -812,6 +817,7 @@ public class PackageTask {
 
     /**
      * Set packaging JDK
+     *
      * @param packagingJdk Packaging JDK
      * @return Packager settings
      */
@@ -822,6 +828,7 @@ public class PackageTask {
 
     /**
      * Set license file
+     *
      * @param licenseFile License file
      * @return Packager settings
      */
@@ -832,6 +839,7 @@ public class PackageTask {
 
     /**
      * Set icon file
+     *
      * @param iconFile Icon file
      * @return Packager settings
      */
@@ -842,6 +850,7 @@ public class PackageTask {
 
     /**
      * Set generate installer
+     *
      * @param generateInstaller Generate installer
      * @return Packager settings
      */
@@ -852,6 +861,7 @@ public class PackageTask {
 
     /**
      * Set force installer
+     *
      * @param forceInstaller Force installer
      * @return Packager settings
      */
@@ -862,6 +872,7 @@ public class PackageTask {
 
     /**
      * Set main class
+     *
      * @param mainClass Main class
      * @return Packager settings
      */
@@ -872,6 +883,7 @@ public class PackageTask {
 
     /**
      * Set name
+     *
      * @param appName Name
      * @return Packager settings
      */
@@ -882,6 +894,7 @@ public class PackageTask {
 
     /**
      * Set display name
+     *
      * @param appDisplayName Display name
      * @return Packager settings
      */
@@ -892,6 +905,7 @@ public class PackageTask {
 
     /**
      * Set version
+     *
      * @param version Version
      * @return Packager settings
      */
@@ -902,6 +916,7 @@ public class PackageTask {
 
     /**
      * Set description
+     *
      * @param description Description
      * @return Packager settings
      */
@@ -912,6 +927,7 @@ public class PackageTask {
 
     /**
      * Set URL
+     *
      * @param url URL
      * @return Packager settings
      */
@@ -921,7 +937,8 @@ public class PackageTask {
     }
 
     /**
-     *  Set administrator required
+     * Set administrator required
+     *
      * @param administratorRequired Administrator required
      * @return Packager settings
      */
@@ -932,6 +949,7 @@ public class PackageTask {
 
     /**
      * Set organizstion name
+     *
      * @param organizationName Organization name
      * @return Packager settings
      */
@@ -942,6 +960,7 @@ public class PackageTask {
 
     /**
      * Set organization URL
+     *
      * @param organizationUrl Organization URL
      * @return Packager settings
      */
@@ -952,6 +971,7 @@ public class PackageTask {
 
     /**
      * Set organization email
+     *
      * @param organizationEmail
      * @return Packager settings
      */
@@ -962,6 +982,7 @@ public class PackageTask {
 
     /**
      * Set bundle JRE
+     *
      * @param bundleJre Bundle JRE
      * @return Packager settings
      */
@@ -972,6 +993,7 @@ public class PackageTask {
 
     /**
      * Set customized JRE
+     *
      * @param customizedJre Customized JRE
      * @return Packager settings
      */
@@ -982,6 +1004,7 @@ public class PackageTask {
 
     /**
      * Set JRE path
+     *
      * @param jrePath JRE path
      * @return Packager settings
      */
@@ -992,6 +1015,7 @@ public class PackageTask {
 
     /**
      * Set JDK path
+     *
      * @param jdkPath JDK path
      * @return Packager settings
      */
@@ -1002,6 +1026,7 @@ public class PackageTask {
 
     /**
      * Set JDK version
+     *
      * @param jdkVersion JDK version
      * @return Packager settings
      */
@@ -1012,6 +1037,7 @@ public class PackageTask {
 
     /**
      * Set JDK vendor
+     *
      * @param jdkVendor JDK vendor
      * @return Packager settings
      */
@@ -1022,6 +1048,7 @@ public class PackageTask {
 
     /**
      * Set additional resources list
+     *
      * @param additionalResources Additional resources list
      * @return Packager settings
      */
@@ -1032,6 +1059,7 @@ public class PackageTask {
 
     /**
      * Set modules list
+     *
      * @param modules Modules list
      * @return Packager settings
      */
@@ -1042,6 +1070,7 @@ public class PackageTask {
 
     /**
      * Set additional modules list
+     *
      * @param additionalModules Additional modules list
      * @return Packager settings
      */
@@ -1052,6 +1081,7 @@ public class PackageTask {
 
     /**
      * Set platform
+     *
      * @param platform Platform
      * @return Packager settings
      */
@@ -1062,6 +1092,7 @@ public class PackageTask {
 
     /**
      * Set ENV path
+     *
      * @param envPath ENV path
      * @return Packager settings
      */
@@ -1072,6 +1103,7 @@ public class PackageTask {
 
     /**
      * Set VM arguments
+     *
      * @param vmArgs VM arguments
      * @return Packager settings
      */
@@ -1082,6 +1114,7 @@ public class PackageTask {
 
     /**
      * Set runnable JAR
+     *
      * @param runnableJar Runnable JAR
      * @return Packager settings
      */
@@ -1092,6 +1125,7 @@ public class PackageTask {
 
     /**
      * Set copy dependencies
+     *
      * @param copyDependencies Copy dependencies
      * @return Packager settings
      */
@@ -1102,6 +1136,7 @@ public class PackageTask {
 
     /**
      * Set JRE directory name
+     *
      * @param jreDirectoryName JRE directory name
      * @return Packager settings
      */
@@ -1112,6 +1147,7 @@ public class PackageTask {
 
     /**
      * Set Windows specific configuration
+     *
      * @param winConfig Windows specific configuration
      * @return Packager settings
      */
@@ -1122,6 +1158,7 @@ public class PackageTask {
 
     /**
      * Set GNU/Linux specific configuration
+     *
      * @param linuxConfig GNU/Linux specific configuration
      * @return Packager settings
      */
@@ -1132,6 +1169,7 @@ public class PackageTask {
 
     /**
      * Set Mac OS specific configuration
+     *
      * @param macConfig Mac OS specific configuration
      * @return Packager settings
      */
@@ -1142,6 +1180,7 @@ public class PackageTask {
 
     /**
      * Set create tarball
+     *
      * @param createTarball Create tarball
      * @return Packager settings
      */
@@ -1152,6 +1191,7 @@ public class PackageTask {
 
     /**
      * Set create zipball
+     *
      * @param createZipball Create zipball
      * @return Packager settings
      */
@@ -1162,6 +1202,7 @@ public class PackageTask {
 
     /**
      * Set extra parameters map
+     *
      * @param extra Extra parameters map
      * @return Packager settings
      */
@@ -1172,6 +1213,7 @@ public class PackageTask {
 
     /**
      * Set if it use resources folder as working directory
+     *
      * @param useResourcesAsWorkingDir Use resources folder as working directory
      * @return Packager settings
      */
@@ -1182,6 +1224,7 @@ public class PackageTask {
 
     /**
      * Set asstes directory
+     *
      * @param assetsDir Assets directory
      * @return Packager settings
      */
@@ -1192,6 +1235,7 @@ public class PackageTask {
 
     /**
      * Set classpath
+     *
      * @param classpath Classpath
      * @return Packager settings
      */
@@ -1202,6 +1246,7 @@ public class PackageTask {
 
     /**
      * Set minimal JRE version
+     *
      * @param jreMinVersion JRE minimal version
      * @return Packager settings
      */
@@ -1212,6 +1257,7 @@ public class PackageTask {
 
     /**
      * Set Manifest configuration
+     *
      * @param manifest Manifest
      * @return Packager settings
      */
@@ -1222,6 +1268,7 @@ public class PackageTask {
 
     /**
      * Set additional module paths
+     *
      * @param additionalModulePaths Additional module path list
      * @return Packager settings
      */
@@ -1232,6 +1279,7 @@ public class PackageTask {
 
     /**
      * Set file associations
+     *
      * @param fileAssociations File associations list
      * @return Packager settings
      */
@@ -1242,6 +1290,7 @@ public class PackageTask {
 
     /**
      * Set scripts
+     *
      * @param scripts Scripts
      * @return Packager settings
      */
@@ -1254,6 +1303,7 @@ public class PackageTask {
 
     /**
      * Checks if there are file associations specified
+     *
      * @return true if there are file asociations, otherwise false
      */
     public boolean isThereFileAssociations() {
@@ -1262,6 +1312,7 @@ public class PackageTask {
 
     /**
      * Mime types list to string
+     *
      * @param separator Character used to join mime types into one string
      * @return Mime type list string
      */

@@ -6,35 +6,37 @@ import io.github.fvarrui.javapackager.gradle.PackagePlugin;
 import io.github.fvarrui.javapackager.model.*;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
-import org.gradle.api.*;
-import org.gradle.api.tasks.*;
+import org.gradle.api.DefaultTask;
+import org.gradle.api.Project;
+import org.gradle.api.tasks.OutputFiles;
+import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GradlePackageTask extends DefaultTask implements PackagerFactory {
+    private final Project gradleProject = Context.getGradleContext().getProject();
     /**
      * This is the global javapackager extension instance. <br>
      * Sadly we need to do it like this because
      * we cannot extend {@link PackageTask} because we already
      * extend another class. This means that this task
      * has no properties, instead we use this extensions properties.
+     *
      * @see PackagePlugin
      */
     public PackageTask extension;
-    private final Project gradleProject = Context.getGradleContext().getProject();
     private List<File> outputFiles;
 
-    public GradlePackageTask() throws IllegalAccessException {
+    public GradlePackageTask() {
         setGroup(PackagePlugin.GROUP_NAME);
         setDescription("Packages the application as a native Windows, Mac OS X or GNU/Linux executable and creates an installer");
         getOutputs().upToDateWhen(o -> false);
         updateExtension(PackagePlugin.GLOBAL_EXTENSION);
     }
 
-    public void updateExtension(PackageTask extension){
+    public void updateExtension(PackageTask extension) {
         this.extension = extension;
         // Defaults specific to gradle
         this.extension.outputDirectory = gradleProject.getBuildDir();
@@ -55,6 +57,7 @@ public class GradlePackageTask extends DefaultTask implements PackagerFactory {
 
     /**
      * Packaging task action
+     *
      * @throws Exception Throwed if something went wrong
      */
     @TaskAction
