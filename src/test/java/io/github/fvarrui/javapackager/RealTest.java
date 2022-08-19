@@ -22,6 +22,7 @@ public class RealTest {
         request.setGoals(Arrays.asList("clean", "package"));
         request.addArg("-Dmaven.javadoc.skip=true");
         request.addArg("-Dmaven.test.skip=true");
+        request.addArg("-e");
         Invoker invoker = new DefaultInvoker();
         InvocationResult result = invoker.execute(request);
         if(result.getExitCode() != 0 || result.getExecutionException() != null)

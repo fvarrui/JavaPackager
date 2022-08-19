@@ -69,13 +69,13 @@ public class PackageTask {
         this.additionalModulePaths = new ArrayList<>();
         this.fileAssociations = null;
         this.packagingJdk = null;
-        scripts(new Scripts());
+        scripts = new Scripts();
     }
 
     /**
      * Output directory.
      */
-    @Parameter(property = "outputDirectory", required = false)
+    @Parameter(property = "outputDirectory", defaultValue = "${project.build.directory}")
     @OutputDirectory
     @Optional
     protected File outputDirectory;
@@ -115,7 +115,7 @@ public class PackageTask {
     /**
      * Full path to your app main class.
      */
-    @Parameter(property = "mainClass", required = true)
+    @Parameter(property = "mainClass", required = true, defaultValue = "${exec.mainClass}")
     @Input
     @Optional
     protected String mainClass;
@@ -123,7 +123,7 @@ public class PackageTask {
     /**
      * App name.
      */
-    @Parameter(property = "appName")
+    @Parameter(property = "appName", defaultValue = "${project.name}")
     @Input
     @Optional
     protected String appName;
@@ -131,7 +131,7 @@ public class PackageTask {
     /**
      * App name to show.
      */
-    @Parameter(property = "appDisplayName")
+    @Parameter(property = "appDisplayName", defaultValue = "${project.name}")
     @Input
     @Optional
     protected String appDisplayName;
@@ -139,7 +139,7 @@ public class PackageTask {
     /**
      * Project version.
      */
-    @Parameter(property = "version")
+    @Parameter(property = "version", defaultValue = "${project.version}")
     @Input
     @Optional
     protected String version;
@@ -147,7 +147,7 @@ public class PackageTask {
     /**
      * Project description.
      */
-    @Parameter(property = "description")
+    @Parameter(property = "description", defaultValue = "${project.description}")
     @Input
     @Optional
     protected String description;
@@ -155,7 +155,7 @@ public class PackageTask {
     /**
      * App website URL.
      */
-    @Parameter(property = "url")
+    @Parameter(property = "url", defaultValue = "${project.url}")
     @Input
     @Optional
     protected String url;
@@ -171,7 +171,7 @@ public class PackageTask {
     /**
      * Organization name.
      */
-    @Parameter(property = "organizationName", required = false)
+    @Parameter(property = "organizationName", defaultValue = "${project.organization.name}")
     @Input
     @Optional
     protected String organizationName;
@@ -179,7 +179,7 @@ public class PackageTask {
     /**
      * Organization website URL.
      */
-    @Parameter(property = "organizationUrl", required = false)
+    @Parameter(property = "organizationUrl", defaultValue = "${project.organization.url}")
     @Input
     @Optional
     protected String organizationUrl;
@@ -378,7 +378,7 @@ public class PackageTask {
     /**
      * Assets directory
      */
-    @Parameter(property = "assetsDir", required = false)
+    @Parameter(property = "assetsDir", defaultValue = "${project.basedir}/assets")
     @InputDirectory
     @Optional
     protected File assetsDir;
