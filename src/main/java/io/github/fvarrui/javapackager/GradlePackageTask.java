@@ -16,7 +16,7 @@ import java.util.*;
 
 public class GradlePackageTask extends DefaultTask implements PackagerFactory {
     /**
-     * This is the global javapackager instance. <br>
+     * This is the global javapackager extension instance. <br>
      * Sadly we need to do it like this because
      * we cannot extend {@link PackageTask} because we already
      * extend another class. This means that this task
