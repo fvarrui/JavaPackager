@@ -88,25 +88,27 @@ apply plugin: 'io.github.fvarrui.javapackager.plugin'
 Create your packaging task:
 
 ```groovy
-task packageMyApp(type: io.github.fvarrui.javapackager.gradle.PackageTask, dependsOn: build) {
-    // mandatory
-    mainClass = 'path.to.your.mainClass'
-    // optional
-    bundleJre = true|false
-    generateInstaller = true|false
-    administratorRequired = true|false
-    platform = auto|linux|mac|windows
-    additionalResources = [ file('file path'), file('folder path'), ... ]
-    linuxConfig {
+task packageMyApp(type: io.github.fvarrui.javapackager.GradlePackageTask, dependsOn: build) {
+    javapackager{
+        // mandatory
+        mainClass = 'path.to.your.mainClass'
+        // optional
+        bundleJre = true|false
+        generateInstaller = true|false
+        administratorRequired = true|false
+        platform = auto|linux|mac|windows
+        additionalResources = [ file('file path'), file('folder path'), ... ]
+        linuxConfig {
+            ...
+        }
+        macConfig {
+            ...
+        }
+        winConfig {
+            ...
+        }
         ...
     }
-    macConfig {
-        ...
-    }
-    winConfig {
-        ...
-    }
-    ...
 }
 ```
 
