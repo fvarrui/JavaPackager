@@ -16,7 +16,8 @@ public class PackagePlugin implements Plugin<Project> {
 
 	public static final String GROUP_NAME = "JavaPackager";
 	public static final String SETTINGS_EXT_NAME = "javapackager";
-	public static final String PACKAGE_TASK_NAME = "package";	
+	public static final String PACKAGE_TASK_NAME = "package";
+	public static PackageTask GLOBAL_EXTENSION;
 
 	@Override
 	public void apply(Project project) {
@@ -26,10 +27,9 @@ public class PackagePlugin implements Plugin<Project> {
 		project.getPluginManager().apply("java");
 		project.getPluginManager().apply("edu.sc.seis.launch4j");
 
-		PackageTask extension = project.getExtensions().create(SETTINGS_EXT_NAME, PackageTask.class);
+		GLOBAL_EXTENSION = project.getExtensions().create(SETTINGS_EXT_NAME, PackageTask.class);
 		GradlePackageTask task = (GradlePackageTask) project.getTasks().create(PACKAGE_TASK_NAME, GradlePackageTask.class).dependsOn("build");
-		task.updateExtension(extension);
-		task.getExtensions().add(SETTINGS_EXT_NAME, extension);
+		task.getExtensions().add(SETTINGS_EXT_NAME, GLOBAL_EXTENSION);
 
 		Context.getGradleContext().setLibraryTask(project.getTasks().create("launch4j_" + UUID.randomUUID(), Launch4jLibraryTask.class));
 	}

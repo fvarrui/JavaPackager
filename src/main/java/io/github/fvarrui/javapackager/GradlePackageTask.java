@@ -15,7 +15,15 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 public class GradlePackageTask extends DefaultTask implements PackagerFactory {
-    public PackageTask extension = new PackageTask();
+    /**
+     * This is the global javapackager instance. <br>
+     * Sadly we need to do it like this because
+     * we cannot extend {@link PackageTask} because we already
+     * extend another class. This means that this task
+     * has no properties, instead we use this extensions properties.
+     * @see PackagePlugin
+     */
+    public PackageTask extension;
     private final Project gradleProject = Context.getGradleContext().getProject();
     private List<File> outputFiles;
 
@@ -23,7 +31,7 @@ public class GradlePackageTask extends DefaultTask implements PackagerFactory {
         setGroup(PackagePlugin.GROUP_NAME);
         setDescription("Packages the application as a native Windows, Mac OS X or GNU/Linux executable and creates an installer");
         getOutputs().upToDateWhen(o -> false);
-        updateExtension(extension);
+        updateExtension(PackagePlugin.GLOBAL_EXTENSION);
     }
 
     public void updateExtension(PackageTask extension){
@@ -38,16 +46,6 @@ public class GradlePackageTask extends DefaultTask implements PackagerFactory {
         this.extension.organizationName = null;
         this.extension.organizationUrl = null;
         this.extension.assetsDir = new File(gradleProject.getProjectDir(), "assets");
-    }
-
-    private List<Field> getFieldsWithAnnotation(Field[] fields, Class<? extends Annotation> annotationClass) {
-        List<Field> list = new ArrayList<>();
-        for (Field field : fields) {
-            if(field.isAnnotationPresent(annotationClass)){
-                list.add(field);
-            }
-        }
-        return list;
     }
 
     @OutputFiles
