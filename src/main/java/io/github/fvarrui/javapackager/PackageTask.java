@@ -1,6 +1,7 @@
 package io.github.fvarrui.javapackager;
 
 import io.github.fvarrui.javapackager.model.*;
+import io.github.fvarrui.javapackager.packagers.PackagerFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.gradle.api.tasks.*;

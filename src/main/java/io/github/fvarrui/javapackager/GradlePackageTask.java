@@ -6,6 +6,7 @@ import io.github.fvarrui.javapackager.gradle.PackagePlugin;
 import io.github.fvarrui.javapackager.model.*;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
+import io.github.fvarrui.javapackager.packagers.PackagerFactory;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.OutputFiles;

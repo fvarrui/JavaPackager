@@ -1,15 +1,12 @@
-package io.github.fvarrui.javapackager;
+package io.github.fvarrui.javapackager.packagers;
 
-import io.github.fvarrui.javapackager.packagers.LinuxPackager;
-import io.github.fvarrui.javapackager.packagers.MacPackager;
-import io.github.fvarrui.javapackager.packagers.Packager;
-import io.github.fvarrui.javapackager.packagers.WindowsPackager;
+import io.github.fvarrui.javapackager.PackageTask;
 import org.apache.commons.lang3.SystemUtils;
 
 public interface PackagerFactory {
     default Packager createPackager(PackageTask task) {
         Packager packager = null;
-        switch (task.platform) {
+        switch (task.getPlatform()) {
             case mac:
                 packager = new MacPackager(task);
                 break;

@@ -3,6 +3,7 @@ package io.github.fvarrui.javapackager;
 import io.github.fvarrui.javapackager.maven.MavenContext;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
+import io.github.fvarrui.javapackager.packagers.PackagerFactory;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.*;
 import org.apache.maven.plugin.logging.Log;
