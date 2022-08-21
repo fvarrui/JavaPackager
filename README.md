@@ -120,6 +120,10 @@ And execute the next command in project's root folder:
 gradle packageMyApp
 ```
 
+### Package your app via CI
+
+- **GitHub:** You can find an example workflow file [here](https://github.com/fvarrui/JavaPackager/blob/pr-248/test/hello-world-maven/.github/workflows/package.yml).
+
 ### Generated artifacts
 
 By default it will generate next artifacts in `${outputDirectory} ` folder:
