@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 /**
  * Package task that gets detected by maven and gradle.
  */
-
 public class PackageTask {
     /**
      * Output directory.

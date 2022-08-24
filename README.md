@@ -98,17 +98,23 @@ task packageMyApp(type: io.github.fvarrui.javapackager.GradlePackageTask, depend
         administratorRequired = true|false
         platform = auto|linux|mac|windows
         additionalResources = [ file('file path'), file('folder path'), ... ]
-        linuxConfig {
-            ...
-        }
-        macConfig {
-            ...
-        }
-        winConfig {
-            ...
-        }
+    }
+    linuxConfig {
         ...
     }
+    macConfig {
+        ...
+    }
+    winConfig {
+        ...
+    }
+    manifest {
+        ....
+    }
+    scripts {
+        ...
+    }
+    ...
 }
 ```
 
