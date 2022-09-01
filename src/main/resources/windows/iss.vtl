@@ -82,6 +82,9 @@ Root: HKA; Subkey: "Software\Classes\Applications\\${info.executable.name}\Suppo
 [Files]
 Source: "${info.appFolder}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
+[UninstallDelete]
+Type: filesandordirs; Name: "{app}"
+
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\\${info.iconFile.name}"
 #if ($info.winConfig.createDesktopIconTask)
