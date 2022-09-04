@@ -39,6 +39,7 @@ public class WindowsConfig implements Serializable {
 	private boolean generateSetup = true;
 	private boolean generateMsi = true;
 	private boolean generateMsm = false;
+	private boolean setupMutex = true;
 	private String msiUpgradeCode;
 	private boolean wrapJar = true;
 	private LinkedHashMap<String, String> setupLanguages = new LinkedHashMap<>();
@@ -279,6 +280,14 @@ public class WindowsConfig implements Serializable {
 
 	public boolean isDisableWelcomePage() {
 		return disableWelcomePage;
+	}
+
+	public boolean isSetupMutex() {
+		return setupMutex;
+	}
+
+	public void setSetupMutex(boolean setupMutex) {
+		this.setupMutex = setupMutex;
 	}
 
 	public boolean isRemoveOldLibs() {

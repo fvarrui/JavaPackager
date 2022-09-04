@@ -198,7 +198,7 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 
 ### Plugin assets
 
-Any [asset used by JavaPackager]([JavaPackager/src/main/resources at master · fvarrui/JavaPackager · GitHub](https://github.com/fvarrui/JavaPackager/tree/master/src/main/resources)), such as application icons or templates, can be replaced just by placing a file with the same name in `${assetsDir}` folder organized by platform.
+Any [asset used by JavaPackager](https://github.com/fvarrui/JavaPackager/tree/master/src/main/resources), such as application icons or templates, can be replaced just by placing a file with the same name in `${assetsDir}` folder organized by platform.
 
 ```bash
 ${assetsDir}/
