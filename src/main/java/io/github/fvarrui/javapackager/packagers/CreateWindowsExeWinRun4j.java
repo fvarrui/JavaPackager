@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
+import io.github.fvarrui.javapackager.model.WindowsExeCreationTool;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.JarUtils;
@@ -28,7 +29,7 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 		};
 
 	public CreateWindowsExeWinRun4j() {
-		super("winrun4j");
+		super(WindowsExeCreationTool.winrun4j);
 	}
 
 	@Override
