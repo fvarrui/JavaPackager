@@ -53,7 +53,7 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 
 		Builder builder = new Builder();
 		builder.setType(RpmType.BINARY);
-		builder.setPlatform(Architecture.X86_64, Os.LINUX);
+		builder.setPlatform(packager.getArchForRpm(), Os.LINUX);
 		builder.setPackage(name, version, "1");
 		builder.setPackager(organizationName);
 		builder.setDescription(description);
