@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import io.github.fvarrui.javapackager.model.*;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -18,13 +19,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
-import io.github.fvarrui.javapackager.model.FileAssociation;
-import io.github.fvarrui.javapackager.model.LinuxConfig;
-import io.github.fvarrui.javapackager.model.MacConfig;
-import io.github.fvarrui.javapackager.model.Manifest;
-import io.github.fvarrui.javapackager.model.Platform;
-import io.github.fvarrui.javapackager.model.Scripts;
-import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.packagers.PackagerFactory;
@@ -314,7 +308,10 @@ public class PackageMojo extends AbstractMojo {
 	 */
 	@Parameter(property = "scripts", required = false)
 	private Scripts scripts;
-	
+
+	@Parameter(property = "arch", required = false, defaultValue="x64")
+	private JavaArch arch;
+
 	public void execute() throws MojoExecutionException {
 		
 		Context.setContext(
@@ -370,7 +367,8 @@ public class PackageMojo extends AbstractMojo {
 						.url(url)
 						.version(version)
 						.vmArgs(vmArgs)
-						.winConfig(winConfig);
+						.winConfig(winConfig)
+						.arch(arch);
 			
 			// generate app, installers and bundles
 			packager.createApp();

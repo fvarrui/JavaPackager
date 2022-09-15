@@ -860,17 +860,17 @@ public class PackagerSettings {
 		return arch;
 	}
 
-	public void arch(JavaArch arch) {
+	public PackagerSettings arch(JavaArch arch) {
 		this.arch = arch;
+		return this;
 	}
 
 	public String getArchForDeb() {
-		return arch != null ? arch.getDeb() : "amd64";
+		return arch.getDeb();
 	}
 
 	public Architecture getArchForRpm() {
-		String s = arch != null ? arch.getRpm() : "X86_64";
-		return Architecture.valueOf(s);
+		return Architecture.valueOf(arch.getRpm());
 	}
 
 	@Override
