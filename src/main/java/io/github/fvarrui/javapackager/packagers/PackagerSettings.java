@@ -890,5 +890,6 @@ public class PackagerSettings {
 				+ extra + ", useResourcesAsWorkingDir=" + useResourcesAsWorkingDir + ", assetsDir=" + assetsDir
 				+ ", classpath=" + classpath + ", jreMinVersion=" + jreMinVersion + ", manifest=" + manifest
 				+ ", additionalModulePaths=" + additionalModulePaths + ", fileAssociations=" + fileAssociations
-				+ ", packagingJdk=" + packagingJdk + ", scripts=" + scripts + "]";
-	}}
+				+ ", packagingJdk=" + packagingJdk + ", scripts=" + scripts + ", arch=" + arch + "]";
+	}
+}
