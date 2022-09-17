@@ -82,8 +82,8 @@ Bootstrap="$SCRIPTPATH/scripts/${info.bootstrapFile.name}" && [ -x "$Bootstrap" 
 #end
 
 #if ($info.administratorRequired)
-pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY GDKBACKEND=x11 "${JAVA}" ${JVMDefaultOptions} -cp "${JVMClassPath}" ${info.mainClass} $@
+pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY GDKBACKEND=x11 "${JAVA}" ${JVMDefaultOptions} -jar "${JVMClassPath}" $@
 #else
-"${JAVA}" ${JVMDefaultOptions} -cp "${JVMClassPath}" ${info.mainClass} $@
+"${JAVA}" ${JVMDefaultOptions} -jar "${JVMClassPath}" $@
 #end
 exit 0
