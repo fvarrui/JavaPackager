@@ -189,7 +189,7 @@ public class AdoptV3API {
         // AARCHx64 with alternative names:
         ARM64("aarch64");
 
-        private final String name;
+        public final String name;
 
         OperatingSystemArchitectureType(String name) {
             this.name = name;
