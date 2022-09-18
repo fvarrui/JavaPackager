@@ -61,7 +61,7 @@ public class TaskJavaUpdater {
     public void execute(String javaVersion, String javaVendor) throws Exception {
         Objects.requireNonNull(javaVersion);
         Objects.requireNonNull(javaVendor);
-        if(javaVendor.equals(Const.adoptium)){
+        if(javaVendor.equals(Const.graalvm)){
             Logger.info("Checking java installation...");
 
             String currentVersion = getBuildID(javaVersion, javaVendor);
@@ -92,7 +92,7 @@ public class TaskJavaUpdater {
                     currentVersion, result.latestVersion,
                     javaVersion, javaVendor);
 
-        } else if(javaVendor.equals(Const.graalvm)){
+        } else if(javaVendor.equals(Const.adoptium)){
             Logger.info("Checking java installation...");
 
             AdoptV3API.OperatingSystemArchitectureType osArchitectureType = AdoptV3API.OperatingSystemArchitectureType.X64;
