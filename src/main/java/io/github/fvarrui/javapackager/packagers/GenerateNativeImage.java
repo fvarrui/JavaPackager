@@ -11,8 +11,7 @@ import java.util.Objects;
 import static io.github.fvarrui.javapackager.utils.CommandUtils.execute;
 
 /**
- * Creates a MSI file including all app folder's content only for
- * Windows so app could be easily distributed
+ * TODO
  */
 public class GenerateNativeImage extends ArtifactGenerator<Packager> {
 

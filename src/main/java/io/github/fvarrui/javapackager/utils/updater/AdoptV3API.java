@@ -38,7 +38,7 @@ public class AdoptV3API {
         String jvmImplementation = isHotspotImpl ? "hotspot" : "openj9";
         String heapSize = isLargeHeapSize ? "large" : "normal";
         return START_ASSETS_URL
-                + releaseVersionName
+                + "%5B" + releaseVersionName.replace("+", "%2B") + "%2C%29"
                 + "?architecture=" + osArchitectureType.name
                 + "&heap_size=" + heapSize
                 + "&image_type=" + imageType.name
