@@ -53,6 +53,13 @@ public class PackageTask {
     @Optional
     protected Boolean forceInstaller;
     /**
+     * If true generates a native-image. Note that {@link #jdkVendor} must be set to graalvm for this to work.
+     */
+    @Parameter(property = "nativeImage")
+    @Input
+    @Optional
+    protected Boolean nativeImage;
+    /**
      * Full path to your app main class.
      */
     @Parameter(property = "mainClass", required = true, defaultValue = "${exec.mainClass}")
@@ -356,6 +363,7 @@ public class PackageTask {
         this.manifest = new Manifest();
         this.modules = new ArrayList<>();
         this.forceInstaller = false;
+        this.nativeImage = false;
         this.mainClass = "${exec.mainClass}"; //TODO gradle?
         //this.appName = (isGradle ? gradleProject.getName() : "${project.name}");
         //this.appDisplayName = (isGradle ? gradleProject.getName() : "${project.name}");
@@ -449,6 +457,10 @@ public class PackageTask {
      */
     public Boolean isForceInstaller() {
         return forceInstaller;
+    }
+
+    public Boolean isNativeImage() {
+        return nativeImage;
     }
 
     /**
@@ -867,6 +879,11 @@ public class PackageTask {
      */
     public PackageTask forceInstaller(Boolean forceInstaller) {
         this.forceInstaller = forceInstaller;
+        return this;
+    }
+
+    public PackageTask nativeImage(Boolean nativeImage) {
+        this.nativeImage = nativeImage;
         return this;
     }
 
