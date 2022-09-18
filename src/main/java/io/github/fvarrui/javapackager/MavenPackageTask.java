@@ -14,6 +14,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
+import java.io.IOException;
 import java.util.Map;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
@@ -29,6 +30,9 @@ public class MavenPackageTask extends PackageTask implements Mojo, ContextEnable
 
     private Log log;
     private Map pluginContext;
+
+    public MavenPackageTask() throws IOException {
+    }
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {

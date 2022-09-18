@@ -2,11 +2,13 @@ package io.github.fvarrui.javapackager;
 
 import io.github.fvarrui.javapackager.model.*;
 import io.github.fvarrui.javapackager.packagers.PackagerFactory;
+import io.github.fvarrui.javapackager.utils.updater.AdoptV3API;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.gradle.api.tasks.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -349,7 +351,7 @@ public class PackageTask {
     @Optional
     protected Scripts scripts;
 
-    public PackageTask() {
+    public PackageTask() throws IOException {
         //this.outputDirectory = (isGradle ? gradleProject.getBuildDir() : new File("${project.build.directory}"));
         this.platform = Platform.getCurrentPlatform();
         this.bundleJre = true;
@@ -378,7 +380,7 @@ public class PackageTask {
         this.customizedJre = true;
         this.jrePath = null;
         this.jdkPath = null;
-        this.jdkVersion = "17";
+        this.jdkVersion = new AdoptV3API().getLatestRelease();
         this.jdkVendor = "adoptium";
         this.additionalResources = new ArrayList<>();
         this.modules = new ArrayList<>();

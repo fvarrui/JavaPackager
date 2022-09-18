@@ -9,6 +9,7 @@
 package io.github.fvarrui.javapackager.utils.updater;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
@@ -17,9 +18,24 @@ import java.io.IOException;
  * Details here: https://api.adoptium.net/q/swagger-ui
  */
 public class AdoptV3API {
-    private final String START_DOWNLOAD_URL = "https://api.adoptium.net/v3/binary/version/";
-    private final String START_RELEASES_URL = "https://api.adoptium.net/v3/info/release_versions?architecture=";
-    private final String START_ASSETS_URL = "https://api.adoptium.net/v3/assets/version/";
+    private final String BASE = "https://api.adoptium.net/v3";
+    private final String START_DOWNLOAD_URL = BASE + "/binary/version/";
+    private final String START_RELEASES_URL = BASE + "/info/release_versions?architecture=";
+    private final String START_ASSETS_URL = BASE + "/assets/version/";
+
+    public JsonObject getAvailableReleases() throws IOException {
+        return Json.fromUrlAsObject(BASE + "/info/available_releases");
+    }
+
+    public String getLatestLTSRelease() throws IOException {
+        JsonArray arr = getAvailableReleases().getAsJsonArray("available_lts_releases");
+        return arr.get(arr.size()-1).getAsString();
+    }
+
+    public String getLatestRelease() throws IOException {
+        JsonArray arr = getAvailableReleases().getAsJsonArray("available_releases");
+        return arr.get(arr.size()-1).getAsString();
+    }
 
     /**
      * Creates and returns a new url from the provided parameters. <br>
