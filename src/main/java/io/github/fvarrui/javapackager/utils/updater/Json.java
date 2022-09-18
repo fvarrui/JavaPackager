@@ -14,14 +14,14 @@ public class Json {
     /**
      * Reads/Parses the provided String to a {@link JsonElement}.
      */
-    public static JsonElement from(String s){
+    public static JsonElement from(String s) {
         return JsonParser.parseString(s);
     }
 
     /**
      * Writes/Parses the provided {@link JsonElement} to a String.
      */
-    public static String toString(JsonElement el){
+    public static String toString(JsonElement el) {
         return new Gson().toJson(el);
     }
 
@@ -46,7 +46,7 @@ public class Json {
                     element = JsonParser.parseReader(inr);
                 }
             } else {
-                throw new IOException("error: "+con.getResponseCode()+" message: \""+con.getResponseMessage()+ "\" url: " + url);
+                throw new IOException("error: " + con.getResponseCode() + " message: \"" + con.getResponseMessage() + "\" url: " + url);
             }
         } catch (IOException e) {
             if (con != null) con.disconnect();

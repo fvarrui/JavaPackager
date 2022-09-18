@@ -15,8 +15,9 @@ public class Github {
 
     /**
      * Searches the latest GitHub release and returns a {@link SearchResult} object with all the relevant information.
-     * @param repoName GitHub repository name.
-     * @param currentVersion current version of the installed software.
+     *
+     * @param repoName           GitHub repository name.
+     * @param currentVersion     current version of the installed software.
      * @param assetNamePredicate predicate that contains the asset name and ist used to determine the asset to download.
      */
     public static SearchResult searchUpdate(String repoName, String currentVersion, Predicate<String> assetNamePredicate) {

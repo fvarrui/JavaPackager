@@ -9,7 +9,6 @@
 package io.github.fvarrui.javapackager.utils.updater;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
@@ -29,12 +28,12 @@ public class AdoptV3API {
 
     public String getLatestLTSRelease() throws IOException {
         JsonArray arr = getAvailableReleases().getAsJsonArray("available_lts_releases");
-        return arr.get(arr.size()-1).getAsString();
+        return arr.get(arr.size() - 1).getAsString();
     }
 
     public String getLatestRelease() throws IOException {
         JsonArray arr = getAvailableReleases().getAsJsonArray("available_releases");
-        return arr.get(arr.size()-1).getAsString();
+        return arr.get(arr.size() - 1).getAsString();
     }
 
     /**

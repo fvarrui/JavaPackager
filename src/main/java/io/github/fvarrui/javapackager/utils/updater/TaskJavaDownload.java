@@ -35,9 +35,9 @@ public class TaskJavaDownload {
     private AdoptV3API.OperatingSystemType osType;
 
     /**
-     * @param url     the download-url.
-     * @param dest    the downloads final destination. Note that the file name must end with '.file', because
-     *                the actual file type gets set when there is download information available.
+     * @param url  the download-url.
+     * @param dest the downloads final destination. Note that the file name must end with '.file', because
+     *             the actual file type gets set when there is download information available.
      */
     public void execute(String url, File dest, AdoptV3API.OperatingSystemType osType) throws Exception {
         this.url = url;
