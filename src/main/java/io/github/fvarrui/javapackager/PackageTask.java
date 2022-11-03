@@ -381,7 +381,7 @@ public class PackageTask {
         this.jrePath = null;
         this.jdkPath = null;
         this.jdkVersion = new AdoptV3API().getLatestRelease();
-        this.jdkVendor = "adoptium";
+        this.jdkVendor = "graalvm";
         this.additionalResources = new ArrayList<>();
         this.modules = new ArrayList<>();
         this.additionalModules = new ArrayList<>();
