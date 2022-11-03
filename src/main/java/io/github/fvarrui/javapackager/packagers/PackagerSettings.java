@@ -6,15 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import io.github.fvarrui.javapackager.model.*;
 import org.apache.commons.lang3.StringUtils;
-
-import io.github.fvarrui.javapackager.model.FileAssociation;
-import io.github.fvarrui.javapackager.model.LinuxConfig;
-import io.github.fvarrui.javapackager.model.MacConfig;
-import io.github.fvarrui.javapackager.model.Manifest;
-import io.github.fvarrui.javapackager.model.Platform;
-import io.github.fvarrui.javapackager.model.Scripts;
-import io.github.fvarrui.javapackager.model.WindowsConfig;
+import org.redline_rpm.header.Architecture;
 
 /**
  * Common packagers' settings
@@ -65,6 +59,7 @@ public class PackagerSettings {
 	protected File packagingJdk;
 	protected Scripts scripts;
 
+	private JavaArch arch;
 	/**
 	 * Get packaging JDK
 	 * @return Packaging JDK
@@ -861,6 +856,23 @@ public class PackagerSettings {
 				separator);
 	}
 
+	public JavaArch getArch() {
+		return arch;
+	}
+
+	public PackagerSettings arch(JavaArch arch) {
+		this.arch = arch;
+		return this;
+	}
+
+	public String getArchForDeb() {
+		return arch.getDeb();
+	}
+
+	public Architecture getArchForRpm() {
+		return Architecture.valueOf(arch.getRpm());
+	}
+
 	@Override
 	public String toString() {
 		return "PackagerSettings [outputDirectory=" + outputDirectory + ", licenseFile=" + licenseFile + ", iconFile="
@@ -878,5 +890,6 @@ public class PackagerSettings {
 				+ extra + ", useResourcesAsWorkingDir=" + useResourcesAsWorkingDir + ", assetsDir=" + assetsDir
 				+ ", classpath=" + classpath + ", jreMinVersion=" + jreMinVersion + ", manifest=" + manifest
 				+ ", additionalModulePaths=" + additionalModulePaths + ", fileAssociations=" + fileAssociations
-				+ ", packagingJdk=" + packagingJdk + ", scripts=" + scripts + "]";
-	}}
+				+ ", packagingJdk=" + packagingJdk + ", scripts=" + scripts + ", arch=" + arch + "]";
+	}
+}
