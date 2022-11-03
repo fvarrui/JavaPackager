@@ -15,10 +15,7 @@ import io.github.fvarrui.javapackager.model.LinuxConfig;
 import io.github.fvarrui.javapackager.model.MacConfig;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
-import io.github.fvarrui.javapackager.utils.FileUtils;
-import io.github.fvarrui.javapackager.utils.IconUtils;
-import io.github.fvarrui.javapackager.utils.Logger;
-import io.github.fvarrui.javapackager.utils.VelocityUtils;
+import io.github.fvarrui.javapackager.utils.*;
 import io.github.fvarrui.javapackager.utils.updater.TaskJavaUpdater;
 
 /**
@@ -135,6 +132,11 @@ public abstract class Packager {
 			taskJavaUpdater.execute(task.getJdkVersion(), task.getJdkVendor());
 			task.jdkPath(taskJavaUpdater.jdkPath);
 			if(task.getPackagingJdk() == null) task.packagingJdk(taskJavaUpdater.jdkPath);
+		} else{
+			// Custom JDK path doesn't support native image
+			// since there is currently no check to see if the JDK is GraalVM
+			if(task.isNativeImage())
+				throw new Exception("Custom JDK does not support native-image! Select "+ Const.graalvm+" as JDK vendor to fix this.");
 		}
 		if (!task.getJdkPath().exists()) {
 			throw new Exception("JDK path doesn't exist: " + task.getJdkPath());

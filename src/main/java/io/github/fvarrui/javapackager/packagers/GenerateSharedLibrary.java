@@ -1,20 +1,22 @@
 package io.github.fvarrui.javapackager.packagers;
 
-import io.github.fvarrui.javapackager.utils.*;
+import io.github.fvarrui.javapackager.utils.Const;
+import io.github.fvarrui.javapackager.utils.GraalVM;
+import io.github.fvarrui.javapackager.utils.Logger;
 
 import java.io.File;
 import java.util.Objects;
 
-public class GenerateNativeImage extends ArtifactGenerator<Packager> {
+public class GenerateSharedLibrary extends ArtifactGenerator<Packager> {
 
-	public GenerateNativeImage() {
-		super("Native Image");
+	public GenerateSharedLibrary() {
+		super("Shared library");
 	}
 
 	@Override
 	public boolean skip(Packager packager) {
 		
-		if (!packager.task.isNativeImage()) {
+		if (!packager.task.isSharedLibrary()) {
 			return true;
 		}
 		
@@ -30,7 +32,7 @@ public class GenerateNativeImage extends ArtifactGenerator<Packager> {
 	protected File doApply(Packager packager) throws Exception {
 		File outputDirectory = packager.task.getOutputDirectory();
 		GraalVM graalVM = new GraalVM(packager.task.getJdkPath());
-		return graalVM.generateNativeImage(packager.task.getPlatform(), outputDirectory);
+		return graalVM.generateSharedLibrary(packager.task.getPlatform(), outputDirectory);
 	}
 	
 }

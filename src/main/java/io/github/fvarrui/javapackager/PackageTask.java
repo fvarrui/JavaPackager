@@ -2,6 +2,7 @@ package io.github.fvarrui.javapackager;
 
 import io.github.fvarrui.javapackager.model.*;
 import io.github.fvarrui.javapackager.packagers.PackagerFactory;
+import io.github.fvarrui.javapackager.utils.Const;
 import io.github.fvarrui.javapackager.utils.updater.AdoptV3API;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -61,6 +62,13 @@ public class PackageTask {
     @Input
     @Optional
     protected Boolean nativeImage;
+    /**
+     * If true generates a shared library. Note that {@link #jdkVendor} must be set to graalvm for this to work.
+     */
+    @Parameter(property = "sharedLibrary")
+    @Input
+    @Optional
+    protected Boolean sharedLibrary;
     /**
      * Full path to your app main class.
      */
@@ -366,6 +374,7 @@ public class PackageTask {
         this.modules = new ArrayList<>();
         this.forceInstaller = false;
         this.nativeImage = false;
+        this.sharedLibrary = false;
         this.mainClass = "${exec.mainClass}"; //TODO gradle?
         //this.appName = (isGradle ? gradleProject.getName() : "${project.name}");
         //this.appDisplayName = (isGradle ? gradleProject.getName() : "${project.name}");
@@ -381,7 +390,7 @@ public class PackageTask {
         this.jrePath = null;
         this.jdkPath = null;
         this.jdkVersion = new AdoptV3API().getLatestRelease();
-        this.jdkVendor = "graalvm";
+        this.jdkVendor = Const.graalvm;
         this.additionalResources = new ArrayList<>();
         this.modules = new ArrayList<>();
         this.additionalModules = new ArrayList<>();
@@ -463,6 +472,10 @@ public class PackageTask {
 
     public Boolean isNativeImage() {
         return nativeImage;
+    }
+
+    public Boolean isSharedLibrary() {
+        return sharedLibrary;
     }
 
     /**
@@ -886,6 +899,11 @@ public class PackageTask {
 
     public PackageTask nativeImage(Boolean nativeImage) {
         this.nativeImage = nativeImage;
+        return this;
+    }
+
+    public PackageTask sharedLibrary(Boolean sharedLibrary) {
+        this.sharedLibrary = sharedLibrary;
         return this;
     }
 
