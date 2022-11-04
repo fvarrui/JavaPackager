@@ -38,12 +38,12 @@ public class CreateRunnableJar extends ArtifactGenerator<Packager> {
 	protected File doApply(Packager packager) {
 		
 		String classifier = "runnable";
-		String name = packager.task.getAppName();
-		String version = packager.task.getVersion();
-		String mainClass = packager.task.getMainClass();
-		File outputDirectory = packager.task.getOutputDirectory();
+		String name = packager.getName();
+		String version = packager.getVersion();
+		String mainClass = packager.getMainClass();
+		File outputDirectory = packager.getOutputDirectory();
 		ExecutionEnvironment env = Context.getMavenContext().getEnv();
-		Manifest manifest = packager.task.getManifest();
+		Manifest manifest = packager.getManifest();
 
 		File jarFile = new File(outputDirectory, name + "-" + version + "-" + classifier + ".jar");
 		

@@ -30,7 +30,7 @@ Add the following `plugin` tag to your `pom.xml`:
 <plugin>
     <groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
-    <version>1.7.0</version>
+    <version>1.7.0-SNAPSHOT</version>
     <executions>
         <execution>
             <phase>package</phase>
@@ -88,17 +88,15 @@ apply plugin: 'io.github.fvarrui.javapackager.plugin'
 Create your packaging task:
 
 ```groovy
-task packageMyApp(type: io.github.fvarrui.javapackager.GradlePackageTask, dependsOn: build) {
-    javapackager{
-        // mandatory
-        mainClass = 'path.to.your.mainClass'
-        // optional
-        bundleJre = true|false
-        generateInstaller = true|false
-        administratorRequired = true|false
-        platform = auto|linux|mac|windows
-        additionalResources = [ file('file path'), file('folder path'), ... ]
-    }
+task packageMyApp(type: io.github.fvarrui.javapackager.gradle.PackageTask, dependsOn: build) {
+    // mandatory
+    mainClass = 'path.to.your.mainClass'
+    // optional
+    bundleJre = true|false
+    generateInstaller = true|false
+    administratorRequired = true|false
+    platform = auto|linux|mac|windows
+    additionalResources = [ file('file path'), file('folder path'), ... ]
     linuxConfig {
         ...
     }
@@ -106,12 +104,6 @@ task packageMyApp(type: io.github.fvarrui.javapackager.GradlePackageTask, depend
         ...
     }
     winConfig {
-        ...
-    }
-    manifest {
-        ....
-    }
-    scripts {
         ...
     }
     ...
@@ -125,10 +117,6 @@ And execute the next command in project's root folder:
 ```bash
 gradle packageMyApp
 ```
-
-### Package your app via CI
-
-- **GitHub:** You can find an example workflow file [here](https://github.com/fvarrui/JavaPackager/blob/pr-248/test/hello-world-maven/.github/workflows/package.yml).
 
 ### Generated artifacts
 
@@ -173,12 +161,8 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 | `extra`                    | :x:                |                                                                                                                                                    | Map with extra properties to be used in customized Velocity templates, accesible through `$info.extra` variable.                                                                          |
 | `fileAssociations`         | :x:                | [`FileAssociation[]`](https://github.com/fvarrui/JavaPackager/blob/master/src/main/java/io/github/fvarrui/javapackager/model/FileAssociation.java) | Associate file extensions or MIME types to the app.                                                                                                                                       |
 | `forceInstaller`           | :x:                | `false`                                                                                                                                            | If `true`, skips operating system check when generating installers.                                                                                                                       |
-| `nativeImage`              | :x:                | `false`                                                                                                                                            | If `true`, generates a native image for the current operating system. Note that `jdkVendor` must be set to `graalvm` for this to work.                                                                                                                      |
-| `sharedLibrary`            | :x:                | `false`                                                                                                                                            | If `true`, generates a shared library for the current operating system. Note that `jdkVendor` must be set to `graalvm` for this to work.                                                                                                                      |
 | `generateInstaller`        | :x:                | `true`                                                                                                                                             | Generates an installer for the app.                                                                                                                                                       |
-| `jdkVersion`               | :x:                | `latest`                                                                                                                                           | JDK version to download and use. The latest version is used by default. See all available versions here: [adoptium](https://api.adoptium.net/v3/info/available_releases).                                                                  |
-| `jdkVendor`                | :x:                | `graalvm`                                                                                                                                          | JDK vendor to download the JDK from. Currently supported: `adoptium, graalvm`                                                                                                                      |
-| `jdkPath`                  | :x:                | `null`                                                                                                                                             | If null downloads (if necessary and also updates it if needed) the right JDK for the selected platform and sets this value to `<temp-dir>/jdk/win` or `<temp-dir>/jdk/linux` or `<temp-dir>/jdk/mac`. The downloaded JDK will be used to generate a customized JRE. |
+| `jdkPath`                  | :x:                | `${java.home}`                                                                                                                                     | JDK used to generate a customized JRE. It allows to bundle customized JREs for different platforms.                                                                                       |
 | `jreDirectoryName`         | :x:                | `"jre"`                                                                                                                                            | Bundled JRE directory name.                                                                                                                                                               |
 | `jreMinVersion`            | :x:                |                                                                                                                                                    | JRE minimum version. If an appropriate version cannot be found display error message. Disabled if a JRE is bundled.                                                                       |
 | `jrePath`                  | :x:                | `""`                                                                                                                                               | Path to JRE folder. If specified, it will bundle this JRE with the app, and won't generate a customized JRE. For Java 8 version or least.                                                 |
@@ -186,12 +170,12 @@ By default it will generate next artifacts in `${outputDirectory} ` folder:
 | `mainClass`                | :heavy_check_mark: | `${exec.mainClass}`                                                                                                                                | Full path to your app main class.                                                                                                                                                         |
 | `manifest`                 | :x:                |                                                                                                                                                    | [Allows adding additional entries to MANIFEST.MF file.](docs/manifest.md)                                                                                                                 |
 | `modules`                  | :x:                | `[]`                                                                                                                                               | Modules to customize the bundled JRE. Don't use `jdeps` to get module dependencies.                                                                                                       |
-| `appName`                  | :x:                | `${project.name}` or `${project.artifactId}`                                                                                                       | App name.                                                                                                                                                                                 |
+| `name`                     | :x:                | `${project.name}` or `${project.artifactId}`                                                                                                       | App name.                                                                                                                                                                                 |
 | `organizationName`         | :x:                | `${project.organization.name}` or `"ACME"`                                                                                                         | Organization name.                                                                                                                                                                        |
 | `organizationUrl`          | :x:                | `${project.organization.url}`                                                                                                                      | Organization website URL.                                                                                                                                                                 |
 | `organizationEmail`        | :x:                |                                                                                                                                                    | Organization email.                                                                                                                                                                       |
 | `outputDirectory`          | :x:                | `${project.build.directory}` or `${project.builddir}`                                                                                              | Output directory (where the artifacts will be generated).                                                                                                                                 |
-| `packagingJdk`             | :x:                | `null` or same as `jdkPath`                                                                                                                        | JDK used in the execution of `jlink` and other JDK tools. If null `jdkPath` will be used.                                                                                                 |
+| `packagingJdk`             | :x:                | `${java.home}`                                                                                                                                     | JDK used in the execution of `jlink` and other JDK tools.                                                                                                                                 |
 | `platform`                 | :x:                | `auto`                                                                                                                                             | Defines the target platform, which could be different to the execution platform. Possible values:  `auto`, `mac`, `linux`, `windows`. Use `auto`  for using execution platform as target. |
 | `runnableJar`              | :x:                |                                                                                                                                                    | Defines your own JAR file to be bundled. If it's ommited, the plugin packages your code in a runnable JAR and bundle it with the app.                                                     |
 | `scripts`                  | :x:                |                                                                                                                                                    | Specify bootstrap script. **Pre and post-install scripts comming soon!**                                                                                                                  |
