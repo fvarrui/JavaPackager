@@ -66,7 +66,7 @@ public class MavenContext extends Context<Log> {
 	@Override
 	public File createWindowsExe(WindowsPackager packager) throws Exception {
 		AbstractCreateWindowsExe createWindowsExe;
-		switch (packager.task.getWinConfig().getExeCreationTool()) {
+		switch (packager.getWinConfig().getExeCreationTool()) {
 			case launch4j: createWindowsExe = new CreateWindowsExeLaunch4j(); break;
 			case why: createWindowsExe = new CreateWindowsExeWhy(); break;
 			case winrun4j: createWindowsExe = new CreateWindowsExeWinRun4j(); break;

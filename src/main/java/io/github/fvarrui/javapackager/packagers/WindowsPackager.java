@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import io.github.fvarrui.javapackager.PackageTask;
 import org.apache.commons.lang3.StringUtils;
 
 import io.github.fvarrui.javapackager.utils.Logger;
@@ -17,11 +16,7 @@ public class WindowsPackager extends Packager {
 	
 	private File manifestFile;
 	private File msmFile;
-
-	public WindowsPackager(PackageTask task) {
-		super(task);
-	}
-
+	
 	public File getManifestFile() {
 		return manifestFile;
 	}
@@ -38,7 +33,7 @@ public class WindowsPackager extends Packager {
 	public void doInit() throws Exception {
 		
 		// sets windows config default values
-		task.getWinConfig().setDefaults(this);
+		this.winConfig.setDefaults(this);
 		
 	}
 
@@ -48,7 +43,7 @@ public class WindowsPackager extends Packager {
 		// sets common folders
 		this.executableDestinationFolder = appFolder;
 		this.jarFileDestinationFolder = appFolder;
-		this.jreDestinationFolder = new File(appFolder, task.getJreDirectoryName());
+		this.jreDestinationFolder = new File(appFolder, jreDirectoryName);
 		this.resourcesDestinationFolder = appFolder;
 
 	}
@@ -59,23 +54,23 @@ public class WindowsPackager extends Packager {
 	@Override
 	public File doCreateApp() throws Exception {
 		
-		Logger.infoIndent("Creating windows EXE ... with " + task.getWinConfig().getExeCreationTool());
+		Logger.infoIndent("Creating windows EXE ... with " + getWinConfig().getExeCreationTool());
 
 		// generates manifest file to require administrator privileges from velocity template
-		manifestFile = new File(assetsFolder, task.getAppName() + ".exe.manifest");
+		manifestFile = new File(assetsFolder, name + ".exe.manifest");
 		VelocityUtils.render("windows/exe.manifest.vtl", manifestFile, this);
 		Logger.info("Exe manifest file generated in " + manifestFile.getAbsolutePath() + "!");
 
 		// sets executable file
-		executable = new File(appFolder, task.getAppName() + ".exe");
+		executable = new File(appFolder, name + ".exe");
 		
 		// process classpath
-		if (task.getClasspath() != null) {
-			classpaths = Arrays.asList(task.getClasspath().split("[;:]"));
-			if (!task.isUseResourcesAsWorkingDir()) {
+		if (classpath != null) {
+			classpaths = Arrays.asList(classpath.split("[;:]"));
+			if (!isUseResourcesAsWorkingDir()) {
 				classpaths = classpaths.stream().map(cp -> new File(cp).isAbsolute() ? cp : "%EXEDIR%/" + cp).collect(Collectors.toList());
 			}
-			task.classpath(StringUtils.join(classpaths, ";"));
+			classpath = StringUtils.join(classpaths, ";");
 		}
 		
 		// invokes launch4j to generate windows executable

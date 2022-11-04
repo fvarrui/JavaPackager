@@ -24,12 +24,12 @@ public class GenerateSetup extends WindowsArtifactGenerator {
 	@Override
 	public boolean skip(WindowsPackager packager) {
 		
-		if (!packager.task.getWinConfig().isGenerateSetup()) {
+		if (!packager.getWinConfig().isGenerateSetup()) {
 			return true;
 		}
 		
-		if (!packager.task.getPlatform().isCurrentPlatform() && !packager.task.isForceInstaller()) {
-			Logger.warn(getArtifactName() + " cannot be generated due to the target platform (" + packager.task.getPlatform() + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
+		if (!packager.getPlatform().isCurrentPlatform() && !packager.isForceInstaller()) {
+			Logger.warn(getArtifactName() + " cannot be generated due to the target platform (" + packager.getPlatform() + ") is different from the execution platform (" + Platform.getCurrentPlatform() + ")!");
 			return true;
 		}
 		
@@ -39,12 +39,12 @@ public class GenerateSetup extends WindowsArtifactGenerator {
 	@Override
 	protected File doApply(WindowsPackager packager) throws Exception {
 		
-		File iconFile = packager.task.getIconFile();
+		File iconFile = packager.getIconFile();
 		File assetsFolder = packager.getAssetsFolder();
-		String name = packager.task.getAppName();
-		File outputDirectory = packager.task.getOutputDirectory();
-		String version = packager.task.getVersion();
-		Registry registry = packager.task.getWinConfig().getRegistry();
+		String name = packager.getName();
+		File outputDirectory = packager.getOutputDirectory();
+		String version = packager.getVersion();
+		Registry registry = packager.getWinConfig().getRegistry();
 		
 		// checks if registry entries' names are not empy
 		if (registry.getEntries().stream().anyMatch(e -> StringUtils.isBlank(e.getKey()) || StringUtils.isBlank(e.getValueName()))) {

@@ -338,15 +338,15 @@ public class WindowsConfig implements Serializable {
 	public void setDefaults(Packager packager) {
 		this.setHeaderType(ObjectUtils.defaultIfNull(this.getHeaderType(), HeaderType.gui));
 		this.setFileVersion(defaultIfBlank(this.getFileVersion(), "1.0.0.0"));
-		this.setTxtFileVersion(defaultIfBlank(this.getTxtFileVersion(), "" + packager.task.getVersion()));
+		this.setTxtFileVersion(defaultIfBlank(this.getTxtFileVersion(), "" + packager.getVersion()));
 		this.setProductVersion(defaultIfBlank(this.getProductVersion(), "1.0.0.0"));
-		this.setTxtProductVersion(defaultIfBlank(this.getTxtProductVersion(), "" + packager.task.getVersion()));
-		this.setCompanyName(defaultIfBlank(this.getCompanyName(), packager.task.getOrganizationName()));
-		this.setCopyright(defaultIfBlank(this.getCopyright(), packager.task.getOrganizationName()));
-		this.setFileDescription(defaultIfBlank(this.getFileDescription(), packager.task.getDescription()));
-		this.setProductName(defaultIfBlank(this.getProductName(), packager.task.getAppName()));
-		this.setInternalName(defaultIfBlank(this.getInternalName(), packager.task.getAppName()));
-		this.setOriginalFilename(defaultIfBlank(this.getOriginalFilename(), packager.task.getAppName() + ".exe"));
+		this.setTxtProductVersion(defaultIfBlank(this.getTxtProductVersion(), "" + packager.getVersion()));
+		this.setCompanyName(defaultIfBlank(this.getCompanyName(), packager.getOrganizationName()));
+		this.setCopyright(defaultIfBlank(this.getCopyright(), packager.getOrganizationName()));
+		this.setFileDescription(defaultIfBlank(this.getFileDescription(), packager.getDescription()));
+		this.setProductName(defaultIfBlank(this.getProductName(), packager.getName()));
+		this.setInternalName(defaultIfBlank(this.getInternalName(), packager.getName()));
+		this.setOriginalFilename(defaultIfBlank(this.getOriginalFilename(), packager.getName() + ".exe"));
 		this.setMsiUpgradeCode(defaultIfBlank(this.getMsiUpgradeCode(), UUID.randomUUID().toString()));
 	}
 
