@@ -12,7 +12,7 @@ plugins {
 repositories {
 	mavenLocal()
 	mavenCentral()
-	maven { 
+	maven {
 		url 'https://plugins.gradle.org/m2/'
 	}
 }
@@ -55,13 +55,18 @@ dependencies {
 	implementation 'net.jsign:jsign-core:3.1'
 	implementation 'org.redline-rpm:redline:1.2.10'
 	implementation 'io.github.fvarrui:launch4j:2.5.2'
+	implementation 'com.google.code.gson:gson:2.9.0'
+	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+	implementation 'org.rauschig:jarchivelib:1.2.0'
+	implementation 'com.squareup:javapoet:1.13.0'
 
-	testImplementation 'junit:junit:4.13.1'
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0'
+	testImplementation 'org.apache.maven.shared:maven-invoker:3.2.0'
 
 	compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
 
 	mavenEmbedder 'org.apache.maven:maven-embedder:3.6.0'
-	mavenEmbedder 'org.apache.maven:maven-compat:3.6.0'	
+	mavenEmbedder 'org.apache.maven:maven-compat:3.6.0'
 	mavenEmbedder 'org.slf4j:slf4j-simple:1.7.30'
 	mavenEmbedder 'org.eclipse.aether:aether-connector-basic:1.1.0'
 	mavenEmbedder 'org.eclipse.aether:aether-transport-wagon:1.1.0'
@@ -69,8 +74,12 @@ dependencies {
 	mavenEmbedder 'org.apache.maven.wagon:wagon-provider-api:3.4.1'
 }
 
+test {
+	useJUnitPlatform()
+}
+
 group = 'io.github.fvarrui'
-version = '1.7.0-SNAPSHOT'
+version = '1.7.0'
 description = 'Hybrid Maven/Gradle plugin to package Java applications as native Windows, Mac OS X or GNU/Linux executables and create installers for them'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -88,7 +97,7 @@ publishing {
 
 java {
 	withSourcesJar()
-	// and/or analogously use â€œwithJavadocJar()â€� to get a â€œjavadocJarâ€� task
+	// and/or analogously use "withJavadocJar()" to get a "javadocJar" task
 }
 
 install.repositories.mavenInstaller.pom.with {

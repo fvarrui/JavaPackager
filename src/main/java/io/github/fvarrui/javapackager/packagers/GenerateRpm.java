@@ -27,21 +27,21 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 
 	@Override
 	public boolean skip(LinuxPackager packager) {
-		return !packager.getLinuxConfig().isGenerateRpm();
+		return !packager.task.getLinuxConfig().isGenerateRpm();
 	}
 
 	@Override
 	protected File doApply(LinuxPackager packager) throws Exception {
 
 		File appFolder = packager.getAppFolder();
-		String name = packager.getName();
-		String version = packager.getVersion().replaceAll("-", "_");
-		String description = packager.getDescription();
-		String organizationName = packager.getOrganizationName();
-		File outputDirectory = packager.getOutputDirectory();
+		String name = packager.task.getAppName();
+		String version = packager.task.getVersion().replaceAll("-", "_");
+		String description = packager.task.getDescription();
+		String organizationName = packager.task.getOrganizationName();
+		File outputDirectory = packager.task.getOutputDirectory();
 		File executable = packager.getExecutable();
 		File assetsFolder = packager.getAssetsFolder();
-		String jreDirectoryName = packager.getJreDirectoryName();
+		String jreDirectoryName = packager.task.getJreDirectoryName();
 		
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");

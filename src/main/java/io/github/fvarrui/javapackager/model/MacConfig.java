@@ -285,6 +285,6 @@ public class MacConfig implements Serializable {
 		this.setIconY(defaultIfNull(this.getIconY(), 116));
 		this.setAppsLinkIconX(defaultIfNull(this.getAppsLinkIconX(), 360));
 		this.setAppsLinkIconY(defaultIfNull(this.getAppsLinkIconY(), 116));
-		this.setAppId(defaultIfNull(this.getAppId(), packager.getMainClass()));
+		this.setAppId(defaultIfNull(this.getAppId(), packager.task.getMainClass()));
 	}
 }

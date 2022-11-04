@@ -27,25 +27,25 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 	
 	@Override
 	public boolean skip(Packager packager) {
-		return !packager.getBundleJre();
+		return !packager.task.getBundleJre();
 	}
 
 	@Override
 	protected File doApply(Packager packager) throws Exception {
 		
-		boolean bundleJre = packager.getBundleJre(); 
-		File specificJreFolder = packager.getJrePath();
-		Platform platform = packager.getPlatform();
+		boolean bundleJre = packager.task.getBundleJre();
+		File specificJreFolder = packager.task.getJrePath();
+		Platform platform = packager.task.getPlatform();
 		File destinationFolder = packager.getJreDestinationFolder();
-		File jdkPath = packager.getJdkPath();
+		File jdkPath = packager.task.getJdkPath();
 		File libsFolder = packager.getLibsFolder();
-		boolean customizedJre = packager.getCustomizedJre();
+		boolean customizedJre = packager.task.getCustomizedJre();
 		File jarFile = packager.getJarFile();
-		List<String> requiredModules = packager.getModules();
-		List<String> additionalModules = packager.getAdditionalModules();
-		List<File> additionalModulePaths = packager.getAdditionalModulePaths();
+		List<String> requiredModules = packager.task.getModules();
+		List<String> additionalModules = packager.task.getAdditionalModules();
+		List<File> additionalModulePaths = packager.task.getAdditionalModulePaths();
 		
-		File currentJdk = packager.getPackagingJdk();
+		File currentJdk = packager.task.getPackagingJdk();
 		
 		Logger.infoIndent("Bundling JRE ... with " + currentJdk);
 		
@@ -165,7 +165,7 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 		
 		// updates bundle jre property value, as this artifact generator could disable this option 
 		// (e.g. when bundling a jre from a different platform than the current one)
-		packager.bundleJre(bundleJre);
+		packager.task.bundleJre(bundleJre);
 
 		return destinationFolder;
 	}
