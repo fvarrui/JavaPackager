@@ -4,8 +4,10 @@ import io.github.fvarrui.javapackager.model.Platform;
 import org.apache.maven.shared.invoker.*;
 import org.junit.jupiter.api.Test;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -90,7 +92,8 @@ public class RealTest {
 
         public MyProcess(ProcessBuilder builder) {
             this.builder = builder;
-            builder.inheritIO();
+            builder.redirectError(ProcessBuilder.Redirect.PIPE);
+            builder.redirectInput(ProcessBuilder.Redirect.PIPE);
             Map<String, String> environment = builder.environment();
             setValueIgnoreCase(environment, "JAVA_HOME", System.getProperty("java.home"));
         }
@@ -109,6 +112,31 @@ public class RealTest {
                 StackTraceElement stackEl = stackTrace[1];
                 System.out.println(stackEl.toString()+" -> "+commandToString());
                 Process p = builder.start();
+                // Inheriting IO doesn't work as good as doing the below:
+                new Thread(() -> {
+                    try{
+                        try(BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()))){
+                            String line = null;
+                            while ((line = reader.readLine()) != null){
+                                System.out.println(line);
+                            }
+                        }
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }).start();
+                new Thread(() -> {
+                    try{
+                        try(BufferedReader reader = new BufferedReader(new InputStreamReader(p.getErrorStream()))){
+                            String line = null;
+                            while ((line = reader.readLine()) != null){
+                                System.err.println(line);
+                            }
+                        }
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }).start();
                 int result = p.waitFor();
                 if (result != 0)
                     throw new IOException("Process exited with " + result + " instead of 0! Something probably went wrong.");
