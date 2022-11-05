@@ -3,7 +3,8 @@ package io.github.fvarrui.javapackager.utils.updater;
 import io.github.fvarrui.javapackager.model.Platform;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TaskJavaUpdaterTest {
     @Test
@@ -14,6 +15,7 @@ class TaskJavaUpdaterTest {
         assertTrue(taskJavaUpdater.jdkPath.listFiles().length != 0);
         System.out.println(taskJavaUpdater.jdkPath);
     }
+
     @Test
     void testLinux() throws Exception {
         TaskJavaUpdater taskJavaUpdater = new TaskJavaUpdater(Platform.linux);
@@ -22,6 +24,7 @@ class TaskJavaUpdaterTest {
         assertTrue(taskJavaUpdater.jdkPath.listFiles().length != 0);
         System.out.println(taskJavaUpdater.jdkPath);
     }
+
     @Test
     void testMac() throws Exception {
         TaskJavaUpdater taskJavaUpdater = new TaskJavaUpdater(Platform.mac);

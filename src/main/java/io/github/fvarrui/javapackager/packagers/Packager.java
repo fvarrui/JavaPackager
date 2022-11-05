@@ -136,7 +136,7 @@ public abstract class Packager {
 			// Custom JDK path doesn't support native image
 			// since there is currently no check to see if the JDK is GraalVM
 			if(task.isNativeImage())
-				throw new Exception("Custom JDK does not support native-image! Select "+ Const.graalvm+" as JDK vendor to fix this.");
+				throw new Exception("Custom JDK does not support native-image! Set jdkPath to null instead of \""+task.getJdkPath()+"\" to fix this.");
 		}
 		if (!task.getJdkPath().exists()) {
 			throw new Exception("JDK path doesn't exist: " + task.getJdkPath());

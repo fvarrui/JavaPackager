@@ -36,6 +36,8 @@ javapackager {
 	generateInstaller = true
     vmArgs = ["-Djava.library.path=."]
     administratorRequired = false
+	nativeImage = true
+	sharedLibrary = true
 }
 
 task packageForWindows(type: GradlePackageTask, dependsOn: build) {

@@ -61,8 +61,8 @@ public class TaskJavaUpdater {
     public void execute(String javaVersion, String javaVendor) throws Exception {
         Objects.requireNonNull(javaVersion);
         Objects.requireNonNull(javaVendor);
+        Logger.info("Checking Java installation (looking for Java "+javaVersion+" by "+javaVendor+")...");
         if (javaVendor.equals(Const.graalvm)) {
-            Logger.info("Checking java installation...");
 
             String currentVersion = getBuildID(javaVersion, javaVendor);
             String osName = (platform.equals(Platform.linux) ? "linux" :
@@ -70,13 +70,18 @@ public class TaskJavaUpdater {
                             platform.equals(Platform.windows) ? "windows" :
                                     null);
             Objects.requireNonNull(osName);
-            Pattern pattern = Pattern.compile("(java)(\\d+)"); // matches java11 or java17 for example
+
             SearchResult result = Github.searchUpdate("graalvm/graalvm-ce-builds", currentVersion,
                     assetName -> assetName.contains(osName)
                             && assetName.contains("amd64")
-                            && new UtilsVersion().isLatestBiggerOrEqual(javaVersion, pattern.matcher(assetName).group())
                             && !assetName.endsWith(".sha256")
-                            && !assetName.endsWith(".jar"));
+                            && !assetName.endsWith(".jar")
+                            && assetName.contains("java")
+                            && new UtilsVersion().isLatestBiggerOrEqual(javaVersion,
+                            assetName.substring(assetName.indexOf("java"), assetName.indexOf("java") + 8)) // javaXXX
+                            //DOESNT WORK: Pattern pattern = Pattern.compile("(java\\d+)"); // matches java11 or java17 for example
+                            //&& new UtilsVersion().isLatestBiggerOrEqual(javaVersion, pattern.matcher(assetName).group())
+            );
             if (result.exception != null) throw result.exception;
             if (!result.isUpdateAvailable) {
                 Logger.info("Your Java installation is on the latest version!");
@@ -93,7 +98,6 @@ public class TaskJavaUpdater {
                     javaVersion, javaVendor);
 
         } else if (javaVendor.equals(Const.adoptium)) {
-            Logger.info("Checking java installation...");
 
             AdoptV3API.OperatingSystemArchitectureType osArchitectureType = AdoptV3API.OperatingSystemArchitectureType.X64;
             int currentBuildId = Integer.parseInt(getBuildID(javaVersion, javaVendor));
