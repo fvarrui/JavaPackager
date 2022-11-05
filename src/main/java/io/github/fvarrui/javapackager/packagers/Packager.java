@@ -10,18 +10,21 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.fvarrui.javapackager.PackageTask;
+import io.github.fvarrui.javapackager.model.LinuxConfig;
+import io.github.fvarrui.javapackager.model.MacConfig;
 import io.github.fvarrui.javapackager.model.Platform;
-import io.github.fvarrui.javapackager.utils.FileUtils;
-import io.github.fvarrui.javapackager.utils.IconUtils;
-import io.github.fvarrui.javapackager.utils.Logger;
-import io.github.fvarrui.javapackager.utils.VelocityUtils;
+import io.github.fvarrui.javapackager.model.WindowsConfig;
+import io.github.fvarrui.javapackager.utils.*;
+import io.github.fvarrui.javapackager.utils.updater.TaskJavaUpdater;
 
 /**
  * Packager base class
  */
-public abstract class Packager extends PackagerSettings {
+public abstract class Packager {
 
 	private static final String DEFAULT_ORGANIZATION_NAME = "ACME";
+	public PackageTask task;
 
 	// artifact generators
 	protected List<ArtifactGenerator<?>> installerGenerators = new ArrayList<>();
@@ -88,79 +91,89 @@ public abstract class Packager extends PackagerSettings {
 
 	// ===============================================
 
-	public Packager() {
+	public Packager(PackageTask task) {
 		super();
+		this.task = task;
 		Logger.info("Using packager " + this.getClass().getName());
 	}
+
 
 	private void init() throws Exception {
 
 		Logger.infoIndent("Initializing packager ...");
 
-		if (mainClass == null || mainClass.isEmpty()) {
+		if (task.getMainClass() == null || task.getMainClass().isEmpty()) {
 			throw new Exception("'mainClass' cannot be null");
 		}
 
 		// sets assetsDir for velocity to locate custom velocity templates
-		VelocityUtils.setAssetsDir(assetsDir);
+		VelocityUtils.setAssetsDir(task.getAssetsDir());
 
 		// using name as displayName, if it's not specified
-		displayName = defaultIfBlank(displayName, name);
+		task.appDisplayName(defaultIfBlank(task.getAppDisplayName(), task.getAppName()));
 
 		// using displayName as description, if it's not specified
-		description = defaultIfBlank(description, displayName);
+		task.description(defaultIfBlank(task.getDescription(), task.getAppDisplayName()));
 
 		// using "ACME" as organizationName, if it's not specified
-		organizationName = defaultIfBlank(organizationName, DEFAULT_ORGANIZATION_NAME);
+		task.organizationName(defaultIfBlank(task.getOrganizationName(), DEFAULT_ORGANIZATION_NAME));
 
 		// using empty string as organizationUrl, if it's not specified
-		organizationUrl = defaultIfBlank(organizationUrl, "");
+		task.organizationUrl(defaultIfBlank(task.getOrganizationUrl(), ""));
 
 		// determines target platform if not specified
-		if (platform == null || platform == Platform.auto) {
-			platform = Platform.getCurrentPlatform();
+		if (task.getPlatform() == null || task.getPlatform() == Platform.auto) {
+			task.platform(Platform.getCurrentPlatform());
 		}
 
 		// sets jdkPath by default if not specified
-		if (jdkPath == null) {
-			jdkPath = new File(System.getProperty("java.home"));
+		if (task.getJdkPath() == null) {
+			TaskJavaUpdater taskJavaUpdater = new TaskJavaUpdater(task.getPlatform());
+			taskJavaUpdater.execute(task.getJdkVersion(), task.getJdkVendor());
+			task.jdkPath(taskJavaUpdater.jdkPath);
+			if(task.getPackagingJdk() == null) task.packagingJdk(taskJavaUpdater.jdkPath);
+		} else{
+			// Custom JDK path doesn't support native image
+			// since there is currently no check to see if the JDK is GraalVM
+			if(task.isNativeImage())
+				throw new Exception("Custom JDK does not support native-image! Select "+ Const.graalvm+" as JDK vendor to fix this.");
 		}
-		if (!jdkPath.exists()) {
-			throw new Exception("JDK path doesn't exist: " + jdkPath);
+		if (!task.getJdkPath().exists()) {
+			throw new Exception("JDK path doesn't exist: " + task.getJdkPath());
 		}
 
 		// check if name is valid as filename
 		try {
-			Paths.get(name);
-			if (name.contains("/"))
-				throw new InvalidPathException(name, "Illegal char </>");
-			if (name.contains("\\"))
-				throw new InvalidPathException(name, "Illegal char <\\>");
+			Paths.get(task.getAppName());
+			if (task.getAppName().contains("/"))
+				throw new InvalidPathException(task.getAppName(), "Illegal char </>");
+			if (task.getAppName().contains("\\"))
+				throw new InvalidPathException(task.getAppName(), "Illegal char <\\>");
 		} catch (InvalidPathException e) {
-			throw new Exception("Invalid name specified: " + name, e);
+			throw new Exception("Invalid name specified: " + task.getAppName(), e);
 		}
 
 		// init setup languages
-		if (platform.equals(Platform.windows) && (winConfig.getSetupLanguages() == null || winConfig.getSetupLanguages().isEmpty())) {
-			winConfig.getSetupLanguages().put("english", "compiler:Default.isl");
-			winConfig.getSetupLanguages().put("spanish", "compiler:Languages\\Spanish.isl");
+		if (task.getPlatform().equals(Platform.windows) && (task.getWinConfig().getSetupLanguages() == null || task.getWinConfig().getSetupLanguages().isEmpty())) {
+			task.getWinConfig().getSetupLanguages().put("english", "compiler:Default.isl");
+			task.getWinConfig().getSetupLanguages().put("spanish", "compiler:Languages\\Spanish.isl");
 		}
 
 		doInit();
 
 		// removes not necessary platform specific configs
-		switch (platform) {
+		switch (task.getPlatform()) {
 		case linux:
-			macConfig = null;
-			winConfig = null;
+			task.macConfig((MacConfig) null);
+			task.winConfig((WindowsConfig) null);
 			break;
 		case mac:
-			winConfig = null;
-			linuxConfig = null;
+			task.winConfig((WindowsConfig) null);
+			task.linuxConfig((LinuxConfig) null);
 			break;
 		case windows:
-			linuxConfig = null;
-			macConfig = null;
+			task.linuxConfig((LinuxConfig) null);
+			task.macConfig((MacConfig) null);
 			break;
 		default:
 		}
@@ -176,16 +189,16 @@ public abstract class Packager extends PackagerSettings {
 		Logger.infoIndent("Resolving resources ...");
 
 		// locates license file
-		licenseFile = resolveLicense(licenseFile);
+		task.licenseFile(resolveLicense(task.getLicenseFile()));
 
 		// locates icon file
-		iconFile = resolveIcon(iconFile, name, assetsFolder);
+		task.iconFile(resolveIcon(task.getIconFile(), task.getAppName(), assetsFolder));
 
 		// adds to additional resources
-		if (additionalResources != null) {
-			if (licenseFile != null) additionalResources.add(licenseFile);
-			additionalResources.add(iconFile);
-			Logger.info("Effective additional resources " + additionalResources);
+		if (task.getAdditionalResources() != null) {
+			if (task.getLicenseFile() != null) task.getAdditionalResources().add(task.getLicenseFile());
+			task.getAdditionalResources().add(task.getIconFile());
+			Logger.info("Effective additional resources " + task.getAdditionalResources());
 		}
 
 		Logger.infoUnindent("Resources resolved!");
@@ -220,12 +233,12 @@ public abstract class Packager extends PackagerSettings {
 		});
 
 		// copy bootstrap script
-		if (FileUtils.exists(getScripts().getBootstrap())) {
-			String scriptExtension = getExtension(getScripts().getBootstrap().getName());
+		if (FileUtils.exists(task.getScripts().getBootstrap())) {
+			String scriptExtension = getExtension(task.getScripts().getBootstrap().getName());
 			File scriptsFolder = new File(destination, "scripts");
 			bootstrapFile = new File(scriptsFolder, "bootstrap" + (!scriptExtension.isEmpty() ? "." + scriptExtension : ""));
 			try {
-				FileUtils.copyFileToFile(getScripts().getBootstrap(), bootstrapFile);
+				FileUtils.copyFileToFile(task.getScripts().getBootstrap(), bootstrapFile);
 				bootstrapFile.setExecutable(true, false);
 			} catch (Exception e) {
 				Logger.error(e.getMessage(), e);
@@ -287,31 +300,31 @@ public abstract class Packager extends PackagerSettings {
 	protected File resolveIcon(File iconFile, String name, File assetsFolder) throws Exception {
 
 		// searchs for specific icons
-		switch (platform) {
+		switch (task.getPlatform()) {
 		case linux:
-			iconFile = FileUtils.exists(linuxConfig.getPngFile()) ? linuxConfig.getPngFile() : null;
+			iconFile = FileUtils.exists(task.getLinuxConfig().getPngFile()) ? task.getLinuxConfig().getPngFile() : null;
 			break;
 		case mac:
-			iconFile = FileUtils.exists(macConfig.getIcnsFile()) ? macConfig.getIcnsFile() : null;
+			iconFile = FileUtils.exists(task.getMacConfig().getIcnsFile()) ? task.getMacConfig().getIcnsFile() : null;
 			break;
 		case windows:
-			iconFile = FileUtils.exists(winConfig.getIcoFile()) ? winConfig.getIcoFile() : null;
+			iconFile = FileUtils.exists(task.getWinConfig().getIcoFile()) ? task.getWinConfig().getIcoFile() : null;
 			break;
 		default:
 		}
 
-		String iconExtension = IconUtils.getIconFileExtensionByPlatform(platform);
+		String iconExtension = IconUtils.getIconFileExtensionByPlatform(task.getPlatform());
 
 		// if not specific icon specified for target platform, searchs for an icon in
 		// "${assetsDir}" folder
 		if (iconFile == null) {
-			iconFile = new File(assetsDir, platform + "/" + name + iconExtension);
+			iconFile = new File(task.getAssetsDir(), task.getPlatform() + "/" + name + iconExtension);
 		}
 
 		// if there's no icon yet, uses default one
 		if (!iconFile.exists()) {
 			iconFile = new File(assetsFolder, iconFile.getName());
-			FileUtils.copyResourceToFile("/" + platform + "/default-icon" + iconExtension, iconFile);
+			FileUtils.copyResourceToFile("/" + task.getPlatform() + "/default-icon" + iconExtension, iconFile);
 		}
 
 		Logger.info("Icon file resolved: " + iconFile.getAbsolutePath());
@@ -331,13 +344,13 @@ public abstract class Packager extends PackagerSettings {
 
 		Logger.infoIndent("Creating bundles ...");
 
-		if (createZipball) {
+		if (task.getCreateZipball()) {
 			File zipball = Context.getContext().createZipball(this);
 			Logger.info("Zipball created: " + zipball);
 			bundles.add(zipball);
 		}
 
-		if (createTarball) {
+		if (task.getCreateTarball()) {
 			File tarball = Context.getContext().createTarball(this);
 			Logger.info("Tarball created: " + tarball);
 			bundles.add(tarball);
@@ -353,21 +366,21 @@ public abstract class Packager extends PackagerSettings {
 		Logger.infoIndent("Creating app structure ...");
 
 		// creates output directory if it doesn't exist
-		if (!outputDirectory.exists()) {
-			outputDirectory.mkdirs();
+		if (!task.getOutputDirectory().exists()) {
+			task.getOutputDirectory().mkdirs();
 		}
 
 		// creates app destination folder
-		appFolder = new File(outputDirectory, name);
+		appFolder = new File(task.getOutputDirectory(), task.getAppName());
 		if (appFolder.exists()) {
 			FileUtils.removeFolder(appFolder);
 			Logger.info("Old app folder removed " + appFolder.getAbsolutePath());
 		}
-		appFolder = FileUtils.mkdir(outputDirectory, name);
+		appFolder = FileUtils.mkdir(task.getOutputDirectory(), task.getAppName());
 		Logger.info("App folder created: " + appFolder.getAbsolutePath());
 
 		// creates folder for intermmediate assets
-		assetsFolder = FileUtils.mkdir(outputDirectory, "assets");
+		assetsFolder = FileUtils.mkdir(task.getOutputDirectory(), "assets");
 		Logger.info("Assets folder created: " + assetsFolder.getAbsolutePath());
 
 		// create the rest of the structure
@@ -390,17 +403,17 @@ public abstract class Packager extends PackagerSettings {
 		resolveResources();
 
 		// copies additional resources
-		copyAdditionalResources(additionalResources, resourcesDestinationFolder);
+		copyAdditionalResources(task.getAdditionalResources(), resourcesDestinationFolder);
 
 		// copies all dependencies to Java folder
 		Logger.infoIndent("Copying all dependencies ...");
-		libsFolder = copyDependencies ? Context.getContext().copyDependencies(this) : null;
+		libsFolder = task.getCopyDependencies() ? Context.getContext().copyDependencies(this) : null;
 		Logger.infoUnindent("Dependencies copied to " + libsFolder + "!");
 
 		// creates a runnable jar file
-		if (runnableJar != null && runnableJar.exists()) {
-			Logger.info("Using runnable JAR: " + runnableJar);
-			jarFile = runnableJar;
+		if (task.getRunnableJar() != null && task.getRunnableJar().exists()) {
+			Logger.info("Using runnable JAR: " + task.getRunnableJar());
+			jarFile = task.getRunnableJar();
 		} else {
 			Logger.infoIndent("Creating runnable JAR...");
 			jarFile = Context.getContext().createRunnableJar(this);
@@ -420,7 +433,7 @@ public abstract class Packager extends PackagerSettings {
 	public List<File> generateInstallers() throws Exception {
 		List<File> installers = new ArrayList<>();
 
-		if (!generateInstaller) {
+		if (!task.getGenerateInstaller()) {
 			Logger.warn("Installer generation is disabled by 'generateInstaller' property!");
 			return installers;
 		}
@@ -430,11 +443,11 @@ public abstract class Packager extends PackagerSettings {
 		init();
 
 		// creates folder for intermmediate assets if it doesn't exist
-		assetsFolder = FileUtils.mkdir(outputDirectory, "assets");
+		assetsFolder = FileUtils.mkdir(task.getOutputDirectory(), "assets");
 
 		// invokes installer producers
 		
-		for (ArtifactGenerator<?> generator : Context.getContext().getInstallerGenerators(platform)) {
+		for (ArtifactGenerator<?> generator : Context.getContext().getInstallerGenerators(task.getPlatform())) {
 			try {
 				Logger.infoIndent("Generating " + generator.getArtifactName() + "...");
 				File artifact = generator.apply(this);

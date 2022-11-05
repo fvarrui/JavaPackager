@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import io.github.fvarrui.javapackager.PackageTask;
 import org.apache.commons.lang3.StringUtils;
 
 import io.github.fvarrui.javapackager.model.Platform;
@@ -19,8 +20,8 @@ public class LinuxPackager extends Packager {
 	private File desktopFile;
 	private File mimeXmlFile = null;
 	
-	public LinuxPackager() {
-		super();
+	public LinuxPackager(PackageTask task) {
+		super(task);
 		installerGenerators.addAll(Context.getContext().getInstallerGenerators(Platform.linux));
 	}
 	
@@ -36,7 +37,7 @@ public class LinuxPackager extends Packager {
 	public void doInit() throws Exception {
 
 		// sets linux config default values
-		this.linuxConfig.setDefaults(this);
+		task.getLinuxConfig().setDefaults(this);
 		
 	}
 	
@@ -46,7 +47,7 @@ public class LinuxPackager extends Packager {
 		// sets common folders
 		this.executableDestinationFolder = appFolder;
 		this.jarFileDestinationFolder = appFolder;
-		this.jreDestinationFolder = new File(appFolder, jreDirectoryName);
+		this.jreDestinationFolder = new File(appFolder, task.getJreDirectoryName());
 		this.resourcesDestinationFolder = appFolder;
 	
 	}
@@ -60,25 +61,25 @@ public class LinuxPackager extends Packager {
 		Logger.infoIndent("Creating GNU/Linux executable ...");
 
 		// sets executable file
-		this.executable = new File(appFolder, name);
+		this.executable = new File(appFolder, task.getAppName());
 		
 		// process classpath
-		if (classpath != null) {
-			classpaths = Arrays.asList(classpath.split("[:;]"));
-			if (!isUseResourcesAsWorkingDir()) {
+		if (task.getClasspath() != null) {
+			classpaths = Arrays.asList(task.getClasspath().split("[:;]"));
+			if (!task.isUseResourcesAsWorkingDir()) {
 				classpaths = classpaths.stream().map(cp -> new File(cp).isAbsolute() ? cp : "$SCRIPTPATH/" + cp).collect(Collectors.toList());
 			}
-			classpath = StringUtils.join(classpaths, ":");
+			task.classpath(StringUtils.join(classpaths, ":"));
 		}
 		
 		// generates desktop file from velocity template
-		desktopFile = new File(assetsFolder, name + ".desktop");
+		desktopFile = new File(assetsFolder, task.getAppName() + ".desktop");
 		VelocityUtils.render("linux/desktop.vtl", desktopFile, this);
 		Logger.info("Rendering desktop file to " + desktopFile.getAbsolutePath());
 
 		// generates mime.xml file from velocity template
-		if (isThereFileAssociations()) {
-			mimeXmlFile = new File(assetsFolder, name + ".xml");
+		if (task.isThereFileAssociations()) {
+			mimeXmlFile = new File(assetsFolder, task.getAppName() + ".xml");
 			VelocityUtils.render("linux/mime.xml.vtl", mimeXmlFile, this);
 			Logger.info("Rendering mime.xml file to " + mimeXmlFile.getAbsolutePath());
 		}
@@ -89,7 +90,7 @@ public class LinuxPackager extends Packager {
 		Logger.info("Startup script generated in " + startupFile.getAbsolutePath());
 
 		// concats linux startup.sh script + generated jar in executable (binary)
-		if (getLinuxConfig().isWrapJar())
+		if (task.getLinuxConfig().isWrapJar())
 			FileUtils.concat(executable, startupFile, jarFile);
 		else {
 			FileUtils.copyFileToFile(startupFile, executable);

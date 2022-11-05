@@ -1,6 +1,6 @@
 .gradle
 **/build/
-**/.idea
+**/.idea/
 
 # Package Files #
 bin

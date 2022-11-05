@@ -47,9 +47,6 @@ PrivilegesRequiredOverridesAllowed=commandline
 #else 
 PrivilegesRequiredOverridesAllowed=commandline dialog
 #end
-#if ($info.winConfig.setupMutex)
-SetupMutex=SetupMutex{#SetupSetting("AppId")}
-#end
 LicenseFile={#MyAppLicense}
 SetupIconFile={#MyAppIcon}
 UninstallDisplayIcon={app}\{#MyAppExeName}
