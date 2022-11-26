@@ -2,8 +2,7 @@ package io.github.fvarrui.javapackager.utils;
 
 import static org.apache.commons.io.FileUtils.writeStringToFile;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -67,10 +66,22 @@ public class VelocityUtils {
 		try {
 			String data = render(templatePath, info);
 			data = data.replaceAll("\\r\\n", "\n").replaceAll("\\r", "\n");
-			writeStringToFile(output, data, "UTF-8");
+			writeString(output,data);
 		} catch (IOException e) {
 			throw new Exception(e.getMessage(), e);
 		}
+	}
+
+	public static void writeString(File output,String data) throws Exception{
+		if(!output.exists()){
+			output.getParentFile().mkdirs();
+		}
+		FileOutputStream fileOutputStream = new FileOutputStream(output);
+		// write utf-8 BOM
+		byte[] uft8bom={(byte)0xef,(byte)0xbb,(byte)0xbf};
+		fileOutputStream.write(uft8bom);
+		fileOutputStream.write(data.getBytes());
+		fileOutputStream.close();
 	}
 	
 }
