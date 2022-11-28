@@ -1,4 +1,4 @@
-# Mac OS X specific properties
+# MacOS specific properties
 
 ```xml
 <macConfig>
@@ -64,7 +64,7 @@
 | `developerId`      | :x:       |               | Signing identity.                                                                                                                                    |
 | `entitlements`     | :x:       |               | Path to [entitlements](https://developer.apple.com/documentation/bundleresources/entitlements) file.                                                 |
 | `codesignApp`      | :x:       | `true`        | If it is set to `false`, generated app will not be codesigned.                                                                                       |
-| `hardenedCodesign` | :x:       | `true`        | If it is set to `true`, enable [hardened runtime](https://developer.apple.com/documentation/security/hardened_runtime) if Mac OS version >= 10.13.6. |
+| `hardenedCodesign` | :x:       | `true`        | If it is set to `true`, enable [hardened runtime](https://developer.apple.com/documentation/security/hardened_runtime) if MacOS version >= 10.13.6. |
 | `macStartup`       | :x:       | `SCRIPT`      | App startup type, using a `SCRIPT` or a binary (compiled version of the script: `UNIVERSAL`, `X86_64` or `ARM64`).                                   |
 
 ## DMG generation properties

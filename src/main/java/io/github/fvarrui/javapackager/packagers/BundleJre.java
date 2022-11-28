@@ -145,13 +145,13 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 
 		}
 		
-		// removes jre/legal folder as it causes problems when codesigning from Mac OS
+		// removes jre/legal folder as it causes problems when codesigning from MacOS
 		File legalFolder = new File(destinationFolder, "legal");
 		if (legalFolder.exists()) {
 			FileUtils.removeFolder(legalFolder);
 		}
 
-		// removes jre/man folder as it causes problems when codesigning from Mac OS
+		// removes jre/man folder as it causes problems when codesigning from MacOS
 		File manFolder = new File(destinationFolder, "man");
 		if (manFolder.exists()) {
 			FileUtils.removeFolder(manFolder);

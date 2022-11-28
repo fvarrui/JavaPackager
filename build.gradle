@@ -29,7 +29,7 @@ gradlePlugin {
 pluginBundle {
 	website = 'http://github.com/fvarrui/JavaPackager'
 	vcsUrl = 'http://github.com/fvarrui/JavaPackager.git'
-	description = 'Packages Java applications as native Windows, Mac OS X or GNU/Linux executables and creates installers for them'
+	description = 'Packages Java applications as native Windows, MacOS or GNU/Linux executables and creates installers for them'
 	tags = ['java', 'packager', 'gradle-plugin', 'maven-plugin', 'native', 'installer', 'debian-packages', 'rpm-packages', 'dmg', 'maven', 'gradle', 'distribution', 'javapackager', 'linux-executables', 'deb', 'rpm', 'native-windows', 'java-applications', 'pkg', 'msi']
 	plugins {
 		javaPackagerPlugin {
@@ -71,7 +71,7 @@ dependencies {
 
 group = 'io.github.fvarrui'
 version = '1.6.7'
-description = 'Hybrid Maven/Gradle plugin to package Java applications as native Windows, Mac OS X or GNU/Linux executables and create installers for them'
+description = 'Hybrid Maven/Gradle plugin to package Java applications as native Windows, MacOS or GNU/Linux executables and create installers for them'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -238,4 +238,3 @@ task updateUniversalJavaApplicationStub(type : Download) {
 	dest file('src/main/resources/mac')
     overwrite true
 }
-
