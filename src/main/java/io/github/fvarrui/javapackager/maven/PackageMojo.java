@@ -194,7 +194,7 @@ public class PackageMojo extends AbstractMojo {
 	private Platform platform;
 
 	/**
-	 * Defines PATH environment variable in GNU/Linux and Mac OS X startup scripts.
+	 * Defines PATH environment variable in GNU/Linux and MacOS startup scripts.
 	 */
 	@Parameter(property = "envPath", required = false)
 	private String envPath;
@@ -232,7 +232,7 @@ public class PackageMojo extends AbstractMojo {
 	private LinuxConfig linuxConfig;
 	
 	/**
-	 * Mac OS X specific config
+	 * MacOS specific config
 	 */
 	@Parameter(property = "macConfig", required = false)
 	private MacConfig macConfig;

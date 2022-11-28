@@ -19,7 +19,7 @@ import io.github.fvarrui.javapackager.utils.VersionUtils;
 import io.github.fvarrui.javapackager.utils.XMLUtils;
 
 /**
- * Packager for Mac OS X
+ * Packager for MacOS
  */
 public class MacPackager extends Packager {
 
@@ -38,12 +38,12 @@ public class MacPackager extends Packager {
 
 		this.macConfig.setDefaults(this);
 
-		// FIX useResourcesAsWorkingDir=false doesn't work fine on Mac OS (option
+		// FIX useResourcesAsWorkingDir=false doesn't work fine on MacOS (option
 		// disabled)
 		if (!this.isUseResourcesAsWorkingDir()) {
 			this.useResourcesAsWorkingDir = true;
 			Logger.warn(
-					"'useResourcesAsWorkingDir' property disabled on Mac OS (useResourcesAsWorkingDir is always true)");
+					"'useResourcesAsWorkingDir' property disabled on MacOS (useResourcesAsWorkingDir is always true)");
 		}
 
 	}
@@ -204,9 +204,9 @@ public class MacPackager extends Packager {
 		List<String> flags = new ArrayList<>();
 		if (macConfig.isHardenedCodesign()) {
 			if (VersionUtils.compareVersions("10.13.6", SystemUtils.OS_VERSION) >= 0) {
-				flags.add("runtime"); // enable hardened runtime if Mac OS version >= 10.13.6
+				flags.add("runtime"); // enable hardened runtime if MacOS version >= 10.13.6
 			} else {
-				Logger.warn("Mac OS version detected: " + SystemUtils.OS_VERSION + " ... hardened runtime disabled!");
+				Logger.warn("MacOS version detected: " + SystemUtils.OS_VERSION + " ... hardened runtime disabled!");
 			}
 		}
 		

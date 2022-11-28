@@ -314,8 +314,8 @@ public class PackagerSettings {
 	}
 
 	/**
-	 * Get Mac OS config
-	 * @return Mac OS config
+	 * Get MacOS config
+	 * @return MacOS config
 	 */
 	public MacConfig getMacConfig() {
 		return macConfig;
@@ -722,8 +722,8 @@ public class PackagerSettings {
 	}
 
 	/**
-	 * Set Mac OS specific configuration
-	 * @param macConfig Mac OS specific configuration
+	 * Set MacOS specific configuration
+	 * @param macConfig MacOS specific configuration
 	 * @return Packager settings
 	 */
 	public PackagerSettings macConfig(MacConfig macConfig) {
