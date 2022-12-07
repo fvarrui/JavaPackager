@@ -19,9 +19,8 @@ public class CharSetUtil {
                 case "65001": return Charset.forName("UTF-8");
             }
         }catch (Exception e){
-            return Charset.defaultCharset();
         }
-        return Charset.forName("UTF-8");
+        return Charset.defaultCharset();
     }
 
     private static String find(String pattern,String data){
