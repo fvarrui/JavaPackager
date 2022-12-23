@@ -3,6 +3,7 @@ package io.github.fvarrui.javapackager.utils;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,8 +16,13 @@ public class CharSetUtil {
             String res = br.readLine();
             String code = find("\\d+",res);
             switch (code){
-                case "936": return Charset.forName("GBK");
-                case "65001": return Charset.forName("UTF-8");
+                case "037": return Charset.forName("IBM037");
+                case "936": return Charset.forName("gb2312");
+                case "950": return Charset.forName("big5");
+                case "1145": return Charset.forName("IBM01145");
+                case "1200": return StandardCharsets.UTF_16;
+                case "51936": return Charset.forName("EUC-CN");
+                case "65001": return StandardCharsets.UTF_8;
             }
         }catch (Exception e){
         }
