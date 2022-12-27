@@ -111,7 +111,7 @@ public class GradleContext extends Context<Logger> {
 	@Override
 	public File createWindowsExe(WindowsPackager packager) throws Exception {
 		AbstractCreateWindowsExe createWindowsExe;
-		switch (packager.getWinConfig().getExeCreationTool()) {
+		switch (packager.task.getWinConfig().getExeCreationTool()) {
 			case launch4j: createWindowsExe = new CreateWindowsExeLaunch4j(); break;
 			case winrun4j: createWindowsExe = new CreateWindowsExeWinRun4j(); break;
 			case why: createWindowsExe = new CreateWindowsExeWhy(); break;

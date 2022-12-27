@@ -22,19 +22,19 @@ public class CreateZipball extends ArtifactGenerator<Packager> {
 	
 	@Override
 	public boolean skip(Packager packager) {
-		return !packager.getCreateZipball();
+		return !packager.task.getCreateZipball();
 	}
 	
 	@Override
 	protected File doApply(Packager packager) throws Exception {
 		
-		String name = packager.getName();
-		String version = packager.getVersion();
-		Platform platform = packager.getPlatform();
-		File outputDirectory = packager.getOutputDirectory();
+		String name = packager.task.getAppName();
+		String version = packager.task.getVersion();
+		Platform platform = packager.task.getPlatform();
+		File outputDirectory = packager.task.getOutputDirectory();
 		File appFolder = packager.getAppFolder();
 		File executable = packager.getExecutable();
-		String jreDirectoryName = packager.getJreDirectoryName();
+		String jreDirectoryName = packager.task.getJreDirectoryName();
 		
 		File zipFile = new File(outputDirectory, name + "-" + version + "-" + platform + ".zip");
 

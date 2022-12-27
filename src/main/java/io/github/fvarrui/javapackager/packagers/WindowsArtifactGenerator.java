@@ -19,23 +19,23 @@ public abstract class WindowsArtifactGenerator extends ArtifactGenerator<Windows
 	
 	protected void sign(File file, WindowsPackager packager) {
 		
-		if (packager.getWinConfig().getSigning() == null) {
+		if (packager.task.getWinConfig().getSigning() == null) {
 			return;
 		}
 
 		Logger.infoIndent("Signing " + file);
 
-		File keystore = packager.getWinConfig().getSigning().getKeystore();
-		File certfile = packager.getWinConfig().getSigning().getCertfile();
-		File keyfile = packager.getWinConfig().getSigning().getKeyfile();
-		String alg = packager.getWinConfig().getSigning().getAlg();
-		String storetype = packager.getWinConfig().getSigning().getStoretype();
-		String storepass = packager.getWinConfig().getSigning().getStorepass();
-		String alias = packager.getWinConfig().getSigning().getAlias();
-		String keypass = packager.getWinConfig().getSigning().getKeypass();
+		File keystore = packager.task.getWinConfig().getSigning().getKeystore();
+		File certfile = packager.task.getWinConfig().getSigning().getCertfile();
+		File keyfile = packager.task.getWinConfig().getSigning().getKeyfile();
+		String alg = packager.task.getWinConfig().getSigning().getAlg();
+		String storetype = packager.task.getWinConfig().getSigning().getStoretype();
+		String storepass = packager.task.getWinConfig().getSigning().getStorepass();
+		String alias = packager.task.getWinConfig().getSigning().getAlias();
+		String keypass = packager.task.getWinConfig().getSigning().getKeypass();
 		String tsa = TIMESTAMPING_AUTHORITY;
-		String displayName = packager.getDisplayName();
-		String url = packager.getUrl();
+		String displayName = packager.task.getAppDisplayName();
+		String url = packager.task.getUrl();
 
 		try {
 

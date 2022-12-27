@@ -22,7 +22,7 @@ public class CopyDependencies extends ArtifactGenerator<Packager> {
 	
 	@Override
 	public boolean skip(Packager packager) {
-		return !packager.getCopyDependencies();
+		return !packager.task.getCopyDependencies();
 	}
 	
 	@Override

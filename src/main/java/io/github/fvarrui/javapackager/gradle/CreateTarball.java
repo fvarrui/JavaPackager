@@ -23,19 +23,19 @@ public class CreateTarball extends ArtifactGenerator<Packager> {
 	
 	@Override
 	public boolean skip(Packager packager) {
-		return !packager.getCreateTarball();
+		return !packager.task.getCreateTarball();
 	}
 	
 	@Override
 	protected File doApply(Packager packager) throws Exception {
 		
-		String name = packager.getName();
-		String version = packager.getVersion();
-		Platform platform = packager.getPlatform();
-		File outputDirectory = packager.getOutputDirectory();
+		String name = packager.task.getAppName();
+		String version = packager.task.getVersion();
+		Platform platform = packager.task.getPlatform();
+		File outputDirectory = packager.task.getOutputDirectory();
 		File appFolder = packager.getAppFolder();
 		File executable = packager.getExecutable();
-		String jreDirectoryName = packager.getJreDirectoryName();
+		String jreDirectoryName = packager.task.getJreDirectoryName();
 		
 		File tarFile = new File(outputDirectory, name + "-" + version + "-" + platform + ".tar.gz");
 
