@@ -2,6 +2,7 @@ package io.github.fvarrui.javapackager.gradle;
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import io.github.fvarrui.javapackager.packagers.Context;
+import io.github.fvarrui.javapackager.utils.Logger;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 
@@ -18,7 +19,6 @@ public class PackagePlugin implements Plugin<Project> {
 
 	@Override
 	public void apply(Project project) {
-
 		Context.setContext(new GradleContext(project));
 		
 		project.getPluginManager().apply("java");

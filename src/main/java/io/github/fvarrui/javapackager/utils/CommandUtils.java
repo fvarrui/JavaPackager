@@ -1,9 +1,6 @@
 package io.github.fvarrui.javapackager.utils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.plexus.util.cli.CommandLineException;
@@ -47,7 +44,7 @@ public class CommandUtils {
 
 		Process process = command.execute();
 
-		BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream()));
+		BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream(), CharSetUtil.getCommandLineChartSet()));
 		BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 		while (process.isAlive() || output.ready() || error.ready()) {
 			if (output.ready()) {
