@@ -244,6 +244,9 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(defaultValue = "false", property = "createTarball", required = false)
 	private Boolean createTarball;
 
+	@Parameter(property = "tarballName", required = false)
+	private String tarballName;
+
 	/**
 	 * Bundles app in a zipball file
 	 */
@@ -340,6 +343,7 @@ public class PackageMojo extends AbstractMojo {
 						.classpath(classpath)
 						.copyDependencies(copyDependencies)
 						.createTarball(createTarball)
+						.tarballName(tarballName)
 						.createZipball(createZipball)
 						.customizedJre(customizedJre)
 						.description(description)

@@ -47,7 +47,7 @@ public class CreateTarball extends ArtifactGenerator<Packager> {
 			VelocityUtils.render(platform + "/assembly.xml.vtl", assemblyFile, packager);
 			
 			// tgz file name
-			String finalName = name + "-" + version + "-" + platform;
+			String finalName = packager.getTarballName() != null ? packager.getTarballName() : name + "-" + version + "-" + platform;
 			String format = "tar.gz";
 			
 			// invokes plugin to assemble tarball

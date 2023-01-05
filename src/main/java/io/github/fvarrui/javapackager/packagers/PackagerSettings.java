@@ -47,6 +47,7 @@ public class PackagerSettings {
 	protected LinuxConfig linuxConfig;
 	protected MacConfig macConfig;
 	protected Boolean createTarball;
+	protected String tarballName;
 	protected Boolean createZipball;
 	protected Map<String, String> extra;
 	protected boolean useResourcesAsWorkingDir;
@@ -734,6 +735,15 @@ public class PackagerSettings {
 	public PackagerSettings createTarball(Boolean createTarball) {
 		this.createTarball = createTarball;
 		return this;
+	}
+
+	public PackagerSettings tarballName(String tarballName) {
+		this.tarballName = tarballName;
+		return this;
+	}
+
+	public String getTarballName() {
+		return tarballName;
 	}
 
 	/**
