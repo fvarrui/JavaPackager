@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 
 import io.github.fvarrui.javapackager.model.WindowsConfig;
+import io.github.fvarrui.javapackager.model.WindowsExeCreationTool;
 import io.github.fvarrui.javapackager.packagers.AbstractCreateWindowsExe;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.WindowsPackager;
@@ -29,7 +30,7 @@ import io.github.fvarrui.javapackager.utils.FileUtils;
 public class CreateWindowsExeLaunch4j extends AbstractCreateWindowsExe {
 	
 	public CreateWindowsExeLaunch4j() {
-		super("launch4j");
+		super(WindowsExeCreationTool.launch4j);
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package io.github.fvarrui.javapackager.packagers;
 import java.io.File;
 
 import io.github.fvarrui.javapackager.model.Platform;
+import io.github.fvarrui.javapackager.model.WindowsExeCreationTool;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
@@ -14,9 +15,9 @@ public abstract class AbstractCreateWindowsExe extends WindowsArtifactGenerator 
 	private File genericJar;
 	private File genericExe;
 	
-	public AbstractCreateWindowsExe(String outputFolderName) {
-		super("Windows EXE");
-		this.outputFolder = new File(Context.getContext().getBuildDir(), outputFolderName);
+	public AbstractCreateWindowsExe(WindowsExeCreationTool tool) {
+		super(tool.toString());
+		this.outputFolder = new File(Context.getContext().getBuildDir(), tool.toString());
 	}
 
 	public File getGenericManifest() {
