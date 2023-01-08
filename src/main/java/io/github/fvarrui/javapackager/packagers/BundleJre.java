@@ -106,12 +106,12 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 			
 			Logger.info("Creating customized JRE ...");
 			
-			// tests if specified JDK is for the same platform than target platform
+			// tests if specified JDK is for the same platform as target platform
 			if (!JDKUtils.isValidJDK(platform, jdkPath)) {
 				throw new Exception("Invalid JDK for platform '" + platform + "': " + jdkPath);
 			}
 			
-			String modules = getRequiredModules(libsFolder, customizedJre, jarFile, requiredModules, additionalModules, additionalModulePaths);
+			String modules = getRequiredModules(packager, libsFolder, customizedJre, jarFile, requiredModules, additionalModules, additionalModulePaths);
 
 			Logger.info("Creating JRE with next modules included: " + modules);
 
@@ -182,11 +182,11 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 	 * @return string containing a comma separated list with all needed modules
 	 * @throws Exception Process failed
 	 */
-	protected String getRequiredModules(File libsFolder, boolean customizedJre, File jarFile, List<String> defaultModules, List<String> additionalModules, List<File> additionalModulePaths) throws Exception {
+	protected String getRequiredModules(Packager packager, File libsFolder, boolean customizedJre, File jarFile, List<String> defaultModules, List<String> additionalModules, List<File> additionalModulePaths) throws Exception {
 		
 		Logger.infoIndent("Getting required modules ... ");
 		
-		File jdeps = new File(System.getProperty("java.home"), "/bin/jdeps");
+		File jdeps = new File(packager.getPackagingJdk(), "/bin/jdeps");
 
 		File jarLibs = null;
 		if (libsFolder != null && libsFolder.exists()) 
