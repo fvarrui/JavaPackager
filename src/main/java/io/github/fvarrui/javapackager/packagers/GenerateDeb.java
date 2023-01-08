@@ -147,13 +147,13 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 			javaSpawnHelperMapper.setPrefix("/opt/" + name + "/" + jreDirectoryName + "/lib");
 
 			File jSpawnHelperFile = new File(appFolder, jreDirectoryName + "/lib/jspawnhelper");
-
-			Data javaSpawnHelperData = new Data();
-			javaSpawnHelperData.setType("file");
-			javaSpawnHelperData.setSrc(jSpawnHelperFile);
-			javaSpawnHelperData.addMapper(javaSpawnHelperMapper);
-
-			dataProducers.add(javaSpawnHelperData);
+			if (jSpawnHelperFile.exists()) {
+				Data javaSpawnHelperData = new Data();
+				javaSpawnHelperData.setType("file");
+				javaSpawnHelperData.setSrc(jSpawnHelperFile);
+				javaSpawnHelperData.addMapper(javaSpawnHelperMapper);
+				dataProducers.add(javaSpawnHelperData);
+			}
 			
 		}
 		

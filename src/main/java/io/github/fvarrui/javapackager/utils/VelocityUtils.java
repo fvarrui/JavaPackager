@@ -11,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
 import org.apache.velocity.util.StringBuilderWriter;
@@ -31,14 +30,14 @@ public class VelocityUtils {
 			velocityEngine = new VelocityEngine();
 			
 			// specify resource loaders to use
-			velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "file,class");
+			velocityEngine.setProperty("resource.loaders", "file,class");
 			
 			// for the loader 'file', set the FileResourceLoader as the class to use and use 'assets' directory for templates
-			velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
-			velocityEngine.setProperty("file.resource.loader.path", assetsDir.getAbsolutePath());
+			velocityEngine.setProperty("resource.loader.file.class", FileResourceLoader.class.getName());
+			velocityEngine.setProperty("resource.loader.file.path", assetsDir.getAbsolutePath());
 			
 			// for the loader 'class', set the ClasspathResourceLoader as the class to use
-			velocityEngine.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
+			velocityEngine.setProperty("resource.loader.class.class", ClasspathResourceLoader.class.getName());
 			
 			velocityEngine.init();
 			
