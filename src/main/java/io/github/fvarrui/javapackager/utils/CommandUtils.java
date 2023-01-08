@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.plexus.util.cli.CommandLineException;
@@ -27,6 +28,10 @@ public class CommandUtils {
 
 	public static String execute(String executable, Object... arguments) throws IOException, CommandLineException {
 		return executeOnDirectory(new File("."), executable, arguments);
+	}
+	
+	public static String execute(String executable, List<Object> arguments) throws IOException, CommandLineException {
+		return executeOnDirectory(new File("."), executable, arguments.toArray(new Object[0]));
 	}
 	
 	public static ExecutionResult executeWithResult(File workingDirectory, String executable, Object... arguments) throws IOException, CommandLineException {

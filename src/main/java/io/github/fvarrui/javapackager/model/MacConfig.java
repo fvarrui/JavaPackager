@@ -265,8 +265,10 @@ public class MacConfig implements Serializable {
 				+ ", appsLinkIconX=" + appsLinkIconX + ", appsLinkIconY=" + appsLinkIconY + ", volumeIcon=" + volumeIcon
 				+ ", volumeName=" + volumeName + ", generateDmg=" + generateDmg + ", generatePkg=" + generatePkg
 				+ ", relocateJar=" + relocateJar + ", appId=" + appId + ", developerId=" + developerId
-				+ ", entitlements=" + entitlements + ", codesignApp=" + codesignApp + ", infoPlist=" + infoPlist
-				+ ", hardenedCodesign=" + hardenedCodesign + ", macStartup=" + macStartup + "]";
+				+ ", entitlements=" + entitlements + ", provisionProfile=" + provisionProfile + ", customLauncher="
+				+ customLauncher + ", customInfoPlist=" + customInfoPlist + ", codesignApp=" + codesignApp
+				+ ", infoPlist=" + infoPlist + ", hardenedCodesign=" + hardenedCodesign + ", macStartup=" + macStartup
+				+ "]";
 	}
 
 	/**

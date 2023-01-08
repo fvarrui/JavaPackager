@@ -214,6 +214,7 @@ public class MacPackager extends Packager {
 
 	private void manualDeepSign(File appFolder, String developerCertificateName, File entitlements) throws IOException, CommandLineException {
 
+		// codesign each file in app
 		List<Object> findCommandArgs = new ArrayList<>();
 		findCommandArgs.add(appFolder);
 		findCommandArgs.add("-depth"); // execute 'codesign' in 'reverse order', i.e., deepest files first
@@ -222,42 +223,33 @@ public class MacPackager extends Packager {
 		findCommandArgs.add("-exec");
 		findCommandArgs.add("codesign");
 		findCommandArgs.add("-f");
-
 		addHardenedCodesign(findCommandArgs);
-
 		findCommandArgs.add("-s");
 		findCommandArgs.add(developerCertificateName);
 		findCommandArgs.add("--entitlements");
 		findCommandArgs.add(entitlements);
 		findCommandArgs.add("{}");
 		findCommandArgs.add("\\;");
-
-		CommandUtils.execute("find", findCommandArgs.toArray(new Object[0]));
+		CommandUtils.execute("find", findCommandArgs);
 
 		// make sure the executable is signed last
-		List<Object> codeSignExe = new ArrayList<>();
-		codeSignExe.add("-f");
-		addHardenedCodesign(codeSignExe);
-		codeSignExe.add("--entitlements");
-		codeSignExe.add(entitlements);
-		codeSignExe.add("-s");
-		codeSignExe.add(developerCertificateName);
-		codeSignExe.add(this.executable);
-
-		CommandUtils.execute("codesign", codeSignExe.toArray(new Object[0]));
+		codesign(entitlements, developerCertificateName, this.executable);
 
 		// finally, sign the top level directory
-		List<Object> codeSignTopLevelDir = new ArrayList<>();
-		codeSignTopLevelDir.add("-f");
-		addHardenedCodesign(codeSignTopLevelDir);
-		codeSignTopLevelDir.add("--entitlements");
-		codeSignTopLevelDir.add(entitlements);
-		codeSignTopLevelDir.add("-s");
-		codeSignTopLevelDir.add(developerCertificateName);
-		codeSignTopLevelDir.add(appFolder);
+		codesign(entitlements, developerCertificateName, appFolder);
 
-		CommandUtils.execute("codesign", codeSignTopLevelDir.toArray(new Object[0]));
-
+	}
+	
+	private void codesign(File entitlements, String developerCertificateName, File file) throws IOException, CommandLineException {
+		List<Object> arguments = new ArrayList<>();
+		arguments.add("-f");
+		addHardenedCodesign(arguments);
+		arguments.add("--entitlements");
+		arguments.add(entitlements);
+		arguments.add("-s");
+		arguments.add(developerCertificateName);
+		arguments.add(appFolder);
+		CommandUtils.execute("codesign", arguments);
 	}
 
 	private void addHardenedCodesign(Collection<Object> args){
