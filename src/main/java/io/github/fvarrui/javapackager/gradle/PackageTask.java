@@ -14,6 +14,7 @@ import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 
 import groovy.lang.Closure;
+import io.github.fvarrui.javapackager.model.Arch;
 import io.github.fvarrui.javapackager.model.FileAssociation;
 import io.github.fvarrui.javapackager.model.LinuxConfig;
 import io.github.fvarrui.javapackager.model.MacConfig;
@@ -559,6 +560,18 @@ public class PackageTask extends AbstractPackageTask {
         getProject().configure(scripts, closure);
         return scripts;
     }
+    
+	@Input
+	@Optional	
+	private Arch arch;
+
+	public Arch getArch() {
+		return arch;
+	}
+
+	public void setArch(Arch arch) {
+		this.arch = arch;
+	}
 
 	// ===============
 	// create packager
@@ -577,6 +590,7 @@ public class PackageTask extends AbstractPackageTask {
 					.additionalModulePaths(defaultIfNull(additionalModulePaths, extension.getAdditionalModulePaths()))
 					.additionalResources(defaultIfNull(additionalResources, extension.getAdditionalResources()))
 					.administratorRequired(defaultIfNull(administratorRequired, extension.getAdministratorRequired()))
+					.arch(defaultIfNull(arch, extension.getArch()))
 					.assetsDir(defaultIfNull(assetsDir, extension.getAssetsDir()))
 					.bundleJre(defaultIfNull(bundleJre, extension.getBundleJre()))
 					.classpath(defaultIfNull(classpath, extension.getClasspath()))

@@ -42,6 +42,7 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 		File executable = packager.getExecutable();
 		File assetsFolder = packager.getAssetsFolder();
 		String jreDirectoryName = packager.getJreDirectoryName();
+		Architecture arch = Architecture.valueOf(packager.getArch().getRpm());
 		
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");
@@ -53,8 +54,7 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 
 		Builder builder = new Builder();
 		builder.setType(RpmType.BINARY);
-		Architecture archForRpm = packager.getArchForRpm();
-		builder.setPlatform(archForRpm, Os.LINUX);
+		builder.setPlatform(arch, Os.LINUX);
 		builder.setPackage(name, version, "1");
 		builder.setPackager(organizationName);
 		builder.setDescription(description);
@@ -77,8 +77,7 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 
 		builder.build(outputDirectory);
 
-		String arch = archForRpm.name().toLowerCase();
-		String suffix = "-1."+arch+".rpm";
+		String suffix = "-1." + arch.name().toLowerCase() + ".rpm";
 		File originalRpm = new File(outputDirectory, name + "-" + version + suffix);
 		File rpm = null;
 		if (originalRpm.exists()) {

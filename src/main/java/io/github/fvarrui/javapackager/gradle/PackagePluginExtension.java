@@ -7,6 +7,7 @@ import java.util.HashMap;
 import org.gradle.api.Project;
 
 import groovy.lang.Closure;
+import io.github.fvarrui.javapackager.model.Arch;
 import io.github.fvarrui.javapackager.model.LinuxConfig;
 import io.github.fvarrui.javapackager.model.MacConfig;
 import io.github.fvarrui.javapackager.model.Manifest;
@@ -52,6 +53,7 @@ public class PackagePluginExtension extends PackagerSettings {
 		this.outputDirectory = project.getBuildDir();
 		this.scripts = new Scripts();
 		this.forceInstaller = false;
+		this.arch = Arch.x64;
 	}
 	
     public LinuxConfig linuxConfig(Closure<LinuxConfig> closure) {

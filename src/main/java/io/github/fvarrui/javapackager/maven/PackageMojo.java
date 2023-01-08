@@ -309,8 +309,11 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(property = "scripts", required = false)
 	private Scripts scripts;
 
+	/**
+	 * Architecture
+	 */
 	@Parameter(property = "arch", required = false, defaultValue="x64")
-	private JavaArch arch;
+	private Arch arch;
 
 	public void execute() throws MojoExecutionException {
 		
@@ -330,6 +333,7 @@ public class PackageMojo extends AbstractMojo {
 						.additionalModulePaths(additionalModulePaths)
 						.additionalResources(additionalResources)
 						.administratorRequired(administratorRequired)
+						.arch(arch)
 						.assetsDir(assetsDir)
 						.bundleJre(bundleJre)
 						.classpath(classpath)
@@ -367,8 +371,7 @@ public class PackageMojo extends AbstractMojo {
 						.url(url)
 						.version(version)
 						.vmArgs(vmArgs)
-						.winConfig(winConfig)
-						.arch(arch);
+						.winConfig(winConfig);
 			
 			// generate app, installers and bundles
 			packager.createApp();

@@ -58,8 +58,8 @@ public class PackagerSettings {
 	protected List<FileAssociation> fileAssociations;
 	protected File packagingJdk;
 	protected Scripts scripts;
-
-	private JavaArch arch;
+	protected Arch arch;
+	
 	/**
 	 * Get packaging JDK
 	 * @return Packaging JDK
@@ -856,21 +856,13 @@ public class PackagerSettings {
 				separator);
 	}
 
-	public JavaArch getArch() {
+	public Arch getArch() {
 		return arch;
 	}
 
-	public PackagerSettings arch(JavaArch arch) {
+	public PackagerSettings arch(Arch arch) {
 		this.arch = arch;
 		return this;
-	}
-
-	public String getArchForDeb() {
-		return arch.getDeb();
-	}
-
-	public Architecture getArchForRpm() {
-		return Architecture.valueOf(arch.getRpm());
 	}
 
 	@Override
