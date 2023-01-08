@@ -44,7 +44,6 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 		List<String> requiredModules = packager.getModules();
 		List<String> additionalModules = packager.getAdditionalModules();
 		List<File> additionalModulePaths = packager.getAdditionalModulePaths();
-		
 		File currentJdk = packager.getPackagingJdk();
 		
 		Logger.infoIndent("Bundling JRE ... with " + currentJdk);
@@ -111,7 +110,7 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 				throw new Exception("Invalid JDK for platform '" + platform + "': " + jdkPath);
 			}
 			
-			String modules = getRequiredModules(packager, libsFolder, customizedJre, jarFile, requiredModules, additionalModules, additionalModulePaths);
+			String modules = getRequiredModules(currentJdk, libsFolder, customizedJre, jarFile, requiredModules, additionalModules, additionalModulePaths);
 
 			Logger.info("Creating JRE with next modules included: " + modules);
 
@@ -124,7 +123,7 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 	
 			if (destinationFolder.exists()) FileUtils.removeFolder(destinationFolder);
 
-			String jlink = new File(currentJdk, "/bin/jlink").getAbsolutePath();
+			File jlink = new File(currentJdk, "/bin/jlink");
 			
 			// generates customized jre using modules
 			CommandUtils.execute(
@@ -182,11 +181,11 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 	 * @return string containing a comma separated list with all needed modules
 	 * @throws Exception Process failed
 	 */
-	protected String getRequiredModules(Packager packager, File libsFolder, boolean customizedJre, File jarFile, List<String> defaultModules, List<String> additionalModules, List<File> additionalModulePaths) throws Exception {
+	protected String getRequiredModules(File packagingJdk, File libsFolder, boolean customizedJre, File jarFile, List<String> defaultModules, List<String> additionalModules, List<File> additionalModulePaths) throws Exception {
 		
 		Logger.infoIndent("Getting required modules ... ");
 		
-		File jdeps = new File(packager.getPackagingJdk(), "/bin/jdeps");
+		File jdeps = new File(packagingJdk, "/bin/jdeps");
 
 		File jarLibs = null;
 		if (libsFolder != null && libsFolder.exists()) 
