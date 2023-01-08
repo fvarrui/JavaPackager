@@ -6,15 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import io.github.fvarrui.javapackager.model.*;
 import org.apache.commons.lang3.StringUtils;
-
-import io.github.fvarrui.javapackager.model.FileAssociation;
-import io.github.fvarrui.javapackager.model.LinuxConfig;
-import io.github.fvarrui.javapackager.model.MacConfig;
-import io.github.fvarrui.javapackager.model.Manifest;
-import io.github.fvarrui.javapackager.model.Platform;
-import io.github.fvarrui.javapackager.model.Scripts;
-import io.github.fvarrui.javapackager.model.WindowsConfig;
+import org.redline_rpm.header.Architecture;
 
 /**
  * Common packagers' settings
@@ -64,7 +58,8 @@ public class PackagerSettings {
 	protected List<FileAssociation> fileAssociations;
 	protected File packagingJdk;
 	protected Scripts scripts;
-
+	protected Arch arch;
+	
 	/**
 	 * Get packaging JDK
 	 * @return Packaging JDK
@@ -857,16 +852,24 @@ public class PackagerSettings {
 	 * @return Mime type list string
 	 */
 	public String getMimeTypesListAsString(String separator) {
-		return StringUtils.join(fileAssociations.stream().map(fa -> fa.getMimeType()).collect(Collectors.toList()),
-				separator);
+		return StringUtils.join(fileAssociations.stream().map(fa -> fa.getMimeType()).collect(Collectors.toList()), separator);
+	}
+
+	public Arch getArch() {
+		return arch;
+	}
+
+	public PackagerSettings arch(Arch arch) {
+		this.arch = arch;
+		return this;
 	}
 
 	@Override
 	public String toString() {
-		return "PackagerSettings [outputDirectory=" + outputDirectory + ", licenseFile=" + licenseFile + ", iconFile="
-				+ iconFile + ", generateInstaller=" + generateInstaller + ", forceInstaller=" + forceInstaller
-				+ ", mainClass=" + mainClass + ", name=" + name + ", displayName=" + displayName + ", version="
-				+ version + ", description=" + description + ", url=" + url + ", administratorRequired="
+		return "PackagerSettings [" + "outputDirectory=" + outputDirectory + ", " + "licenseFile=" + licenseFile + ", "
+				+ "iconFile=" + iconFile + ", " + "generateInstaller=" + generateInstaller + ", " + "forceInstaller="
+				+ forceInstaller + ", " + "mainClass=" + mainClass + ", name=" + name + ", displayName=" + displayName
+				+ ", version=" + version + ", description=" + description + ", url=" + url + ", administratorRequired="
 				+ administratorRequired + ", organizationName=" + organizationName + ", organizationUrl="
 				+ organizationUrl + ", organizationEmail=" + organizationEmail + ", bundleJre=" + bundleJre
 				+ ", customizedJre=" + customizedJre + ", jrePath=" + jrePath + ", jdkPath=" + jdkPath
@@ -878,5 +881,6 @@ public class PackagerSettings {
 				+ extra + ", useResourcesAsWorkingDir=" + useResourcesAsWorkingDir + ", assetsDir=" + assetsDir
 				+ ", classpath=" + classpath + ", jreMinVersion=" + jreMinVersion + ", manifest=" + manifest
 				+ ", additionalModulePaths=" + additionalModulePaths + ", fileAssociations=" + fileAssociations
-				+ ", packagingJdk=" + packagingJdk + ", scripts=" + scripts + "]";
-	}}
+				+ ", packagingJdk=" + packagingJdk + ", scripts=" + scripts + ", arch=" + arch + "]";
+	}
+}
