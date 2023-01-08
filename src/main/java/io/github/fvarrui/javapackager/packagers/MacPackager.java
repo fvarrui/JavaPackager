@@ -1,22 +1,19 @@
 package io.github.fvarrui.javapackager.packagers;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
-
 import io.github.fvarrui.javapackager.model.MacStartup;
 import io.github.fvarrui.javapackager.model.Platform;
-import io.github.fvarrui.javapackager.utils.CommandUtils;
-import io.github.fvarrui.javapackager.utils.FileUtils;
-import io.github.fvarrui.javapackager.utils.Logger;
-import io.github.fvarrui.javapackager.utils.VelocityUtils;
-import io.github.fvarrui.javapackager.utils.VersionUtils;
-import io.github.fvarrui.javapackager.utils.XMLUtils;
+import io.github.fvarrui.javapackager.utils.*;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.codehaus.plexus.util.cli.CommandLineException;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Packager for MacOS
@@ -38,12 +35,10 @@ public class MacPackager extends Packager {
 
 		this.macConfig.setDefaults(this);
 
-		// FIX useResourcesAsWorkingDir=false doesn't work fine on MacOS (option
-		// disabled)
+		// FIX useResourcesAsWorkingDir=false doesn't work fine on Mac OS (option disabled)
 		if (!this.isUseResourcesAsWorkingDir()) {
 			this.useResourcesAsWorkingDir = true;
-			Logger.warn(
-					"'useResourcesAsWorkingDir' property disabled on MacOS (useResourcesAsWorkingDir is always true)");
+			Logger.warn("'useResourcesAsWorkingDir' property disabled on Mac OS (useResourcesAsWorkingDir is always true)");
 		}
 
 	}
@@ -122,7 +117,7 @@ public class MacPackager extends Packager {
 		} else {
 
 			File launcher = macConfig.getCustomLauncher();
-			if(launcher != null && launcher.canRead() && launcher.isFile()){
+			if (launcher != null && launcher.canRead() && launcher.isFile()){
 				FileUtils.copyFileToFolder(launcher, macOSFolder);
 				this.executable = new File(macOSFolder, launcher.getName());
 			} else {
@@ -200,41 +195,80 @@ public class MacPackager extends Packager {
 
 	private void codesign(String developerId, File entitlements, File appFile) throws Exception {
 
-		// checks --option flags
-		List<String> flags = new ArrayList<>();
-		if (macConfig.isHardenedCodesign()) {
-			if (VersionUtils.compareVersions("10.13.6", SystemUtils.OS_VERSION) >= 0) {
-				flags.add("runtime"); // enable hardened runtime if MacOS version >= 10.13.6
-			} else {
-				Logger.warn("MacOS version detected: " + SystemUtils.OS_VERSION + " ... hardened runtime disabled!");
-			}
-		}
-		
+		prepareEntitlementFile(entitlements);
+
+		manualDeepSign(appFile, developerId, entitlements);
+
+	}
+
+	private void prepareEntitlementFile(File entitlements) throws Exception {
 		// if entitlements.plist file not specified, use a default one
-		if (entitlements == null) {	
-			Logger.warn("Entitlements file not specified. Using defaults!");			
+		if (entitlements == null) {
+			Logger.warn("Entitlements file not specified. Using defaults!");
 			entitlements = new File(assetsFolder, "entitlements.plist");
 			VelocityUtils.render("mac/entitlements.plist.vtl", entitlements, this);
 		} else if (!entitlements.exists()) {
 			throw new Exception("Entitlements file doesn't exist: " + entitlements);
 		}
+	}
 
-		// prepare params array
-		List<Object> codesignArgs = new ArrayList<>();
-		codesignArgs.add("--force");
-		if (!flags.isEmpty()) {
-			codesignArgs.add("--options");
-			codesignArgs.add(StringUtils.join(flags, ","));
+	private void manualDeepSign(File appFolder, String developerCertificateName, File entitlements) throws IOException, CommandLineException {
+
+		List<Object> findCommandArgs = new ArrayList<>();
+		findCommandArgs.add(appFolder);
+		findCommandArgs.add("-depth"); // execute 'codesign' in 'reverse order', i.e., deepest files first
+		findCommandArgs.add("-type");
+		findCommandArgs.add("f"); // filter for files only
+		findCommandArgs.add("-exec");
+		findCommandArgs.add("codesign");
+		findCommandArgs.add("-f");
+
+		addHardenedCodesign(findCommandArgs);
+
+		findCommandArgs.add("-s");
+		findCommandArgs.add(developerCertificateName);
+		findCommandArgs.add("--entitlements");
+		findCommandArgs.add(entitlements);
+		findCommandArgs.add("{}");
+		findCommandArgs.add("\\;");
+
+		CommandUtils.execute("find", findCommandArgs.toArray(new Object[0]));
+
+		// make sure the executable is signed last
+		List<Object> codeSignExe = new ArrayList<>();
+		codeSignExe.add("-f");
+		addHardenedCodesign(codeSignExe);
+		codeSignExe.add("--entitlements");
+		codeSignExe.add(entitlements);
+		codeSignExe.add("-s");
+		codeSignExe.add(developerCertificateName);
+		codeSignExe.add(this.executable);
+
+		CommandUtils.execute("codesign", codeSignExe.toArray(new Object[0]));
+
+		// finally, sign the top level directory
+		List<Object> codeSignTopLevelDir = new ArrayList<>();
+		codeSignTopLevelDir.add("-f");
+		addHardenedCodesign(codeSignTopLevelDir);
+		codeSignTopLevelDir.add("--entitlements");
+		codeSignTopLevelDir.add(entitlements);
+		codeSignTopLevelDir.add("-s");
+		codeSignTopLevelDir.add(developerCertificateName);
+		codeSignTopLevelDir.add(appFolder);
+
+		CommandUtils.execute("codesign", codeSignTopLevelDir.toArray(new Object[0]));
+
+	}
+
+	private void addHardenedCodesign(Collection<Object> args){
+		if (macConfig.isHardenedCodesign()) {
+			if (VersionUtils.compareVersions("10.13.6", SystemUtils.OS_VERSION) >= 0) {
+				args.add("-o");
+				args.add("runtime"); // enable hardened runtime if Mac OS version >= 10.13.6
+			} else {
+				Logger.warn("Mac OS version detected: " + SystemUtils.OS_VERSION + " ... hardened runtime disabled!");
+			}
 		}
-		codesignArgs.add("--deep");		
-		codesignArgs.add("--entitlements");
-		codesignArgs.add(entitlements);
-		codesignArgs.add("--sign");
-		codesignArgs.add(developerId);
-		codesignArgs.add(appFile);
-		
-		// run codesign
-		CommandUtils.execute("codesign", codesignArgs.toArray(new Object[codesignArgs.size()]));
 	}
 
 }

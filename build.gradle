@@ -88,7 +88,7 @@ publishing {
 
 java {
 	withSourcesJar()
-	// and/or analogously use â€œwithJavadocJar()â€� to get a â€œjavadocJarâ€� task
+	// and/or analogously use "withJavadocJar()" to get a "javadocJar" task
 }
 
 install.repositories.mavenInstaller.pom.with {
