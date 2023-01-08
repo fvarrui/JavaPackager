@@ -1,6 +1,7 @@
 package io.github.fvarrui.javapackager.maven;
 
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
 
 import java.io.File;
@@ -312,7 +313,7 @@ public class PackageMojo extends AbstractMojo {
 	/**
 	 * Architecture
 	 */
-	@Parameter(property = "arch", required = false, defaultValue="x64")
+	@Parameter(property = "arch", required = false)
 	private Arch arch;
 
 	public void execute() throws MojoExecutionException {
@@ -333,7 +334,7 @@ public class PackageMojo extends AbstractMojo {
 						.additionalModulePaths(additionalModulePaths)
 						.additionalResources(additionalResources)
 						.administratorRequired(administratorRequired)
-						.arch(arch)
+						.arch(defaultIfNull(arch, Arch.getDefault()))
 						.assetsDir(assetsDir)
 						.bundleJre(bundleJre)
 						.classpath(classpath)

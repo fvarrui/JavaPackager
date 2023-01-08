@@ -852,8 +852,7 @@ public class PackagerSettings {
 	 * @return Mime type list string
 	 */
 	public String getMimeTypesListAsString(String separator) {
-		return StringUtils.join(fileAssociations.stream().map(fa -> fa.getMimeType()).collect(Collectors.toList()),
-				separator);
+		return StringUtils.join(fileAssociations.stream().map(fa -> fa.getMimeType()).collect(Collectors.toList()), separator);
 	}
 
 	public Arch getArch() {
@@ -867,10 +866,10 @@ public class PackagerSettings {
 
 	@Override
 	public String toString() {
-		return "PackagerSettings [outputDirectory=" + outputDirectory + ", licenseFile=" + licenseFile + ", iconFile="
-				+ iconFile + ", generateInstaller=" + generateInstaller + ", forceInstaller=" + forceInstaller
-				+ ", mainClass=" + mainClass + ", name=" + name + ", displayName=" + displayName + ", version="
-				+ version + ", description=" + description + ", url=" + url + ", administratorRequired="
+		return "PackagerSettings [" + "outputDirectory=" + outputDirectory + ", " + "licenseFile=" + licenseFile + ", "
+				+ "iconFile=" + iconFile + ", " + "generateInstaller=" + generateInstaller + ", " + "forceInstaller="
+				+ forceInstaller + ", " + "mainClass=" + mainClass + ", name=" + name + ", displayName=" + displayName
+				+ ", version=" + version + ", description=" + description + ", url=" + url + ", administratorRequired="
 				+ administratorRequired + ", organizationName=" + organizationName + ", organizationUrl="
 				+ organizationUrl + ", organizationEmail=" + organizationEmail + ", bundleJre=" + bundleJre
 				+ ", customizedJre=" + customizedJre + ", jrePath=" + jrePath + ", jdkPath=" + jdkPath

@@ -53,7 +53,7 @@ public class PackagePluginExtension extends PackagerSettings {
 		this.outputDirectory = project.getBuildDir();
 		this.scripts = new Scripts();
 		this.forceInstaller = false;
-		this.arch = Arch.x64;
+		this.arch = Arch.getDefault();
 	}
 	
     public LinuxConfig linuxConfig(Closure<LinuxConfig> closure) {
