@@ -326,5 +326,20 @@ public class FileUtils {
 	public static boolean folderContainsFile(File folder, String filename) {
 		return new File(folder, filename).exists();
 	}
+	
+	/**
+	 * Writes String to a file in UTF-8 including BOM 
+	 * @param output Output file
+	 * @param data Input string
+	 * @throws Exception if something goes wrong
+	 */
+	public static void writeStringToFileWithBOM(File output, String data) throws Exception {
+		FileOutputStream fileOutputStream = new FileOutputStream(output);
+		// write utf-8 BOM
+		byte[] uft8bom = { (byte) 0xef, (byte) 0xbb, (byte) 0xbf };
+		fileOutputStream.write(uft8bom);
+		fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
+		fileOutputStream.close();
+	}
 
 }
