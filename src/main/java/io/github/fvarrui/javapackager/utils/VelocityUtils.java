@@ -2,11 +2,11 @@ package io.github.fvarrui.javapackager.utils;
 
 import static org.apache.commons.io.FileUtils.writeStringToFile;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -30,14 +30,14 @@ public class VelocityUtils {
 			velocityEngine = new VelocityEngine();
 			
 			// specify resource loaders to use
-			velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "file,class");
+			velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADERS, "file,class");
 			
 			// for the loader 'file', set the FileResourceLoader as the class to use and use 'assets' directory for templates
-			velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
-			velocityEngine.setProperty("file.resource.loader.path", assetsDir.getAbsolutePath());
+			velocityEngine.setProperty("resource.loader.file.class", FileResourceLoader.class.getName());
+			velocityEngine.setProperty("resource.loader.file.path", assetsDir.getAbsolutePath());
 			
 			// for the loader 'class', set the ClasspathResourceLoader as the class to use
-			velocityEngine.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
+			velocityEngine.setProperty("resource.loader.class.class", ClasspathResourceLoader.class.getName());
 			
 			velocityEngine.init();
 			
@@ -63,25 +63,16 @@ public class VelocityUtils {
 	}
 
 	public static void render(String templatePath, File output, Object info) throws Exception {
-		try {
-			String data = render(templatePath, info);
-			data = data.replaceAll("\\r\\n", "\n").replaceAll("\\r", "\n");
-			writeString(output,data);
-		} catch (IOException e) {
-			throw new Exception(e.getMessage(), e);
-		}
+		render(templatePath, output, info, false);
 	}
-
-	public static void writeString(File output,String data) throws Exception{
-		if(!output.exists()){
-			output.getParentFile().mkdirs();
+	
+	public static void render(String templatePath, File output, Object info, boolean includeBom) throws Exception {
+		String data = render(templatePath, info);
+		if (!includeBom) {
+			writeStringToFile(output, StringUtils.dosToUnix(data), "UTF-8");
+		} else {
+			FileUtils.writeStringToFileWithBOM(output, data);
 		}
-		FileOutputStream fileOutputStream = new FileOutputStream(output);
-		// write utf-8 BOM
-		byte[] uft8bom={(byte)0xef,(byte)0xbb,(byte)0xbf};
-		fileOutputStream.write(uft8bom);
-		fileOutputStream.write(data.getBytes());
-		fileOutputStream.close();
 	}
 	
 }
