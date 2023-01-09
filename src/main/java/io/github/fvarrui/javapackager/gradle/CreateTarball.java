@@ -36,8 +36,11 @@ public class CreateTarball extends ArtifactGenerator<Packager> {
 		File appFolder = packager.getAppFolder();
 		File executable = packager.getExecutable();
 		String jreDirectoryName = packager.getJreDirectoryName();
-		
-		File tarFile = new File(outputDirectory, name + "-" + version + "-" + platform + ".tar.gz");
+
+		// tgz file name
+		String finalName = packager.getTarballName() != null ? packager.getTarballName() : name + "-" + version + "-" + platform;
+		String format = ".tar.gz";
+		File tarFile = new File(outputDirectory, finalName + format);
 
 		Tar tarTask = createTarTask();
 		tarTask.setProperty("archiveFileName", tarFile.getName());
