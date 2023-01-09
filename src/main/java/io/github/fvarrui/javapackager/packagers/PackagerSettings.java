@@ -49,6 +49,7 @@ public class PackagerSettings {
 	protected Boolean createTarball;
 	protected String tarballName;
 	protected Boolean createZipball;
+	protected String zipballName;
 	protected Map<String, String> extra;
 	protected boolean useResourcesAsWorkingDir;
 	protected File assetsDir;
@@ -754,6 +755,15 @@ public class PackagerSettings {
 	public PackagerSettings createZipball(Boolean createZipball) {
 		this.createZipball = createZipball;
 		return this;
+	}
+
+	public PackagerSettings zipballName(String zipballName) {
+		this.zipballName = zipballName;
+		return this;
+	}
+
+	public String getZipballName() {
+		return zipballName;
 	}
 
 	/**

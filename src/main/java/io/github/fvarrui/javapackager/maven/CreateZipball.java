@@ -47,7 +47,7 @@ public class CreateZipball extends ArtifactGenerator<Packager> {
 			VelocityUtils.render(platform + "/assembly.xml.vtl", assemblyFile, packager);
 			
 			// zip file name and format
-			String finalName = name + "-" + version + "-" + platform;
+			String finalName = packager.getZipballName() != null ? packager.getZipballName() : name + "-" + version + "-" + platform;
 			String format = "zip";
 			
 			// invokes plugin to assemble zipball and/or tarball
