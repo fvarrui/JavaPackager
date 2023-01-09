@@ -68,8 +68,9 @@ public class VelocityUtils {
 	
 	public static void render(String templatePath, File output, Object info, boolean includeBom) throws Exception {
 		String data = render(templatePath, info);
+		data = StringUtils.dosToUnix(data);
 		if (!includeBom) {
-			writeStringToFile(output, StringUtils.dosToUnix(data), "UTF-8");
+			writeStringToFile(output, data, "UTF-8");
 		} else {
 			FileUtils.writeStringToFileWithBOM(output, data);
 		}
