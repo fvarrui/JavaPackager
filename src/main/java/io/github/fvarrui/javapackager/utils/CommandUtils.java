@@ -44,7 +44,7 @@ public class CommandUtils {
 
 		Process process = command.execute();
 
-		BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream(), CharSetUtil.getCommandLineChartSet()));
+		BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream(), CharsetUtil.getCommandLineCharset()));
 		BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 		while (process.isAlive() || output.ready() || error.ready()) {
 			if (output.ready()) {
