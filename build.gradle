@@ -79,7 +79,7 @@ test {
 }
 
 group = 'io.github.fvarrui'
-version = '1.7.0'
+version = '1.7.0-SNAPSHOT'
 description = 'Hybrid Maven/Gradle plugin to package Java applications as native Windows, Mac OS X or GNU/Linux executables and create installers for them'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -93,11 +93,28 @@ publishing {
 			from(components.java)
 		}
 	}
+	repositories {
+		maven {
+			name = "GitHubPackages"
+			url = "https://maven.pkg.github.com/kerner1000/javapackager"
+			credentials {
+				username = System.getenv("GITHUB_ACTOR")
+				password = System.getenv("GITHUB_TOKEN")
+			}
+		}
+	}
 }
 
 java {
 	withSourcesJar()
 	// and/or analogously use "withJavadocJar()" to get a "javadocJar" task
+}
+
+tasks.withType(Javadoc) {
+	failOnError false
+	options.addStringOption('Xdoclint:none', '-quiet')
+	options.addStringOption('encoding', 'UTF-8')
+	options.addStringOption('charSet', 'UTF-8')
 }
 
 install.repositories.mavenInstaller.pom.with {
