@@ -47,7 +47,9 @@ public class PackagerSettings {
 	protected LinuxConfig linuxConfig;
 	protected MacConfig macConfig;
 	protected Boolean createTarball;
+	protected String tarballName;
 	protected Boolean createZipball;
+	protected String zipballName;
 	protected Map<String, String> extra;
 	protected boolean useResourcesAsWorkingDir;
 	protected File assetsDir;
@@ -736,6 +738,15 @@ public class PackagerSettings {
 		return this;
 	}
 
+	public PackagerSettings tarballName(String tarballName) {
+		this.tarballName = tarballName;
+		return this;
+	}
+
+	public String getTarballName() {
+		return tarballName;
+	}
+
 	/**
 	 * Set create zipball
 	 * @param createZipball Create zipball
@@ -744,6 +755,15 @@ public class PackagerSettings {
 	public PackagerSettings createZipball(Boolean createZipball) {
 		this.createZipball = createZipball;
 		return this;
+	}
+
+	public PackagerSettings zipballName(String zipballName) {
+		this.zipballName = zipballName;
+		return this;
+	}
+
+	public String getZipballName() {
+		return zipballName;
 	}
 
 	/**

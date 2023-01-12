@@ -244,11 +244,17 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(defaultValue = "false", property = "createTarball", required = false)
 	private Boolean createTarball;
 
+	@Parameter(property = "tarballName", required = false)
+	private String tarballName;
+
 	/**
 	 * Bundles app in a zipball file
 	 */
 	@Parameter(defaultValue = "false", property = "createZipball", required = false)
 	private Boolean createZipball;
+
+	@Parameter(property = "zipballName", required = false)
+	private String zipballName;
 
 	/**
 	 * Extra properties for customized Velocity templates, accesible through '$this.extra' map. 
@@ -340,7 +346,9 @@ public class PackageMojo extends AbstractMojo {
 						.classpath(classpath)
 						.copyDependencies(copyDependencies)
 						.createTarball(createTarball)
+						.tarballName(tarballName)
 						.createZipball(createZipball)
+						.zipballName(zipballName)
 						.customizedJre(customizedJre)
 						.description(description)
 						.displayName(displayName)
