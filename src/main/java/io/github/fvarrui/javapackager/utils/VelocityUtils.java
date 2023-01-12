@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -30,7 +29,7 @@ public class VelocityUtils {
 			velocityEngine = new VelocityEngine();
 			
 			// specify resource loaders to use
-			velocityEngine.setProperty("resource.loaders", "file,class");
+			velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADERS, "file,class");
 			
 			// for the loader 'file', set the FileResourceLoader as the class to use and use 'assets' directory for templates
 			velocityEngine.setProperty("resource.loader.file.class", FileResourceLoader.class.getName());
@@ -63,12 +62,16 @@ public class VelocityUtils {
 	}
 
 	public static void render(String templatePath, File output, Object info) throws Exception {
-		try {
-			String data = render(templatePath, info);
-			data = data.replaceAll("\\r\\n", "\n").replaceAll("\\r", "\n");
+		render(templatePath, output, info, false);
+	}
+	
+	public static void render(String templatePath, File output, Object info, boolean includeBom) throws Exception {
+		String data = render(templatePath, info);
+		data = StringUtils.dosToUnix(data);
+		if (!includeBom) {
 			writeStringToFile(output, data, "UTF-8");
-		} catch (IOException e) {
-			throw new Exception(e.getMessage(), e);
+		} else {
+			FileUtils.writeStringToFileWithBOM(output, data);
 		}
 	}
 	

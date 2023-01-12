@@ -52,7 +52,7 @@ public class CommandUtils {
 
 		Process process = command.execute();
 
-		BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream()));
+		BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream(), CharsetUtil.getCommandLineCharset()));
 		BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 		while (process.isAlive() || output.ready() || error.ready()) {
 			if (output.ready()) {
@@ -74,6 +74,14 @@ public class CommandUtils {
 		result.setError(errorBuffer.toString());
 		result.setExitCode(process.exitValue());
 			
+		return result;
+	}
+	
+	public static String run(String command) throws IOException {
+    	Process p = Runtime.getRuntime().exec(command);
+        BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String result = br.readLine();	        	
+		br.close();
 		return result;
 	}
 
