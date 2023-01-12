@@ -63,6 +63,7 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 		String jreDirectoryName = packager.getJreDirectoryName();
 		File executable = packager.getExecutable();
 		File javaFile = new File(appFolder, jreDirectoryName + "/bin/java");
+		File mimeXmlFile = packager.getMimeXmlFile();
 
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");
@@ -124,6 +125,24 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 		
 		dataProducers.add(desktopFileData);
 
+		
+		// mime.xml file data producer 
+
+		if (mimeXmlFile != null) {
+		
+			Mapper mimeXmlFileMapper = new Mapper();
+			desktopFileMapper.setType("perm");
+			desktopFileMapper.setPrefix("/usr/share/mime/packages");
+			
+			Data mimeXmlFileData = new Data();
+			desktopFileData.setType("file");
+			desktopFileData.setSrc(mimeXmlFile);
+			desktopFileData.addMapper(mimeXmlFileMapper);
+			
+			dataProducers.add(mimeXmlFileData);
+			
+		}
+		
 		// java binary file data producer
 		
 		if (bundleJre) {
@@ -141,18 +160,22 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 			dataProducers.add(javaBinaryData);
 			
 			// set correct permissions on jre/lib/jspawnhelper
-			Mapper javaSpawnHelperMapper = new Mapper();
-			javaSpawnHelperMapper.setType("perm");
-			javaSpawnHelperMapper.setFileMode("755");
-			javaSpawnHelperMapper.setPrefix("/opt/" + name + "/" + jreDirectoryName + "/lib");
 
 			File jSpawnHelperFile = new File(appFolder, jreDirectoryName + "/lib/jspawnhelper");
+			
 			if (jSpawnHelperFile.exists()) {
+				
+				Mapper javaSpawnHelperMapper = new Mapper();
+				javaSpawnHelperMapper.setType("perm");
+				javaSpawnHelperMapper.setFileMode("755");
+				javaSpawnHelperMapper.setPrefix("/opt/" + name + "/" + jreDirectoryName + "/lib");
+				
 				Data javaSpawnHelperData = new Data();
 				javaSpawnHelperData.setType("file");
 				javaSpawnHelperData.setSrc(jSpawnHelperFile);
 				javaSpawnHelperData.addMapper(javaSpawnHelperMapper);
 				dataProducers.add(javaSpawnHelperData);
+				
 			}
 			
 		}
