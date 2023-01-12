@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
 import org.apache.velocity.util.StringBuilderWriter;
@@ -49,7 +50,7 @@ public class VelocityUtils {
 		VelocityContext context = new VelocityContext();
 		context.put("features", new ArrayList<String>());
 		context.put("GUID", UUID.class);
-		context.put("StringUtils", StringUtils.class);
+		context.put("StringUtils", org.apache.commons.lang3.StringUtils.class);
 		context.put("info", info);
 		Template template = getVelocityEngine().getTemplate(templatePath, "UTF-8");
 		StringBuilderWriter writer = new StringBuilderWriter();
