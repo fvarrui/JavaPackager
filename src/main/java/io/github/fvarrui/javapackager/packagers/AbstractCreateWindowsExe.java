@@ -65,7 +65,7 @@ public abstract class AbstractCreateWindowsExe extends WindowsArtifactGenerator 
 	protected void createAssets(WindowsPackager packager) throws Exception {
 
 		File manifestFile = packager.getManifestFile();
-		File iconFile = packager.task.getIconFile();
+		File iconFile = packager.getIconFile();
 		File jarFile = packager.getJarFile();
 
 		FileUtils.mkdir(outputFolder);
@@ -90,10 +90,10 @@ public abstract class AbstractCreateWindowsExe extends WindowsArtifactGenerator 
 	protected File createBootstrapScript(WindowsPackager packager) throws Exception {
 		File executable = packager.getExecutable(); 
 		
-		if (FileUtils.exists(packager.task.getScripts().getBootstrap())) {
+		if (FileUtils.exists(packager.getScripts().getBootstrap())) {
 
 			// generates startup VBS script file
-			File vbsFile = new File(packager.getAppFolder(), packager.task.getAppName() + ".vbs");
+			File vbsFile = new File(packager.getAppFolder(), packager.getName() + ".vbs");
 			VelocityUtils.render(Platform.windows + "/startup.vbs.vtl", vbsFile, packager);
 			executable = vbsFile;
 

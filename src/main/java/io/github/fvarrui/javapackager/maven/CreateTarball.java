@@ -28,17 +28,17 @@ public class CreateTarball extends ArtifactGenerator<Packager> {
 
 	@Override
 	public boolean skip(Packager packager) {
-		return !packager.task.getCreateTarball();
+		return !packager.getCreateTarball();
 	}
 
 	@Override
 	protected File doApply(Packager packager) {
 		
 		File assetsFolder = packager.getAssetsFolder();
-		String name = packager.task.getAppName();
-		String version = packager.task.getVersion();
-		Platform platform = packager.task.getPlatform();
-		File outputDirectory = packager.task.getOutputDirectory();
+		String name = packager.getName();
+		String version = packager.getVersion();
+		Platform platform = packager.getPlatform();
+		File outputDirectory = packager.getOutputDirectory(); 
 
 		try {
 

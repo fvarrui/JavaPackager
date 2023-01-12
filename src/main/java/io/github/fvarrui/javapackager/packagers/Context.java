@@ -28,14 +28,7 @@ public abstract class Context<T> {
 		getInstallerGenerators(Platform.windows).add(new GenerateSetup());
 		getInstallerGenerators(Platform.windows).add(new GenerateMsm());
 		getInstallerGenerators(Platform.windows).add(new GenerateMsi());
-
-		getInstallerGenerators(Platform.linux).add(new GenerateNativeImage());
-		getInstallerGenerators(Platform.mac).add(new GenerateNativeImage());
-		getInstallerGenerators(Platform.windows).add(new GenerateNativeImage());
-
-		getInstallerGenerators(Platform.linux).add(new GenerateSharedLibrary());
-		getInstallerGenerators(Platform.mac).add(new GenerateSharedLibrary());
-		getInstallerGenerators(Platform.windows).add(new GenerateSharedLibrary());
+		
 	}
 	
 	// common properties
