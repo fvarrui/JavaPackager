@@ -131,13 +131,13 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 		if (mimeXmlFile != null) {
 		
 			Mapper mimeXmlFileMapper = new Mapper();
-			desktopFileMapper.setType("perm");
-			desktopFileMapper.setPrefix("/usr/share/mime/packages");
+			mimeXmlFileMapper.setType("perm");
+			mimeXmlFileMapper.setPrefix("/usr/share/mime/packages");
 			
 			Data mimeXmlFileData = new Data();
-			desktopFileData.setType("file");
-			desktopFileData.setSrc(mimeXmlFile);
-			desktopFileData.addMapper(mimeXmlFileMapper);
+			mimeXmlFileData.setType("file");
+			mimeXmlFileData.setSrc(mimeXmlFile);
+			mimeXmlFileData.addMapper(mimeXmlFileMapper);
 			
 			dataProducers.add(mimeXmlFileData);
 			
