@@ -3,7 +3,6 @@ package io.github.fvarrui.javapackager.utils;
 import static org.apache.commons.io.FileUtils.writeStringToFile;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
