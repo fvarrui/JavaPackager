@@ -1,3 +1,0 @@
-# HelloWorld
-
-JavaPackager sample project.

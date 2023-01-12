@@ -34,8 +34,6 @@ public class MacConfig implements Serializable {
 	private String developerId = "-";
 	private File entitlements;
 	private File provisionProfile;
-	private File customLauncher;
-	private File customInfoPlist;
 	private boolean codesignApp = true;
 	private InfoPlist infoPlist = new InfoPlist();
 	private boolean hardenedCodesign = true;
@@ -193,22 +191,6 @@ public class MacConfig implements Serializable {
 		this.developerId = developerId;
 	}
 
-	public File getCustomLauncher() {
-		return customLauncher;
-	}
-
-	public void setCustomLauncher(File customLauncher) {
-		this.customLauncher = customLauncher;
-	}
-
-	public File getCustomInfoPlist() {
-		return customInfoPlist;
-	}
-
-	public void setCustomInfoPlist(File customInfoPlist) {
-		this.customInfoPlist = customInfoPlist;
-	}
-
 	public File getProvisionProfile() {
 		return provisionProfile;
 	}
@@ -285,6 +267,6 @@ public class MacConfig implements Serializable {
 		this.setIconY(defaultIfNull(this.getIconY(), 116));
 		this.setAppsLinkIconX(defaultIfNull(this.getAppsLinkIconX(), 360));
 		this.setAppsLinkIconY(defaultIfNull(this.getAppsLinkIconY(), 116));
-		this.setAppId(defaultIfNull(this.getAppId(), packager.task.getMainClass()));
+		this.setAppId(defaultIfNull(this.getAppId(), packager.getMainClass()));
 	}
 }
