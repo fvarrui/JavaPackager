@@ -43,6 +43,7 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 		File assetsFolder = packager.getAssetsFolder();
 		String jreDirectoryName = packager.getJreDirectoryName();
 		Architecture arch = Architecture.valueOf(packager.getArch().getRpm());
+		File mimeXmlFile = packager.getMimeXmlFile();
 		
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");
@@ -52,6 +53,7 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 		// copies desktop file to app
 		FileUtils.copyFileToFolder(desktopFile, appFolder);
 
+		// creates RPM builder
 		Builder builder = new Builder();
 		builder.setType(RpmType.BINARY);
 		builder.setPlatform(arch, Os.LINUX);
@@ -72,11 +74,19 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 		// link to desktop file
 		builder.addLink("/usr/share/applications/" + desktopFile.getName(), "/opt/" + name + "/" + desktopFile.getName());
 
+		// copy and link to mime.xml file
+		if (mimeXmlFile != null) {
+			FileUtils.copyFileToFolder(mimeXmlFile, appFolder);
+			builder.addLink("/usr/share/mime/packages/" + mimeXmlFile.getName(), "/opt/" + name + "/" + mimeXmlFile.getName());
+		}
+		
 		// link to binary
 		builder.addLink("/usr/local/bin/" + executable.getName(), "/opt/" + name + "/" + executable.getName());
 
+		// build RPM file
 		builder.build(outputDirectory);
 
+		// renames genewrated RPM file if created
 		String suffix = "-1." + arch.name().toLowerCase() + ".rpm";
 		File originalRpm = new File(outputDirectory, name + "-" + version + suffix);
 		File rpm = null;
