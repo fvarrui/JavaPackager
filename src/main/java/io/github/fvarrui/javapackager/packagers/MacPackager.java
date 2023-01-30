@@ -3,6 +3,7 @@ package io.github.fvarrui.javapackager.packagers;
 import io.github.fvarrui.javapackager.model.MacStartup;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.*;
+import io.github.javacodesign.Signer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.codehaus.plexus.util.cli.CommandLineException;
@@ -163,7 +164,7 @@ public class MacPackager extends Packager {
 		} else if (!getMacConfig().isCodesignApp()) {
 			Logger.warn("App codesigning disabled");
 		} else {
-			codesign(this.macConfig.getDeveloperId(), this.macConfig.getEntitlements(), this.appFile);
+			codesign(this.macConfig.getDeveloperId(), this.macConfig.getEntitlements(), this.appFile, executable);
 		}
 	}
 
@@ -193,15 +194,16 @@ public class MacPackager extends Packager {
 		return appStubFile;
 	}
 
-	private void codesign(String developerId, File entitlements, File appFile) throws Exception {
+	private void codesign(String developerId, File entitlements, File appFile, File executable) throws Exception {
 
-		prepareEntitlementFile(entitlements);
+		entitlements = prepareEntitlementFile(entitlements);
 
-		manualDeepSign(appFile, developerId, entitlements);
+		Signer signer = new Signer(developerId, appFile.toPath(), executable.toPath(), entitlements.toPath(), entitlements.toPath());
+		signer.sign();
 
 	}
 
-	private void prepareEntitlementFile(File entitlements) throws Exception {
+	private File prepareEntitlementFile(File entitlements) throws Exception {
 		// if entitlements.plist file not specified, use a default one
 		if (entitlements == null) {
 			Logger.warn("Entitlements file not specified. Using defaults!");
@@ -210,6 +212,7 @@ public class MacPackager extends Packager {
 		} else if (!entitlements.exists()) {
 			throw new Exception("Entitlements file doesn't exist: " + entitlements);
 		}
+		return entitlements;
 	}
 
 	private void manualDeepSign(File appFolder, String developerCertificateName, File entitlements) throws IOException, CommandLineException {
