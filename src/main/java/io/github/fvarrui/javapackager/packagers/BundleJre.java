@@ -250,15 +250,15 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 
 		} else {
 			
-			modulesList = Arrays.asList("ALL-MODULE-PATH");
+			modulesList = new ArrayList<>();
 			
 		}
-				
-		modulesList.addAll(additionalModules);
 		
 		if (modulesList.isEmpty()) {
 			Logger.warn("It was not possible to determine the necessary modules. All modules will be included");
 			modulesList.add("ALL-MODULE-PATH");
+		} else {
+			modulesList.addAll(additionalModules);			
 		}
 		
 		Logger.infoUnindent("Required modules found: " + modulesList);
