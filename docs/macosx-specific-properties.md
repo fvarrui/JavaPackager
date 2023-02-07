@@ -51,21 +51,23 @@
 
 | Property      | Mandatory | Default value  | Description                                                                                                                      |
 | ------------- | --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `icnsFile`    | :x:       |                | Icon file.                                                                                                                       |
+| `icnsFile`    | :x:       |                | ICNS format icon file.\*                                                                                                         |
 | `generateDmg` | :x:       | `true`         | Enables DMG disk image file generation.                                                                                          |
 | `generatePkg` | :x:       | `true`         | Enables installation package generation.                                                                                         |
 | `relocateJar` | :x:       | `true`         | If `true`, Jar files are located in `Contents/Resources/Java` folder, otherwise they are located in `Contents/Resources` folder. |
 | `appId`       | :x:       | `${mainClass}` | App unique identifier.                                                                                                           |
 
+> \* You can use [MacICNS](https://github.com/EasyG0ing1/MacIcns) to convert your PNG icon file to ICNS.
+
 ## Signing properties
 
-| Property           | Mandatory | Default value | Description                                                                                                                                          |
-| ------------------ | --------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `developerId`      | :x:       |               | Signing identity.                                                                                                                                    |
-| `entitlements`     | :x:       |               | Path to [entitlements](https://developer.apple.com/documentation/bundleresources/entitlements) file.                                                 |
-| `codesignApp`      | :x:       | `true`        | If it is set to `false`, generated app will not be codesigned.                                                                                       |
+| Property           | Mandatory | Default value | Description                                                                                                                                         |
+| ------------------ | --------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `developerId`      | :x:       |               | Signing identity.                                                                                                                                   |
+| `entitlements`     | :x:       |               | Path to [entitlements](https://developer.apple.com/documentation/bundleresources/entitlements) file.                                                |
+| `codesignApp`      | :x:       | `true`        | If it is set to `false`, generated app will not be codesigned.                                                                                      |
 | `hardenedCodesign` | :x:       | `true`        | If it is set to `true`, enable [hardened runtime](https://developer.apple.com/documentation/security/hardened_runtime) if MacOS version >= 10.13.6. |
-| `macStartup`       | :x:       | `SCRIPT`      | App startup type, using a `SCRIPT` or a binary (compiled version of the script: `UNIVERSAL`, `X86_64` or `ARM64`).                                   |
+| `macStartup`       | :x:       | `SCRIPT`      | App startup type, using a `SCRIPT` or a binary (compiled version of the script: `UNIVERSAL`, `X86_64` or `ARM64`).                                  |
 
 ## DMG generation properties
 
