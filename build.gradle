@@ -161,18 +161,18 @@ if (project.hasProperty('release')) {
 	apply plugin: 'signing'
 	apply plugin: 'maven'
 
-	task javadocJar(type: Jar) {
+	task deployingJavadocJar(type: Jar) {
 		classifier = 'javadoc'
 		from javadoc
 	}
 	
-	task sourcesJar(type: Jar) {
+	task deployingSourcesJar(type: Jar) {
 		classifier = 'sources'
 		from sourceSets.main.allSource
 	}
 	
 	artifacts {
-		archives javadocJar, sourcesJar
+		archives deployingJavadocJar, deployingSourcesJar
 	}
 
 	// Signature of artifacts
