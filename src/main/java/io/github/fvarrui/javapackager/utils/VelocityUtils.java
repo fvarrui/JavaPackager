@@ -3,11 +3,9 @@ package io.github.fvarrui.javapackager.utils;
 import static org.apache.commons.io.FileUtils.writeStringToFile;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -31,14 +29,14 @@ public class VelocityUtils {
 			velocityEngine = new VelocityEngine();
 			
 			// specify resource loaders to use
-			velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "file,class");
+			velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADERS, "file,class");
 			
 			// for the loader 'file', set the FileResourceLoader as the class to use and use 'assets' directory for templates
-			velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
-			velocityEngine.setProperty("file.resource.loader.path", assetsDir.getAbsolutePath());
+			velocityEngine.setProperty("resource.loader.file.class", FileResourceLoader.class.getName());
+			velocityEngine.setProperty("resource.loader.file.path", assetsDir.getAbsolutePath());
 			
 			// for the loader 'class', set the ClasspathResourceLoader as the class to use
-			velocityEngine.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
+			velocityEngine.setProperty("resource.loader.class.class", ClasspathResourceLoader.class.getName());
 			
 			velocityEngine.init();
 			
@@ -51,7 +49,7 @@ public class VelocityUtils {
 		VelocityContext context = new VelocityContext();
 		context.put("features", new ArrayList<String>());
 		context.put("GUID", UUID.class);
-		context.put("StringUtils", StringUtils.class);
+		context.put("StringUtils", org.apache.commons.lang3.StringUtils.class);
 		context.put("info", info);
 		Template template = getVelocityEngine().getTemplate(templatePath, "UTF-8");
 		StringBuilderWriter writer = new StringBuilderWriter();
@@ -64,12 +62,16 @@ public class VelocityUtils {
 	}
 
 	public static void render(String templatePath, File output, Object info) throws Exception {
-		try {
-			String data = render(templatePath, info);
-			data = data.replaceAll("\\r\\n", "\n").replaceAll("\\r", "\n");
+		render(templatePath, output, info, false);
+	}
+	
+	public static void render(String templatePath, File output, Object info, boolean includeBom) throws Exception {
+		String data = render(templatePath, info);
+		data = StringUtils.dosToUnix(data);
+		if (!includeBom) {
 			writeStringToFile(output, data, "UTF-8");
-		} catch (IOException e) {
-			throw new Exception(e.getMessage(), e);
+		} else {
+			FileUtils.writeStringToFileWithBOM(output, data);
 		}
 	}
 	

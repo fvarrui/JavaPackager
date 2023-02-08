@@ -221,7 +221,7 @@ E.g. on Windows, last configuration will generate next artifacts:
 E.g. on Windows, last configuration will generate next artifacts:
 
 * `${name}_${version}-linux.tar.gz` with the GNU/Linux application including a customized JRE.
-* `${name}_${version}-mac.tar.gz` with the Mac OS X application including a customized JRE.
+* `${name}_${version}-mac.tar.gz` with the MacOS application including a customized JRE.
 * `${name}_${version}-windows.zip` with the Windows application including a customized JRE.
 
-As last sample is running on Windows, it's not necessary to specify a JDK when bundling for Windows (it uses current JDK by default). Otherwise, if running on GNU/Linux or Mac OS X, you have to specify a JDK for Windows.
+As last sample is running on Windows, it's not necessary to specify a JDK when bundling for Windows (it uses current JDK by default). Otherwise, if running on GNU/Linux or MacOS, you have to specify a JDK for Windows.

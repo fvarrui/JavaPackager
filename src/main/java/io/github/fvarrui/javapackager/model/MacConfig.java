@@ -8,7 +8,7 @@ import java.io.Serializable;
 import io.github.fvarrui.javapackager.packagers.Packager;
 
 /**
- * JavaPackager Mac OS specific configuration
+ * JavaPackager MacOS specific configuration
  */
 public class MacConfig implements Serializable {
 	private static final long serialVersionUID = -2268944961932941577L;
@@ -247,12 +247,14 @@ public class MacConfig implements Serializable {
 				+ ", appsLinkIconX=" + appsLinkIconX + ", appsLinkIconY=" + appsLinkIconY + ", volumeIcon=" + volumeIcon
 				+ ", volumeName=" + volumeName + ", generateDmg=" + generateDmg + ", generatePkg=" + generatePkg
 				+ ", relocateJar=" + relocateJar + ", appId=" + appId + ", developerId=" + developerId
-				+ ", entitlements=" + entitlements + ", codesignApp=" + codesignApp + ", infoPlist=" + infoPlist
-				+ ", hardenedCodesign=" + hardenedCodesign + ", macStartup=" + macStartup + "]";
+				+ ", entitlements=" + entitlements + ", provisionProfile=" + provisionProfile + ", customLauncher="
+				+ customLauncher + ", customInfoPlist=" + customInfoPlist + ", codesignApp=" + codesignApp
+				+ ", infoPlist=" + infoPlist + ", hardenedCodesign=" + hardenedCodesign + ", macStartup=" + macStartup
+				+ "]";
 	}
 
 	/**
-	 * Tests Mac OS X specific config and set defaults if not specified
+	 * Tests MacOS specific config and set defaults if not specified
 	 * 
 	 * @param packager Packager
 	 */

@@ -1,24 +1,22 @@
 package io.github.fvarrui.javapackager.packagers;
 
+import io.github.fvarrui.javapackager.model.MacStartup;
+import io.github.fvarrui.javapackager.model.Platform;
+import io.github.fvarrui.javapackager.utils.*;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.codehaus.plexus.util.cli.CommandLineException;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
-
-import io.github.fvarrui.javapackager.model.Platform;
-import io.github.fvarrui.javapackager.utils.CommandUtils;
-import io.github.fvarrui.javapackager.utils.FileUtils;
-import io.github.fvarrui.javapackager.utils.Logger;
-import io.github.fvarrui.javapackager.utils.VelocityUtils;
-import io.github.fvarrui.javapackager.utils.VersionUtils;
-import io.github.fvarrui.javapackager.utils.XMLUtils;
-
 /**
- * Packager for Mac OS X
+ * Packager for MacOS
  */
 public class MacPackager extends Packager {
 
@@ -37,12 +35,10 @@ public class MacPackager extends Packager {
 
 		this.macConfig.setDefaults(this);
 
-		// FIX useResourcesAsWorkingDir=false doesn't work fine on Mac OS (option
-		// disabled)
+		// FIX useResourcesAsWorkingDir=false doesn't work fine on Mac OS (option disabled)
 		if (!this.isUseResourcesAsWorkingDir()) {
 			this.useResourcesAsWorkingDir = true;
-			Logger.warn(
-					"'useResourcesAsWorkingDir' property disabled on Mac OS (useResourcesAsWorkingDir is always true)");
+			Logger.warn("'useResourcesAsWorkingDir' property disabled on Mac OS (useResourcesAsWorkingDir is always true)");
 		}
 
 	}
@@ -91,37 +87,50 @@ public class MacPackager extends Packager {
 		// copies jarfile to Java folder
 		FileUtils.copyFileToFolder(jarFile, javaFolder);
 
+		processStartupScript();
+
+		processClasspath();
+
+		processInfoPlistFile();
+
+		processProvisionProfileFile();
+
+		codesign();
+
+		return appFile;
+	}
+
+	private void processStartupScript() throws Exception {
+		
 		if (this.administratorRequired) {
+
+			// We need a helper script ("startup") in this case,
+			// which invokes the launcher script/ executable with administrator rights.
+			// TODO: admin script depends on launcher file name 'universalJavaApplicationStub'
 
 			// sets startup file
 			this.executable = new File(macOSFolder, "startup");
 
 			// creates startup file to boot java app
 			VelocityUtils.render("mac/startup.vtl", executable, this);
-			executable.setExecutable(true, false);
-			Logger.info("Startup script file created in " + executable.getAbsolutePath());
-
+			
 		} else {
 
-			// sets startup file
-			this.executable = new File(macOSFolder, "universalJavaApplicationStub");
-			Logger.info("Using " + executable.getAbsolutePath() + " as startup script");
-
+			File launcher = macConfig.getCustomLauncher();
+			if (launcher != null && launcher.canRead() && launcher.isFile()){
+				FileUtils.copyFileToFolder(launcher, macOSFolder);
+				this.executable = new File(macOSFolder, launcher.getName());
+			} else {
+				this.executable = preparePrecompiledStartupStub();
+			}
 		}
+		
+		executable.setExecutable(true, false);
+		Logger.info("Startup script file created in " + executable.getAbsolutePath());
+	}
 
-		// copies universalJavaApplicationStub startup file to boot java app
-		File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
-		String universalJavaApplicationStubResource = null;
-		switch (macConfig.getMacStartup()) {
-		case UNIVERSAL:	universalJavaApplicationStubResource = "universalJavaApplicationStub"; break;
-		case X86_64:	universalJavaApplicationStubResource = "universalJavaApplicationStub.x86_64"; break;
-		case ARM64: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.arm64"; break;
-		case SCRIPT: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.sh"; break;
-		}
-		FileUtils.copyResourceToFile("/mac/" + universalJavaApplicationStubResource, appStubFile);
-		appStubFile.setExecutable(true, false);
-
-		// process classpath
+	private void processClasspath() {
+		// TODO: Why are we doing this here? I do not see any usage of 'classpath' or 'classpaths' here.
 		classpath = (this.macConfig.isRelocateJar() ? "Java/" : "") + this.jarFile.getName() + (classpath != null ? ":" + classpath : "");
 		classpaths = Arrays.asList(classpath.split("[:;]"));
 		if (!isUseResourcesAsWorkingDir()) {
@@ -131,20 +140,24 @@ public class MacPackager extends Packager {
 					.collect(Collectors.toList());
 		}
 		classpath = StringUtils.join(classpaths, ":");
+	}
 
-		// creates and write the Info.plist file
+	/**
+	 * Creates and writes the Info.plist file if no custom file is specified.
+	 * @throws Exception if anything goes wrong
+	 */
+	private void processInfoPlistFile() throws Exception {
 		File infoPlistFile = new File(contentsFolder, "Info.plist");
-		VelocityUtils.render("mac/Info.plist.vtl", infoPlistFile, this);
-		XMLUtils.prettify(infoPlistFile);
-		Logger.info("Info.plist file created in " + infoPlistFile.getAbsolutePath());
-
-		// copy provisionprofile
-		if(macConfig.getProvisionProfile() != null) {
-			// file name must be 'embedded.provisionprofile'
-			FileUtils.copyFileToFile(macConfig.getProvisionProfile(), new File(contentsFolder, "embedded.provisionprofile"));
+		if(macConfig.getCustomInfoPlist() != null && macConfig.getCustomInfoPlist().isFile() && macConfig.getCustomInfoPlist().canRead()){
+			FileUtils.copyFileToFile(macConfig.getCustomInfoPlist(), infoPlistFile);
+		} else {
+			VelocityUtils.render("mac/Info.plist.vtl", infoPlistFile, this);
+			XMLUtils.prettify(infoPlistFile);
 		}
+		Logger.info("Info.plist file created in " + infoPlistFile.getAbsolutePath());
+	}
 
-		// codesigns app folder
+	private void codesign() throws Exception {
 		if (!Platform.mac.isCurrentPlatform()) {
 			Logger.warn("Generated app could not be signed due to current platform is " + Platform.getCurrentPlatform());
 		} else if (!getMacConfig().isCodesignApp()) {
@@ -152,47 +165,102 @@ public class MacPackager extends Packager {
 		} else {
 			codesign(this.macConfig.getDeveloperId(), this.macConfig.getEntitlements(), this.appFile);
 		}
+	}
 
-		return appFile;
+	private void processProvisionProfileFile() throws Exception {
+		if (macConfig.getProvisionProfile() != null && macConfig.getProvisionProfile().isFile() && macConfig.getProvisionProfile().canRead()) {
+			// file name must be 'embedded.provisionprofile'
+			File provisionProfile = new File(contentsFolder, "embedded.provisionprofile");
+			FileUtils.copyFileToFile(macConfig.getProvisionProfile(), provisionProfile);
+			Logger.info("Provision profile file created from " + "\n" +
+					macConfig.getProvisionProfile() + " to \n" +
+					provisionProfile.getAbsolutePath());
+		}
+	}
+
+	private File preparePrecompiledStartupStub() throws Exception {
+		// sets startup file
+		File appStubFile = new File(macOSFolder, "universalJavaApplicationStub");
+		String universalJavaApplicationStubResource = null;
+		switch (macConfig.getMacStartup()) {
+			case UNIVERSAL:	universalJavaApplicationStubResource = "universalJavaApplicationStub"; break;
+			case X86_64:	universalJavaApplicationStubResource = "universalJavaApplicationStub.x86_64"; break;
+			case ARM64: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.arm64"; break;
+			case SCRIPT: 	universalJavaApplicationStubResource = "universalJavaApplicationStub.sh"; break;
+		}
+		// unixStyleNewLinux=true if startup is a script (this will replace '\r\n' with '\n')
+		FileUtils.copyResourceToFile("/mac/" + universalJavaApplicationStubResource, appStubFile, macConfig.getMacStartup() == MacStartup.SCRIPT);
+		return appStubFile;
 	}
 
 	private void codesign(String developerId, File entitlements, File appFile) throws Exception {
 
-		// checks --option flags
-		List<String> flags = new ArrayList<>();
-		if (macConfig.isHardenedCodesign()) {
-			if (VersionUtils.compareVersions("10.13.6", SystemUtils.OS_VERSION) >= 0) {
-				flags.add("runtime"); // enable hardened runtime if Mac OS version >= 10.13.6
-			} else {
-				Logger.warn("Mac OS version detected: " + SystemUtils.OS_VERSION + " ... hardened runtime disabled!");
-			}
-		}
-		
+		prepareEntitlementFile(entitlements);
+
+		manualDeepSign(appFile, developerId, entitlements);
+
+	}
+
+	private void prepareEntitlementFile(File entitlements) throws Exception {
 		// if entitlements.plist file not specified, use a default one
-		if (entitlements == null) {	
-			Logger.warn("Entitlements file not specified. Using defaults!");			
+		if (entitlements == null) {
+			Logger.warn("Entitlements file not specified. Using defaults!");
 			entitlements = new File(assetsFolder, "entitlements.plist");
 			VelocityUtils.render("mac/entitlements.plist.vtl", entitlements, this);
 		} else if (!entitlements.exists()) {
 			throw new Exception("Entitlements file doesn't exist: " + entitlements);
 		}
+	}
 
-		// prepare params array
-		List<Object> codesignArgs = new ArrayList<>();
-		codesignArgs.add("--force");
-		if (!flags.isEmpty()) {
-			codesignArgs.add("--options");
-			codesignArgs.add(StringUtils.join(flags, ","));
+	private void manualDeepSign(File appFolder, String developerCertificateName, File entitlements) throws IOException, CommandLineException {
+
+		// codesign each file in app
+		List<Object> findCommandArgs = new ArrayList<>();
+		findCommandArgs.add(appFolder);
+		findCommandArgs.add("-depth"); // execute 'codesign' in 'reverse order', i.e., deepest files first
+		findCommandArgs.add("-type");
+		findCommandArgs.add("f"); // filter for files only
+		findCommandArgs.add("-exec");
+		findCommandArgs.add("codesign");
+		findCommandArgs.add("-f");
+		addHardenedCodesign(findCommandArgs);
+		findCommandArgs.add("-s");
+		findCommandArgs.add(developerCertificateName);
+		findCommandArgs.add("--entitlements");
+		findCommandArgs.add(entitlements);
+		findCommandArgs.add("{}");
+		findCommandArgs.add("\\;");
+		CommandUtils.execute("find", findCommandArgs);
+
+		// make sure the executable is signed last
+		codesign(entitlements, developerCertificateName, this.executable);
+
+		// finally, sign the top level directory
+		codesign(entitlements, developerCertificateName, appFolder);
+
+	}
+	
+	private void codesign(File entitlements, String developerCertificateName, File file) throws IOException, CommandLineException {
+		List<Object> arguments = new ArrayList<>();
+		arguments.add("-f");
+		addHardenedCodesign(arguments);
+		arguments.add("--entitlements");
+		arguments.add(entitlements);
+		arguments.add("-s");
+		arguments.add(developerCertificateName);
+		arguments.add(appFolder);
+		CommandUtils.execute("codesign", arguments);
+	}
+
+	private void addHardenedCodesign(Collection<Object> args){
+		if (macConfig.isHardenedCodesign()) {
+			if (VersionUtils.compareVersions("10.13.6", SystemUtils.OS_VERSION) >= 0) {
+				args.add("-o");
+				args.add("runtime"); // enable hardened runtime if Mac OS version >= 10.13.6
+			} else {
+				Logger.warn("Mac OS version detected: " + SystemUtils.OS_VERSION + " ... hardened runtime disabled!");
+			}
 		}
-		codesignArgs.add("--deep");		
-		codesignArgs.add("--entitlements");
-		codesignArgs.add(entitlements);
-		codesignArgs.add("--sign");
-		codesignArgs.add(developerId);
-		codesignArgs.add(appFile);
-		
-		// run codesign
-		CommandUtils.execute("codesign", codesignArgs.toArray(new Object[codesignArgs.size()]));
 	}
 
 }

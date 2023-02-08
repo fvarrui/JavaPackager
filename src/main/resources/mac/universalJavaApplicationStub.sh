@@ -3,7 +3,7 @@
 #                                                                                #
 # universalJavaApplicationStub                                                   #
 #                                                                                #
-# A BASH based JavaApplicationStub for Java Apps on Mac OS X                     #
+# A BASH based JavaApplicationStub for Java Apps on MacOS                     #
 # that works with both Apple's and Oracle's plist format.                        #
 #                                                                                #
 # Inspired by Ian Roberts stackoverflow answer                                   #

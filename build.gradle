@@ -29,7 +29,7 @@ gradlePlugin {
 pluginBundle {
 	website = 'http://github.com/fvarrui/JavaPackager'
 	vcsUrl = 'http://github.com/fvarrui/JavaPackager.git'
-	description = 'Packages Java applications as native Windows, Mac OS X or GNU/Linux executables and creates installers for them'
+	description = 'Packages Java applications as native Windows, MacOS or GNU/Linux executables and creates installers for them'
 	tags = ['java', 'packager', 'gradle-plugin', 'maven-plugin', 'native', 'installer', 'debian-packages', 'rpm-packages', 'dmg', 'maven', 'gradle', 'distribution', 'javapackager', 'linux-executables', 'deb', 'rpm', 'native-windows', 'java-applications', 'pkg', 'msi']
 	plugins {
 		javaPackagerPlugin {
@@ -46,7 +46,7 @@ dependencies {
 	implementation 'org.apache.maven:maven-plugin-api:3.6.0'
 	implementation 'org.codehaus.plexus:plexus-utils:3.1.1'
 	implementation 'org.twdata.maven:mojo-executor:2.3.0'
-	implementation 'commons-io:commons-io:2.6'
+	implementation 'commons-io:commons-io:2.11.0'
 	implementation 'org.apache.commons:commons-lang3:3.9'
 	implementation 'org.apache.commons:commons-collections4:4.1'
 	implementation 'org.apache.commons:commons-compress:1.21'
@@ -70,7 +70,7 @@ dependencies {
 }
 
 group = 'io.github.fvarrui'
-version = '1.6.7'
+version = '1.7.0'
 description = 'Hybrid Maven/Gradle plugin to package Java applications as native Windows, Mac OS X or GNU/Linux executables and create installers for them'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -84,6 +84,11 @@ publishing {
 			from(components.java)
 		}
 	}
+}
+
+java {
+	withSourcesJar()
+	// and/or analogously use "withJavadocJar()" to get a "javadocJar" task
 }
 
 install.repositories.mavenInstaller.pom.with {
@@ -128,7 +133,7 @@ task generatePluginDescriptor(type: JavaExec, dependsOn: compileJava) {
 						.with {
 							appendNode('id', 'gradle')
 							appendNode('name', 'Gradle Plugin Portal')
-							appendNode('url', 'https://plugins.gradle.org/m2/')                    		
+							appendNode('url', 'https://plugins.gradle.org/m2/')
 						}
 					asNode().appendNode('build')
 						.with {
@@ -156,18 +161,18 @@ if (project.hasProperty('release')) {
 	apply plugin: 'signing'
 	apply plugin: 'maven'
 
-	task javadocJar(type: Jar) {
+	task deployingJavadocJar(type: Jar) {
 		classifier = 'javadoc'
 		from javadoc
 	}
 	
-	task sourcesJar(type: Jar) {
+	task deployingSourcesJar(type: Jar) {
 		classifier = 'sources'
 		from sourceSets.main.allSource
 	}
 	
 	artifacts {
-		archives javadocJar, sourcesJar
+		archives deployingJavadocJar, deployingSourcesJar
 	}
 
 	// Signature of artifacts
@@ -227,8 +232,8 @@ nexusStaging {
 
 task updateUniversalJavaApplicationStub(type : Download) {
 	def version = '20220410.162252'
-	group 'Update universalJavaApplicationStub'
-	description 'Downloads and ovewrites compiled and scripted versions of universalJavaApplicationStub to src/main/resources/mac and overrides the existing ones.'	
+	group 'Update assets'
+	description 'Downloads compiled and scripted versions of universalJavaApplicationStub to src/main/resources/mac overriding the existing ones.'	
 	src([
 		"https://github.com/fvarrui/universalJavaApplicationStub/releases/download/${version}/universalJavaApplicationStub.sh",
 		"https://github.com/fvarrui/universalJavaApplicationStub/releases/download/${version}/universalJavaApplicationStub.x86_64",
@@ -236,6 +241,17 @@ task updateUniversalJavaApplicationStub(type : Download) {
 		"https://github.com/fvarrui/universalJavaApplicationStub/releases/download/${version}/universalJavaApplicationStub"
 	])
 	dest file('src/main/resources/mac')
+    overwrite true
+}
+
+task updateWhyJavaLauncher(type : Download) {
+	def version = '1.1.2'
+	group 'Update assets'
+	description 'Downloads JavaLauncher.exe to src/main/resources/windows and overwrites the existing one.'	
+	src([
+		"https://github.com/AstroImageJ/Why/releases/download/${version}/JavaLauncher.exe"
+	])
+	dest file('src/main/resources/windows')
     overwrite true
 }
 

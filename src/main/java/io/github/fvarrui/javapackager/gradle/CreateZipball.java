@@ -35,8 +35,9 @@ public class CreateZipball extends ArtifactGenerator<Packager> {
 		File appFolder = packager.getAppFolder();
 		File executable = packager.getExecutable();
 		String jreDirectoryName = packager.getJreDirectoryName();
-		
-		File zipFile = new File(outputDirectory, name + "-" + version + "-" + platform + ".zip");
+
+		String zipFileName = packager.getZipballName() != null ? packager.getZipballName() : name + "-" + version + "-" + platform + ".zip";
+		File zipFile = new File(outputDirectory, zipFileName);
 
 		Zip zipTask = createZipTask();
 		zipTask.setProperty("archiveFileName", zipFile.getName());

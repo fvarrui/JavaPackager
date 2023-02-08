@@ -11,3 +11,24 @@ target
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
 src/main/resources/windows/winrun4j-launcher.jar
+
+# Log file
+*.log
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# IntelliJ
+**/.idea/
+**.iml
+
+# Eclipse
+**/.settings/
+
+# Maven
+**/target/
+**/*.xml.releaseBackup
+/release.properties
+
+## More
+.DS_Store

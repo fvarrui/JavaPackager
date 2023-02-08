@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.plexus.util.cli.CommandLineException;
@@ -29,6 +30,10 @@ public class CommandUtils {
 		return executeOnDirectory(new File("."), executable, arguments);
 	}
 	
+	public static String execute(String executable, List<Object> arguments) throws IOException, CommandLineException {
+		return executeOnDirectory(new File("."), executable, arguments.toArray(new Object[0]));
+	}
+	
 	public static ExecutionResult executeWithResult(File workingDirectory, String executable, Object... arguments) throws IOException, CommandLineException {
 		ExecutionResult result = new ExecutionResult();
 		
@@ -47,7 +52,7 @@ public class CommandUtils {
 
 		Process process = command.execute();
 
-		BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream()));
+		BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream(), CharsetUtil.getCommandLineCharset()));
 		BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 		while (process.isAlive() || output.ready() || error.ready()) {
 			if (output.ready()) {
@@ -69,6 +74,14 @@ public class CommandUtils {
 		result.setError(errorBuffer.toString());
 		result.setExitCode(process.exitValue());
 			
+		return result;
+	}
+	
+	public static String run(String command) throws IOException {
+    	Process p = Runtime.getRuntime().exec(command);
+        BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String result = br.readLine();	        	
+		br.close();
 		return result;
 	}
 

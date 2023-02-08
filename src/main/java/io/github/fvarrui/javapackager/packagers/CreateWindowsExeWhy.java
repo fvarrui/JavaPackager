@@ -4,6 +4,7 @@ import java.io.File;
 
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
+import io.github.fvarrui.javapackager.model.WindowsExeCreationTool;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
@@ -15,7 +16,7 @@ import io.github.fvarrui.javapackager.utils.VelocityUtils;
 public class CreateWindowsExeWhy extends AbstractCreateWindowsExe {
 
 	public CreateWindowsExeWhy() {
-		super("why");
+		super(WindowsExeCreationTool.why);
 	}
 
 	@Override

@@ -44,7 +44,6 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 		List<String> requiredModules = packager.getModules();
 		List<String> additionalModules = packager.getAdditionalModules();
 		List<File> additionalModulePaths = packager.getAdditionalModulePaths();
-		
 		File currentJdk = packager.getPackagingJdk();
 		
 		Logger.infoIndent("Bundling JRE ... with " + currentJdk);
@@ -106,12 +105,12 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 			
 			Logger.info("Creating customized JRE ...");
 			
-			// tests if specified JDK is for the same platform than target platform
+			// tests if specified JDK is for the same platform as target platform
 			if (!JDKUtils.isValidJDK(platform, jdkPath)) {
 				throw new Exception("Invalid JDK for platform '" + platform + "': " + jdkPath);
 			}
 			
-			String modules = getRequiredModules(libsFolder, customizedJre, jarFile, requiredModules, additionalModules, additionalModulePaths);
+			String modules = getRequiredModules(currentJdk, libsFolder, customizedJre, jarFile, requiredModules, additionalModules, additionalModulePaths);
 
 			Logger.info("Creating JRE with next modules included: " + modules);
 
@@ -124,7 +123,7 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 	
 			if (destinationFolder.exists()) FileUtils.removeFolder(destinationFolder);
 
-			String jlink = new File(currentJdk, "/bin/jlink").getAbsolutePath();
+			File jlink = new File(currentJdk, "/bin/jlink");
 			
 			// generates customized jre using modules
 			CommandUtils.execute(
@@ -145,13 +144,13 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 
 		}
 		
-		// removes jre/legal folder as it causes problems when codesigning from Mac OS
+		// removes jre/legal folder as it causes problems when codesigning from MacOS
 		File legalFolder = new File(destinationFolder, "legal");
 		if (legalFolder.exists()) {
 			FileUtils.removeFolder(legalFolder);
 		}
 
-		// removes jre/man folder as it causes problems when codesigning from Mac OS
+		// removes jre/man folder as it causes problems when codesigning from MacOS
 		File manFolder = new File(destinationFolder, "man");
 		if (manFolder.exists()) {
 			FileUtils.removeFolder(manFolder);
@@ -182,11 +181,11 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 	 * @return string containing a comma separated list with all needed modules
 	 * @throws Exception Process failed
 	 */
-	protected String getRequiredModules(File libsFolder, boolean customizedJre, File jarFile, List<String> defaultModules, List<String> additionalModules, List<File> additionalModulePaths) throws Exception {
+	protected String getRequiredModules(File packagingJdk, File libsFolder, boolean customizedJre, File jarFile, List<String> defaultModules, List<String> additionalModules, List<File> additionalModulePaths) throws Exception {
 		
 		Logger.infoIndent("Getting required modules ... ");
 		
-		File jdeps = new File(System.getProperty("java.home"), "/bin/jdeps");
+		File jdeps = new File(packagingJdk, "/bin/jdeps");
 
 		File jarLibs = null;
 		if (libsFolder != null && libsFolder.exists()) 
@@ -251,15 +250,15 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 
 		} else {
 			
-			modulesList = Arrays.asList("ALL-MODULE-PATH");
+			modulesList = new ArrayList<>();
 			
 		}
-				
-		modulesList.addAll(additionalModules);
 		
 		if (modulesList.isEmpty()) {
 			Logger.warn("It was not possible to determine the necessary modules. All modules will be included");
 			modulesList.add("ALL-MODULE-PATH");
+		} else {
+			modulesList.addAll(additionalModules);			
 		}
 		
 		Logger.infoUnindent("Required modules found: " + modulesList);
