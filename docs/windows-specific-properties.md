@@ -10,7 +10,7 @@
     <generateMsm>true|false</generateMsm>
 
     <!-- exe creation properties -->
-    <headerType>gui</headerType>
+    <headerType>gui|console</headerType>
     <wrapJar>true|false</wrapJar>
     <companyName>${organizationName}</companyName>
     <fileVersion>1.0.0.0</fileVersion>
