@@ -128,6 +128,12 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 		CommandUtils.execute(rcedit, getGenericExe(), "--set-icon", getGenericIcon());
 		CommandUtils.execute(rcedit, getGenericExe(), "--application-manifest", getGenericManifest());
 		CommandUtils.execute(rcedit, getGenericExe(), "--set-version-string", "FileDescription", name);
+		CommandUtils.execute(rcedit, getGenericExe(), "--set-file-version", winConfig.getFileVersion());
+		CommandUtils.execute(rcedit, getGenericExe(), "--set-product-version", winConfig.getProductVersion());
+		CommandUtils.execute(rcedit, getGenericExe(), "--set-version-string", "CompanyName", winConfig.getCompanyName());
+		CommandUtils.execute(rcedit, getGenericExe(), "--set-version-string", "InternalName", winConfig.getInternalName());
+		CommandUtils.execute(rcedit, getGenericExe(), "--set-version-string", "OriginalFilename", winConfig.getOriginalFilename());
+		CommandUtils.execute(rcedit, getGenericExe(), "--set-version-string", "ProductName", winConfig.getProductName());
 
 		// copies JAR to libs folder
 		FileUtils.copyFileToFolder(jarFile, appFolder);
