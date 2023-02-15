@@ -1,6 +1,8 @@
 # Windows tools installation guide
 
-As explained in the [docs](https://github.com/fvarrui/JavaPackager#generated-artifacts), you must install [Inno Setup (iscc)](https://jrsoftware.org/isinfo.php) to generate an EXE installer and [WIX Toolset (candle and light)](https://wixtoolset.org/) to generate a MSI file.
+As explained in the [docs](https://github.com/fvarrui/JavaPackager#generated-artifacts), you must install [Inno Setup (iscc)](https://jrsoftware.org/isinfo.php) to generate an EXE installer and [WIX Toolset (candle and light)](https://wixtoolset.org/) to generate an MSI file.       
+
+For Inno Setup 5.x, the Unicode version should be used, because the scripts that JavaPacker will be creating as an input will be UTF-8 encoded.
 
 ## Using Chocolatey
 You can install both tools in a simple way using [Chocolatey](https://chocolatey.org/) package manager:
