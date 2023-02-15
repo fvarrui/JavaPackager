@@ -10,7 +10,7 @@
     <generateMsm>true|false</generateMsm>
 
     <!-- exe creation properties -->
-    <headerType>gui</headerType>
+    <headerType>gui|console</headerType>
     <wrapJar>true|false</wrapJar>
     <companyName>${organizationName}</companyName>
     <fileVersion>1.0.0.0</fileVersion>
@@ -55,10 +55,10 @@
     <registry>
         <entries>
             <entry>
-                    <key>root:path/to/my/key</key>
-                    <valueName>name</valueName>
-                    <valueType>type</valueType>
-                    <valueData>data</valueData>
+                <key>root:path/to/my/key</key>
+                <valueName>name</valueName>
+                <valueType>type</valueType>
+                <valueData>data</valueData>
             </entry>
             [...]
         </entries>
