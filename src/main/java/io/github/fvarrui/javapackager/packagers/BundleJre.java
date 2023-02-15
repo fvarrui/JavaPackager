@@ -124,19 +124,38 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 			if (destinationFolder.exists()) FileUtils.removeFolder(destinationFolder);
 
 			File jlink = new File(currentJdk, "/bin/jlink");
-			
+
+			List<String> args = new ArrayList<>();
+			args.add("--module-path");
+			args.add(""+modulesDir);
+			args.addAll(Arrays.asList(additionalModulePathsToParams(additionalModulePaths)));
+			args.add("--add-modules");
+			args.add(modules);
+			args.add("--output");
+			args.add(""+ destinationFolder);
+			args.add("--no-header-files");
+			args.add("--strip-debug");
+			args.add("--compress=2");
+
 			// generates customized jre using modules
-			CommandUtils.execute(
-					jlink, 
-					"--module-path", modulesDir, 
-					additionalModulePathsToParams(additionalModulePaths),
-					"--add-modules", modules, 
-					"--output", destinationFolder, 
-					"--no-header-files", 
-					"--no-man-pages", 
-					"--strip-debug", 
-					"--compress=2"
-				);
+					CommandUtils.execute(
+							jlink,
+							args.toArray()
+					);
+
+
+			// generates customized jre using modules
+//			CommandUtils.execute(
+//					jlink,
+//					"--module-path", modulesDir,
+//					additionalModulePathsToParams(additionalModulePaths),
+//					"--add-modules", modules,
+//					"--output", destinationFolder,
+//					"--no-header-files",
+//					"--no-man-pages",
+//					"--strip-debug",
+//					"--compress=2"
+//				);
 	
 			// sets execution permissions on executables in jre
 			File binFolder = new File(destinationFolder, "bin");
@@ -225,17 +244,21 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 					.collect(Collectors.toList());
 			
 		} else if (customizedJre && VersionUtils.getJavaMajorVersion() >= 9) { 
-		
+
+			List<String> args = new ArrayList<>();
+			args.add("-q");
+			args.add("--multi-release");
+			args.add(""+VersionUtils.getJavaMajorVersion());
+			args.add("--ignore-missing-deps");
+			args.add("--list-deps");
+			args.addAll(Arrays.asList(additionalModulePathsToParams(additionalModulePaths)));
+			args.add(""+jarLibs);
+			args.add(""+jarFile);
+
 			String modules = 
 				CommandUtils.execute(
 					jdeps.getAbsolutePath(), 
-					"-q",
-					"--multi-release", VersionUtils.getJavaMajorVersion(),
-					"--ignore-missing-deps",					
-					"--list-deps",
-					additionalModulePathsToParams(additionalModulePaths),
-					jarLibs,
-					jarFile
+					args.toArray()
 				);
 
 			modulesList = 
