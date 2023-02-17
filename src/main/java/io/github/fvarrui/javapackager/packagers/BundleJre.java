@@ -110,7 +110,7 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 				throw new Exception("Invalid JDK for platform '" + platform + "': " + jdkPath);
 			}
 			
-			String modules = getRequiredModules(currentJdk, libsFolder, customizedJre, jarFile, requiredModules, additionalModules, additionalModulePaths);
+			List<String> modules = getRequiredModules(currentJdk, libsFolder, customizedJre, jarFile, requiredModules, additionalModules, additionalModulePaths);
 
 			Logger.info("Creating JRE with next modules included: " + modules);
 
@@ -125,37 +125,20 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 
 			File jlink = new File(currentJdk, "/bin/jlink");
 
-			List<String> args = new ArrayList<>();
+			List<Object> args = new ArrayList<>();
 			args.add("--module-path");
-			args.add(""+modulesDir);
-			args.addAll(Arrays.asList(additionalModulePathsToParams(additionalModulePaths)));
+			args.add(modulesDir);
+			args.addAll(additionalModulePathsToParams(additionalModulePaths));
 			args.add("--add-modules");
-			args.add(modules);
+			args.add(StringUtils.join(modules, ","));
 			args.add("--output");
-			args.add(""+ destinationFolder);
+			args.add(destinationFolder);
 			args.add("--no-header-files");
 			args.add("--strip-debug");
 			args.add("--compress=2");
 
 			// generates customized jre using modules
-					CommandUtils.execute(
-							jlink,
-							args.toArray()
-					);
-
-
-			// generates customized jre using modules
-//			CommandUtils.execute(
-//					jlink,
-//					"--module-path", modulesDir,
-//					additionalModulePathsToParams(additionalModulePaths),
-//					"--add-modules", modules,
-//					"--output", destinationFolder,
-//					"--no-header-files",
-//					"--no-man-pages",
-//					"--strip-debug",
-//					"--compress=2"
-//				);
+			CommandUtils.execute(jlink, args);
 	
 			// sets execution permissions on executables in jre
 			File binFolder = new File(destinationFolder, "bin");
@@ -194,13 +177,13 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 	 * @param libsFolder folder containing all needed libraries
 	 * @param customizedJre if true generates a customized JRE, including only identified or specified modules. Otherwise, all modules will be included.
 	 * @param jarFile Runnable jar file reference
-	 * @param defaultModules Additional files and folders to include in the bundled app.
-	 * @param additionalModules Defines modules to customize the bundled JRE. Don't use jdeps to get module dependencies.
+	 * @param requiredModules List of specific modules to customize the bundled JRE. Don't use jdeps to get module dependencies.
+	 * @param additionalModules List of additional modules to customize the bundled JRE. 
 	 * @param additionalModulePaths Defines additional module paths to customize the bundled JRE.
 	 * @return string containing a comma separated list with all needed modules
 	 * @throws Exception Process failed
 	 */
-	protected String getRequiredModules(File packagingJdk, File libsFolder, boolean customizedJre, File jarFile, List<String> defaultModules, List<String> additionalModules, List<File> additionalModulePaths) throws Exception {
+	protected List<String> getRequiredModules(File packagingJdk, File libsFolder, boolean customizedJre, File jarFile, List<String> requiredModules, List<String> additionalModules, List<File> additionalModulePaths) throws Exception {
 		
 		Logger.infoIndent("Getting required modules ... ");
 		
@@ -214,27 +197,27 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 		
 		List<String> modulesList;
 		
-		if (customizedJre && defaultModules != null && !defaultModules.isEmpty()) {
+		if (customizedJre && requiredModules != null && !requiredModules.isEmpty()) {
 			
 			modulesList = 
-				defaultModules
+				requiredModules
 					.stream()
 					.map(module -> module.trim())
 					.collect(Collectors.toList());
 		
 		} else if (customizedJre && VersionUtils.getJavaMajorVersion() >= 13) { 
 			
-			String modules = 
-				CommandUtils.execute(
-					jdeps.getAbsolutePath(), 
-					"-q",
-					"--multi-release", VersionUtils.getJavaMajorVersion(),
-					"--ignore-missing-deps",
-					"--print-module-deps",
-					additionalModulePathsToParams(additionalModulePaths),
-					jarLibs,
-					jarFile
-				);
+			List<Object> args = new ArrayList<>();
+			args.add("-q");
+			args.add("--multi-release");
+			args.add(VersionUtils.getJavaMajorVersion());
+			args.add("--ignore-missing-deps");
+			args.add("--print-module-deps");
+			args.addAll(additionalModulePathsToParams(additionalModulePaths));
+			args.add(jarLibs);
+			args.add(jarFile);
+			
+			String modules = CommandUtils.execute(jdeps, args);
 			
 			modulesList = 
 				Arrays.asList(modules.split(","))
@@ -245,21 +228,17 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 			
 		} else if (customizedJre && VersionUtils.getJavaMajorVersion() >= 9) { 
 
-			List<String> args = new ArrayList<>();
+			List<Object> args = new ArrayList<>();
 			args.add("-q");
 			args.add("--multi-release");
-			args.add(""+VersionUtils.getJavaMajorVersion());
+			args.add(VersionUtils.getJavaMajorVersion());
 			args.add("--ignore-missing-deps");
 			args.add("--list-deps");
-			args.addAll(Arrays.asList(additionalModulePathsToParams(additionalModulePaths)));
-			args.add(""+jarLibs);
-			args.add(""+jarFile);
+			args.addAll(additionalModulePathsToParams(additionalModulePaths));
+			args.add(jarLibs);
+			args.add(jarFile);
 
-			String modules = 
-				CommandUtils.execute(
-					jdeps.getAbsolutePath(), 
-					args.toArray()
-				);
+			String modules = CommandUtils.execute(jdeps, args);
 
 			modulesList = 
 				Arrays.asList(modules.split("\n"))
@@ -286,26 +265,28 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 		
 		Logger.infoUnindent("Required modules found: " + modulesList);
 		
-		return StringUtils.join(modulesList, ",");
+		return modulesList;
 	}
 	
-	private String [] additionalModulePathsToParams(List<File> additionalModulePaths) {
+	private List<String> additionalModulePathsToParams(List<File> additionalModulePaths) {
 		
 		List<String> additionalPaths = new ArrayList<>();
 		
 		additionalModulePaths
 			.stream()
 			.filter(path -> {
-				if (path.exists()) return true;
-				Logger.warn("Additional module path not found: " + path);
-				return false;
+				if (!path.exists()) {
+					Logger.warn("Additional module path not found: " + path);
+					return false;
+				}
+				return true;
 			})
 			.forEach(path -> {
 				additionalPaths.add("--module-path");
 				additionalPaths.add(path.toString());
 			});
 		
-		return additionalPaths.toArray(new String[0]);
+		return additionalPaths;
 	}
 
 }

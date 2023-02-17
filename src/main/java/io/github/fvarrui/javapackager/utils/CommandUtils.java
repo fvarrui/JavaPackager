@@ -29,6 +29,10 @@ public class CommandUtils {
 	public static String execute(String executable, Object... arguments) throws IOException, CommandLineException {
 		return executeOnDirectory(new File("."), executable, arguments);
 	}
+
+	public static String execute(File executable, List<Object> arguments) throws IOException, CommandLineException {
+		return execute(executable.getAbsolutePath(), arguments);
+	}
 	
 	public static String execute(String executable, List<Object> arguments) throws IOException, CommandLineException {
 		return executeOnDirectory(new File("."), executable, arguments.toArray(new Object[0]));
