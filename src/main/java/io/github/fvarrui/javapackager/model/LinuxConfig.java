@@ -17,6 +17,7 @@ public class LinuxConfig implements Serializable {
 	private boolean generateDeb = true;
 	private boolean generateRpm = true;
 	private boolean generateAppImage = true;
+	private boolean generateSnap = false;
 	private File pngFile;
 	private boolean wrapJar = true;
 	
@@ -52,6 +53,14 @@ public class LinuxConfig implements Serializable {
 		this.generateAppImage = generateAppImage;
 	}
 
+	public boolean isGenerateSnap() {
+		return generateSnap;
+	}
+	
+	public void setGenerateSnap(boolean generateSnap) {
+		this.generateSnap = generateSnap;
+	}
+
 	public File getPngFile() {
 		return pngFile;
 	}
@@ -71,12 +80,12 @@ public class LinuxConfig implements Serializable {
 	@Override
 	public String toString() {
 		return "LinuxConfig [categories=" + categories + ", generateDeb=" + generateDeb + ", generateRpm=" + generateRpm
-				+ ", generateAppImage=" + generateAppImage + ", pngFile=" + pngFile + ", wrapJar=" + wrapJar + "]";
+				+ ", generateAppImage=" + generateAppImage + ", generateSnap=" + generateSnap + ", pngFile=" + pngFile
+				+ ", wrapJar=" + wrapJar + "]";
 	}
 
 	/**
-	 * Tests GNU/Linux specific config and set defaults if not specified
-	 * 
+	 * Checks GNU/Linux specific config and set defaults if not specified
 	 * @param packager Packager
 	 */
 	public void setDefaults(Packager packager) {
