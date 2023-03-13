@@ -195,13 +195,13 @@ public class MacPackager extends Packager {
 
 	private void codesign(String developerId, File entitlements, File appFile) throws Exception {
 
-		prepareEntitlementFile(entitlements);
+		entitlements = prepareEntitlementFile(entitlements);
 
 		manualDeepSign(appFile, developerId, entitlements);
 
 	}
 
-	private void prepareEntitlementFile(File entitlements) throws Exception {
+	private File prepareEntitlementFile(File entitlements) throws Exception {
 		// if entitlements.plist file not specified, use a default one
 		if (entitlements == null) {
 			Logger.warn("Entitlements file not specified. Using defaults!");
@@ -210,6 +210,7 @@ public class MacPackager extends Packager {
 		} else if (!entitlements.exists()) {
 			throw new Exception("Entitlements file doesn't exist: " + entitlements);
 		}
+		return entitlements;
 	}
 
 	private void manualDeepSign(File appFolder, String developerCertificateName, File entitlements) throws IOException, CommandLineException {
@@ -237,7 +238,6 @@ public class MacPackager extends Packager {
 
 		// finally, sign the top level directory
 		codesign(entitlements, developerCertificateName, appFolder);
-
 	}
 	
 	private void codesign(File entitlements, String developerCertificateName, File file) throws IOException, CommandLineException {
@@ -248,7 +248,7 @@ public class MacPackager extends Packager {
 		arguments.add(entitlements);
 		arguments.add("-s");
 		arguments.add(developerCertificateName);
-		arguments.add(appFolder);
+		arguments.add(file);
 		CommandUtils.execute("codesign", arguments);
 	}
 
