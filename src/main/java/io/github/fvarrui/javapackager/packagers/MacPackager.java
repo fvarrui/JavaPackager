@@ -276,8 +276,10 @@ public class MacPackager extends Packager {
 			});
 		}
 
-		// sign the JRE itself after signing all its contents
-		codesign(developerCertificateName, jreBundleFolder);
+		if(bundleJre) {
+			// sign the JRE itself after signing all its contents
+			codesign(developerCertificateName, jreBundleFolder);
+		}
 
 		// make sure the executable is signed last
 		codesign(entitlements, developerCertificateName, this.executable);
