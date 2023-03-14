@@ -9,11 +9,19 @@ import org.codehaus.plexus.util.cli.CommandLineException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Packager for MacOS
@@ -25,6 +33,7 @@ public class MacPackager extends Packager {
 	private File resourcesFolder;
 	private File javaFolder;
 	private File macOSFolder;
+	private File jreBundleFolder;
 
 	public File getAppFile() {
 		return appFile;
@@ -73,7 +82,8 @@ public class MacPackager extends Packager {
 		// sets common folders
 		this.executableDestinationFolder = macOSFolder;
 		this.jarFileDestinationFolder = javaFolder;
-		this.jreDestinationFolder = new File(contentsFolder, "PlugIns/" + jreDirectoryName + "/Contents/Home");
+		this.jreBundleFolder = new File(contentsFolder, "PlugIns/" + jreDirectoryName + ".jre");
+		this.jreDestinationFolder = new File(jreBundleFolder, "Contents/Home");
 		this.resourcesDestinationFolder = resourcesFolder;
 
 	}
@@ -83,6 +93,9 @@ public class MacPackager extends Packager {
 	 */
 	@Override
 	public File doCreateApp() throws Exception {
+		if(bundleJre) {
+			processRuntimeInfoPlistFile();
+		}
 
 		// copies jarfile to Java folder
 		FileUtils.copyFileToFolder(jarFile, javaFolder);
@@ -96,6 +109,8 @@ public class MacPackager extends Packager {
 		processProvisionProfileFile();
 
 		codesign();
+
+		notarize();
 
 		return appFile;
 	}
@@ -157,6 +172,21 @@ public class MacPackager extends Packager {
 		Logger.info("Info.plist file created in " + infoPlistFile.getAbsolutePath());
 	}
 
+	/**
+	 * Creates and writes the Info.plist inside the JRE if no custom file is specified.
+	 * @throws Exception if anything goes wrong
+	 */
+	private void processRuntimeInfoPlistFile() throws Exception {
+		File infoPlistFile = new File(jreBundleFolder, "Contents/Info.plist");
+		if(macConfig.getCustomRuntimeInfoPlist() != null && macConfig.getCustomRuntimeInfoPlist().isFile() && macConfig.getCustomRuntimeInfoPlist().canRead()){
+			FileUtils.copyFileToFile(macConfig.getCustomRuntimeInfoPlist(), infoPlistFile);
+		} else {
+			VelocityUtils.render("mac/RuntimeInfo.plist.vtl", infoPlistFile, this);
+			XMLUtils.prettify(infoPlistFile);
+		}
+		Logger.info("RuntimeInfo.plist file created in " + infoPlistFile.getAbsolutePath());
+	}
+
 	private void codesign() throws Exception {
 		if (!Platform.mac.isCurrentPlatform()) {
 			Logger.warn("Generated app could not be signed due to current platform is " + Platform.getCurrentPlatform());
@@ -164,6 +194,18 @@ public class MacPackager extends Packager {
 			Logger.warn("App codesigning disabled");
 		} else {
 			codesign(this.macConfig.getDeveloperId(), this.macConfig.getEntitlements(), this.appFile);
+		}
+	}
+
+	private void notarize() throws Exception {
+		if (!Platform.mac.isCurrentPlatform()) {
+			Logger.warn("Generated app could not be notarized due to current platform is " + Platform.getCurrentPlatform());
+		} else if (!getMacConfig().isCodesignApp()) {
+			Logger.warn("App codesigning disabled. Cannot notarize unsigned app");
+		} else if (!getMacConfig().isNotarizeApp()) {
+			Logger.warn("App notarization disabled");
+		} else {
+			notarize(this.macConfig.getKeyChainProfile(), this.appFile);
 		}
 	}
 
@@ -195,13 +237,13 @@ public class MacPackager extends Packager {
 
 	private void codesign(String developerId, File entitlements, File appFile) throws Exception {
 
-		prepareEntitlementFile(entitlements);
+		entitlements = prepareEntitlementFile(entitlements);
 
-		manualDeepSign(appFile, developerId, entitlements);
+		signAppBundle(appFile, developerId, entitlements);
 
 	}
 
-	private void prepareEntitlementFile(File entitlements) throws Exception {
+	private File prepareEntitlementFile(File entitlements) throws Exception {
 		// if entitlements.plist file not specified, use a default one
 		if (entitlements == null) {
 			Logger.warn("Entitlements file not specified. Using defaults!");
@@ -210,45 +252,56 @@ public class MacPackager extends Packager {
 		} else if (!entitlements.exists()) {
 			throw new Exception("Entitlements file doesn't exist: " + entitlements);
 		}
+		return entitlements;
 	}
 
-	private void manualDeepSign(File appFolder, String developerCertificateName, File entitlements) throws IOException, CommandLineException {
+	private void signAppBundle(File appFolder, String developerCertificateName, File entitlements) throws IOException, CommandLineException {
+//		Sign all embedded executables and dynamic libraries
+//		Structure and order adapted from the JRE's jpackage
+		try (Stream<Path> stream = Files.walk(appFolder.toPath())) {
+			stream.filter(p -> Files.isRegularFile(p)
+					&& (Files.isExecutable(p) || p.toString().endsWith(".dylib"))
+					&& !(p.toString().contains("dylib.dSYM/Contents"))
+					&& !(p.equals(this.executable.toPath()))
+			).forEach(p -> {
+				if (Files.isSymbolicLink(p)) {
+					Logger.debug("Skipping signing symlink: " + p);
+				} else {
+					try {
+						codesign(Files.isExecutable(p) ? entitlements : null, developerCertificateName, p.toFile());
+					} catch (IOException | CommandLineException e) {
+						throw new RuntimeException(e);
+					}
+				}
+			});
+		}
 
-		// codesign each file in app
-		List<Object> findCommandArgs = new ArrayList<>();
-		findCommandArgs.add(appFolder);
-		findCommandArgs.add("-depth"); // execute 'codesign' in 'reverse order', i.e., deepest files first
-		findCommandArgs.add("-type");
-		findCommandArgs.add("f"); // filter for files only
-		findCommandArgs.add("-exec");
-		findCommandArgs.add("codesign");
-		findCommandArgs.add("-f");
-		addHardenedCodesign(findCommandArgs);
-		findCommandArgs.add("-s");
-		findCommandArgs.add(developerCertificateName);
-		findCommandArgs.add("--entitlements");
-		findCommandArgs.add(entitlements);
-		findCommandArgs.add("{}");
-		findCommandArgs.add("\\;");
-		CommandUtils.execute("find", findCommandArgs);
+		// sign the JRE itself after signing all its contents
+		codesign(developerCertificateName, jreBundleFolder);
 
 		// make sure the executable is signed last
 		codesign(entitlements, developerCertificateName, this.executable);
 
 		// finally, sign the top level directory
 		codesign(entitlements, developerCertificateName, appFolder);
+	}
 
+	private void codesign(String developerCertificateName, File file) throws IOException, CommandLineException {
+		codesign(null, developerCertificateName, file);
 	}
 	
 	private void codesign(File entitlements, String developerCertificateName, File file) throws IOException, CommandLineException {
 		List<Object> arguments = new ArrayList<>();
 		arguments.add("-f");
-		addHardenedCodesign(arguments);
-		arguments.add("--entitlements");
-		arguments.add(entitlements);
+		if(entitlements != null) {
+			addHardenedCodesign(arguments);
+			arguments.add("--entitlements");
+			arguments.add(entitlements);
+		}
+		arguments.add("--timestamp");
 		arguments.add("-s");
 		arguments.add(developerCertificateName);
-		arguments.add(appFolder);
+		arguments.add(file);
 		CommandUtils.execute("codesign", arguments);
 	}
 
@@ -263,4 +316,44 @@ public class MacPackager extends Packager {
 		}
 	}
 
+	private void notarize(String keyChainProfile, File appFile) throws IOException, CommandLineException {
+		Path zippedApp = null;
+		try {
+			zippedApp = zipApp(appFile);
+			List<Object> notarizeArgs = new ArrayList<>();
+			notarizeArgs.add("notarytool");
+			notarizeArgs.add("submit");
+			notarizeArgs.add(zippedApp.toString());
+			notarizeArgs.add("--wait");
+			notarizeArgs.add("--keychain-profile");
+			notarizeArgs.add(keyChainProfile);
+			CommandUtils.execute("xcrun", notarizeArgs);
+		} finally {
+			if(zippedApp != null) {
+				Files.deleteIfExists(zippedApp);
+			}
+		}
+
+		List<Object> stapleArgs = new ArrayList<>();
+		stapleArgs.add("stapler");
+		stapleArgs.add("staple");
+		stapleArgs.add(appFile);
+		CommandUtils.execute("xcrun", stapleArgs);
+	}
+
+	private Path zipApp(File appFile) throws IOException {
+		Path zipPath = assetsFolder.toPath().resolve(appFile.getName() + "-notarization.zip");
+		try(ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(zipPath))) {
+			Path sourcePath = appFile.toPath();
+			Files.walkFileTree(sourcePath, new SimpleFileVisitor<Path>() {
+				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+					zos.putNextEntry(new ZipEntry(sourcePath.getParent().relativize(file).toString()));
+					Files.copy(file, zos);
+					zos.closeEntry();
+					return FileVisitResult.CONTINUE;
+				}
+			});
+		}
+		return zipPath;
+	}
 }
