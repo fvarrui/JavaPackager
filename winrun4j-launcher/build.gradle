@@ -16,8 +16,8 @@ ext {
 }
 
 jar {
-	archiveBaseName = baseName
-	archiveVersion =  version
+	archiveBaseName = project.baseName
+	archiveVersion =  project.version
 }
 
 task copyArtifact {

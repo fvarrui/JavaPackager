@@ -309,7 +309,7 @@ cd JavaPackager
 Run next command (ommit `./` on Windows):
 
 ```bash
-./gradlew -Prelease uploadArchives closeAndReleaseRepository
+./gradlew publish closeAndReleaseRepository
 ```
 
 > Related [guide](https://nemerosa.ghost.io/2015/07/01/publishing-to-the-maven-central-using-gradle/).
