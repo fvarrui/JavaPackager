@@ -82,7 +82,9 @@ buildscript {
     }
 }
 
-apply plugin: 'io.github.fvarrui.javapackager.plugin'
+plugins {
+    id 'io.github.fvarrui.javapackager.plugin'
+}
 ```
 
 Create your packaging task:
@@ -95,7 +97,7 @@ task packageMyApp(type: io.github.fvarrui.javapackager.gradle.PackageTask, depen
     bundleJre = true|false
     generateInstaller = true|false
     administratorRequired = true|false
-    platform = auto|linux|mac|windows
+    platform = "auto"|"linux"|"mac"|"windows"
     additionalResources = [ file('file path'), file('folder path'), ... ]
     linuxConfig {
         ...
