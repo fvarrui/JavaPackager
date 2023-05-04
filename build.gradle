@@ -1,12 +1,12 @@
 plugins {
 	id 'java'    
-	id 'maven'
 	id 'maven-publish'
 	id 'java-gradle-plugin'
-	id 'com.gradle.plugin-publish' version '0.12.0'
+	id 'com.gradle.plugin-publish' version '1.1.0'
 	id 'io.codearte.nexus-staging' version '0.21.2'
 	id 'eclipse'
 	id 'de.undercouch.download' version '5.0.4'
+	id 'signing'
 }
 
 repositories {
@@ -14,27 +14,6 @@ repositories {
 	mavenCentral()
 	maven { 
 		url 'https://plugins.gradle.org/m2/'
-	}
-}
-
-gradlePlugin {
-	plugins {
-		javaPackagerPlugin {
-			id = 'io.github.fvarrui.javapackager.plugin'
-			implementationClass = 'io.github.fvarrui.javapackager.gradle.PackagePlugin'
-		}
-	}
-}
-
-pluginBundle {
-	website = 'http://github.com/fvarrui/JavaPackager'
-	vcsUrl = 'http://github.com/fvarrui/JavaPackager.git'
-	description = 'Packages Java applications as native Windows, MacOS or GNU/Linux executables and creates installers for them'
-	tags = ['java', 'packager', 'gradle-plugin', 'maven-plugin', 'native', 'installer', 'debian-packages', 'rpm-packages', 'dmg', 'maven', 'gradle', 'distribution', 'javapackager', 'linux-executables', 'deb', 'rpm', 'native-windows', 'java-applications', 'pkg', 'msi']
-	plugins {
-		javaPackagerPlugin {
-			displayName = 'JavaPackager'
-		}
 	}
 }
 
@@ -70,7 +49,7 @@ dependencies {
 }
 
 group = 'io.github.fvarrui'
-version = '1.7.0'
+version = '1.7.1'
 description = 'Hybrid Maven/Gradle plugin to package Java applications as native Windows, Mac OS X or GNU/Linux executables and create installers for them'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -78,157 +57,116 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 compileJava.options.encoding = 'UTF-8'
 
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			from(components.java)
-		}
-	}
-}
-
 java {
 	withSourcesJar()
-	// and/or analogously use "withJavadocJar()" to get a "javadocJar" task
-}
-
-install.repositories.mavenInstaller.pom.with {
-	groupId = project.group
-	artifactId = project.name
-	version = project.version
-	description = project.description
-	packaging = 'maven-plugin'
+	withJavadocJar()
 }
 
 build.dependsOn ':winrun4j-launcher:build'
 
+// OSSRH publication
+publishing {
+	repositories {
+		maven {
+			name = "OSSRH"
+			url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+			credentials {
+				username = project.findProperty("ossrhUser") ?: ''
+				password = project.findProperty("ossrhPassword") ?: ''
+			}
+		}
+	}
+	publications {
+		pluginMaven(MavenPublication) {
+			def directory = buildDir.canonicalPath
+			def outputDirectory = compileJava.destinationDirectory.asFile.get().canonicalPath
+			pom.withXml {
+				asNode().appendNode('build')
+						.with {
+							appendNode('directory', directory)
+							appendNode('outputDirectory', outputDirectory)
+						}
+				asNode().appendNode('repositories').appendNode('repository')
+						.with {
+							appendNode('id', 'gradle')
+							appendNode('name', 'Gradle Plugin Portal')
+							appendNode('url', 'https://plugins.gradle.org/m2/')
+						}						
+			}
+			pom {
+				name = project.name
+				groupId = project.group
+				artifactId = project.name
+				version = project.version
+				description = project.description
+				packaging = 'maven-plugin'
+				url = 'https://github.com/fvarrui/JavaPackager'
+				scm {
+					connection = 'scm:git:git://github.com/fvarrui/JavaPackager.git'
+					developerConnection = 'scm:git:git@github.com:fvarrui/fvarrui.git'
+					url = 'https://github.com/fvarrui/JavaPackager'
+				}
+				licenses {
+					license {
+						name = 'GPL-v3.0'
+						url = 'http://www.gnu.org/licenses/gpl-3.0.txt'
+						distribution = 'repo'
+					}
+				}
+				developers {
+					developer {
+						id = 'fvarrui'
+						name = 'Francisco Vargas Ruiz'
+						url = 'https://github.com/fvarrui'
+					}
+				}
+			}
+		}
+	}
+}
+
 // runs the plugin description generator
 task generatePluginDescriptor(type: JavaExec, dependsOn: compileJava) {
-
-	def pomFile = file("$buildDir/pom.xml")
-	def pluginDescriptorFile = new File(project.compileJava.destinationDir, 'META-INF/maven/plugin.xml')
-	def directory = buildDir.canonicalPath
-	def outputDirectory = compileJava.destinationDir.canonicalPath
+	def pluginDescriptorFile = new File(project.compileJava.destinationDirectory.asFile.get(), 'META-INF/maven/plugin.xml')
 
 	// FIXME: this does not seem to be working
 	inputs.files project.compileJava.outputs.files
 	outputs.file pluginDescriptorFile
 
 	classpath = configurations.mavenEmbedder
-	main = 'org.apache.maven.cli.MavenCli'
+	mainClass = 'org.apache.maven.cli.MavenCli'
 	systemProperties['maven.multiModuleProjectDirectory'] = projectDir
 	args = [
 			'--errors',
 			'--batch-mode',
-			'--file', "${buildDir}/pom.xml",
+			'--file', generatePomFileForPluginMavenPublication.destination,
 			'org.apache.maven.plugins:maven-plugin-plugin:3.6.0:descriptor',
 			'-Dproject.build.sourceEncoding=' + compileJava.options.encoding
 	]
-
-	doFirst {
-		install.repositories
-				.mavenInstaller
-				.pom
-				.withXml {
-					asNode().appendNode('repositories').appendNode('repository')
-						.with {
-							appendNode('id', 'gradle')
-							appendNode('name', 'Gradle Plugin Portal')
-							appendNode('url', 'https://plugins.gradle.org/m2/')
-						}
-					asNode().appendNode('build')
-						.with {
-							appendNode('directory', directory)
-							appendNode('outputDirectory', outputDirectory)
-						}
-				}
-				.writeTo(pomFile)
-
-		assert pomFile.file, "${pomFile.canonicalPath}: was not generated"
-		logger.info("POM is generated in ${pomFile.canonicalPath}")
-	}
-
 	doLast {
 		assert pluginDescriptorFile.file, "${pluginDescriptorFile.canonicalPath}: was not generated"
 		logger.info("Plugin descriptor is generated in ${pluginDescriptorFile.canonicalPath}")
 	}
 }
+generatePluginDescriptor.dependsOn(generatePomFileForPluginMavenPublication)
 
-project.jar.dependsOn(generatePluginDescriptor)
+project.classes.dependsOn(generatePluginDescriptor)
+project.validatePlugins.dependsOn(generatePluginDescriptor)
 publishToMavenLocal.dependsOn(build)
-    
-if (project.hasProperty('release')) {
 
-	apply plugin: 'signing'
-	apply plugin: 'maven'
-
-	task deployingJavadocJar(type: Jar) {
-		classifier = 'javadoc'
-		from javadoc
+// Signature of publication
+signing {
+	setRequired {
+		// signing is only required if the artifacts are to be published
+		gradle.taskGraph.allTasks.any { it instanceof PublishToMavenRepository }
 	}
-	
-	task deployingSourcesJar(type: Jar) {
-		classifier = 'sources'
-		from sourceSets.main.allSource
-	}
-	
-	artifacts {
-		archives deployingJavadocJar, deployingSourcesJar
-	}
-
-	// Signature of artifacts
-	signing {
-		sign configurations.archives
-	}
-
-	// OSSRH publication
-	uploadArchives {
-		repositories {
-			mavenDeployer {
-				// POM signature
-				beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-				// Target repository
-				repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-					authentication(userName: ossrhUser, password: ossrhPassword)
-				}
-				pom.project {
-					name project.name
-					description project.description
-					packaging = 'maven-plugin'
-					url 'https://github.com/fvarrui/JavaPackager'
-
-					scm {
-						connection 'scm:git:git://github.com/fvarrui/JavaPackager.git'
-						developerConnection 'scm:git:git@github.com:fvarrui/fvarrui.git'
-						url 'https://github.com/fvarrui/JavaPackager'
-					}
-
-					licenses {
-						license {
-							name 'GPL-v3.0'
-							url 'http://www.gnu.org/licenses/gpl-3.0.txt'
-							distribution 'repo'
-						}
-					}
-
-					developers {
-						developer {
-							id = 'fvarrui'
-							name = 'Francisco Vargas Ruiz'
-							url = 'https://github.com/fvarrui'
-						}
-					}
-				}
-			}
-		}
-	}
-	
+	sign publishing.publications.pluginMaven
 }
 
 nexusStaging {
 	username = project.findProperty('ossrhUser') ?: ''
 	password = project.findProperty('ossrhPassword') ?: ''
 }
-
 
 task updateUniversalJavaApplicationStub(type : Download) {
 	def version = '20220410.162252'

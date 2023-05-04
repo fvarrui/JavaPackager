@@ -1,6 +1,6 @@
 # JavaPackager
 
-[![Maven Central](http://img.shields.io/maven-central/v/io.github.fvarrui/javapackager)](https://central.sonatype.com/artifact/io.github.fvarrui/javapackager/1.7.0)
+[![Maven Central](http://img.shields.io/maven-central/v/io.github.fvarrui/javapackager)](https://central.sonatype.com/artifact/io.github.fvarrui/javapackager/1.7.1)
 [![GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-%250778B9.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 
 JavaPackager is a hybrid plugin for **Maven** and **Gradle** which provides an easy way to package Java applications in native Windows, MacOS or GNU/Linux executables, and generate installers for them.
@@ -309,7 +309,7 @@ cd JavaPackager
 Run next command (ommit `./` on Windows):
 
 ```bash
-./gradlew -Prelease uploadArchives closeAndReleaseRepository
+./gradlew publish closeAndReleaseRepository
 ```
 
 > Related [guide](https://nemerosa.ghost.io/2015/07/01/publishing-to-the-maven-central-using-gradle/).

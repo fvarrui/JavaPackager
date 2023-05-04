@@ -16,6 +16,8 @@
     <entitlements>path/to/entitlements.plist</entitlements>
     <codesignApp>true|false</codesignApp>
     <hardenedCodesign>true|false</hardenedCodesign>
+    <notarizeApp>true|false</notarizeApp>
+    <keyChainProfile>xcrun_notarytool_profile_name</keyChainProfile>
 
     <!-- properties used for DMG disk image generation -->
     <backgroundImage>path/to/png</backgroundImage>
@@ -62,11 +64,13 @@
 ## Signing properties
 
 | Property           | Mandatory | Default value | Description                                                                                                                                         |
-| ------------------ | --------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+|--------------------| --------- |---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
 | `developerId`      | :x:       |               | Signing identity.                                                                                                                                   |
 | `entitlements`     | :x:       |               | Path to [entitlements](https://developer.apple.com/documentation/bundleresources/entitlements) file.                                                |
 | `codesignApp`      | :x:       | `true`        | If it is set to `false`, generated app will not be codesigned.                                                                                      |
 | `hardenedCodesign` | :x:       | `true`        | If it is set to `true`, enable [hardened runtime](https://developer.apple.com/documentation/security/hardened_runtime) if MacOS version >= 10.13.6. |
+| `notarizeApp`      | :x:       | `false`       | If it is set to `true`, generated app will be submitted to apple for notarization and the ticket will be stapled.                                   |
+| `keyChainProfile`  | :x:       |               | Profile name originally provided to `xcrun notarytool store-credentials`. Must be set if `notarizeApp` is `true`.
 | `macStartup`       | :x:       | `SCRIPT`      | App startup type, using a `SCRIPT` or a binary (compiled version of the script: `UNIVERSAL`, `X86_64` or `ARM64`).                                  |
 
 ## DMG generation properties
