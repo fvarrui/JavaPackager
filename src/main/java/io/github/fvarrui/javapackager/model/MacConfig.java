@@ -36,7 +36,10 @@ public class MacConfig implements Serializable {
 	private File provisionProfile;
 	private File customLauncher;
 	private File customInfoPlist;
+	private File customRuntimeInfoPlist;
 	private boolean codesignApp = true;
+	private boolean notarizeApp = false;
+	private String keyChainProfile;
 	private InfoPlist infoPlist = new InfoPlist();
 	private boolean hardenedCodesign = true;
 	private MacStartup macStartup = MacStartup.SCRIPT;
@@ -209,6 +212,14 @@ public class MacConfig implements Serializable {
 		this.customInfoPlist = customInfoPlist;
 	}
 
+	public File getCustomRuntimeInfoPlist() {
+		return customRuntimeInfoPlist;
+	}
+
+	public void setCustomRuntimeInfoPlist(File customRuntimeInfoPlist) {
+		this.customRuntimeInfoPlist = customRuntimeInfoPlist;
+	}
+
 	public File getProvisionProfile() {
 		return provisionProfile;
 	}
@@ -231,6 +242,22 @@ public class MacConfig implements Serializable {
 
 	public void setCodesignApp(boolean codesignApp) {
 		this.codesignApp = codesignApp;
+	}
+
+	public boolean isNotarizeApp() {
+		return notarizeApp;
+	}
+
+	public void setNotarizeApp(boolean notarizeApp) {
+		this.notarizeApp = notarizeApp;
+	}
+
+	public String getKeyChainProfile() {
+		return keyChainProfile;
+	}
+
+	public void setKeyChainProfile(String keyChainProfile) {
+		this.keyChainProfile = keyChainProfile;
 	}
 
 	public InfoPlist getInfoPlist() {
@@ -266,9 +293,10 @@ public class MacConfig implements Serializable {
 				+ ", volumeName=" + volumeName + ", generateDmg=" + generateDmg + ", generatePkg=" + generatePkg
 				+ ", relocateJar=" + relocateJar + ", appId=" + appId + ", developerId=" + developerId
 				+ ", entitlements=" + entitlements + ", provisionProfile=" + provisionProfile + ", customLauncher="
-				+ customLauncher + ", customInfoPlist=" + customInfoPlist + ", codesignApp=" + codesignApp
-				+ ", infoPlist=" + infoPlist + ", hardenedCodesign=" + hardenedCodesign + ", macStartup=" + macStartup
-				+ "]";
+				+ customLauncher + ", customInfoPlist=" + customInfoPlist + ", customRuntimeInfoPlist="
+				+ customRuntimeInfoPlist + ", codesignApp=" + codesignApp + ", notarizeApp=" + notarizeApp
+				+ ", keyChainProfile=" + keyChainProfile + ", infoPlist=" + infoPlist + ", hardenedCodesign="
+				+ hardenedCodesign + ", macStartup=" + macStartup + "]";
 	}
 
 	/**
