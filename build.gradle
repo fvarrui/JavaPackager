@@ -17,21 +17,6 @@ repositories {
 	}
 }
 
-gradlePlugin {
-	website = 'http://github.com/fvarrui/JavaPackager'
-	vcsUrl = 'http://github.com/fvarrui/JavaPackager.git'
-	description = 'Packages Java applications as native Windows, MacOS or GNU/Linux executables and creates installers for them'
-
-	plugins {
-		create("javaPackagerPlugin") {
-			id = 'io.github.fvarrui.javapackager.plugin'
-			displayName = 'JavaPackager'
-			implementationClass = 'io.github.fvarrui.javapackager.gradle.PackagePlugin'
-			tags.set(['java', 'packager', 'gradle-plugin', 'maven-plugin', 'native', 'installer', 'debian-packages', 'rpm-packages', 'dmg', 'maven', 'gradle', 'distribution', 'javapackager', 'linux-executables', 'deb', 'rpm', 'native-windows', 'java-applications', 'pkg', 'msi'])
-		}
-	}
-}
-
 configurations {
 	mavenEmbedder
 }
@@ -64,7 +49,7 @@ dependencies {
 }
 
 group = 'io.github.fvarrui'
-version = '1.7.1-SNAPSHOT'
+version = '1.7.1'
 description = 'Hybrid Maven/Gradle plugin to package Java applications as native Windows, Mac OS X or GNU/Linux executables and create installers for them'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -85,9 +70,6 @@ publishing {
 		maven {
 			name = "OSSRH"
 			url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-
-			url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-
 			credentials {
 				username = project.findProperty("ossrhUser") ?: ''
 				password = project.findProperty("ossrhPassword") ?: ''
@@ -105,22 +87,19 @@ publishing {
 							appendNode('outputDirectory', outputDirectory)
 						}
 			}
-
 			pom {
+				name = project.name
 				groupId = project.group
 				artifactId = project.name
 				version = project.version
 				description = project.description
-
 				packaging = 'maven-plugin'
 				url = 'https://github.com/fvarrui/JavaPackager'
-
 				scm {
 					connection = 'scm:git:git://github.com/fvarrui/JavaPackager.git'
 					developerConnection = 'scm:git:git@github.com:fvarrui/fvarrui.git'
 					url = 'https://github.com/fvarrui/JavaPackager'
 				}
-
 				licenses {
 					license {
 						name = 'GPL-v3.0'
@@ -128,7 +107,6 @@ publishing {
 						distribution = 'repo'
 					}
 				}
-
 				developers {
 					developer {
 						id = 'fvarrui'
@@ -183,7 +161,6 @@ nexusStaging {
 	username = project.findProperty('ossrhUser') ?: ''
 	password = project.findProperty('ossrhPassword') ?: ''
 }
-
 
 task updateUniversalJavaApplicationStub(type : Download) {
 	def version = '20220410.162252'
