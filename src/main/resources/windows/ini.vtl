@@ -2,7 +2,8 @@ main.class=WinRun4JLauncher
 log.level=error
 ini.override=true
 classpath.1=libs\*.jar
-#set ($classpathCounter=2)
+classpath.2=${info.jarFile.name}
+#set ($classpathCounter=3)
 #foreach ($cp in $info.classpaths)
 classpath.${classpathCounter}=$!{cp}
 #set ($classpathCounter=$classpathCounter+1)
