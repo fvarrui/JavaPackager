@@ -82,9 +82,7 @@ buildscript {
     }
 }
 
-plugins {
-    id 'io.github.fvarrui.javapackager.plugin'
-}
+apply plugin: 'io.github.fvarrui.javapackager.plugin'
 ```
 
 Create your packaging task:
@@ -338,7 +336,7 @@ Or a specific SNAPSHOT version (specifying its timestamp and index):
 
 ### Gradle
 
-Add the plugin repository to your `build.gradle`:
+Add the plugin repository to your `build.gradle` and use the latest SNAPSHOT version:
 
 ```groovy
 buildscript {
@@ -347,23 +345,17 @@ buildscript {
             url "https://oss.sonatype.org/content/repositories/snapshots"
         }
     }
-}
-```
-
-And then you can use the latest SNAPSHOT version:
-
-```groovy
-buildscript {
     dependencies {
         classpath 'io.github.fvarrui:javapackager:{javapackager.version}-SNAPSHOT'
     }
 }
 ```
 
-Or a specific SNAPSHOT version (specifying its timestamp and index):
+Or set a specific SNAPSHOT version specifying its timestamp and index:
 
 ```groovy
 buildscript {
+    [...]
     dependencies {
         classpath 'io.github.fvarrui:javapackager:{javapackager.version}-{timestamp}-{index}'
     }
