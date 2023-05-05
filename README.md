@@ -318,7 +318,7 @@ And then you can use the latest SNAPSHOT version:
 <plugin>    
     <groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
-    <version>x.y.z-SNAPSHOT</version>
+    <version>{javapackager.version}-SNAPSHOT</version>
     [...]
 </plugin>
 ```
@@ -329,10 +329,12 @@ Or a specific SNAPSHOT version (specifying its timestamp and index):
 <plugin>
     <groupId>io.github.fvarrui</groupId>
     <artifactId>javapackager</artifactId>
-    <version>x.y.z-timestamp-index</version>
+    <version>{javapackager.version}-{timestamp}-{index}</version>
     [...]
 </plugin>
 ```
+
+> SNAPSHOT version example: `1.7.2-20230505.095442-5`.
 
 ### Gradle
 
@@ -340,11 +342,11 @@ Add the plugin repository to your `build.gradle`:
 
 ```groovy
 buildscript {
-	repositories {
-		maven {
+    repositories {
+        maven {
             url "https://oss.sonatype.org/content/repositories/snapshots"
         }
-	}
+    }
 }
 ```
 
@@ -352,13 +354,23 @@ And then you can use the latest SNAPSHOT version:
 
 ```groovy
 buildscript {
-	dependencies {
-		classpath 'io.github.fvarrui:javapackager:x.y.z-SNAPSHOT'
-	}
+    dependencies {
+        classpath 'io.github.fvarrui:javapackager:{javapackager.version}-SNAPSHOT'
+    }
 }
 ```
 
 Or a specific SNAPSHOT version (specifying its timestamp and index):
+
+```groovy
+buildscript {
+    dependencies {
+        classpath 'io.github.fvarrui:javapackager:{javapackager.version}-{timestamp}-{index}'
+    }
+}
+```
+
+> SNAPSHOT version example: `1.7.2-20230505.095442-5`.
 
 ## How to build and install the plugin in your local repo
 
