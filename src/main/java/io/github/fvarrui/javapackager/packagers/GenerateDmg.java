@@ -134,7 +134,11 @@ public class GenerateDmg extends ArtifactGenerator<MacPackager> {
 		if (!isAarch64) {
 			// makes the top window open itself on mount:
 			Logger.info("Blessing ...");
-			execute("bless", "--folder", mountFolder, "--openfolder", mountFolder);
+			try {
+				execute("bless", "--folder", mountFolder, "--openfolder", mountFolder); }
+			catch (Exception e){
+				Logger.warn("Error blessing " + mountFolder + " due to: " + e.getMessage());
+			}
 		}
 
 		// tells the volume that it has a special file attribute
