@@ -1,15 +1,14 @@
 package io.github.fvarrui.javapackager.gradle;
 
-import io.github.fvarrui.javapackager.model.LinuxConfig;
+import java.util.ArrayList;
+
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Optional;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import io.github.fvarrui.javapackager.model.LinuxConfig;
 
 public abstract class LinuxTaskConfig {
     @Input

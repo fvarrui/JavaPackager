@@ -6,9 +6,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import io.github.fvarrui.javapackager.model.*;
 import org.apache.commons.lang3.StringUtils;
-import org.redline_rpm.header.Architecture;
+
+import io.github.fvarrui.javapackager.model.Arch;
+import io.github.fvarrui.javapackager.model.FileAssociation;
+import io.github.fvarrui.javapackager.model.LinuxConfig;
+import io.github.fvarrui.javapackager.model.MacConfig;
+import io.github.fvarrui.javapackager.model.Manifest;
+import io.github.fvarrui.javapackager.model.Platform;
+import io.github.fvarrui.javapackager.model.Scripts;
+import io.github.fvarrui.javapackager.model.WindowsConfig;
 
 /**
  * Common packagers' settings

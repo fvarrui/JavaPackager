@@ -1,12 +1,12 @@
 package io.github.fvarrui.javapackager.gradle;
 
-import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
-import io.github.fvarrui.javapackager.packagers.Context;
-import io.github.fvarrui.javapackager.utils.Logger;
+import java.util.UUID;
+
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 
-import java.util.UUID;
+import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
+import io.github.fvarrui.javapackager.packagers.Context;
 
 /**
  * JavaPackager Gradle plugin
