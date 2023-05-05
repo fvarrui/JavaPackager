@@ -17,6 +17,21 @@ repositories {
 	}
 }
 
+gradlePlugin {
+	website = 'http://github.com/fvarrui/JavaPackager'
+	vcsUrl = 'http://github.com/fvarrui/JavaPackager.git'
+	description = 'Packages Java applications as native Windows, MacOS or GNU/Linux executables and creates installers for them'
+
+	plugins {
+		create("javaPackagerPlugin") {
+			id = 'io.github.fvarrui.javapackager.plugin'
+			displayName = 'JavaPackager'
+			implementationClass = 'io.github.fvarrui.javapackager.gradle.PackagePlugin'
+			tags.set(['java', 'packager', 'gradle-plugin', 'maven-plugin', 'native', 'installer', 'debian-packages', 'rpm-packages', 'dmg', 'maven', 'gradle', 'distribution', 'javapackager', 'linux-executables', 'deb', 'rpm', 'native-windows', 'java-applications', 'pkg', 'msi'])
+		}
+	}
+}
+
 configurations {
 	mavenEmbedder
 }
@@ -68,10 +83,12 @@ build.dependsOn ':winrun4j-launcher:build'
 publishing {
 	repositories {
 		maven {
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
 			name = "OSSRH"
-			url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl			
 			credentials {
-				username = project.findProperty("ossrhUser") ?: ''
+				username = project.findProperty("ossrhUsername") ?: ''
 				password = project.findProperty("ossrhPassword") ?: ''
 			}
 		}
@@ -164,7 +181,7 @@ signing {
 }
 
 nexusStaging {
-	username = project.findProperty('ossrhUser') ?: ''
+	username = project.findProperty('ossrhUsername') ?: ''
 	password = project.findProperty('ossrhPassword') ?: ''
 }
 
