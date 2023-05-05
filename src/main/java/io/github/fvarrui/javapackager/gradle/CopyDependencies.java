@@ -35,7 +35,7 @@ public class CopyDependencies extends ArtifactGenerator<Packager> {
 		if (copyLibsTask == null) {
 			copyLibsTask = project.getTasks().create("copyLibs", Copy.class);
 		}
-		copyLibsTask.from(project.getConfigurations().getByName("default"));
+		copyLibsTask.from(project.getConfigurations().getByName("runtimeClasspath"));
 		copyLibsTask.into(project.file(libsFolder));
 		copyLibsTask.getActions().forEach(action -> action.execute(copyLibsTask));
 		
