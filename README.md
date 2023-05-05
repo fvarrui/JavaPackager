@@ -285,9 +285,80 @@ And then bundle this file with your app:
 
 > Last property copies `${name}.l4j.ini` file next to the EXE/binary on Windows/Linux, and in `Resources` folder on MacOS.
 
-## How to build and install the plugin
+## How to use SNAPSHOT versions
 
-Useful to try SNAPSHOT versions.
+[Here](https://oss.sonatype.org/content/repositories/snapshots/io/github/fvarrui/javapackager/) you can find the uploaded JavaPackager SNAPSHOT versions.
+
+### Maven
+
+Add the plugin repository to your `pom.xml`:
+
+```xml
+<pluginRepositories>
+    <pluginRepository>
+        <id>nexus</id>
+        <name>nexus-snapshot-repository</name>
+        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+        </snapshots>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+    </pluginRepository>
+</pluginRepositories>
+```
+
+And then you can use the latest SNAPSHOT version:
+
+```xml
+<plugin>    
+    <groupId>io.github.fvarrui</groupId>
+    <artifactId>javapackager</artifactId>
+    <version>x.y.z-SNAPSHOT</version>
+    [...]
+</plugin>
+```
+
+Or a specific SNAPSHOT version (specifying its timestamp and index):
+
+```xml
+<plugin>
+    <groupId>io.github.fvarrui</groupId>
+    <artifactId>javapackager</artifactId>
+    <version>x.y.z-timestamp-index</version>
+    [...]
+</plugin>
+```
+
+### Gradle
+
+Add the plugin repository to your `build.gradle`:
+
+```groovy
+buildscript {
+	repositories {
+		maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots"
+        }
+	}
+}
+```
+
+And then you can use the latest SNAPSHOT version:
+
+```groovy
+buildscript {
+	dependencies {
+		classpath 'io.github.fvarrui:javapackager:x.y.z-SNAPSHOT'
+	}
+}
+```
+
+Or a specific SNAPSHOT version (specifying its timestamp and index):
+
+## How to build and install the plugin in your local repo
 
 Execute next commands in BASH (GNU/Linux or macOS) or CMD (Windows):
 
