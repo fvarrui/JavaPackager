@@ -106,7 +106,7 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 	
 	private void addFile(Builder builder, String rootPath, File file, int mode) throws NoSuchAlgorithmException, IOException {		
 		rootPath += "/" + file.getName();
-		Logger.info("Adding file '" + file + " to RPM builder as '" + rootPath + "'");
+		Logger.info("Adding file '" + file + "' to RPM builder as '" + rootPath + "'");
 		builder.addFile(rootPath + "/" + file.getName(), file, mode);		
 	}
 	
@@ -118,7 +118,7 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 			if (f.isDirectory())
 				addDirectory(builder, parentPath + "/" + root.getName(), f, executionPermissions);
 			else {
-				addFile(builder, rootPath + "/" + f.getName(), f, executionPermissions.contains(f) ? 0755 : 0644);
+				addFile(builder, parentPath + "/" + f.getName(), f, executionPermissions.contains(f) ? 0755 : 0644);
 			}
 		}
 	}
