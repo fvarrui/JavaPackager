@@ -68,21 +68,21 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 		executionPermissions.add(new File(appFolder, jreDirectoryName + "/bin/java"));
 		executionPermissions.add(new File(appFolder, jreDirectoryName + "/lib/jspawnhelper"));
 
-		// add all app files
-		addDirectoryTree(builder, "/opt", appFolder, executionPermissions);
-
 		// link to desktop file
-		builder.addLink("/usr/share/applications/" + desktopFile.getName(), "/opt/" + name + "/" + desktopFile.getName());
+		addLink(builder, "/usr/share/applications/" + desktopFile.getName(), "/opt/" + name + "/" + desktopFile.getName());
 
 		// copy and link to mime.xml file
 		if (mimeXmlFile != null) {
 			FileUtils.copyFileToFolder(mimeXmlFile, appFolder);
-			builder.addLink("/usr/share/mime/packages/" + mimeXmlFile.getName(), "/opt/" + name + "/" + mimeXmlFile.getName());
+			addLink(builder, "/usr/share/mime/packages/" + mimeXmlFile.getName(), "/opt/" + name + "/" + mimeXmlFile.getName());
 		}
 		
 		// link to binary
-		builder.addLink("/usr/local/bin/" + executable.getName(), "/opt/" + name + "/" + executable.getName());
+		addLink(builder, "/usr/local/bin/" + executable.getName(), "/opt/" + name + "/" + executable.getName());
 
+		// add all app files
+		addDirectory(builder, "/opt", appFolder, executionPermissions);
+		
 		// build RPM file
 		builder.build(outputDirectory);
 
@@ -98,15 +98,27 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 
 		return rpm;
 	}
+
+	private void addLink(Builder builder, String path, String target) throws NoSuchAlgorithmException, IOException {
+		Logger.info("Adding link '" + path + "' to RPM builder targeting '" + target + "'");		
+		builder.addLink(path, target);
+	}
 	
-	private void addDirectoryTree(Builder builder, String parentPath, File root, List<File> executionPermissions) throws NoSuchAlgorithmException, IOException {
+	private void addFile(Builder builder, String rootPath, File file, int mode) throws NoSuchAlgorithmException, IOException {		
+		rootPath += "/" + file.getName();
+		Logger.info("Adding file '" + file + " to RPM builder as '" + rootPath + "'");
+		builder.addFile(rootPath + "/" + file.getName(), file, mode);		
+	}
+	
+	private void addDirectory(Builder builder, String parentPath, File root, List<File> executionPermissions) throws NoSuchAlgorithmException, IOException {
 		String rootPath = parentPath + "/" + root.getName();
+		Logger.info("Adding directory '" + root + "' to RPM builder as '" + rootPath + "'");
 		builder.addDirectory(rootPath);
 		for (File f : root.listFiles()) {
 			if (f.isDirectory())
-				addDirectoryTree(builder, parentPath + "/" + root.getName(), f, executionPermissions);
+				addDirectory(builder, parentPath + "/" + root.getName(), f, executionPermissions);
 			else {
-				builder.addFile(rootPath + "/" + f.getName(), f, executionPermissions.contains(f) ? 0755 : 0644);
+				addFile(builder, rootPath + "/" + f.getName(), f, executionPermissions.contains(f) ? 0755 : 0644);
 			}
 		}
 	}
