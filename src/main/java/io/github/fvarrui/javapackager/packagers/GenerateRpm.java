@@ -116,9 +116,9 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 		builder.addDirectory(rootPath);
 		for (File f : root.listFiles()) {
 			if (f.isDirectory())
-				addDirectory(builder, parentPath + "/" + root.getName(), f, executionPermissions);
+				addDirectory(builder, rootPath + "/" + root.getName(), f, executionPermissions);
 			else {
-				addFile(builder, parentPath + "/" + f.getName(), f, executionPermissions.contains(f) ? 0755 : 0644);
+				addFile(builder, rootPath, f, executionPermissions.contains(f) ? 0755 : 0644);
 			}
 		}
 	}
