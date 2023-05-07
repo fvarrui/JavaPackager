@@ -105,20 +105,20 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 	}
 	
 	private void addFile(Builder builder, String rootPath, File file, int mode) throws NoSuchAlgorithmException, IOException {		
-		rootPath += "/" + file.getName();
-		Logger.info("Adding file '" + file + "' to RPM builder as '" + rootPath + "'");
-		builder.addFile(rootPath + "/" + file.getName(), file, mode);		
+		String filePath = rootPath + "/" + file.getName();
+		Logger.info("Adding file '" + file + "' to RPM builder as '" + filePath + "'");
+		builder.addFile(filePath, file, mode);
 	}
 	
-	private void addDirectory(Builder builder, String parentPath, File root, List<File> executionPermissions) throws NoSuchAlgorithmException, IOException {
-		String rootPath = parentPath + "/" + root.getName();
-		Logger.info("Adding directory '" + root + "' to RPM builder as '" + rootPath + "'");
-		builder.addDirectory(rootPath);
-		for (File f : root.listFiles()) {
+	private void addDirectory(Builder builder, String parentPath, File directory, List<File> executionPermissions) throws NoSuchAlgorithmException, IOException {
+		String dirPath = parentPath + "/" + directory.getName();
+		Logger.info("Adding directory '" + directory + "' to RPM builder as '" + dirPath + "'");
+		builder.addDirectory(dirPath);
+		for (File f : directory.listFiles()) {
 			if (f.isDirectory())
-				addDirectory(builder, rootPath, f, executionPermissions);
+				addDirectory(builder, dirPath, f, executionPermissions);
 			else {
-				addFile(builder, rootPath, f, executionPermissions.contains(f) ? 0755 : 0644);
+				addFile(builder, dirPath, f, executionPermissions.contains(f) ? 0755 : 0644);
 			}
 		}
 	}
