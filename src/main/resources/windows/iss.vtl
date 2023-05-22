@@ -84,9 +84,9 @@ Root: HKA; Subkey: "Software\Classes\Applications\\${info.executable.name}\Suppo
 Source: "${info.appFolder}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\\${info.iconFile.name}"
+Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\\${info.executable.name}"
 #if ($info.winConfig.createDesktopIconTask)
-Name: "{autodesktop}\{#MyShortcutName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\\${info.iconFile.name}"; Tasks: desktopicon
+Name: "{autodesktop}\{#MyShortcutName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\\${info.executable.name}"; Tasks: desktopicon
 #end
 
 [Run]
