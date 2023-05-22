@@ -114,27 +114,37 @@ publishing {
 				name = project.name
 				groupId = project.group
 				artifactId = project.name
-				version = project.version
-				description = project.description
 				packaging = 'maven-plugin'
-				url = 'https://github.com/fvarrui/JavaPackager'
-				scm {
-					connection = 'scm:git:git://github.com/fvarrui/JavaPackager.git'
-					developerConnection = 'scm:git:git@github.com:fvarrui/fvarrui.git'
+			}
+		}
+	}
+
+	afterEvaluate {
+		publications {
+			withType(MavenPublication) {
+				// customize all publications here
+				pom {
+					version = project.version
+					description = project.description
 					url = 'https://github.com/fvarrui/JavaPackager'
-				}
-				licenses {
-					license {
-						name = 'GPL-v3.0'
-						url = 'http://www.gnu.org/licenses/gpl-3.0.txt'
-						distribution = 'repo'
+					scm {
+						connection = 'scm:git:git://github.com/fvarrui/JavaPackager.git'
+						developerConnection = 'scm:git:git@github.com:fvarrui/fvarrui.git'
+						url = 'https://github.com/fvarrui/JavaPackager'
 					}
-				}
-				developers {
-					developer {
-						id = 'fvarrui'
-						name = 'Francisco Vargas Ruiz'
-						url = 'https://github.com/fvarrui'
+					licenses {
+						license {
+							name = 'GPL-v3.0'
+							url = 'http://www.gnu.org/licenses/gpl-3.0.txt'
+							distribution = 'repo'
+						}
+					}
+					developers {
+						developer {
+							id = 'fvarrui'
+							name = 'Francisco Vargas Ruiz'
+							url = 'https://github.com/fvarrui'
+						}
 					}
 				}
 			}
