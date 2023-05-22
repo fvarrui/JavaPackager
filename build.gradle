@@ -209,4 +209,3 @@ task updateWhyJavaLauncher(type : Download) {
 	dest file('src/main/resources/windows')
     overwrite true
 }
-
