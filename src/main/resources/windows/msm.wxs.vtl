@@ -13,7 +13,7 @@
 		<Component Id="_${id}" Guid="${guid}" Win64="yes">
 	    #if($file.equals(${info.executable}))
 	    	<File Id="exeFile" Name="${file.name}" KeyPath="yes" Source="${file}">
-				<Shortcut Id="ApplicationStartMenuShortcut" Name="${info.name}" Description="${info.description}" Directory="ProgramMenuFolder" />
+				<Shortcut Id="ApplicationStartMenuShortcut" Name="${info.winConfig.shortcutName}" Description="${info.description}" Directory="ProgramMenuFolder" />
 	    	</File>
 			<RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
 			<RegistryValue Root="HKLM" Key="Software\\${info.organizationName}\\${info.name}" Name="installed" Type="integer" Value="1" />	    	
