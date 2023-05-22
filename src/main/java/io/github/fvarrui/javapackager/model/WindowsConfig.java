@@ -30,7 +30,7 @@ public class WindowsConfig implements Serializable {
 	private String trademarks;
 	private String txtFileVersion;
 	private String txtProductVersion;
-	private String txtShortcutName;
+	private String shortcutName;
 	private boolean disableDirPage = true;
 	private boolean disableProgramGroupPage = true;
 	private boolean disableFinishedPage = true;
@@ -154,12 +154,12 @@ public class WindowsConfig implements Serializable {
 		this.txtProductVersion = txtProductVersion;
 	}
 
-	public String getTxtShortcutName() {
-		return txtShortcutName;
+	public String getShortcutName() {
+		return shortcutName;
 	}
 
-	public void setTxtShortcutName(String txtShortcutName) {
-		this.txtShortcutName = txtShortcutName;
+	public void setShortcutName(String shortcutName) {
+		this.shortcutName = shortcutName;
 	}
 
 	public String getInternalName() {
@@ -321,7 +321,7 @@ public class WindowsConfig implements Serializable {
 				+ ", internalName=" + internalName + ", language=" + language + ", originalFilename=" + originalFilename
 				+ ", productName=" + productName + ", productVersion=" + productVersion + ", trademarks=" + trademarks
 				+ ", txtFileVersion=" + txtFileVersion + ", txtProductVersion=" + txtProductVersion
-				+ ", txtShortcutName=" + txtShortcutName
+				+ ", shortcutName=" + shortcutName
 				+ ", disableDirPage=" + disableDirPage + ", disableProgramGroupPage=" + disableProgramGroupPage
 				+ ", disableFinishedPage=" + disableFinishedPage + ", disableRunAfterInstall=" + disableRunAfterInstall
 				+ ", disableWelcomePage=" + disableWelcomePage + ", createDesktopIconTask=" + createDesktopIconTask
@@ -341,7 +341,7 @@ public class WindowsConfig implements Serializable {
 		this.setFileVersion(defaultIfBlank(this.getFileVersion(), "1.0.0.0"));
 		this.setTxtFileVersion(defaultIfBlank(this.getTxtFileVersion(), "" + packager.getVersion()));
 		this.setProductVersion(defaultIfBlank(this.getProductVersion(), "1.0.0.0"));
-		this.setTxtShortcutName(defaultIfBlank(this.getTxtShortcutName(), packager.getName()));
+		this.setShortcutName(defaultIfBlank(this.getShortcutName(), packager.getName()));
 		this.setTxtProductVersion(defaultIfBlank(this.getTxtProductVersion(), "" + packager.getVersion()));
 		this.setCompanyName(defaultIfBlank(this.getCompanyName(), packager.getOrganizationName()));
 		this.setCopyright(defaultIfBlank(this.getCopyright(), packager.getOrganizationName()));
