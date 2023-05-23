@@ -80,14 +80,13 @@ public class CreateRunnableJar extends ArtifactGenerator<Packager> {
 					plugin(
 							groupId("org.apache.maven.plugins"),
 							artifactId("maven-jar-plugin"), 
-							version("3.1.1")
+							version("3.3.0")
 					),
 					goal("jar"),
 					configuration(
 							element("classifier", classifier),
 							element("archive", archive.toArray(new Element[archive.size()])),
-							element("outputDirectory", jarFile.getParentFile().getAbsolutePath()),
-							element("finalName", name + "-" + version)
+							element("outputDirectory", jarFile.getParentFile().getAbsolutePath())
 					),
 					env);
 
