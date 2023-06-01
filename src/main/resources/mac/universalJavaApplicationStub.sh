@@ -3,7 +3,7 @@
 #                                                                                #
 # universalJavaApplicationStub                                                   #
 #                                                                                #
-# A BASH based JavaApplicationStub for Java Apps on MacOS                     #
+# A BASH based JavaApplicationStub for Java Apps on Mac OS X                     #
 # that works with both Apple's and Oracle's plist format.                        #
 #                                                                                #
 # Inspired by Ian Roberts stackoverflow answer                                   #
@@ -11,14 +11,14 @@
 #                                                                                #
 # @author    Tobias Fischer                                                      #
 # @url       https://github.com/tofi86/universalJavaApplicationStub              #
-# @date      2021-02-21                                                          #
-# @version   3.2.0                                                               #
+# @date      2023-02-04                                                          #
+# @version   3.3.0                                                               #
 #                                                                                #
 ##################################################################################
 #                                                                                #
 # The MIT License (MIT)                                                          #
 #                                                                                #
-# Copyright (c) 2014-2021 Tobias Fischer                                         #
+# Copyright (c) 2014-2023 Tobias Fischer                                         #
 #                                                                                #
 # Permission is hereby granted, free of charge, to any person obtaining a copy   #
 # of this software and associated documentation files (the "Software"), to deal  #
@@ -246,6 +246,7 @@ if [ $exitcode -eq 0 ]; then
 
 	# read options file name
 	JVMOptionsFile=$(plist_get_java ':JVMOptionsFile')
+	JVMOptionsFile=$(eval echo "${JVMOptionsFile}")
 
 	# read bootstrap script file name
 	BootstrapScript=$(plist_get_java ':BootstrapScript')
@@ -313,6 +314,7 @@ else
 
 	# read options file name
 	JVMOptionsFile=$(plist_get ':JVMOptionsFile')
+	JVMOptionsFile=$(eval echo "${JVMOptionsFile}")
 
 	# read bootstrap script file name
 	BootstrapScript=$(plist_get ':BootstrapScript')
@@ -360,7 +362,7 @@ done
 ############################################
 
 # supported languages / available translations
-stubLanguages="^(fr|de|zh|es|en)-"
+stubLanguages=("de" "en" "es" "fr" "pt-BR" "zh")
 
 # read user preferred languages as defined in macOS System Preferences (#101)
 stub_logger '[LanguageSearch] Checking preferred languages in macOS System Preferences...'
@@ -371,15 +373,19 @@ language=""
 for i in "${appleLanguages[@]}"
 do
 	langValue="${i%-*}"
-    if [[ "$i" =~ $stubLanguages ]]; then 
-		stub_logger "[LanguageSearch] ... selected '$i' ('$langValue') as the default language for the launcher stub"
+	if [[ " ${stubLanguages[*]} " =~ " ${i} " ]]; then
+		stub_logger "[LanguageSearch] ... selected '$i' as the default language for the launcher stub"
+		language=${i}
+		break
+	elif [[ " ${stubLanguages[*]} " =~ " ${langValue} " ]]; then
+		stub_logger "[LanguageSearch] ... selected '$langValue' (from '$i') as the default language for the launcher stub"
 		language=${langValue}
-        break
+		break
 	fi
 done
 if [ -z "${language}" ]; then
-    language="en"
-    stub_logger "[LanguageSearch] ... selected fallback 'en' as the default language for the launcher stub"
+	language="en"
+	stub_logger "[LanguageSearch] ... selected fallback 'en' as the default language for the launcher stub"
 fi
 stub_logger "[Language] $language"
 
@@ -398,7 +404,7 @@ fr)
 	MSG_INSTALL_JAVA="Java doit être installé sur votre système.\nRendez-vous sur java.com et suivez les instructions d'installation..."
 	MSG_LATER="Plus tard"
 	MSG_VISIT_JAVA_DOT_COM="Java by Oracle"
-	MSG_VISIT_ADOPTOPENJDK="Java by AdoptOpenJDK"
+	MSG_VISIT_ADOPTIUM="Java by Adoptium"
     ;;
 
 # German
@@ -414,7 +420,7 @@ de)
 	MSG_INSTALL_JAVA="Auf Ihrem System muss die 'Java'-Software installiert sein.\nBesuchen Sie java.com für weitere Installationshinweise."
 	MSG_LATER="Später"
 	MSG_VISIT_JAVA_DOT_COM="Java von Oracle"
-	MSG_VISIT_ADOPTOPENJDK="Java von AdoptOpenJDK"
+	MSG_VISIT_ADOPTIUM="Java von Adoptium"
     ;;
 
 # Simplified Chinese
@@ -430,7 +436,7 @@ zh)
 	MSG_INSTALL_JAVA="你需要在Mac中安装Java运行环境！\n访问 java.com 了解如何安装。"
 	MSG_LATER="稍后"
 	MSG_VISIT_JAVA_DOT_COM="Java by Oracle"
-	MSG_VISIT_ADOPTOPENJDK="Java by AdoptOpenJDK"
+	MSG_VISIT_ADOPTIUM="Java by Adoptium"
     ;;
 
 # Spanish
@@ -446,8 +452,24 @@ es)
 	MSG_INSTALL_JAVA="¡Necesita tener JAVA instalado en su Mac!\nVisite java.com para consultar las instrucciones para su instalación..."
 	MSG_LATER="Más tarde"
 	MSG_VISIT_JAVA_DOT_COM="Java de Oracle"
-	MSG_VISIT_ADOPTOPENJDK="Java de AdoptOpenJDK"
+	MSG_VISIT_ADOPTIUM="Java de Adoptium"
     ;;
+
+# Brazilian Portuguese
+pt-BR)
+	MSG_ERROR_LAUNCHING="ERRO iniciando '${CFBundleName}'."
+	MSG_MISSING_MAINCLASS="'MainClass' não foi definida!\nA aplicação java não poderá ser iniciada!"
+	MSG_JVMVERSION_REQ_INVALID="A sintaxe da versão Java requerida não é valida: %s\nPor favor contacte o desenvolvedor dessa aplicação."
+	MSG_NO_SUITABLE_JAVA="Não foi encontrado uma versão Java compatível no seu sistema!\nEsta aplicação precisa do Java %s"
+	MSG_JAVA_VERSION_OR_LATER="ou maior"
+	MSG_JAVA_VERSION_LATEST="(última atualização)"
+	MSG_JAVA_VERSION_MAX="máxima %s"
+	MSG_NO_SUITABLE_JAVA_CHECK="Verifique se instalou a versão Java necessária."
+	MSG_INSTALL_JAVA="Você precisa instalar o JAVA no seu Mac!\nPor favor, visite java.com para instruções de instalação..."
+	MSG_LATER="Depois"
+	MSG_VISIT_JAVA_DOT_COM="Java por Oracle"
+	MSG_VISIT_ADOPTIUM="Java por Adoptium"
+	;;
 
 # English | default
 en|*)
@@ -462,7 +484,7 @@ en|*)
 	MSG_INSTALL_JAVA="You need to have JAVA installed on your Mac!\nVisit java.com for installation instructions..."
 	MSG_LATER="Later"
 	MSG_VISIT_JAVA_DOT_COM="Java by Oracle"
-	MSG_VISIT_ADOPTOPENJDK="Java by AdoptOpenJDK"
+	MSG_VISIT_ADOPTIUM="Java by Adoptium"
     ;;
 esac
 
@@ -828,10 +850,10 @@ if [ -z "${JAVACMD}" ] || [ ! -x "${JAVACMD}" ] ; then
 		stub_logger "[EXIT 3] ${MSG_NO_SUITABLE_JAVA_EXPANDED}"
 
 		# display error message with AppleScript
-		osascript -e "tell application \"System Events\" to display dialog \"${MSG_ERROR_LAUNCHING}\n\n${MSG_NO_SUITABLE_JAVA_EXPANDED}\n${MSG_NO_SUITABLE_JAVA_CHECK}\" with title \"${CFBundleName}\"  buttons {\" OK \", \"${MSG_VISIT_JAVA_DOT_COM}\", \"${MSG_VISIT_ADOPTOPENJDK}\"} default button 1${DialogWithIcon}" \
+		osascript -e "tell application \"System Events\" to display dialog \"${MSG_ERROR_LAUNCHING}\n\n${MSG_NO_SUITABLE_JAVA_EXPANDED}\n${MSG_NO_SUITABLE_JAVA_CHECK}\" with title \"${CFBundleName}\"  buttons {\" OK \", \"${MSG_VISIT_JAVA_DOT_COM}\", \"${MSG_VISIT_ADOPTIUM}\"} default button 1${DialogWithIcon}" \
 				-e "set response to button returned of the result" \
 				-e "if response is \"${MSG_VISIT_JAVA_DOT_COM}\" then open location \"https://www.java.com/download/\"" \
-				-e "if response is \"${MSG_VISIT_ADOPTOPENJDK}\" then open location \"https://adoptopenjdk.net/releases.html\""
+				-e "if response is \"${MSG_VISIT_ADOPTIUM}\" then open location \"https://adoptium.net/releases.html\""
 		# exit with error
 		exit 3
 
@@ -839,10 +861,10 @@ if [ -z "${JAVACMD}" ] || [ ! -x "${JAVACMD}" ] ; then
 		# log exit cause
 		stub_logger "[EXIT 1] ${MSG_ERROR_LAUNCHING}"
 		# display error message with AppleScript
-		osascript -e "tell application \"System Events\" to display dialog \"${MSG_ERROR_LAUNCHING}\n\n${MSG_INSTALL_JAVA}\" with title \"${CFBundleName}\" buttons {\"${MSG_LATER}\", \"${MSG_VISIT_JAVA_DOT_COM}\", \"${MSG_VISIT_ADOPTOPENJDK}\"} default button 1${DialogWithIcon}" \
+		osascript -e "tell application \"System Events\" to display dialog \"${MSG_ERROR_LAUNCHING}\n\n${MSG_INSTALL_JAVA}\" with title \"${CFBundleName}\" buttons {\"${MSG_LATER}\", \"${MSG_VISIT_JAVA_DOT_COM}\", \"${MSG_VISIT_ADOPTIUM}\"} default button 1${DialogWithIcon}" \
 					-e "set response to button returned of the result" \
 					-e "if response is \"${MSG_VISIT_JAVA_DOT_COM}\" then open location \"https://www.java.com/download/\"" \
-					-e "if response is \"${MSG_VISIT_ADOPTOPENJDK}\" then open location \"https://adoptopenjdk.net/releases.html\""
+					-e "if response is \"${MSG_VISIT_ADOPTIUM}\" then open location \"https://adoptium.net/releases.html\""
 		# exit with error
 		exit 1
 	fi

@@ -196,7 +196,7 @@ nexusStaging {
 }
 
 task updateUniversalJavaApplicationStub(type : Download) {
-	def version = '20220410.162252'
+	def version = '20230601.230608'
 	group 'Update assets'
 	description 'Downloads compiled and scripted versions of universalJavaApplicationStub to src/main/resources/mac overriding the existing ones.'	
 	src([
