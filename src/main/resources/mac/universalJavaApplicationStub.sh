@@ -907,7 +907,7 @@ stub_logger "[WorkingDirectory] ${WorkingDirectory}"
 [ -x "$BootstrapScript" ] && "$BootstrapScript"
 
 # fix: read JVM options from file
-[ -f $JVMOptionsFile ] && while read -r option; do JVMDefaultOptions+=" $option"; done <<< $(sed "/^#.*$/d" $JVMOptionsFile)
+[ -f $JVMOptionsFile ] && IFS= && while read -r option; do JVMOptionsArr+=("$option"); done <<< $(sed "/^#.*$/d" $JVMOptionsFile) && unset IFS
 
 # execute Java and set
 # - classpath
