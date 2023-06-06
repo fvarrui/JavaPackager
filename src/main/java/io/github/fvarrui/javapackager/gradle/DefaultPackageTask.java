@@ -23,6 +23,7 @@ public class DefaultPackageTask extends AbstractPackageTask {
 					.additionalModulePaths(extension.getAdditionalModulePaths())
 					.additionalResources(extension.getAdditionalResources())
 					.administratorRequired(extension.getAdministratorRequired())
+					.arch(extension.getArch())
 					.assetsDir(extension.getAssetsDir())
 					.bundleJre(extension.getBundleJre())
 					.classpath(extension.getClasspath())					
@@ -62,5 +63,5 @@ public class DefaultPackageTask extends AbstractPackageTask {
 					.winConfig(extension.getWinConfig());
 
 	}
-	
+
 }
