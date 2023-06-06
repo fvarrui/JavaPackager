@@ -64,7 +64,7 @@ dependencies {
 }
 
 group = 'io.github.fvarrui'
-version = '1.7.2'
+version = '1.7.3-SNAPSHOT'
 description = 'Hybrid Maven/Gradle plugin to package Java applications as native Windows, Mac OS X or GNU/Linux executables and create installers for them'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -114,27 +114,37 @@ publishing {
 				name = project.name
 				groupId = project.group
 				artifactId = project.name
-				version = project.version
-				description = project.description
 				packaging = 'maven-plugin'
-				url = 'https://github.com/fvarrui/JavaPackager'
-				scm {
-					connection = 'scm:git:git://github.com/fvarrui/JavaPackager.git'
-					developerConnection = 'scm:git:git@github.com:fvarrui/fvarrui.git'
+			}
+		}
+	}
+
+	afterEvaluate {
+		publications {
+			withType(MavenPublication) {
+				// customize all publications here
+				pom {
+					version = project.version
+					description = project.description
 					url = 'https://github.com/fvarrui/JavaPackager'
-				}
-				licenses {
-					license {
-						name = 'GPL-v3.0'
-						url = 'http://www.gnu.org/licenses/gpl-3.0.txt'
-						distribution = 'repo'
+					scm {
+						connection = 'scm:git:git://github.com/fvarrui/JavaPackager.git'
+						developerConnection = 'scm:git:git@github.com:fvarrui/fvarrui.git'
+						url = 'https://github.com/fvarrui/JavaPackager'
 					}
-				}
-				developers {
-					developer {
-						id = 'fvarrui'
-						name = 'Francisco Vargas Ruiz'
-						url = 'https://github.com/fvarrui'
+					licenses {
+						license {
+							name = 'GPL-v3.0'
+							url = 'http://www.gnu.org/licenses/gpl-3.0.txt'
+							distribution = 'repo'
+						}
+					}
+					developers {
+						developer {
+							id = 'fvarrui'
+							name = 'Francisco Vargas Ruiz'
+							url = 'https://github.com/fvarrui'
+						}
 					}
 				}
 			}
@@ -186,7 +196,7 @@ nexusStaging {
 }
 
 task updateUniversalJavaApplicationStub(type : Download) {
-	def version = '20220410.162252'
+	def version = '20230601.235708'
 	group 'Update assets'
 	description 'Downloads compiled and scripted versions of universalJavaApplicationStub to src/main/resources/mac overriding the existing ones.'	
 	src([
@@ -209,4 +219,3 @@ task updateWhyJavaLauncher(type : Download) {
 	dest file('src/main/resources/windows')
     overwrite true
 }
-

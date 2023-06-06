@@ -6,6 +6,7 @@
 \#define MyAppFolder "${info.name}"
 \#define MyAppLicense "$!{info.licenseFile.absolutePath}"
 \#define MyAppIcon "${info.iconFile.absolutePath}"
+\#define MyShortcutName = "${info.winConfig.shortcutName}"
 
 [Setup]
 AppId={{{#MyAppName}}}
@@ -83,9 +84,9 @@ Root: HKA; Subkey: "Software\Classes\Applications\\${info.executable.name}\Suppo
 Source: "${info.appFolder}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\\${info.iconFile.name}"
+Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\\${info.executable.name}"
 #if ($info.winConfig.createDesktopIconTask)
-Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\\${info.iconFile.name}"; Tasks: desktopicon
+Name: "{autodesktop}\{#MyShortcutName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\\${info.executable.name}"; Tasks: desktopicon
 #end
 
 [Run]

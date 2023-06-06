@@ -5,8 +5,6 @@
 
 JavaPackager is a hybrid plugin for **Maven** and **Gradle** which provides an easy way to package Java applications in native Windows, MacOS or GNU/Linux executables, and generate installers for them.
 
-> SNAPSHOT version (available in `devel` branch) is not released to Maven Central, so you have to [install it manually](#how-to-build-and-install-the-plugin).
-
 > :eyes: See [JavaPackager changes and fixes](https://github.com/fvarrui/JavaPackager/releases).
 
 ## History
@@ -261,7 +259,7 @@ You can use [default templates](https://github.com/fvarrui/JavaPackager/tree/mas
 
 ### Additional JVM options at runtime
 
-When you build your app, all configuration details are hardcoded into the executable and cannot be changed without recreating it or hacking with a resource editor. JavaPackager introduces a feature that allows to pass additional JVM options at runtime from an `.l4j.ini` file (like [Launch4j](http://launch4j.sourceforge.net/docs.html) does, but available for all platforms in the same way). So, you can specify these options in the packager's configuration (packaging time), in INI file (runtime) or in both. 
+When you build your app, all configuration details are hardcoded into the executable and cannot be changed without recreating or hacking it with a resource editor. JavaPackager introduces a feature that allows to pass additional JVM options at runtime from an `.l4j.ini` file (like [Launch4j](http://launch4j.sourceforge.net/docs.html) does, but available for all platforms in the same way). So, you can specify these options in the packager's configuration (packaging time), in INI file (runtime) or in both. 
 
 The INI file's name must correspond to `${name}.l4j.ini` and it has to be located next to the executable on Windows and GNU/Linux, and in `Resources` folder on MacOS.
 
@@ -389,9 +387,3 @@ Run next command (ommit `./` on Windows):
 ```bash
 ./gradlew publish closeAndReleaseRepository
 ```
-
-> Related [guide](https://nemerosa.ghost.io/2015/07/01/publishing-to-the-maven-central-using-gradle/).
-
-## Future features
-
-Check the [TO-DO list](https://github.com/fvarrui/JavaPackager/projects/1#column-7704117) to know the features we plan to add to JavaPackager.

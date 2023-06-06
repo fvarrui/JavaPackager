@@ -1,5 +1,6 @@
 package io.github.fvarrui.javapackager.gradle;
 
+import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.packagers.PackagerFactory;
 
@@ -52,7 +53,7 @@ public class DefaultPackageTask extends AbstractPackageTask {
 					.organizationName(extension.getOrganizationName())
 					.organizationUrl(extension.getOrganizationUrl())
 					.outputDirectory(extension.getOutputDirectory())
-					.packagingJdk(extension.getPackagingJdk())
+					.packagingJdk(defaultIfNull(extension.getPackagingJdk(), Context.getGradleContext().getDefaultToolchain()))
 					.runnableJar(extension.getRunnableJar())
 					.scripts(extension.getScripts())
 					.useResourcesAsWorkingDir(extension.isUseResourcesAsWorkingDir())

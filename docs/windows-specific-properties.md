@@ -21,6 +21,7 @@
     <copyright>${organizationName}</copyright>
     <productName>${name}</productName>
     <internalName>${name}</internalName>
+    <txtShortcutName>${name}</txtShortcutName>
     <originalFilename>${name}.exe</originalFilename>
 
     <!-- choose EXE creation tool -->
@@ -103,6 +104,7 @@
 | ------------------------- | --------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
 | `setupMode`               | :x:       | `installForAllUsers`                                                                       | Setup installation mode: require administrative privileges or not. [*](#setupmode)             |
 | `setupLanguages`          | :x:       | `<english>compiler:Default.isl</english><spanish>compiler:Languages\Spanish.isl</spanish>` | Map with setup languages.                                                                      |
+| `shortcutName`            | :x:       | `${name}`                                                                                  | Sets the name of the user optional shortcut created on the desktop                             |
 | `disableDirPage`          | :x:       | `true`                                                                                     | If this is set to `true`, Setup will not show the **Select Destination Location** wizard page. |
 | `disableProgramGroupPage` | :x:       | `true`                                                                                     | If this is set to `true`, Setup will not show the **Select Start Menu Folder** wizard page.    |
 | `disableFinishedPage`     | :x:       | `true`                                                                                     | If this is set to `true`, Setup will not show the **Setup Completed** wizard page.             |
