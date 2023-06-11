@@ -33,7 +33,6 @@ public class CreateWindowsExeWhy extends AbstractCreateWindowsExe {
 	@Override
 	protected File doApply(WindowsPackager packager) throws Exception {
 
-		String name = packager.getName();
 		File executable = packager.getExecutable();
 		File manifestFile = packager.getManifestFile();
 		File iconFile = packager.getIconFile();
@@ -67,7 +66,7 @@ public class CreateWindowsExeWhy extends AbstractCreateWindowsExe {
 		rcedit.setManifest(getGenericExe(), getGenericManifest());
 		rcedit.setFileVersion(getGenericExe(), winConfig.getFileVersion());
 		rcedit.setProductVersion(getGenericExe(), winConfig.getProductVersion());
-		rcedit.setVersionString(getGenericExe(), "FileDescription", name);
+		rcedit.setVersionString(getGenericExe(), "FileDescription", winConfig.getFileDescription());
 		rcedit.setVersionString(getGenericExe(), "CompanyName", winConfig.getCompanyName());
 		rcedit.setVersionString(getGenericExe(), "InternalName", winConfig.getInternalName());
 		rcedit.setVersionString(getGenericExe(), "OriginalFilename", winConfig.getOriginalFilename());
