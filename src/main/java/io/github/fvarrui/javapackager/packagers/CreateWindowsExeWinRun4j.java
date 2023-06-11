@@ -12,10 +12,10 @@ import org.apache.commons.lang3.StringUtils;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.model.WindowsExeCreationTool;
-import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.JarUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
+import io.github.fvarrui.javapackager.utils.RcEdit;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
 /**
@@ -74,10 +74,6 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 		// creates generic exe
 		FileUtils.copyResourceToFile("/windows/WinRun4J64.exe", getGenericExe());
 
-		// copies rcedit command line tool (needed to manipulate exe)
-		File rcedit = new File(getOutputFolder(), "rcedit.exe");
-		FileUtils.copyResourceToFile("/windows/rcedit-x64.exe", rcedit);
-
 		// uses vmLocation only if a JRE is bundled
 		if (bundleJre) {
 			
@@ -124,10 +120,17 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 		VelocityUtils.render("windows/ini.vtl", genericIni, packager);
 		Logger.info("INI file generated in " + genericIni.getAbsolutePath() + "!");
 
-		// process EXE with rcedit-x64.exe
-		CommandUtils.execute(rcedit, getGenericExe(), "--set-icon", getGenericIcon());
-		CommandUtils.execute(rcedit, getGenericExe(), "--application-manifest", getGenericManifest());
-		CommandUtils.execute(rcedit, getGenericExe(), "--set-version-string", "FileDescription", name);
+		// set exe metadata with rcedit
+		RcEdit rcedit = new RcEdit(getOutputFolder());
+		rcedit.setIcon(getGenericExe(), getGenericIcon());
+		rcedit.setManifest(getGenericExe(), getGenericManifest());
+		rcedit.setFileVersion(getGenericExe(), winConfig.getFileVersion());
+		rcedit.setProductVersion(getGenericExe(), winConfig.getProductVersion());
+		rcedit.setVersionString(getGenericExe(), "FileDescription", name);
+		rcedit.setVersionString(getGenericExe(), "CompanyName", winConfig.getCompanyName());
+		rcedit.setVersionString(getGenericExe(), "InternalName", winConfig.getInternalName());
+		rcedit.setVersionString(getGenericExe(), "OriginalFilename", winConfig.getOriginalFilename());
+		rcedit.setVersionString(getGenericExe(), "ProductName", winConfig.getProductName());
 
 		// copies JAR to libs folder
 		FileUtils.copyFileToFolder(jarFile, appFolder);
