@@ -23,6 +23,7 @@ import io.github.fvarrui.javapackager.packagers.AbstractCreateWindowsExe;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 import io.github.fvarrui.javapackager.utils.FileUtils;
+import io.github.fvarrui.javapackager.utils.RcEdit;
 
 /**
  * Creates Windows executable with Maven
@@ -108,7 +109,7 @@ public class CreateWindowsExeLaunch4j extends AbstractCreateWindowsExe {
 					plugin(
 							groupId("com.akathist.maven.plugins.launch4j"), 
 							artifactId("launch4j-maven-plugin"),
-							version("2.1.1")
+							version("2.4.1")
 					),
 					goal("launch4j"),
 					configuration(pluginConfig.toArray(new Element[pluginConfig.size()])),
@@ -116,9 +117,9 @@ public class CreateWindowsExeLaunch4j extends AbstractCreateWindowsExe {
 				);
 			
 			sign(getGenericExe(), packager);
-			
+
 			FileUtils.copyFileToFile(getGenericExe(), executable);
-			
+						
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
