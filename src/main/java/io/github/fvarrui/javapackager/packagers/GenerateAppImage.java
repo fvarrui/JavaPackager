@@ -1,15 +1,14 @@
 package io.github.fvarrui.javapackager.packagers;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.commons.lang3.SystemUtils;
-
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
+import org.apache.commons.lang3.SystemUtils;
+
+import java.io.File;
+import java.io.IOException;
 
 public class GenerateAppImage extends ArtifactGenerator<LinuxPackager> {
 	
@@ -97,7 +96,7 @@ public class GenerateAppImage extends ArtifactGenerator<LinuxPackager> {
 			try {
 				FileUtils.downloadFromUrl(imageToolUrl, appImageTool);
 			} catch (IOException e) {
-				throw new Exception(imageToolUrl + "not found! ... Unsupported OS architecture " + getOSArch() + "?");
+				throw new Exception("An error occurred while downloading appimagetool from " + imageToolUrl + " for " + getOSArch() + "! It may be a network problem or the url " + imageToolUrl + " is not valid!", e);
 			}
 			appImageTool.setExecutable(true);
 		}
