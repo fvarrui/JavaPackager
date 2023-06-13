@@ -22,6 +22,7 @@ import io.github.fvarrui.javapackager.model.Manifest;
 import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
+import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.MojoExecutorUtils;
 
@@ -44,8 +45,8 @@ public class CreateRunnableJar extends ArtifactGenerator<Packager> {
 		File outputDirectory = packager.getOutputDirectory();
 		ExecutionEnvironment env = Context.getMavenContext().getEnv();
 		Manifest manifest = packager.getManifest();
-
-		File jarFile = new File(outputDirectory, name + "-" + version + "-" + classifier + ".jar");
+		String artifactId = env.getMavenProject().getArtifactId();
+		File jarFile = new File(outputDirectory, artifactId + "-" + classifier + ".jar");
 		
 		List<Element> archive = new ArrayList<>();
 		archive.add(
@@ -86,10 +87,11 @@ public class CreateRunnableJar extends ArtifactGenerator<Packager> {
 					configuration(
 							element("classifier", classifier),
 							element("archive", archive.toArray(new Element[archive.size()])),
-							element("outputDirectory", jarFile.getParentFile().getAbsolutePath())
+							element("outputDirectory", outputDirectory.getAbsolutePath())
 					),
-					env);
-
+					env
+			);
+			
 		} catch (MojoExecutionException e) {
 
 			Logger.error("Runnable jar creation failed! " + e.getMessage());
@@ -97,7 +99,9 @@ public class CreateRunnableJar extends ArtifactGenerator<Packager> {
 			
 		}
 		
-		return jarFile;
+		File finalJarFile = new File(outputDirectory, name + "-" + version + "-" + classifier + ".jar");
+		FileUtils.rename(jarFile, finalJarFile.getName());		
+		return finalJarFile;
 	}
 	
 }
