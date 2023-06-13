@@ -23,7 +23,6 @@ import io.github.fvarrui.javapackager.packagers.AbstractCreateWindowsExe;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 import io.github.fvarrui.javapackager.utils.FileUtils;
-import io.github.fvarrui.javapackager.utils.RcEdit;
 
 /**
  * Creates Windows executable with Maven
