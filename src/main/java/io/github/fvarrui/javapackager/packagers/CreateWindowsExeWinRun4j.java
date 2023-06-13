@@ -126,7 +126,7 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 		rcedit.setManifest(getGenericExe(), getGenericManifest());
 		rcedit.setFileVersion(getGenericExe(), winConfig.getFileVersion());
 		rcedit.setProductVersion(getGenericExe(), winConfig.getProductVersion());
-		rcedit.setVersionString(getGenericExe(), "FileDescription", name);
+		rcedit.setVersionString(getGenericExe(), "FileDescription", winConfig.getFileDescription());
 		rcedit.setVersionString(getGenericExe(), "CompanyName", winConfig.getCompanyName());
 		rcedit.setVersionString(getGenericExe(), "InternalName", winConfig.getInternalName());
 		rcedit.setVersionString(getGenericExe(), "OriginalFilename", winConfig.getOriginalFilename());
