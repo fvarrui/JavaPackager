@@ -50,7 +50,7 @@ public class GenerateMsi extends WindowsArtifactGenerator {
 		VelocityUtils.render("windows/wxs.vtl", wxsFile, packager);
 		Logger.info("WXS file generated in " + wxsFile + "!");
 
-		// pretiffy wxs
+		// prettify wxs
 		XMLUtils.prettify(wxsFile);
 	
 		// candle wxs file
