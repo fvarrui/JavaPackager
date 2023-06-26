@@ -68,7 +68,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Registry]
 #if ($info.winConfig.registry)
 #foreach ($entry in $info.winConfig.registry.entries)
-Root: ${entry.root}; Subkey: "${entry.subkey}"; ValueType: ${entry.valueTypeAsInnoSetupString}; ValueName: "${entry.valueName}"; ValueData: "${entry.valueData}"; Flags: uninsdeletevalue
+Root: ${entry.root}; Subkey: "${entry.subkey}"; ValueType: ${entry.valueTypeAsInnoSetupString}; ValueName: "$!{entry.valueName}"; ValueData: "$!{entry.valueData}"; Flags: uninsdeletevalue
 #end
 #end
 #foreach ($fileAssociation in $info.fileAssociations)

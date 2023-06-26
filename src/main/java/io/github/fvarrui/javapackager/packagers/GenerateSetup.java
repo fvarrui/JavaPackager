@@ -2,10 +2,7 @@ package io.github.fvarrui.javapackager.packagers;
 
 import java.io.File;
 
-import org.apache.commons.lang3.StringUtils;
-
 import io.github.fvarrui.javapackager.model.Platform;
-import io.github.fvarrui.javapackager.model.Registry;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
@@ -44,12 +41,6 @@ public class GenerateSetup extends WindowsArtifactGenerator {
 		String name = packager.getName();
 		File outputDirectory = packager.getOutputDirectory();
 		String version = packager.getVersion();
-		Registry registry = packager.getWinConfig().getRegistry();
-		
-		// checks if registry entries' names are not empy
-		if (registry.getEntries().stream().anyMatch(e -> StringUtils.isBlank(e.getKey()) || StringUtils.isBlank(e.getValueName()))) {
-			throw new Exception("One or more registry entries have no key and/or value name");
-		}
 		
 		// copies ico file to assets folder
 		FileUtils.copyFileToFolder(iconFile, assetsFolder);
