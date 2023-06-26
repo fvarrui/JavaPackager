@@ -17,6 +17,7 @@ It was born while teaching to my students how to build and distribute their Java
 
 - [AstroImageJ](http://astroimagej.com/)
 - [Astro Pixel Processor](https://www.astropixelprocessor.com/)
+- [Drifty](https://github.com/SaptarshiSarkar12/Drifty)
 - [GistFX](https://github.com/RedmondSims/GistFX)
 - [Spektar Design Lab](https://spektar.io/)
 
