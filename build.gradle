@@ -9,6 +9,10 @@ plugins {
 	id 'signing'
 }
 
+ext {
+	mavenVersion = '3.6.2'
+}
+
 repositories {
 	mavenLocal()
 	mavenCentral()
@@ -37,7 +41,7 @@ configurations {
 }
 
 dependencies {
-	implementation 'org.apache.maven:maven-plugin-api:3.6.0'
+	implementation 'org.apache.maven:maven-plugin-api:' + mavenVersion
 	implementation 'org.codehaus.plexus:plexus-utils:3.5.1'
 	implementation 'org.twdata.maven:mojo-executor:2.3.0'
 	implementation 'commons-io:commons-io:2.11.0'
@@ -49,13 +53,14 @@ dependencies {
 	implementation 'net.jsign:jsign-core:3.1'
 	implementation 'org.redline-rpm:redline:1.2.10'
 	implementation 'edu.sc.seis.launch4j:launch4j:2.5.2'
+	implementation 'net.sf.launch4j:launch4j:3.50'
 
 	testImplementation 'junit:junit:4.12'
 
-	compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
+	compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:' + mavenVersion
 
-	mavenEmbedder 'org.apache.maven:maven-embedder:3.6.0'
-	mavenEmbedder 'org.apache.maven:maven-compat:3.6.0'	
+	mavenEmbedder 'org.apache.maven:maven-embedder:' + mavenVersion
+	mavenEmbedder 'org.apache.maven:maven-compat:' + mavenVersion
 	mavenEmbedder 'org.slf4j:slf4j-simple:1.7.30'
 	mavenEmbedder 'org.eclipse.aether:aether-connector-basic:1.1.0'
 	mavenEmbedder 'org.eclipse.aether:aether-transport-wagon:1.1.0'
@@ -76,6 +81,8 @@ java {
 	withSourcesJar()
 	withJavadocJar()
 }
+
+javadoc.options.addStringOption('Xdoclint:none', '-quiet')
 
 build.dependsOn ':winrun4j-launcher:build'
 
@@ -152,6 +159,14 @@ publishing {
 	}
 }
 
+allprojects {
+  tasks.withType(Exec) {
+    doFirst {
+      println commandLine
+    }
+  }
+}
+
 // runs the plugin description generator
 task generatePluginDescriptor(type: JavaExec, dependsOn: compileJava) {
 	def pluginDescriptorFile = new File(project.compileJava.destinationDirectory.asFile.get(), 'META-INF/maven/plugin.xml')
@@ -167,12 +182,15 @@ task generatePluginDescriptor(type: JavaExec, dependsOn: compileJava) {
 			'--errors',
 			'--batch-mode',
 			'--file', generatePomFileForPluginMavenPublication.destination,
-			'org.apache.maven.plugins:maven-plugin-plugin:3.9.0:descriptor',
+			'org.apache.maven.plugins:maven-plugin-plugin:' + mavenVersion + ':descriptor',
 			'-Dproject.build.sourceEncoding=' + compileJava.options.encoding
 	]
+	doFirst {
+		println(generatePomFileForPluginMavenPublication.destination)
+	}
 	doLast {
 		assert pluginDescriptorFile.file, "${pluginDescriptorFile.canonicalPath}: was not generated"
-		logger.info("Plugin descriptor is generated in ${pluginDescriptorFile.canonicalPath}")
+		logger.quiet("Plugin descriptor is generated in ${pluginDescriptorFile.canonicalPath}")
 	}
 }
 generatePluginDescriptor.dependsOn(generatePomFileForPluginMavenPublication)
