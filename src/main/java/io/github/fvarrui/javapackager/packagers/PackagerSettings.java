@@ -68,6 +68,7 @@ public class PackagerSettings {
 	protected File packagingJdk;
 	protected Scripts scripts;
 	protected Arch arch;
+	protected String executableName;
 	
 	/**
 	 * Get packaging JDK
@@ -340,6 +341,22 @@ public class PackagerSettings {
 	public Boolean getCreateZipball() {
 		return createZipball;
 	}
+	
+	/**
+	 * Get tarball name
+	 * @return Tarball name
+	 */
+	public String getTarballName() {
+		return tarballName;
+	}
+
+	/**
+	 * Get zipball name
+	 * @return Zipball name
+	 */
+	public String getZipballName() {
+		return zipballName;
+	}
 
 	/**
 	 * Get extra parameters
@@ -411,6 +428,22 @@ public class PackagerSettings {
 	 */
 	public Scripts getScripts() {
 		return scripts;
+	}
+	
+	/**
+	 * Get architecture 
+	 * @return Architecture
+	 */
+	public Arch getArch() {
+		return arch;
+	}
+	
+	/**
+	 * Gets executable name
+	 * @return Executable name
+	 */
+	public String getExecutableName() {
+		return executableName;
 	}
 
 	// fluent api
@@ -750,10 +783,6 @@ public class PackagerSettings {
 		return this;
 	}
 
-	public String getTarballName() {
-		return tarballName;
-	}
-
 	/**
 	 * Set create zipball
 	 * @param createZipball Create zipball
@@ -769,9 +798,7 @@ public class PackagerSettings {
 		return this;
 	}
 
-	public String getZipballName() {
-		return zipballName;
-	}
+
 
 	/**
 	 * Set extra parameters map
@@ -862,6 +889,26 @@ public class PackagerSettings {
 		this.scripts = scripts;
 		return this;
 	}
+	
+	/**
+	 * Set architecture
+	 * @param arch Architecture
+	 * @return Packager settings
+	 */
+	public PackagerSettings arch(Arch arch) {
+		this.arch = arch;
+		return this;
+	}
+	
+	/**
+	 * Set executable name
+	 * @param executableName Executable name
+	 * @return Packager settings
+	 */
+	public PackagerSettings executableName(String executableName) {
+		this.executableName = executableName;
+		return this;
+	}
 
 	// some helpful methods
 
@@ -882,21 +929,12 @@ public class PackagerSettings {
 		return StringUtils.join(fileAssociations.stream().map(fa -> fa.getMimeType()).collect(Collectors.toList()), separator);
 	}
 
-	public Arch getArch() {
-		return arch;
-	}
-
-	public PackagerSettings arch(Arch arch) {
-		this.arch = arch;
-		return this;
-	}
-
 	@Override
 	public String toString() {
-		return "PackagerSettings [" + "outputDirectory=" + outputDirectory + ", " + "licenseFile=" + licenseFile + ", "
-				+ "iconFile=" + iconFile + ", " + "generateInstaller=" + generateInstaller + ", " + "forceInstaller="
-				+ forceInstaller + ", " + "mainClass=" + mainClass + ", name=" + name + ", displayName=" + displayName
-				+ ", version=" + version + ", description=" + description + ", url=" + url + ", administratorRequired="
+		return "PackagerSettings [outputDirectory=" + outputDirectory + ", licenseFile=" + licenseFile + ", iconFile="
+				+ iconFile + ", generateInstaller=" + generateInstaller + ", forceInstaller=" + forceInstaller
+				+ ", mainClass=" + mainClass + ", name=" + name + ", displayName=" + displayName + ", version="
+				+ version + ", description=" + description + ", url=" + url + ", administratorRequired="
 				+ administratorRequired + ", organizationName=" + organizationName + ", organizationUrl="
 				+ organizationUrl + ", organizationEmail=" + organizationEmail + ", bundleJre=" + bundleJre
 				+ ", customizedJre=" + customizedJre + ", jrePath=" + jrePath + ", jdkPath=" + jdkPath
@@ -904,10 +942,12 @@ public class PackagerSettings {
 				+ additionalModules + ", platform=" + platform + ", envPath=" + envPath + ", vmArgs=" + vmArgs
 				+ ", runnableJar=" + runnableJar + ", copyDependencies=" + copyDependencies + ", jreDirectoryName="
 				+ jreDirectoryName + ", winConfig=" + winConfig + ", linuxConfig=" + linuxConfig + ", macConfig="
-				+ macConfig + ", createTarball=" + createTarball + ", createZipball=" + createZipball + ", extra="
-				+ extra + ", useResourcesAsWorkingDir=" + useResourcesAsWorkingDir + ", assetsDir=" + assetsDir
-				+ ", classpath=" + classpath + ", jreMinVersion=" + jreMinVersion + ", manifest=" + manifest
-				+ ", additionalModulePaths=" + additionalModulePaths + ", fileAssociations=" + fileAssociations
-				+ ", packagingJdk=" + packagingJdk + ", scripts=" + scripts + ", arch=" + arch + "]";
+				+ macConfig + ", createTarball=" + createTarball + ", tarballName=" + tarballName + ", createZipball="
+				+ createZipball + ", zipballName=" + zipballName + ", extra=" + extra + ", useResourcesAsWorkingDir="
+				+ useResourcesAsWorkingDir + ", assetsDir=" + assetsDir + ", classpath=" + classpath
+				+ ", jreMinVersion=" + jreMinVersion + ", manifest=" + manifest + ", additionalModulePaths="
+				+ additionalModulePaths + ", fileAssociations=" + fileAssociations + ", packagingJdk=" + packagingJdk
+				+ ", scripts=" + scripts + ", arch=" + arch + ", executableName=" + executableName + "]";
 	}
+
 }

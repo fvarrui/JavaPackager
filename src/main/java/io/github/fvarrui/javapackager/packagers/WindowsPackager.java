@@ -62,7 +62,7 @@ public class WindowsPackager extends Packager {
 		Logger.info("Exe manifest file generated in " + manifestFile.getAbsolutePath() + "!");
 
 		// sets executable file
-		executable = new File(appFolder, name + ".exe");
+		executable = new File(appFolder, executableName + ".exe");
 		
 		// process classpath
 		if (classpath != null) {

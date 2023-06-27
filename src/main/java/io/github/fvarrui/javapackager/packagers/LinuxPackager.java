@@ -60,7 +60,7 @@ public class LinuxPackager extends Packager {
 		Logger.infoIndent("Creating GNU/Linux executable ...");
 
 		// sets executable file
-		this.executable = new File(appFolder, name);
+		this.executable = new File(appFolder, executableName);
 		
 		// process classpath
 		if (classpath != null) {

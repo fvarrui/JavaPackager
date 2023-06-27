@@ -54,6 +54,7 @@ public class PackagePluginExtension extends PackagerSettings {
 		this.scripts = new Scripts();
 		this.forceInstaller = false;
 		this.arch = Arch.getDefault();
+		this.executableName = name;
 	}
 	
     public LinuxConfig linuxConfig(Closure<LinuxConfig> closure) {

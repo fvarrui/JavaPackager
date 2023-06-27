@@ -115,6 +115,9 @@ public abstract class Packager extends PackagerSettings {
 
 		// using empty string as organizationUrl, if it's not specified
 		organizationUrl = defaultIfBlank(organizationUrl, "");
+		
+		// using name as executableName, if it's not specified
+		executableName = defaultIfBlank(executableName, name);
 
 		// determines target platform if not specified
 		if (platform == null || platform == Platform.auto) {

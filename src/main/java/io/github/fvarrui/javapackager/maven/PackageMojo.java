@@ -322,14 +322,20 @@ public class PackageMojo extends AbstractMojo {
 	@Parameter(property = "arch", required = false)
 	private Arch arch;
 
+	/**
+	 * Executable name
+	 */
+	@Parameter(property = "executableName", required = false)
+	private String executableName;
+	
 	public void execute() throws MojoExecutionException {
 		
 		Context.setContext(
-				new MavenContext(
-						executionEnvironment(mavenProject, mavenSession, pluginManager), 
-						getLog()
-						)
-				);
+			new MavenContext(
+				executionEnvironment(mavenProject, mavenSession, pluginManager), 
+				getLog()
+			)
+		);
 
 		try {
 
@@ -353,6 +359,7 @@ public class PackageMojo extends AbstractMojo {
 						.description(description)
 						.displayName(displayName)
 						.envPath(envPath)
+						.executableName(executableName)
 						.extra(extra)
 						.fileAssociations(fileAssociations)
 						.forceInstaller(forceInstaller)
@@ -392,9 +399,7 @@ public class PackageMojo extends AbstractMojo {
 			throw new MojoExecutionException(e.getMessage(), e);
 			
 		}
-		
 
 	}
-
 	
 }

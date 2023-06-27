@@ -572,6 +572,18 @@ public class PackageTask extends AbstractPackageTask {
 	public void setArch(Arch arch) {
 		this.arch = arch;
 	}
+	
+	@Input
+	@Optional	
+	private String executableName;
+
+	public String getExecutableName() {
+		return executableName;
+	}
+
+	public void setExecutableName(String executableName) {
+		this.executableName = executableName;
+	}
 
 	// ===============
 	// create packager
@@ -601,6 +613,7 @@ public class PackageTask extends AbstractPackageTask {
 					.description(defaultIfNull(appDescription, extension.getDescription()))
 					.displayName(defaultIfNull(displayName, extension.getDisplayName()))
 					.envPath(defaultIfNull(envPath, extension.getEnvPath()))
+					.executableName(defaultIfNull(executableName, extension.getExecutableName()))
 					.extra(defaultIfNull(extra, extension.getExtra()))
 					.fileAssociations(defaultIfNull(fileAssociations, extension.getFileAssociations()))
 					.forceInstaller(defaultIfNull(forceInstaller, extension.isForceInstaller()))					
