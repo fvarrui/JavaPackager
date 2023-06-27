@@ -4,7 +4,11 @@
 	#set($guid = $GUID.randomUUID())
 	#set($id = $id + 1)
 	#if($file.isDirectory())
+	    #if($file.equals(${info.appFolder}))
+		<Directory Id="INSTALLFOLDER" Name="${file.name}">
+		#else
 		<Directory Id="_${id}" Name="${file.name}">
+		#end
 		#foreach($child in $file.listFiles())
 			#list($child)
 		#end
@@ -12,13 +16,13 @@
 	#else
 		<Component Id="_${id}" Guid="${guid}" Win64="yes">
 	    #if($file.equals(${info.executable}))
-	    	<File Id="exeFile" Name="${file.name}" KeyPath="yes" Source="${file}">
+	    	<File Id="EXEFILE" Name="${file.name}" KeyPath="yes" Source="${file}">
 				<Shortcut Id="ApplicationStartMenuShortcut" Name="${info.winConfig.shortcutName}" Description="${info.description}" Directory="ProgramMenuFolder" />
 	    	</File>
 			<RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
 			<RegistryValue Root="HKLM" Key="Software\\${info.organizationName}\\${info.name}" Name="installed" Type="integer" Value="1" />
 		#else
-			<File Id="_${id}f" Name="${file.name}" KeyPath="yes" Source="${file}"/>			  
+			<File Name="${file.name}" KeyPath="yes" Source="${file}"/>
 		#end
 		</Component>
 	#end
@@ -33,8 +37,16 @@
 #if ($info.winConfig.registry)
 			<Component Id="RegistryEntries" Guid="${GUID.randomUUID()}">
 #foreach ($entry in $info.winConfig.registry.entries)
-				<RegistryKey Root="${entry.root}" Key="${entry.subkey}" Action="createAndRemoveOnUninstall">
-					<RegistryValue Type="${entry.valueTypeAsWIXToolsetString}" Name="$!{entry.valueName}" Value="$!{entry.valueData}"/>
+				<RegistryKey Root="${entry.root}" Key="${entry.subkey}" ForceDeleteOnUninstall="yes">
+					<RegistryValue 
+						Type="${entry.valueTypeAsWIXToolsetString}"
+#if ($entry.valueName)
+						Name="$!{entry.valueName}"
+#end
+#if ($entry.valueData)
+						Value="$!{entry.valueData}"
+#end
+					/>
 				</RegistryKey>
 #end
 			</Component>
