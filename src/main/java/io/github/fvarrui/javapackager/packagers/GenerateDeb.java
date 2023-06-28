@@ -107,7 +107,7 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 		
 		Data executableData = new Data();
 		executableData.setType("file");
-		executableData.setSrc(new File(appFolder.getAbsolutePath() + "/" + name));
+		executableData.setSrc(new File(appFolder.getAbsolutePath() + "/" + executable.getName()));
 		executableData.addMapper(executableMapper);
 
 		dataProducers.add(executableData);
