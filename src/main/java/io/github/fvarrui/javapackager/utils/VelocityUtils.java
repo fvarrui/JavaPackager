@@ -21,6 +21,8 @@ public class VelocityUtils {
 
 	private static File assetsDir = new File("assets");
 	private static VelocityEngine velocityEngine = null;
+	
+	private VelocityUtils() {}
 
 	private static VelocityEngine getVelocityEngine() {
 		
