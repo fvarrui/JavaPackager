@@ -3,7 +3,14 @@ package io.github.fvarrui.javapackager.model;
 public class Template {
 
 	private String name;
-	private boolean bom = true;
+	private boolean bom = false;
+	
+	public Template() {}
+	
+	public Template(String name, boolean bom) {
+		this.name = name;
+		this.bom = bom;
+	}
 
 	public String getName() {
 		return name;

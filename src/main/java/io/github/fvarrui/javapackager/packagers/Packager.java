@@ -101,8 +101,8 @@ public abstract class Packager extends PackagerSettings {
 			throw new Exception("'mainClass' cannot be null");
 		}
 
-		// sets assetsDir for velocity to locate custom velocity templates
-		VelocityUtils.setAssetsDir(assetsDir);
+		// init velocity utils
+		VelocityUtils.init(this);
 
 		// using name as displayName, if it's not specified
 		displayName = defaultIfBlank(displayName, name);

@@ -4,6 +4,8 @@ import static org.apache.commons.io.FileUtils.writeStringToFile;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.velocity.Template;
@@ -14,6 +16,8 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
 import org.apache.velocity.util.StringBuilderWriter;
 
+import io.github.fvarrui.javapackager.packagers.Packager;
+
 /**
  * Velocity utils 
  */
@@ -21,8 +25,18 @@ public class VelocityUtils {
 
 	private static File assetsDir = new File("assets");
 	private static VelocityEngine velocityEngine = null;
+	private static List<io.github.fvarrui.javapackager.model.Template> templates;
 	
 	private VelocityUtils() {}
+	
+	public static void init(Packager packager) {
+		assetsDir = packager.getAssetsDir();
+		templates = packager.getTemplates() != null ? packager.getTemplates() : new ArrayList<>();
+		// add default template configs
+		if (templates.stream().noneMatch(t -> t.getName().equals("windows/iss.vtl"))) {
+			templates.add(new io.github.fvarrui.javapackager.model.Template("windows/iss.vtl", true));
+		}
+	}
 
 	private static VelocityEngine getVelocityEngine() {
 		
@@ -58,16 +72,8 @@ public class VelocityUtils {
 		template.merge(context, writer);		
 		return writer.toString();
 	}
-
-	public static void setAssetsDir(File assetsDir) {
-		VelocityUtils.assetsDir = assetsDir;
-	}
-
-	public static void render(String templatePath, File output, Object info) throws Exception {
-		render(templatePath, output, info, false);
-	}
 	
-	public static void render(String templatePath, File output, Object info, boolean includeBom) throws Exception {
+	private static void render(String templatePath, File output, Object info, boolean includeBom) throws Exception {
 		String data = render(templatePath, info);
 		data = StringUtils.dosToUnix(data);
 		if (!includeBom) {
@@ -76,5 +82,10 @@ public class VelocityUtils {
 			FileUtils.writeStringToFileWithBOM(output, data);
 		}
 	}
-	
+
+	public static void render(String templatePath, File output, Object info) throws Exception {
+		Optional<io.github.fvarrui.javapackager.model.Template> template = templates.stream().filter(t -> t.getName().equals(templatePath)).findFirst();
+		render(templatePath, output, info, template.isPresent() ? template.get().isBom() : false);
+	}
+
 }

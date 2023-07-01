@@ -56,7 +56,7 @@ public class GenerateSetup extends WindowsArtifactGenerator {
 		
 		// generates iss file from velocity template
 		File issFile = new File(assetsFolder, name + ".iss");
-		VelocityUtils.render("windows/iss.vtl", issFile, packager, true);
+		VelocityUtils.render("windows/iss.vtl", issFile, packager);
 
 		// generates windows installer with inno setup command line compiler
 		CommandUtils.execute("iscc", "/O" + outputDirectory.getAbsolutePath(), "/F" + name + "_" + version, issFile);
