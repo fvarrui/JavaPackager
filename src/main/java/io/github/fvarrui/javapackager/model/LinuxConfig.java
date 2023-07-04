@@ -5,6 +5,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import io.github.fvarrui.javapackager.packagers.Packager;
 
 /**
@@ -19,6 +21,7 @@ public class LinuxConfig implements Serializable {
 	private boolean generateAppImage = true;
 	private File pngFile;
 	private boolean wrapJar = true;
+	private File installationPath;
 	
 	public void setCategories(List<String> categories) {
 		this.categories = categories;
@@ -67,11 +70,20 @@ public class LinuxConfig implements Serializable {
 	public void setWrapJar(boolean wrapJar) {
 		this.wrapJar = wrapJar;
 	}
+	
+	public File getInstallationPath() {
+		return installationPath;
+	}
+	
+	public void setInstallationPath(File installationPath) {
+		this.installationPath = installationPath;
+	}
 
 	@Override
 	public String toString() {
 		return "LinuxConfig [categories=" + categories + ", generateDeb=" + generateDeb + ", generateRpm=" + generateRpm
-				+ ", generateAppImage=" + generateAppImage + ", pngFile=" + pngFile + ", wrapJar=" + wrapJar + "]";
+				+ ", generateAppImage=" + generateAppImage + ", pngFile=" + pngFile + ", wrapJar=" + wrapJar
+				+ ", installationPath=" + installationPath + "]";
 	}
 
 	/**
@@ -81,6 +93,7 @@ public class LinuxConfig implements Serializable {
 	 */
 	public void setDefaults(Packager packager) {
 		this.setCategories((categories == null || categories.isEmpty()) ? Arrays.asList("Utility") : categories);
+		this.setInstallationPath(ObjectUtils.defaultIfNull(installationPath, new File("/opt")));
 	}
 
 }

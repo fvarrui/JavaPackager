@@ -44,11 +44,13 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 		String jreDirectoryName = packager.getJreDirectoryName();
 		Architecture arch = Architecture.valueOf(packager.getArch().getRpm());
 		File mimeXmlFile = packager.getMimeXmlFile();
+		File installationPath = packager.getLinuxConfig().getInstallationPath();
+		File appPath = new File(installationPath, name);
 		
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");
 		VelocityUtils.render("linux/desktop.vtl", desktopFile, packager);
-		Logger.info("Rendering desktop file to " + desktopFile.getAbsolutePath());
+		Logger.info("Desktop file rendered in " + desktopFile.getAbsolutePath());
 		
 		// copies desktop file to app
 		FileUtils.copyFileToFolder(desktopFile, appFolder);
@@ -69,19 +71,19 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 		executionPermissions.add(new File(appFolder, jreDirectoryName + "/lib/jspawnhelper"));
 
 		// add all app files
-		addDirectoryTree(builder, "/opt", appFolder, executionPermissions);
+		addDirectoryTree(builder, installationPath.getAbsolutePath(), appFolder, executionPermissions);
 
 		// link to desktop file
-		builder.addLink("/usr/share/applications/" + desktopFile.getName(), "/opt/" + name + "/" + desktopFile.getName());
+		builder.addLink("/usr/share/applications/" + desktopFile.getName(), appPath + "/" + desktopFile.getName());
 
 		// copy and link to mime.xml file
 		if (mimeXmlFile != null) {
 			FileUtils.copyFileToFolder(mimeXmlFile, appFolder);
-			builder.addLink("/usr/share/mime/packages/" + mimeXmlFile.getName(), "/opt/" + name + "/" + mimeXmlFile.getName());
+			builder.addLink("/usr/share/mime/packages/" + mimeXmlFile.getName(), appPath + "/" + mimeXmlFile.getName());
 		}
 		
 		// link to binary
-		builder.addLink("/usr/local/bin/" + executable.getName(), "/opt/" + name + "/" + executable.getName());
+		builder.addLink("/usr/local/bin/" + executable.getName(), appPath + "/" + executable.getName());
 
 		// build RPM file
 		builder.build(outputDirectory);

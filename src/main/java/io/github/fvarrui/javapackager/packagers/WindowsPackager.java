@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
@@ -27,6 +28,11 @@ public class WindowsPackager extends Packager {
 
 	public void setMsmFile(File msmFile) {
 		this.msmFile = msmFile;
+	}
+	
+	public WindowsPackager() {		
+		super();
+		platform(Platform.windows);
 	}
 
 	@Override
