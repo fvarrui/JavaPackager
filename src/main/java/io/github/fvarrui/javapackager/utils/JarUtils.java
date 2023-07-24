@@ -10,7 +10,7 @@ import io.github.fvarrui.javapackager.packagers.Context;
 public class JarUtils {
 
 	/**
-	 * Runs "jar uf <jarfile> <newfile>" to add newfile into jarfile. 
+	 * Runs "jar uf jarfile newfile" to add newfile into jarfile. 
 	 * @param jarFile JAR file
 	 * @param newFile File to add to jar file
 	 * @throws IOException If something related to IO went wrong
