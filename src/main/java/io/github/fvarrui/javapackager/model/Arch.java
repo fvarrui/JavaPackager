@@ -3,14 +3,16 @@ package io.github.fvarrui.javapackager.model;
 import org.apache.commons.lang3.SystemUtils;
 
 public enum Arch {
-	aarch64("arm64", "AARCH64"), 
-	x64("amd64", "X86_64"), 
-	x86("i386", "i386");
+	aarch64("aarch64", "arm64", "AARCH64"), 
+	x64("x64", "amd64", "X86_64"), 
+	x86("x86", "i386", "i386");
 
+	private String setup;
 	private String deb;
 	private String rpm;
 
-	Arch(String deb, String rpm) {
+	Arch(String setup, String deb, String rpm) {
+		this.setup = setup;
 		this.deb = deb;
 		this.rpm = rpm;
 	}
@@ -21,6 +23,10 @@ public enum Arch {
 
 	public String getRpm() {
 		return rpm;
+	}
+	
+	public String getSetup() {
+		return setup;
 	}
 	
 	public static Arch getDefault() {
