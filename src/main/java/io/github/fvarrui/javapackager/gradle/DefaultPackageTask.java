@@ -1,9 +1,10 @@
 package io.github.fvarrui.javapackager.gradle;
 
-import static io.github.fvarrui.javapackager.utils.ObjectUtils.defaultIfNull;
-
+import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.packagers.PackagerFactory;
+
+import static io.github.fvarrui.javapackager.utils.ObjectUtils.defaultIfNull;
 
 /**
  * Default packaging task for Gradle 
@@ -22,6 +23,7 @@ public class DefaultPackageTask extends AbstractPackageTask {
 					.additionalModulePaths(extension.getAdditionalModulePaths())
 					.additionalResources(extension.getAdditionalResources())
 					.administratorRequired(extension.getAdministratorRequired())
+					.arch(extension.getArch())
 					.assetsDir(extension.getAssetsDir())
 					.bundleJre(extension.getBundleJre())
 					.classpath(extension.getClasspath())					
@@ -51,7 +53,7 @@ public class DefaultPackageTask extends AbstractPackageTask {
 					.organizationName(extension.getOrganizationName())
 					.organizationUrl(extension.getOrganizationUrl())
 					.outputDirectory(extension.getOutputDirectory())
-					.packagingJdk(extension.getPackagingJdk())
+					.packagingJdk(defaultIfNull(extension.getPackagingJdk(), Context.getGradleContext().getDefaultToolchain()))
 					.runnableJar(extension.getRunnableJar())
 					.scripts(extension.getScripts())
 					.useResourcesAsWorkingDir(extension.isUseResourcesAsWorkingDir())
@@ -61,5 +63,5 @@ public class DefaultPackageTask extends AbstractPackageTask {
 					.winConfig(extension.getWinConfig());
 
 	}
-	
+
 }

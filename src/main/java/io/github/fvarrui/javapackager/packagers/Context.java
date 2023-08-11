@@ -88,7 +88,10 @@ public abstract class Context<T> {
 	}
 	
 	public File getDefaultToolchain() {
-		return new File(System.getProperty("java.home")); // Use java.home as fallback
+		if (System.getenv("JAVA_HOME") != null) {
+			return new File(System.getenv("JAVA_HOME")); // Use JAVA_HOME as fallback	
+		}
+		return new File(System.getProperty("java.home"));
 	}
 	
 }

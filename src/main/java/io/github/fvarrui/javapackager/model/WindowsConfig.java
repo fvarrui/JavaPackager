@@ -1,6 +1,7 @@
 package io.github.fvarrui.javapackager.model;
 
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+import static io.github.fvarrui.javapackager.utils.ObjectUtils.defaultIfNull;
 
 import java.io.File;
 import java.io.Serializable;
@@ -8,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.UUID;
 
 import io.github.fvarrui.javapackager.packagers.Packager;
-import io.github.fvarrui.javapackager.utils.ObjectUtils;
 
 /**
  * JavaPackager Windows specific configuration
@@ -30,6 +30,7 @@ public class WindowsConfig implements Serializable {
 	private String trademarks;
 	private String txtFileVersion;
 	private String txtProductVersion;
+	private String shortcutName;
 	private boolean disableDirPage = true;
 	private boolean disableProgramGroupPage = true;
 	private boolean disableFinishedPage = true;
@@ -151,6 +152,14 @@ public class WindowsConfig implements Serializable {
 
 	public void setTxtProductVersion(String txtProductVersion) {
 		this.txtProductVersion = txtProductVersion;
+	}
+
+	public String getShortcutName() {
+		return shortcutName;
+	}
+
+	public void setShortcutName(String shortcutName) {
+		this.shortcutName = shortcutName;
 	}
 
 	public String getInternalName() {
@@ -312,6 +321,7 @@ public class WindowsConfig implements Serializable {
 				+ ", internalName=" + internalName + ", language=" + language + ", originalFilename=" + originalFilename
 				+ ", productName=" + productName + ", productVersion=" + productVersion + ", trademarks=" + trademarks
 				+ ", txtFileVersion=" + txtFileVersion + ", txtProductVersion=" + txtProductVersion
+				+ ", shortcutName=" + shortcutName
 				+ ", disableDirPage=" + disableDirPage + ", disableProgramGroupPage=" + disableProgramGroupPage
 				+ ", disableFinishedPage=" + disableFinishedPage + ", disableRunAfterInstall=" + disableRunAfterInstall
 				+ ", disableWelcomePage=" + disableWelcomePage + ", createDesktopIconTask=" + createDesktopIconTask
@@ -327,12 +337,14 @@ public class WindowsConfig implements Serializable {
 	 * @param packager Packager
 	 */
 	public void setDefaults(Packager packager) {
-		this.setHeaderType(ObjectUtils.defaultIfNull(this.getHeaderType(), HeaderType.gui));
+		this.setHeaderType(defaultIfNull(this.getHeaderType(), HeaderType.gui));
 		this.setFileVersion(defaultIfBlank(this.getFileVersion(), "1.0.0.0"));
 		this.setTxtFileVersion(defaultIfBlank(this.getTxtFileVersion(), "" + packager.getVersion()));
 		this.setProductVersion(defaultIfBlank(this.getProductVersion(), "1.0.0.0"));
+		this.setShortcutName(defaultIfBlank(this.getShortcutName(), packager.getDisplayName()));
 		this.setTxtProductVersion(defaultIfBlank(this.getTxtProductVersion(), "" + packager.getVersion()));
 		this.setCompanyName(defaultIfBlank(this.getCompanyName(), packager.getOrganizationName()));
+		this.setTrademarks(defaultIfBlank(this.getTrademarks(), packager.getOrganizationName()));
 		this.setCopyright(defaultIfBlank(this.getCopyright(), packager.getOrganizationName()));
 		this.setFileDescription(defaultIfBlank(this.getFileDescription(), packager.getDescription()));
 		this.setProductName(defaultIfBlank(this.getProductName(), packager.getName()));
@@ -340,5 +352,5 @@ public class WindowsConfig implements Serializable {
 		this.setOriginalFilename(defaultIfBlank(this.getOriginalFilename(), packager.getName() + ".exe"));
 		this.setMsiUpgradeCode(defaultIfBlank(this.getMsiUpgradeCode(), UUID.randomUUID().toString()));
 	}
-
+	
 }

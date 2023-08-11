@@ -122,7 +122,5 @@ public class GradleContext extends Context<Logger> {
 		}
 		return null;
 	}
-	
-
 
 }

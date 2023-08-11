@@ -184,7 +184,14 @@ public abstract class Packager extends PackagerSettings {
 		// adds to additional resources
 		if (additionalResources != null) {
 			if (licenseFile != null) additionalResources.add(licenseFile);
-			additionalResources.add(iconFile);
+			
+			// skip adding icon file if target platform is windows
+			if (!getPlatform().equals(Platform.windows)) {
+				additionalResources.add(iconFile);
+			} else {
+				Logger.warn("Skipped adding the icon file as additional resource because the target platform is Windows");
+			}
+			
 			Logger.info("Effective additional resources " + additionalResources);
 		}
 
