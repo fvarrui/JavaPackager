@@ -321,6 +321,12 @@ public class PackageMojo extends AbstractMojo {
 	 */
 	@Parameter(property = "arch", required = false)
 	private Arch arch;
+	
+	/**
+	 * Templates configuration
+	 */
+	@Parameter(property = "templates", required = false)
+	private List<Template> templates;
 
 	public void execute() throws MojoExecutionException {
 		
@@ -376,6 +382,7 @@ public class PackageMojo extends AbstractMojo {
 						.packagingJdk(packagingJdk)
 						.runnableJar(runnableJar)
 						.scripts(scripts)
+						.templates(templates)
 						.useResourcesAsWorkingDir(useResourcesAsWorkingDir)
 						.url(url)
 						.version(version)

@@ -15,6 +15,7 @@ import io.github.fvarrui.javapackager.model.MacConfig;
 import io.github.fvarrui.javapackager.model.Manifest;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.Scripts;
+import io.github.fvarrui.javapackager.model.Template;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 
 /**
@@ -68,6 +69,7 @@ public class PackagerSettings {
 	protected File packagingJdk;
 	protected Scripts scripts;
 	protected Arch arch;
+	protected List<Template> templates;
 	
 	/**
 	 * Get packaging JDK
@@ -411,6 +413,14 @@ public class PackagerSettings {
 	 */
 	public Scripts getScripts() {
 		return scripts;
+	}
+	
+	/**
+	 * Get templates
+	 * @return Templates config list
+	 */
+	public List<Template> getTemplates() {
+		return templates;
 	}
 
 	// fluent api
@@ -862,6 +872,17 @@ public class PackagerSettings {
 		this.scripts = scripts;
 		return this;
 	}
+	
+	/**
+	 * Set templates config
+	 * @param templates Templates list config
+	 * @return Packager settings
+	 */
+	public PackagerSettings templates(List<Template> templates) {
+		this.templates = templates;
+		return this;
+	}
+
 
 	// some helpful methods
 
@@ -893,10 +914,10 @@ public class PackagerSettings {
 
 	@Override
 	public String toString() {
-		return "PackagerSettings [" + "outputDirectory=" + outputDirectory + ", " + "licenseFile=" + licenseFile + ", "
-				+ "iconFile=" + iconFile + ", " + "generateInstaller=" + generateInstaller + ", " + "forceInstaller="
-				+ forceInstaller + ", " + "mainClass=" + mainClass + ", name=" + name + ", displayName=" + displayName
-				+ ", version=" + version + ", description=" + description + ", url=" + url + ", administratorRequired="
+		return "PackagerSettings [outputDirectory=" + outputDirectory + ", licenseFile=" + licenseFile + ", iconFile="
+				+ iconFile + ", generateInstaller=" + generateInstaller + ", forceInstaller=" + forceInstaller
+				+ ", mainClass=" + mainClass + ", name=" + name + ", displayName=" + displayName + ", version="
+				+ version + ", description=" + description + ", url=" + url + ", administratorRequired="
 				+ administratorRequired + ", organizationName=" + organizationName + ", organizationUrl="
 				+ organizationUrl + ", organizationEmail=" + organizationEmail + ", bundleJre=" + bundleJre
 				+ ", customizedJre=" + customizedJre + ", jrePath=" + jrePath + ", jdkPath=" + jdkPath
@@ -904,10 +925,12 @@ public class PackagerSettings {
 				+ additionalModules + ", platform=" + platform + ", envPath=" + envPath + ", vmArgs=" + vmArgs
 				+ ", runnableJar=" + runnableJar + ", copyDependencies=" + copyDependencies + ", jreDirectoryName="
 				+ jreDirectoryName + ", winConfig=" + winConfig + ", linuxConfig=" + linuxConfig + ", macConfig="
-				+ macConfig + ", createTarball=" + createTarball + ", createZipball=" + createZipball + ", extra="
-				+ extra + ", useResourcesAsWorkingDir=" + useResourcesAsWorkingDir + ", assetsDir=" + assetsDir
-				+ ", classpath=" + classpath + ", jreMinVersion=" + jreMinVersion + ", manifest=" + manifest
-				+ ", additionalModulePaths=" + additionalModulePaths + ", fileAssociations=" + fileAssociations
-				+ ", packagingJdk=" + packagingJdk + ", scripts=" + scripts + ", arch=" + arch + "]";
+				+ macConfig + ", createTarball=" + createTarball + ", tarballName=" + tarballName + ", createZipball="
+				+ createZipball + ", zipballName=" + zipballName + ", extra=" + extra + ", useResourcesAsWorkingDir="
+				+ useResourcesAsWorkingDir + ", assetsDir=" + assetsDir + ", classpath=" + classpath
+				+ ", jreMinVersion=" + jreMinVersion + ", manifest=" + manifest + ", additionalModulePaths="
+				+ additionalModulePaths + ", fileAssociations=" + fileAssociations + ", packagingJdk=" + packagingJdk
+				+ ", scripts=" + scripts + ", arch=" + arch + ", templates=" + templates + "]";
 	}
+	
 }
