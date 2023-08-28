@@ -3,8 +3,8 @@
 Name=${info.displayName}
 GenericName=${info.displayName}
 Comment=${info.description}
-Exec=/opt/${info.name}/${info.name} %U
-Icon=/opt/${info.name}/${info.name}.png
+Exec=${info.linuxConfig.installationPath}/${info.name}/${info.executable.name} %U
+Icon=${info.linuxConfig.installationPath}/${info.name}/${info.name}.png
 Terminal=false
 Type=Application
 StartupNotify=true

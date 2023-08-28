@@ -64,6 +64,8 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 		File executable = packager.getExecutable();
 		File javaFile = new File(appFolder, jreDirectoryName + "/bin/java");
 		File mimeXmlFile = packager.getMimeXmlFile();
+		File installationPath = packager.getLinuxConfig().getInstallationPath();
+		File appPath = new File(installationPath, name);
 
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");
@@ -87,7 +89,7 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 		
 		Mapper appFolderMapper = new Mapper();
 		appFolderMapper.setType("perm");
-		appFolderMapper.setPrefix("/opt/" + name);
+		appFolderMapper.setPrefix(appPath.getAbsolutePath());
 		appFolderMapper.setFileMode("644");
 		
 		Data appFolderData = new Data();
@@ -102,12 +104,12 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 		
 		Mapper executableMapper = new Mapper();
 		executableMapper.setType("perm");
-		executableMapper.setPrefix("/opt/" + name);
+		executableMapper.setPrefix(appPath.getAbsolutePath());
 		executableMapper.setFileMode("755");
 		
 		Data executableData = new Data();
 		executableData.setType("file");
-		executableData.setSrc(new File(appFolder.getAbsolutePath() + "/" + name));
+		executableData.setSrc(executable);
 		executableData.addMapper(executableMapper);
 
 		dataProducers.add(executableData);
@@ -150,7 +152,7 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 			Mapper javaBinaryMapper = new Mapper();
 			javaBinaryMapper.setType("perm");
 			javaBinaryMapper.setFileMode("755");
-			javaBinaryMapper.setPrefix("/opt/" + name + "/" + jreDirectoryName + "/bin");
+			javaBinaryMapper.setPrefix(appPath + "/" + jreDirectoryName + "/bin");
 			
 			Data javaBinaryData = new Data();
 			javaBinaryData.setType("file");
@@ -168,7 +170,7 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 				Mapper javaSpawnHelperMapper = new Mapper();
 				javaSpawnHelperMapper.setType("perm");
 				javaSpawnHelperMapper.setFileMode("755");
-				javaSpawnHelperMapper.setPrefix("/opt/" + name + "/" + jreDirectoryName + "/lib");
+				javaSpawnHelperMapper.setPrefix(appPath + "/" + jreDirectoryName + "/lib");
 				
 				Data javaSpawnHelperData = new Data();
 				javaSpawnHelperData.setType("file");
@@ -182,7 +184,7 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 		
 		// symbolic link in /usr/local/bin to app binary data producer
 
-        DataProducer linkData = createLink("/usr/local/bin/" + name, "/opt/" + name + "/" + name);
+        DataProducer linkData = createLink("/usr/local/bin/" + executable.getName(), appPath + "/" + executable.getName());
         
 		dataProducers.add(linkData);
 		
