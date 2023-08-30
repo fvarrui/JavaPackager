@@ -205,26 +205,23 @@ public abstract class Packager extends PackagerSettings {
 	 * @param resources   List of files and folders to be copied
 	 * @param destination Destination folder. All specified resources will be copied
 	 *                    here
+	 * @throws Exception 
 	 */
-	protected void copyAdditionalResources(List<File> resources, File destination) {
+	protected void copyAdditionalResources(List<File> resources, File destination) throws Exception {
 
 		Logger.infoIndent("Copying additional resources");
 
-		resources.stream().forEach(r -> {
+		for (File r : resources) {
 			if (!r.exists()) {
 				Logger.warn("Additional resource " + r + " doesn't exist");
 				return;
 			}
-			try {
-				if (r.isDirectory()) {
-					FileUtils.copyFolderToFolder(r, destination);
-				} else if (r.isFile()) {
-					FileUtils.copyFileToFolder(r, destination);
-				}
-			} catch (Exception e) {
-				Logger.error(e.getMessage(), e);
+			if (r.isDirectory()) {
+				FileUtils.copyFolderToFolder(r, destination);
+			} else if (r.isFile()) {
+				FileUtils.copyFileToFolder(r, destination);
 			}
-		});
+		}
 
 		// copy bootstrap script
 		if (FileUtils.exists(getScripts().getBootstrap())) {
