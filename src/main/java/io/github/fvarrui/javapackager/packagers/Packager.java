@@ -214,9 +214,7 @@ public abstract class Packager extends PackagerSettings {
 		for (File r : resources) {
 			if (!r.exists()) {
 				Logger.warn("Additional resource " + r + " doesn't exist");
-				return;
-			}
-			if (r.isDirectory()) {
+			} else if (r.isDirectory()) {
 				FileUtils.copyFolderToFolder(r, destination);
 			} else if (r.isFile()) {
 				FileUtils.copyFileToFolder(r, destination);
