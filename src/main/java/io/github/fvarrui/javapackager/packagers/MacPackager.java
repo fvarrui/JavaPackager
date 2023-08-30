@@ -34,6 +34,11 @@ public class MacPackager extends Packager {
 	private File javaFolder;
 	private File macOSFolder;
 	private File jreBundleFolder;
+	
+	public MacPackager() {		
+		super();
+		platform(Platform.mac);
+	}
 
 	public File getAppFile() {
 		return appFile;

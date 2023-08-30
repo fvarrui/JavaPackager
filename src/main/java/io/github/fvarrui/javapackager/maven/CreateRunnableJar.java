@@ -45,8 +45,6 @@ public class CreateRunnableJar extends ArtifactGenerator<Packager> {
 		File outputDirectory = packager.getOutputDirectory();
 		ExecutionEnvironment env = Context.getMavenContext().getEnv();
 		Manifest manifest = packager.getManifest();
-		String artifactId = env.getMavenProject().getArtifactId();
-		File jarFile = new File(outputDirectory, artifactId + "-" + classifier + ".jar");
 		
 		List<Element> archive = new ArrayList<>();
 		archive.add(
@@ -99,9 +97,22 @@ public class CreateRunnableJar extends ArtifactGenerator<Packager> {
 			
 		}
 		
-		File finalJarFile = new File(outputDirectory, name + "-" + version + "-" + classifier + ".jar");
-		FileUtils.rename(jarFile, finalJarFile.getName());		
-		return finalJarFile;
+		// gets build.finalName value
+		String finalName = Context.getMavenContext().getEnv().getMavenProject().getBuild().getFinalName();
+		
+		// creates file pointing to generated jar file
+		File finalJarFile = new File(outputDirectory, finalName + "-" + classifier + ".jar");
+		
+		// creates desired output jar file 
+		File jarFile = new File(outputDirectory, name + "-" + version + "-" + classifier + ".jar");
+		
+		// renames generated jar to desired one if they are different
+		if (!finalJarFile.equals(jarFile)) {
+			FileUtils.rename(finalJarFile, jarFile.getName());
+		}
+		
+		return jarFile;
+		
 	}
 	
 }

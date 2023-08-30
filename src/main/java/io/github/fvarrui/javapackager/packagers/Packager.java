@@ -101,8 +101,8 @@ public abstract class Packager extends PackagerSettings {
 			throw new Exception("'mainClass' cannot be null");
 		}
 
-		// sets assetsDir for velocity to locate custom velocity templates
-		VelocityUtils.setAssetsDir(assetsDir);
+		// init velocity utils
+		VelocityUtils.init(this);
 
 		// using name as displayName, if it's not specified
 		displayName = defaultIfBlank(displayName, name);
@@ -205,26 +205,21 @@ public abstract class Packager extends PackagerSettings {
 	 * @param resources   List of files and folders to be copied
 	 * @param destination Destination folder. All specified resources will be copied
 	 *                    here
+	 * @throws Exception 
 	 */
-	protected void copyAdditionalResources(List<File> resources, File destination) {
+	protected void copyAdditionalResources(List<File> resources, File destination) throws Exception {
 
 		Logger.infoIndent("Copying additional resources");
 
-		resources.stream().forEach(r -> {
+		for (File r : resources) {
 			if (!r.exists()) {
-				Logger.warn("Additional resource " + r + " doesn't exist");
-				return;
+				throw new Exception("Additional resource " + r + " doesn't exist");
+			} else if (r.isDirectory()) {
+				FileUtils.copyFolderToFolder(r, destination);
+			} else if (r.isFile()) {
+				FileUtils.copyFileToFolder(r, destination);
 			}
-			try {
-				if (r.isDirectory()) {
-					FileUtils.copyFolderToFolder(r, destination);
-				} else if (r.isFile()) {
-					FileUtils.copyFileToFolder(r, destination);
-				}
-			} catch (Exception e) {
-				Logger.error(e.getMessage(), e);
-			}
-		});
+		}
 
 		// copy bootstrap script
 		if (FileUtils.exists(getScripts().getBootstrap())) {
