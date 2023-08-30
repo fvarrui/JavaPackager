@@ -71,7 +71,7 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 		executionPermissions.add(new File(appFolder, jreDirectoryName + "/lib/jspawnhelper"));
 
 		// add all app files
-		addDirectoryTree(builder, installationPath.getAbsolutePath(), appFolder, executionPermissions);
+		addDirectory(builder, installationPath.getAbsolutePath(), appFolder, executionPermissions);
 
 		// link to desktop file
 		addLink(builder, "/usr/share/applications/" + desktopFile.getName(), appPath + "/" + desktopFile.getName());
