@@ -22,7 +22,6 @@ import io.github.fvarrui.javapackager.model.Manifest;
 import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
-import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.MojoExecutorUtils;
 
@@ -39,8 +38,6 @@ public class CreateRunnableJar extends ArtifactGenerator<Packager> {
 	protected File doApply(Packager packager) {
 		
 		String classifier = "runnable";
-		String name = packager.getName();
-		String version = packager.getVersion();
 		String mainClass = packager.getMainClass();
 		File outputDirectory = packager.getOutputDirectory();
 		ExecutionEnvironment env = Context.getMavenContext().getEnv();
@@ -101,17 +98,7 @@ public class CreateRunnableJar extends ArtifactGenerator<Packager> {
 		String finalName = Context.getMavenContext().getEnv().getMavenProject().getBuild().getFinalName();
 		
 		// creates file pointing to generated jar file
-		File finalJarFile = new File(outputDirectory, finalName + "-" + classifier + ".jar");
-		
-		// creates desired output jar file 
-		File jarFile = new File(outputDirectory, name + "-" + version + "-" + classifier + ".jar");
-		
-		// renames generated jar to desired one if they are different
-		if (!finalJarFile.equals(jarFile)) {
-			FileUtils.rename(finalJarFile, jarFile.getName());
-		}
-		
-		return jarFile;
+		return new File(outputDirectory, finalName + "-" + classifier + ".jar");
 		
 	}
 	
