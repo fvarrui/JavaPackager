@@ -303,7 +303,9 @@ public class FileUtils {
 	 */
 	public static File findFirstFile(File searchFolder, String regex) {
 		return Arrays.asList(searchFolder.listFiles((dir, name) -> Pattern.matches(regex, name))).stream()
-				.map(f -> new File(f.getName())).findFirst().get();
+				.map(f -> new File(f.getName()))
+				.findFirst()
+				.orElse(null);
 	}
 
 	/**
