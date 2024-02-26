@@ -21,6 +21,8 @@ import io.github.fvarrui.javapackager.utils.VersionUtils;
  */
 public class BundleJre extends ArtifactGenerator<Packager> {
 	
+	private static final String ALL_MODULES = "ALL-MODULE-PATH";
+	
 	public BundleJre() {
 		super("JRE");
 	}
@@ -135,7 +137,7 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 					"--no-header-files", 
 					"--no-man-pages", 
 					"--strip-debug", 
-					"--compress=2"
+					(VersionUtils.getJavaMajorVersion() < 21 ? "--compress=2" : null)
 				);
 	
 			// sets execution permissions on executables in jre
@@ -195,7 +197,11 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 		
 		List<String> modulesList;
 		
-		if (customizedJre && defaultModules != null && !defaultModules.isEmpty()) {
+		if (!customizedJre) {
+			
+			return ALL_MODULES;
+			
+		} else if (defaultModules != null && !defaultModules.isEmpty()) {
 			
 			modulesList = 
 				defaultModules
@@ -203,7 +209,7 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 					.map(module -> module.trim())
 					.collect(Collectors.toList());
 		
-		} else if (customizedJre && VersionUtils.getJavaMajorVersion() >= 13) { 
+		} else if (VersionUtils.getJavaMajorVersion() >= 13) { 
 			
 			String modules = 
 				CommandUtils.execute(
@@ -224,7 +230,7 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 					.filter(module -> !module.isEmpty())
 					.collect(Collectors.toList());
 			
-		} else if (customizedJre && VersionUtils.getJavaMajorVersion() >= 9) { 
+		} else if (VersionUtils.getJavaMajorVersion() >= 9) { 
 		
 			String modules = 
 				CommandUtils.execute(
@@ -256,7 +262,7 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 		
 		if (modulesList.isEmpty()) {
 			Logger.warn("It was not possible to determine the necessary modules. All modules will be included");
-			modulesList.add("ALL-MODULE-PATH");
+			modulesList.add(ALL_MODULES);
 		} else {
 			modulesList.addAll(additionalModules);			
 		}
