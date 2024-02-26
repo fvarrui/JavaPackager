@@ -380,6 +380,8 @@ cd JavaPackager
 ./gradlew publishToMavenLocal
 ```
 
+> It is recommended to build the plugin with Java 19.
+
 ## How to release the plugin to Maven Central
 
 Run next command (ommit `./` on Windows):
