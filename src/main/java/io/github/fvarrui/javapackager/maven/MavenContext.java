@@ -1,10 +1,20 @@
 package io.github.fvarrui.javapackager.maven;
 
 import java.io.File;
+import java.time.Year;
 
-import io.github.fvarrui.javapackager.packagers.*;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.model.Organization;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.project.MavenProject;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
+
+import io.github.fvarrui.javapackager.packagers.AbstractCreateWindowsExe;
+import io.github.fvarrui.javapackager.packagers.Context;
+import io.github.fvarrui.javapackager.packagers.CreateWindowsExeWhy;
+import io.github.fvarrui.javapackager.packagers.CreateWindowsExeWinRun4j;
+import io.github.fvarrui.javapackager.packagers.Packager;
+import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 
 /**
  * Maven context 
@@ -18,6 +28,24 @@ public class MavenContext extends Context<Log> {
 		super();
 		this.env = env;
 		this.logger = logger;
+		
+		// initialize some default params on project (avoid launch4j-maven-plugin warnings)
+		MavenProject project = env.getMavenProject();
+		if (project.getOrganization() == null) {
+			project.setOrganization(new Organization());
+		}
+		// set default organization name
+		if (StringUtils.isBlank(project.getOrganization().getName())) {
+			project.getOrganization().setName(Packager.DEFAULT_ORGANIZATION_NAME);
+		}
+		// set default inception year
+		if (StringUtils.isBlank(project.getInceptionYear())) {
+			project.setInceptionYear(Year.now().toString());
+		}
+		// set default description
+		if (StringUtils.isBlank(project.getDescription())) {
+			project.setDescription(project.getArtifactId());
+		}
 	}
 
 	public ExecutionEnvironment getEnv() {
@@ -77,7 +105,5 @@ public class MavenContext extends Context<Log> {
 		}
 		return null;
 	}
-	
-
 
 }

@@ -1,8 +1,8 @@
 package io.github.fvarrui.javapackager.packagers;
 
-import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
-import static org.apache.commons.io.FilenameUtils.getExtension;
 import static org.apache.commons.collections4.CollectionUtils.addIgnoreNull;
+import static org.apache.commons.io.FilenameUtils.getExtension;
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 import java.io.File;
 import java.nio.file.InvalidPathException;
@@ -21,7 +21,7 @@ import io.github.fvarrui.javapackager.utils.VelocityUtils;
  */
 public abstract class Packager extends PackagerSettings {
 
-	private static final String DEFAULT_ORGANIZATION_NAME = "ACME";
+	public static final String DEFAULT_ORGANIZATION_NAME = "ACME";
 
 	// artifact generators
 	protected List<ArtifactGenerator<?>> installerGenerators = new ArrayList<>();
@@ -163,6 +163,7 @@ public abstract class Packager extends PackagerSettings {
 			macConfig = null;
 			break;
 		default:
+			// do nothing
 		}
 
 		Logger.info("" + this); // prints packager settings
