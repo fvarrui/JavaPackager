@@ -35,8 +35,6 @@ public class CreateTarball extends ArtifactGenerator<Packager> {
 	protected File doApply(Packager packager) {
 		
 		File assetsFolder = packager.getAssetsFolder();
-		String name = packager.getName();
-		String version = packager.getVersion();
 		Platform platform = packager.getPlatform();
 		File outputDirectory = packager.getOutputDirectory(); 
 
@@ -46,8 +44,7 @@ public class CreateTarball extends ArtifactGenerator<Packager> {
 			File assemblyFile = new File(assetsFolder, "assembly-tarball-" + platform + ".xml");
 			VelocityUtils.render(platform + "/assembly.xml.vtl", assemblyFile, packager);
 			
-			// tgz file name
-			String finalName = packager.getTarballName() != null ? packager.getTarballName() : name + "-" + version + "-" + platform;
+			// output file format
 			String format = "tar.gz";
 			
 			// invokes plugin to assemble tarball
@@ -62,13 +59,23 @@ public class CreateTarball extends ArtifactGenerator<Packager> {
 							element("outputDirectory", outputDirectory.getAbsolutePath()),
 							element("formats", element("format", format)),
 							element("descriptors", element("descriptor", assemblyFile.getAbsolutePath())),
-							element("finalName", finalName),
 							element("appendAssemblyId", "false")
 					),
 					Context.getMavenContext().getEnv()
 				);
 
-			return new File(outputDirectory, finalName + "." + format); 
+			// get generated filename
+			String finalName = Context.getMavenContext().getEnv().getMavenProject().getBuild().getFinalName();
+			File finalFile = new File(outputDirectory, finalName + "." + format);
+
+			// get desired file name
+			String tarName = packager.getTarballName() != null ? packager.getTarballName() : finalName + "-" + platform;
+			File tarFile = new File(outputDirectory, tarName + "." + format);
+			
+			// rename generated to desired
+			finalFile.renameTo(tarFile);
+			
+			return tarFile;
 			
 		} catch (Exception e) {
 			

@@ -35,8 +35,6 @@ public class CreateZipball extends ArtifactGenerator<Packager> {
 	protected File doApply(Packager packager) {
 		
 		File assetsFolder = packager.getAssetsFolder();
-		String name = packager.getName();
-		String version = packager.getVersion();
 		Platform platform = packager.getPlatform();
 		File outputDirectory = packager.getOutputDirectory(); 
 
@@ -47,7 +45,6 @@ public class CreateZipball extends ArtifactGenerator<Packager> {
 			VelocityUtils.render(platform + "/assembly.xml.vtl", assemblyFile, packager);
 			
 			// zip file name and format
-			String finalName = packager.getZipballName() != null ? packager.getZipballName() : name + "-" + version + "-" + platform;
 			String format = "zip";
 			
 			// invokes plugin to assemble zipball and/or tarball
@@ -62,13 +59,23 @@ public class CreateZipball extends ArtifactGenerator<Packager> {
 							element("outputDirectory", outputDirectory.getAbsolutePath()),
 							element("formats", element("format", format)),
 							element("descriptors", element("descriptor", assemblyFile.getAbsolutePath())),
-							element("finalName", finalName),
 							element("appendAssemblyId", "false")							
 					),
 					Context.getMavenContext().getEnv()
 				);
 
-			return new File(outputDirectory, finalName + "." + format); 
+			// gets generated filename
+			String finalName = Context.getMavenContext().getEnv().getMavenProject().getBuild().getFinalName();
+			File finalFile = new File(outputDirectory, finalName + "." + format);
+
+			// gets desired file name
+			String zipName = packager.getZipballName() != null ? packager.getZipballName() : finalName + "-" + platform;
+			File zipFile = new File(outputDirectory, zipName + "." + format);
+			
+			// rename generated to desired
+			finalFile.renameTo(zipFile);
+			
+			return zipFile;
 			
 		} catch (Exception e) {
 			
