@@ -5,6 +5,7 @@ import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -99,13 +100,13 @@ public class GenerateDmg extends ArtifactGenerator<MacPackager> {
 		// mounts image
 		Logger.info("Mounting image: " + tempDmgFile.getAbsolutePath());
 		String result = execute("hdiutil", "attach", "-readwrite", "-noverify", "-noautoopen", tempDmgFile);
-		String deviceName = Arrays.asList(result.split("\n"))
-									.stream()
-									.filter(s -> s.contains(mountFolder.getAbsolutePath()))
-									.map(s -> StringUtils.normalizeSpace(s))
-									.map(s -> s.split(" ")[0])
-									.findFirst().get();
-		Logger.info("- Device name: " + deviceName);
+		Optional<String> optDeviceName = Arrays.asList(result.split("\n"))
+								.stream()
+								.filter(s -> s.contains(mountFolder.getAbsolutePath()))
+								.map(s -> StringUtils.normalizeSpace(s))
+								.map(s -> s.split(" ")[0])
+								.findFirst();
+		optDeviceName.ifPresent(deviceName -> Logger.info("- Device name: " + deviceName));
 		
 		// pause to prevent occasional "Can't get disk" (-1728) issues 
 		// https://github.com/seltzered/create-dmg/commit/5fe7802917bb85b40c0630b026d33e421db914ea

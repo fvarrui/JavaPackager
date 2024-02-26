@@ -44,7 +44,7 @@ public class ResolveLicenseFromPOM extends ArtifactGenerator<Packager> {
 			} catch (URISyntaxException | MalformedURLException e) {
 				Logger.error("Invalid license URL specified: " + urlStr);
 				licenseFile = null;
-			} catch (IOException e) {
+			} catch (Exception e) {
 				Logger.error("Cannot download license from " + urlStr);
 				licenseFile = null;
 			}
