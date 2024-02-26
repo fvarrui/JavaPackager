@@ -14,6 +14,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -324,9 +326,10 @@ public class FileUtils {
 	 * @param url  URL to download
 	 * @param file File to copy the downloaded resource
 	 * @throws IOException Resource cannot be copied/downloaded
+	 * @throws URISyntaxException 
 	 */
-	public static void downloadFromUrl(String url, File file) throws IOException {
-		downloadFromUrl(new URL(url), file);
+	public static void downloadFromUrl(String url, File file) throws IOException, URISyntaxException {
+		downloadFromUrl(new URI(url).toURL(), file);
 	}
 
 	/**

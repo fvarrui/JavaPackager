@@ -77,7 +77,7 @@ public class CommandUtils {
 		return result;
 	}
 	
-	public static String run(String command) throws IOException {
+	public static String run(String ... command) throws IOException {
     	Process p = Runtime.getRuntime().exec(command);
         BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String result = br.readLine();	        	

@@ -22,7 +22,7 @@ public class CharsetUtil {
     
     private static Charset chcp() {
         try{
-            String result = CommandUtils.run("cmd /k chcp");	        	
+            String result = CommandUtils.run("cmd", "/k", "chcp");	        	
             String code = StringUtils.find("\\d+", result);
             Logger.debug("'chcp' code found: " + code);
             switch (code){
