@@ -1,4 +1,4 @@
-main.class=WinRun4JLauncher
+main.class=${info.mainClass}
 log.level=error
 ini.override=true
 classpath.1=libs\*.jar
@@ -10,6 +10,8 @@ classpath.${classpathCounter}=$!{cp}
 #end
 #if ($info.bundleJre)
 vm.location=${info.jreDirectoryName}\\${info.winConfig.vmLocation}
+#else
+vm.location=%JAVA_HOME%\bin\client\jvm.dll|%JAVA_HOME%\bin\server\jvm.dll
 #end
 #if (!$info.bundleJre && $info.jreMinVersion)
 vm.version.min=${info.jreMinVersion}
