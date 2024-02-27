@@ -1,11 +1,9 @@
 package io.github.fvarrui.javapackager.packagers;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -14,7 +12,6 @@ import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.model.WindowsExeCreationTool;
 import io.github.fvarrui.javapackager.utils.FileUtils;
-import io.github.fvarrui.javapackager.utils.JarUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.RcEdit;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
@@ -52,9 +49,7 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 		File jarFile = packager.getJarFile();
 		File manifestFile = packager.getManifestFile();
 		File iconFile = packager.getIconFile();
-		File libsFolder = packager.getLibsFolder();
 		File appFolder = packager.getAppFolder();
-		String mainClass = packager.getMainClass();
 		File jreDestinationFolder = packager.getJreDestinationFolder();
 		boolean bundleJre = packager.getBundleJre();
 		String vmLocation = packager.getWinConfig().getVmLocation();
@@ -135,21 +130,6 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 
 		// copies JAR to libs folder
 		FileUtils.copyFileToFolder(jarFile, appFolder);
-
-		// copies winrun4j launcher helper library (needed to work around
-		/*
-		File winrun4jJar = new File(libsFolder, "winrun4j-launcher.jar");
-		FileUtils.copyResourceToFile("/windows/winrun4j-launcher.jar", winrun4jJar);
-
-		// generates winrun4j properties pointing to main class
-		File propertiesFile = new File(getOutputFolder(), "winrun4j.properties");
-		Properties properties = new Properties();
-		properties.setProperty("main.class", mainClass);
-		properties.store(new FileOutputStream(propertiesFile), "WinRun4J Helper Launcher Properties");
-
-		// copies winrun4j properties to launcher jar
-		JarUtils.addFileToJar(winrun4jJar, propertiesFile);
-		*/
 
 		// generates ini file		
 		File genericIni = new File(getOutputFolder(), "app.ini");

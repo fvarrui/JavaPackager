@@ -80,8 +80,6 @@ java {
 	withJavadocJar()
 }
 
-build.dependsOn ':winrun4j-launcher:build'
-
 // OSSRH publication
 publishing {
 	repositories {
