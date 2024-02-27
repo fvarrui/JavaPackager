@@ -1,27 +1,12 @@
 package io.github.fvarrui.javapackager.model;
 
 import org.apache.commons.lang3.SystemUtils;
+import org.redline_rpm.header.Architecture;
 
 public enum Arch {
-	aarch64("arm64", "AARCH64"), 
-	x64("amd64", "X86_64"), 
-	x86("i386", "i386");
-
-	private String deb;
-	private String rpm;
-
-	Arch(String deb, String rpm) {
-		this.deb = deb;
-		this.rpm = rpm;
-	}
-
-	public String getDeb() {
-		return deb;
-	}
-
-	public String getRpm() {
-		return rpm;
-	}
+	aarch64, 
+	x64, 
+	x86;
 	
 	public static Arch getDefault() {
 		switch (SystemUtils.OS_ARCH) {
@@ -38,6 +23,15 @@ public enum Arch {
 			return aarch64;
 		default:
 		    throw new IllegalArgumentException("Unknown architecture " + SystemUtils.OS_ARCH);
+		}
+	}
+	
+	public Architecture toRpmArchitecture() {
+		switch (this.toString()) {
+		case "aarch64": return Architecture.AARCH64;
+		case "x64": return Architecture.X86_64;
+		case "x86": return Architecture.I386;
+		default: return null;
 		}
 	}
 	
