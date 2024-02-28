@@ -11,6 +11,7 @@ import org.redline_rpm.header.Architecture;
 import org.redline_rpm.header.Os;
 import org.redline_rpm.header.RpmType;
 
+import io.github.fvarrui.javapackager.model.Arch;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
@@ -42,7 +43,7 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 		File executable = packager.getExecutable();
 		File assetsFolder = packager.getAssetsFolder();
 		String jreDirectoryName = packager.getJreDirectoryName();
-		Architecture arch = Architecture.valueOf(packager.getArch().getRpm());
+		Architecture arch = packager.getArch().toRpmArchitecture();
 		File mimeXmlFile = packager.getMimeXmlFile();
 		File installationPath = packager.getLinuxConfig().getInstallationPath();
 		File appPath = new File(installationPath, name);
