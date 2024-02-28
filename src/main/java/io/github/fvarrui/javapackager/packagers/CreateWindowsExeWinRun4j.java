@@ -69,7 +69,7 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 		// creates generic manifest
 		FileUtils.copyFileToFile(iconFile, getGenericIcon());
 
-		// checks if desired arch matches with JRE arch
+		// checks if target architecture matches JRE arch
 		if (bundleJre && !JDKUtils.isValidJRE(Platform.windows, arch, packager.getJreDestinationFolder())) {
 			throw new Exception("Bundled JRE must match " + Platform.windows + " " + arch);
 		}
