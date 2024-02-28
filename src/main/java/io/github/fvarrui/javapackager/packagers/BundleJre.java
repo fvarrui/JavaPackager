@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -58,22 +59,31 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 				throw new Exception("'" + specificJreFolder + "' is not a directory!");
 			}
 
-			// checks if the specified jre is valid (it looks for 'release' file into it, and if so, checks if it matches the right platform 
+			// checks if the specified jre is valid (it looks for 'release' file into it, and if so, checks if it matches the right platform
+			boolean validJre = true;
 			if (!JDKUtils.isValidJRE(platform, specificJreFolder)) {
 
-				Logger.warn("An invalid JRE may have been specified for '" + platform + "' platform: " + specificJreFolder + " ('release' file not found)");
-
-				// try to fix the path to the JRE on MacOS adding Contents/Home to JRE path
+				// if platform is mac
 				if (platform.equals(Platform.mac)) {
 					
+					// try to fix the path to the JRE on MacOS adding Contents/Home to JRE path
 					File fixedJreFolder = new File(specificJreFolder, "Contents/Home");
 					if (JDKUtils.isValidJRE(platform, fixedJreFolder)) {
 						specificJreFolder = fixedJreFolder;
-						Logger.warn("Specified 'jrePath' fixed: " + specificJreFolder);
+						Logger.warn("Specified 'jrePath' fixed: " + specificJreFolder);						
+					} else {
+						validJre = false;
 					}
 				
+				} else {
+					validJre = false;
 				}
 				
+			}
+			if (!validJre) {
+				Logger.warn("An invalid JRE may have been specified for '" + platform + "' platform: " + specificJreFolder);
+			} else if (JDKUtils.isJDK(specificJreFolder)) {
+				Logger.warn("Wow! Embedding a JDK instead of a JRE ... are you sure you want to do that?");
 			}
 
 			// removes old jre folder from bundle
@@ -124,7 +134,12 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 			Logger.info("Using " + modulesDir + " modules directory");
 	
 			if (destinationFolder.exists()) FileUtils.removeFolder(destinationFolder);
+			
+			// gets JDK release info 
+			Map<String,String> releaseMap = JDKUtils.getRelease(jdkPath);
+			String releaseInfo = "add:IMAGE_TYPE=\"JRE\":OS_ARCH=\"" + releaseMap.get("OS_ARCH") + "\":OS_NAME=" + releaseMap.get("OS_NAME") + "\"";
 
+			// full path to jlink command
 			File jlink = new File(currentJdk, "/bin/jlink");
 			
 			// generates customized jre using modules
@@ -136,7 +151,8 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 					"--output", destinationFolder, 
 					"--no-header-files", 
 					"--no-man-pages", 
-					"--strip-debug", 
+					"--strip-debug",
+					"--release-info", releaseInfo, 
 					(VersionUtils.getJavaMajorVersion() < 21 ? "--compress=2" : null)
 				);
 	

@@ -1,12 +1,14 @@
 package io.github.fvarrui.javapackager.model;
 
-import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static io.github.fvarrui.javapackager.utils.ObjectUtils.defaultIfNull;
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 import java.io.File;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.UUID;
+
+import org.apache.commons.collections4.MapUtils;
 
 import io.github.fvarrui.javapackager.packagers.Packager;
 
@@ -351,6 +353,11 @@ public class WindowsConfig implements Serializable {
 		this.setInternalName(defaultIfBlank(this.getInternalName(), packager.getName()));
 		this.setOriginalFilename(defaultIfBlank(this.getOriginalFilename(), packager.getName() + ".exe"));
 		this.setMsiUpgradeCode(defaultIfBlank(this.getMsiUpgradeCode(), UUID.randomUUID().toString()));
+		// init setup languages
+		if (MapUtils.isEmpty(this.getSetupLanguages())) {
+			this.getSetupLanguages().put("english", "compiler:Default.isl");
+			this.getSetupLanguages().put("spanish", "compiler:Languages\\Spanish.isl");
+		}
 	}
 	
 }

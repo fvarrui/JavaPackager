@@ -8,8 +8,8 @@ public enum Arch {
 	x64, 
 	x86;
 	
-	public static Arch getDefault() {
-		switch (SystemUtils.OS_ARCH) {
+	public static Arch getArch(String archString) {
+		switch (archString) {
 		case "x86":
 		case "i386":
 		case "i486":
@@ -22,15 +22,19 @@ public enum Arch {
 		case "aarch64":
 			return aarch64;
 		default:
-		    throw new IllegalArgumentException("Unknown architecture " + SystemUtils.OS_ARCH);
+		    throw new IllegalArgumentException("Unknown architecture " + archString);
 		}
 	}
 	
-	public Architecture toRpmArchitecture() {
-		switch (this.toString()) {
-		case "aarch64": return Architecture.AARCH64;
-		case "x64": return Architecture.X86_64;
-		case "x86": return Architecture.I386;
+	public static Arch getDefault() {
+		return getArch(SystemUtils.OS_ARCH);
+	}
+	
+	public Architecture toRpmArchitecture() {		
+		switch (this) {
+		case aarch64: return Architecture.AARCH64;
+		case x64: return Architecture.X86_64;
+		case x86: return Architecture.I386;
 		default: return null;
 		}
 	}

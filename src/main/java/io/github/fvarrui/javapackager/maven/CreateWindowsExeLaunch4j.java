@@ -17,12 +17,14 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 
+import io.github.fvarrui.javapackager.model.Arch;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.model.WindowsExeCreationTool;
 import io.github.fvarrui.javapackager.packagers.AbstractCreateWindowsExe;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.WindowsPackager;
 import io.github.fvarrui.javapackager.utils.FileUtils;
+import io.github.fvarrui.javapackager.utils.Logger;
 
 /**
  * Creates Windows executable with Maven
@@ -47,8 +49,14 @@ public class CreateWindowsExeLaunch4j extends AbstractCreateWindowsExe {
 		String jreMinVersion = packager.getJreMinVersion();
 		File jarFile = packager.getJarFile();
 		File appFolder = packager.getAppFolder();
+		Arch arch = packager.getArch();
 		
 		createAssets(packager);
+		
+		// warns about architecture
+		if (arch != Arch.x86) {
+			Logger.warn("Launch4J only can generate 32-bit executable");
+		}
 		
 		// copies JAR to app folder
 		String jarPath;

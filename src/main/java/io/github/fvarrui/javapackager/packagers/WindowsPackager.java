@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import io.github.fvarrui.javapackager.model.Arch;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
@@ -37,6 +38,14 @@ public class WindowsPackager extends Packager {
 
 	@Override
 	public void doInit() throws Exception {
+		
+		// sets default system architecture 
+		if (getArch() != Arch.x64 && getArch() != Arch.x86) {
+			if (Platform.windows.isCurrentPlatform())
+				arch(Arch.getDefault());
+			else
+				arch(Arch.x64);
+		}
 		
 		// sets windows config default values
 		this.winConfig.setDefaults(this);
@@ -79,7 +88,7 @@ public class WindowsPackager extends Packager {
 			classpath = StringUtils.join(classpaths, ";");
 		}
 		
-		// invokes launch4j to generate windows executable
+		// invokes windows exe artifact generator (building tool dependant)
 		executable = Context.getContext().createWindowsExe(this);
 
 		Logger.infoUnindent("Windows EXE file created in " + executable + "!");		

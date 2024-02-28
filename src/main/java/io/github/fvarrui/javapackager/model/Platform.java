@@ -23,4 +23,13 @@ public enum Platform {
 		return null;
 	}
 	
+	public static Platform getPlatform(String platformString) {
+		switch (platformString.toLowerCase()) {
+		case "linux": return linux;
+		case "darwin": return mac;
+		case "windows": return windows;
+		default: throw new IllegalArgumentException("Unknown platform " + platformString);
+		}
+	}
+	
 }

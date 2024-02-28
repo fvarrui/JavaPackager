@@ -11,7 +11,6 @@ import org.redline_rpm.header.Architecture;
 import org.redline_rpm.header.Os;
 import org.redline_rpm.header.RpmType;
 
-import io.github.fvarrui.javapackager.model.Arch;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;

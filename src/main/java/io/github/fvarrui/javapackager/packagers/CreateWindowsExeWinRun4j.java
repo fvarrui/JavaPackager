@@ -12,6 +12,7 @@ import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.model.WindowsExeCreationTool;
 import io.github.fvarrui.javapackager.utils.FileUtils;
+import io.github.fvarrui.javapackager.utils.JDKUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.RcEdit;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
@@ -68,11 +69,16 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 		// creates generic manifest
 		FileUtils.copyFileToFile(iconFile, getGenericIcon());
 
+		// checks if desired arch matches with JRE arch
+		if (bundleJre && !JDKUtils.isValidJRE(Platform.windows, arch, packager.getJreDestinationFolder())) {
+			throw new Exception("Bundled JRE must match " + Platform.windows + " " + arch);
+		}
+
 		// creates generic exe
-		if (arch == Arch.x64) {
+		if (arch == Arch.x86) {
+			FileUtils.copyResourceToFile("/windows/WinRun4J.exe", getGenericExe());
+		} else {
 			FileUtils.copyResourceToFile("/windows/WinRun4J64.exe", getGenericExe());
-		} else if (arch == Arch.x86) {
-			FileUtils.copyResourceToFile("/windows/WinRun4J.exe", getGenericExe());			
 		}
 
 		// uses vmLocation only if a JRE is bundled
