@@ -5,7 +5,8 @@
 
 JavaPackager is a hybrid plugin for **Maven** and **Gradle** which provides an easy way to package Java applications in native Windows, MacOS or GNU/Linux executables, and generate installers for them.
 
-> :eyes: See [JavaPackager changes and fixes](https://github.com/fvarrui/JavaPackager/releases).
+> [!IMPORTANT] 
+> See [JavaPackager changes and fixes](https://github.com/fvarrui/JavaPackager/releases).
 
 ## History
 
@@ -58,6 +59,7 @@ Add the following `plugin` tag to your `pom.xml`:
 </plugin>
 ```
 
+> [!tip]
 > See [Maven plugin configuration samples](docs/maven/plugin-configuration-samples.md) to know more.
 
 And execute the next command in project's root folder:
