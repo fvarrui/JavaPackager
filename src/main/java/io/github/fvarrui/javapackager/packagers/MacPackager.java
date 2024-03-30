@@ -34,6 +34,7 @@ public class MacPackager extends Packager {
 	private File javaFolder;
 	private File macOSFolder;
 	private File jreBundleFolder;
+	private String launcherScript;
 	
 	public MacPackager() {		
 		super();
@@ -42,6 +43,10 @@ public class MacPackager extends Packager {
 
 	public File getAppFile() {
 		return appFile;
+	}
+	
+	public String getLauncherScript() {
+		return launcherScript;
 	}
 
 	@Override
@@ -121,31 +126,37 @@ public class MacPackager extends Packager {
 	}
 
 	private void processStartupScript() throws Exception {
+
+		// creates/copies launcher to Contents/MacOS folder
+		File launcher = macConfig.getCustomLauncher();
+		if (launcher != null && launcher.canRead() && launcher.isFile()){
+			FileUtils.copyFileToFolder(launcher, macOSFolder);
+			launcher = new File(macOSFolder, launcher.getName());
+		} else {
+			launcher = preparePrecompiledStartupStub();
+		}
+		launcher.setExecutable(true,  false);
+		launcherScript = launcher.getName();
 		
 		if (this.administratorRequired) {
-
-			// We need a helper script ("startup") in this case,
-			// which invokes the launcher script/ executable with administrator rights.
-			// TODO: admin script depends on launcher file name 'universalJavaApplicationStub'
+			
+			// we use a helper script ("startup") in this case,
+			// which invokes the launcher script/executable with administrator rights.
 
 			// sets startup file
 			this.executable = new File(macOSFolder, "startup");
 
 			// creates startup file to boot java app
 			VelocityUtils.render("mac/startup.vtl", executable, this);
+
+			this.executable.setExecutable(true, false);
 			
 		} else {
-
-			File launcher = macConfig.getCustomLauncher();
-			if (launcher != null && launcher.canRead() && launcher.isFile()){
-				FileUtils.copyFileToFolder(launcher, macOSFolder);
-				this.executable = new File(macOSFolder, launcher.getName());
-			} else {
-				this.executable = preparePrecompiledStartupStub();
-			}
+			
+			this.executable = launcher;
+			
 		}
 		
-		executable.setExecutable(true, false);
 		Logger.info("Startup script file created in " + executable.getAbsolutePath());
 	}
 
