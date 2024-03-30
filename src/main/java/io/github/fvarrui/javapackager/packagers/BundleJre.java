@@ -137,7 +137,7 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 			
 			// gets JDK release info 
 			Map<String,String> releaseMap = JDKUtils.getRelease(jdkPath);
-			String releaseInfo = "add:IMAGE_TYPE=\"JRE\":OS_ARCH=\"" + releaseMap.get("OS_ARCH") + "\":OS_NAME=" + releaseMap.get("OS_NAME") + "\"";
+			String releaseInfo = "add:IMAGE_TYPE=\"JRE\":OS_ARCH=\"" + releaseMap.get("OS_ARCH") + "\":OS_NAME=\"" + releaseMap.get("OS_NAME") + "\"";
 
 			// full path to jlink command
 			File jlink = new File(currentJdk, "/bin/jlink");
