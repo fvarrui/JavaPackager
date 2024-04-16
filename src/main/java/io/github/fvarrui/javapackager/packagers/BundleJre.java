@@ -11,11 +11,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import io.github.fvarrui.javapackager.model.Platform;
-import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.JDKUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VersionUtils;
+
+import static io.github.fvarrui.javapackager.utils.CommandUtils.execute;
+
 
 /**
  * Bundles a Java Runtime Enrironment (JRE) with the app
@@ -142,11 +144,14 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 			// full path to jlink command
 			File jlink = new File(currentJdk, "/bin/jlink");
 			
+			List<File> modulePaths = new ArrayList<File>();
+			modulePaths.add(modulesDir);
+			modulePaths.addAll(additionalModulePaths);
+			
 			// generates customized jre using modules
-			CommandUtils.execute(
+			execute(
 					jlink, 
-					"--module-path", modulesDir, 
-					additionalModulePathsToParams(additionalModulePaths),
+					"--module-path=" + StringUtils.join(modulePaths, File.pathSeparator), 
 					"--add-modules", modules, 
 					"--output", destinationFolder, 
 					"--no-header-files", 
@@ -204,13 +209,8 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 		Logger.infoIndent("Getting required modules ... ");
 		
 		File jdeps = new File(packagingJdk, "/bin/jdeps");
-
-		File jarLibs = null;
-		if (libsFolder != null && libsFolder.exists()) 
-			jarLibs = new File(libsFolder, "*.jar");
-		else
-			Logger.warn("No dependencies found!");
 		
+		List<File> modulePaths = getModulePaths(jarFile, libsFolder, additionalModulePaths);
 		List<String> modulesList;
 		
 		if (!customizedJre) {
@@ -228,15 +228,14 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 		} else if (VersionUtils.getJavaMajorVersion() >= 13) { 
 			
 			String modules = 
-				CommandUtils.execute(
-					jdeps.getAbsolutePath(), 
+				execute(
+					jdeps, 
 					"-q",
 					"--multi-release", VersionUtils.getJavaMajorVersion(),
 					"--ignore-missing-deps",
 					"--print-module-deps",
-					additionalModulePathsToParams(additionalModulePaths),
-					jarLibs,
-					jarFile
+					"--add-modules=ALL-MODULE-PATH",
+					"--module-path=" + StringUtils.join(modulePaths, File.pathSeparator)				
 				);
 			
 			modulesList = 
@@ -249,15 +248,14 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 		} else if (VersionUtils.getJavaMajorVersion() >= 9) { 
 		
 			String modules = 
-				CommandUtils.execute(
+				execute(
 					jdeps.getAbsolutePath(), 
 					"-q",
 					"--multi-release", VersionUtils.getJavaMajorVersion(),
 					"--ignore-missing-deps",					
 					"--list-deps",
-					additionalModulePathsToParams(additionalModulePaths),
-					jarLibs,
-					jarFile
+					"--add-modules=ALL-MODULE-PATH",
+					"--module-path=" + StringUtils.join(modulePaths, File.pathSeparator)				
 				);
 
 			modulesList = 
@@ -288,23 +286,21 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 		return StringUtils.join(modulesList, ",");
 	}
 	
-	private String [] additionalModulePathsToParams(List<File> additionalModulePaths) {
-		
-		List<String> additionalPaths = new ArrayList<>();
-		
-		additionalModulePaths
-			.stream()
-			.filter(path -> {
-				if (path.exists()) return true;
-				Logger.warn("Additional module path not found: " + path);
-				return false;
-			})
-			.forEach(path -> {
-				additionalPaths.add("--module-path");
-				additionalPaths.add(path.toString());
-			});
-		
-		return additionalPaths.toArray(new String[0]);
+	private List<File> getModulePaths(File jarFile, File libsFolder, List<File> additionalModulePaths) {
+		List<File> modulePaths = new ArrayList<>();
+		modulePaths.add(jarFile);
+		modulePaths.add(libsFolder);
+		modulePaths.addAll(
+				additionalModulePaths
+					.stream()
+					.filter(path -> {
+						if (path.exists()) return true;
+						Logger.warn("Additional module path not found: " + path);
+						return false;
+					})
+					.collect(Collectors.toList())
+			);
+		return modulePaths;
 	}
 
 }
