@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.gradle.api.file.DuplicatesStrategy;
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
@@ -49,32 +50,33 @@ public class CreateWindowsExeLaunch4j extends AbstractCreateWindowsExe {
 		}
 
 		Launch4jLibraryTask l4jTask = Context.getGradleContext().getLibraryTask();
+		l4jTask.getDuplicatesStrategy().set(DuplicatesStrategy.EXCLUDE);
 		l4jTask.getOutputs().upToDateWhen(task -> false);
-		l4jTask.setHeaderType(winConfig.getHeaderType().toString());
-		l4jTask.setJar(jarPath);
-		l4jTask.setDontWrapJar(!winConfig.isWrapJar());
-		l4jTask.setOutfile(getGenericExe().getName());
-		l4jTask.setIcon(getGenericIcon().getAbsolutePath());
-		l4jTask.setManifest(getGenericManifest().getAbsolutePath());
-		l4jTask.setMainClassName(mainClass);
-		l4jTask.setClasspath(new HashSet<>(packager.getClasspaths()));
-		l4jTask.setChdir(useResourcesAsWorkingDir ? "." : "");
+		l4jTask.getHeaderType().set(winConfig.getHeaderType().toString());
+		l4jTask.getJarFiles().set(Context.getGradleContext().getProject().files(jarPath));
+		l4jTask.getDontWrapJar().set(!winConfig.isWrapJar());
+		l4jTask.getOutfile().set(getGenericExe().getName());
+		l4jTask.getIcon().set(getGenericIcon().getAbsolutePath());
+		l4jTask.getManifest().set(getGenericManifest().getAbsolutePath());
+		l4jTask.getMainClassName().set(mainClass);
+		l4jTask.getClasspath().set(new HashSet<>(packager.getClasspaths()));
+		l4jTask.getChdir().set(useResourcesAsWorkingDir ? "." : "");		
 		if (bundleJre) {
-			l4jTask.setBundledJrePath(jreDirectoryName);
+			l4jTask.getBundledJrePath().set(jreDirectoryName);
 		}
 		if (!StringUtils.isBlank(jreMinVersion)) {
-			l4jTask.setJreMinVersion(jreMinVersion);
+			l4jTask.getJreMinVersion().set(jreMinVersion);
 		}
 		l4jTask.getJvmOptions().addAll(vmArgs);
-		l4jTask.setVersion(winConfig.getProductVersion());
-		l4jTask.setTextVersion(winConfig.getTxtProductVersion());
-		l4jTask.setCopyright(winConfig.getCopyright());
-		l4jTask.setCompanyName(winConfig.getCompanyName());
-		l4jTask.setFileDescription(winConfig.getFileDescription());
-		l4jTask.setProductName(winConfig.getProductName());
-		l4jTask.setInternalName(winConfig.getInternalName());
-		l4jTask.setTrademarks(winConfig.getTrademarks());
-		l4jTask.setLanguage(winConfig.getLanguage());
+		l4jTask.getVersion().set(winConfig.getProductVersion());
+		l4jTask.getTextVersion().set(winConfig.getTxtProductVersion());
+		l4jTask.getCopyright().set(winConfig.getCopyright());
+		l4jTask.getCompanyName().set(winConfig.getCompanyName());
+		l4jTask.getFileDescription().set(winConfig.getFileDescription());
+		l4jTask.getProductName().set(winConfig.getProductName());
+		l4jTask.getInternalName().set(winConfig.getInternalName());
+		l4jTask.getTrademarks().set(winConfig.getTrademarks());
+		l4jTask.getLanguage().set(winConfig.getLanguage());		
 		l4jTask.getActions().forEach(action -> action.execute(l4jTask));
 
 		sign(getGenericExe(), packager);
