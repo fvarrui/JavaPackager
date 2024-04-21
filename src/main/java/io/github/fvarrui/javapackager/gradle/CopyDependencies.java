@@ -3,6 +3,7 @@ package io.github.fvarrui.javapackager.gradle;
 import java.io.File;
 
 import org.gradle.api.Project;
+import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.tasks.Copy;
 
 import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
@@ -35,6 +36,7 @@ public class CopyDependencies extends ArtifactGenerator<Packager> {
 		if (copyLibsTask == null) {
 			copyLibsTask = project.getTasks().create("copyLibs", Copy.class);
 		}
+		copyLibsTask.setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE);
 		copyLibsTask.from(project.getConfigurations().getByName("runtimeClasspath"));
 		copyLibsTask.into(project.file(libsFolder));
 		copyLibsTask.getActions().forEach(action -> action.execute(copyLibsTask));
