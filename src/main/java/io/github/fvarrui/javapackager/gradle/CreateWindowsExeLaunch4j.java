@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.gradle.api.file.DuplicatesStrategy;
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
@@ -50,7 +49,7 @@ public class CreateWindowsExeLaunch4j extends AbstractCreateWindowsExe {
 		}
 
 		Launch4jLibraryTask l4jTask = Context.getGradleContext().getLibraryTask();
-		l4jTask.getDuplicatesStrategy().set(DuplicatesStrategy.EXCLUDE);
+		l4jTask.getDuplicatesStrategy().set(Context.getGradleContext().getDuplicatesStrategy());
 		l4jTask.getOutputs().upToDateWhen(task -> false);
 		l4jTask.getHeaderType().set(winConfig.getHeaderType().toString());
 		l4jTask.getJarFiles().set(Context.getGradleContext().getProject().files(jarPath));

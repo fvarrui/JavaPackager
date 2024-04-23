@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFile;
@@ -585,6 +586,18 @@ public class PackageTask extends AbstractPackageTask {
 	public void setTemplates(List<Template> templates) {
 		this.templates = templates;
 	}
+	
+	@Input
+	@Optional
+	private DuplicatesStrategy duplicatesStrategy;
+	
+	public DuplicatesStrategy getDuplicatesStrategy() {
+		return duplicatesStrategy;
+	}
+	
+	public void setDuplicatesStrategy(DuplicatesStrategy duplicatesStrategy) {
+		this.duplicatesStrategy = duplicatesStrategy;
+	}
 
 	// ===============
 	// create packager
@@ -595,6 +608,8 @@ public class PackageTask extends AbstractPackageTask {
 	protected Packager createPackager() throws Exception {
 
 		PackagePluginExtension extension = getProject().getExtensions().findByType(PackagePluginExtension.class);
+		
+		Context.getGradleContext().setDuplicatesStrategy(defaultIfNull(duplicatesStrategy, extension.getDuplicatesStrategy()));
 		
 		return
 			(Packager) PackagerFactory

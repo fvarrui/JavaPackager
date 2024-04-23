@@ -79,7 +79,7 @@ public abstract class Context<T> {
 		return context instanceof GradleContext; 
 	}
 	
-	public static MavenContext getMavenContext() {
+	public static MavenContext getMavenContext() {		
 		return (MavenContext) context;
 	}
 

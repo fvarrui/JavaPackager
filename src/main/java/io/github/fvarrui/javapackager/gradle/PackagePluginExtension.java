@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.gradle.api.Project;
+import org.gradle.api.file.DuplicatesStrategy;
 
 import groovy.lang.Closure;
 import io.github.fvarrui.javapackager.model.Arch;
@@ -22,6 +23,7 @@ import io.github.fvarrui.javapackager.packagers.PackagerSettings;
 public class PackagePluginExtension extends PackagerSettings {
 
 	private Project project;
+	private DuplicatesStrategy duplicatesStrategy;
 	
 	public PackagePluginExtension(Project project) {
 		super();
@@ -54,6 +56,7 @@ public class PackagePluginExtension extends PackagerSettings {
 		this.scripts = new Scripts();
 		this.forceInstaller = false;
 		this.arch = Arch.getDefault();
+		this.duplicatesStrategy = DuplicatesStrategy.WARN;
 	}
 	
     public LinuxConfig linuxConfig(Closure<LinuxConfig> closure) {
@@ -85,5 +88,13 @@ public class PackagePluginExtension extends PackagerSettings {
         project.configure(scripts, closure);
         return scripts;
     }
+    
+    public void setDuplicatesStrategy(DuplicatesStrategy duplicatesStrategy) {
+		this.duplicatesStrategy = duplicatesStrategy;
+	}
+    
+    public DuplicatesStrategy getDuplicatesStrategy() {
+		return duplicatesStrategy;
+	}
 
 }
