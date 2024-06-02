@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 
+import net.jsign.WindowsSigner;
 import org.apache.commons.lang3.StringUtils;
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
@@ -77,8 +78,6 @@ public class CreateWindowsExeLaunch4j extends AbstractCreateWindowsExe {
 		l4jTask.getTrademarks().set(winConfig.getTrademarks());
 		l4jTask.getLanguage().set(winConfig.getLanguage());		
 		l4jTask.getActions().forEach(action -> action.execute(l4jTask));
-
-		sign(getGenericExe(), packager);
 
 		FileUtils.copyFileToFile(getGenericExe(), executable);
 

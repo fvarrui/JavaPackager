@@ -42,7 +42,7 @@ dependencies {
 	implementation 'org.twdata.maven:mojo-executor:2.3.0'
 	implementation 'commons-io:commons-io:2.11.0'
 	implementation 'org.apache.commons:commons-lang3:3.9'
-	implementation 'org.apache.commons:commons-collections4:4.1'
+	implementation 'org.apache.commons:commons-collections4:4.3'
 	implementation 'org.apache.commons:commons-compress:1.21'
 	implementation 'org.apache.velocity:velocity-engine-core:2.3'
 	implementation 'org.vafer:jdeb:1.9'
@@ -50,7 +50,7 @@ dependencies {
 	implementation 'org.redline-rpm:redline:1.2.10'
 	implementation 'edu.sc.seis.launch4j:launch4j:3.0.5'
 
-	testImplementation 'junit:junit:4.12'
+	testImplementation 'junit:junit:4.13.1'
 
 	compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
 
@@ -72,7 +72,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 compileJava.options.encoding = 'UTF-8'
 
-// supress javadoc warnings
+// suppress javadoc warnings
 javadoc.options.addStringOption('Xdoclint:none', '-quiet')
 
 java {
@@ -154,7 +154,8 @@ publishing {
 }
 
 // runs the plugin description generator
-task generatePluginDescriptor(type: JavaExec, dependsOn: compileJava) {
+tasks.register('generatePluginDescriptor', JavaExec) {
+	dependsOn compileJava
 	def pluginDescriptorFile = new File(project.compileJava.destinationDirectory.asFile.get(), 'META-INF/maven/plugin.xml')
 
 	// FIXME: this does not seem to be working
@@ -196,27 +197,27 @@ nexusStaging {
 	password = project.findProperty('ossrhPassword') ?: ''
 }
 
-task updateUniversalJavaApplicationStub(type : Download) {
+tasks.register('updateUniversalJavaApplicationStub', Download) {
 	def version = '20230601.235708'
 	group 'Update assets'
-	description 'Downloads compiled and scripted versions of universalJavaApplicationStub to src/main/resources/mac overriding the existing ones.'	
+	description 'Downloads compiled and scripted versions of universalJavaApplicationStub to src/main/resources/mac overriding the existing ones.'
 	src([
-		"https://github.com/fvarrui/universalJavaApplicationStub/releases/download/${version}/universalJavaApplicationStub.sh",
-		"https://github.com/fvarrui/universalJavaApplicationStub/releases/download/${version}/universalJavaApplicationStub.x86_64",
-		"https://github.com/fvarrui/universalJavaApplicationStub/releases/download/${version}/universalJavaApplicationStub.arm64",
-		"https://github.com/fvarrui/universalJavaApplicationStub/releases/download/${version}/universalJavaApplicationStub"
+			"https://github.com/fvarrui/universalJavaApplicationStub/releases/download/${version}/universalJavaApplicationStub.sh",
+			"https://github.com/fvarrui/universalJavaApplicationStub/releases/download/${version}/universalJavaApplicationStub.x86_64",
+			"https://github.com/fvarrui/universalJavaApplicationStub/releases/download/${version}/universalJavaApplicationStub.arm64",
+			"https://github.com/fvarrui/universalJavaApplicationStub/releases/download/${version}/universalJavaApplicationStub"
 	])
 	dest file('src/main/resources/mac')
-    overwrite true
+	overwrite true
 }
 
-task updateWhyJavaLauncher(type : Download) {
+tasks.register('updateWhyJavaLauncher', Download) {
 	def version = '1.1.2'
 	group 'Update assets'
-	description 'Downloads JavaLauncher.exe to src/main/resources/windows and overwrites the existing one.'	
+	description 'Downloads JavaLauncher.exe to src/main/resources/windows and overwrites the existing one.'
 	src([
-		"https://github.com/AstroImageJ/Why/releases/download/${version}/JavaLauncher.exe"
+			"https://github.com/AstroImageJ/Why/releases/download/${version}/JavaLauncher.exe"
 	])
 	dest file('src/main/resources/windows')
-    overwrite true
+	overwrite true
 }

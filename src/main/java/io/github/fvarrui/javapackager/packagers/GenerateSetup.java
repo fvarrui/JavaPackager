@@ -7,12 +7,13 @@ import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
+import net.jsign.WindowsSigner;
 
 /**
  * Creates a Setup file including all app folder's content only for
  * Windows so app could be easily distributed
  */
-public class GenerateSetup extends WindowsArtifactGenerator {
+public class GenerateSetup extends ArtifactGenerator<WindowsPackager> {
 
 	public GenerateSetup() {
 		super("Setup installer");
@@ -49,7 +50,7 @@ public class GenerateSetup extends WindowsArtifactGenerator {
 		File issFile = new File(assetsFolder, name + ".iss");
 		VelocityUtils.render("windows/iss.vtl", issFile, packager);
 
-		// generates windows installer with inno setup command line compiler
+		// generates Windows installer with inno setup command line compiler
 		CommandUtils.execute("iscc", "/O" + outputDirectory.getAbsolutePath(), "/F" + name + "_" + version, issFile);
 		
 		// setup file
@@ -59,8 +60,8 @@ public class GenerateSetup extends WindowsArtifactGenerator {
 		}
 		
 		// sign installer
-		sign(setupFile, packager);
-		
+		WindowsSigner.sign(setupFile, packager.getDisplayName(), packager.getUrl(), packager.getWinConfig().getSigning());
+
 		return setupFile;
 	}
 	

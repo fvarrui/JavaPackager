@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Optional;
 
+import net.jsign.WindowsSigner;
 import org.apache.commons.lang3.StringUtils;
 
 import io.github.fvarrui.javapackager.model.Arch;
@@ -145,9 +146,6 @@ public class CreateWindowsExeWinRun4j extends AbstractCreateWindowsExe {
 		// copies ini file to app folder
 		File iniFile = new File(appFolder, name + ".ini");
 		FileUtils.copyFileToFile(genericIni, iniFile);
-
-		// signs generated exe file
-		sign(getGenericExe(), packager);
 
 		// copies exe file to app folder with apps name
 		FileUtils.copyFileToFile(getGenericExe(), executable);

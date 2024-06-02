@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import net.jsign.WindowsSigner;
 import org.apache.commons.lang3.StringUtils;
 
 import io.github.fvarrui.javapackager.model.Arch;
@@ -88,8 +89,11 @@ public class WindowsPackager extends Packager {
 			classpath = StringUtils.join(classpaths, ";");
 		}
 		
-		// invokes windows exe artifact generator (building tool dependant)
+		// invokes Windows exe artifact generator (building tool dependant)
 		executable = Context.getContext().createWindowsExe(this);
+
+		// signs the executable
+		WindowsSigner.sign(executable, getDisplayName(), getUrl(), getWinConfig().getSigning());
 
 		Logger.infoUnindent("Windows EXE file created in " + executable + "!");		
 		

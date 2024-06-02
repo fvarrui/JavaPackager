@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.jsign.WindowsSigner;
 import org.apache.commons.lang3.StringUtils;
 import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 
@@ -66,11 +67,9 @@ public class CreateWindowsExeLaunch4j extends AbstractCreateWindowsExe {
 			FileUtils.copyFileToFolder(jarFile, appFolder);
 			jarPath = jarFile.getName();
 		}
-	
-		List<Element> optsElements = vmArgs.stream().map(arg -> element("opt", arg)).collect(Collectors.toList());
-		
-		List<Element> jreElements = new ArrayList<>();
-		jreElements.add(element("opts", optsElements.toArray(new Element[optsElements.size()])));
+
+        List<Element> jreElements = new ArrayList<>();
+		jreElements.add(element("opts", vmArgs.stream().map(arg -> element("opt", arg)).toArray(Element[]::new)));
 		jreElements.add(element("path", bundleJre ? jreDirectoryName : "%JAVA_HOME%;%PATH%"));
 		if (!StringUtils.isBlank(jreMinVersion)) {
 			jreElements.add(element("minVersion", jreMinVersion));
@@ -91,7 +90,7 @@ public class CreateWindowsExeLaunch4j extends AbstractCreateWindowsExe {
 					)
 				);
 		pluginConfig.add(element("chdir", useResourcesAsWorkingDir ? "." : ""));		
-		pluginConfig.add(element("jre", jreElements.toArray(new Element[jreElements.size()])));
+		pluginConfig.add(element("jre", jreElements.toArray(new Element[0])));
 		pluginConfig.add(
 					element("versionInfo", 
 						element("fileVersion", winConfig.getFileVersion()),
@@ -119,11 +118,9 @@ public class CreateWindowsExeLaunch4j extends AbstractCreateWindowsExe {
 							version("2.4.1")
 					),
 					goal("launch4j"),
-					configuration(pluginConfig.toArray(new Element[pluginConfig.size()])),
+					configuration(pluginConfig.toArray(new Element[0])),
 					Context.getMavenContext().getEnv()
 				);
-			
-			sign(getGenericExe(), packager);
 
 			FileUtils.copyFileToFile(getGenericExe(), executable);
 						

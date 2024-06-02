@@ -7,9 +7,9 @@ import io.github.fvarrui.javapackager.model.WindowsExeCreationTool;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 
-public abstract class AbstractCreateWindowsExe extends WindowsArtifactGenerator {
+public abstract class AbstractCreateWindowsExe extends ArtifactGenerator<WindowsPackager> {
 
-	private File outputFolder;
+	private final File outputFolder;
 	private File genericManifest;
 	private File genericIcon;
 	private File genericJar;

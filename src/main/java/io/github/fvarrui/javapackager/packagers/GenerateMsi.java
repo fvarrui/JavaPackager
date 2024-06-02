@@ -8,12 +8,13 @@ import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 import io.github.fvarrui.javapackager.utils.XMLUtils;
+import net.jsign.WindowsSigner;
 
 /**
- * Creates a MSI file including all app folder's content only for
+ * Creates an MSI file including all app folder's content only for
  * Windows so app could be easily distributed
  */
-public class GenerateMsi extends WindowsArtifactGenerator {
+public class GenerateMsi extends ArtifactGenerator<WindowsPackager> {
 
 	public GenerateMsi() {
 		super("MSI installer");
@@ -70,8 +71,8 @@ public class GenerateMsi extends WindowsArtifactGenerator {
 		}
 		
 		// sign installer
-		sign(msiFile, packager);
-		
+		WindowsSigner.sign(msiFile, packager.getDisplayName(), packager.getUrl(), packager.getWinConfig().getSigning());
+
 		return msiFile;
 	}
 	

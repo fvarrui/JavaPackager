@@ -9,6 +9,7 @@ import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.RcEdit;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
+import net.jsign.WindowsSigner;
 
 /**
  * Creates Windows executable with WinRun4j
@@ -77,9 +78,6 @@ public class CreateWindowsExeWhy extends AbstractCreateWindowsExe {
 		
 		// copies ini file to app folder
 		FileUtils.copyFileToFolder(genericIni, appFolder);
-
-		// signs generated exe file
-		sign(getGenericExe(), packager);
 
 		// copies exe file to app folder with apps name
 		FileUtils.copyFileToFile(getGenericExe(), executable);

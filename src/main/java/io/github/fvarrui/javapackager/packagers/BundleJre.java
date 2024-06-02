@@ -20,7 +20,7 @@ import static io.github.fvarrui.javapackager.utils.CommandUtils.execute;
 
 
 /**
- * Bundles a Java Runtime Enrironment (JRE) with the app
+ * Bundles a Java Runtime Environment (JRE) with the app
  */
 public class BundleJre extends ArtifactGenerator<Packager> {
 	
@@ -139,7 +139,7 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 			
 			// gets JDK release info 
 			Map<String,String> releaseMap = JDKUtils.getRelease(jdkPath);
-			String releaseInfo = "add:IMAGE_TYPE=\"JRE\":OS_ARCH=\"" + releaseMap.get("OS_ARCH") + "\":OS_NAME=" + releaseMap.get("OS_NAME") + "\"";
+			String releaseInfo = "add:IMAGE_TYPE=\"JRE\":OS_ARCH=\"" + releaseMap.get("OS_ARCH") + "\":OS_NAME=\"" + releaseMap.get("OS_NAME") + "\"";
 
 			// full path to jlink command
 			File jlink = new File(currentJdk, "/bin/jlink");
@@ -186,7 +186,7 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 		}
 		
 		// updates bundle jre property value, as this artifact generator could disable this option 
-		// (e.g. when bundling a jre from a different platform than the current one)
+		// (e.g., when bundling a jre from a different platform than the current one)
 		packager.bundleJre(bundleJre);
 
 		return destinationFolder;
