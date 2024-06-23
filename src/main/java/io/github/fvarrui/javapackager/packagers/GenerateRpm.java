@@ -45,7 +45,7 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 		Architecture arch = packager.getArch().toRpmArchitecture();
 		File mimeXmlFile = packager.getMimeXmlFile();
 		File installationPath = packager.getLinuxConfig().getInstallationPath();
-		File appPath = new File(installationPath, name);
+		String appPath = new File(installationPath, name).toPath().normalize().toString();
 		
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");

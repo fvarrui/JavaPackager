@@ -2,10 +2,10 @@ Package: ${info.name}
 Version: ${info.version}
 Section: misc
 Priority: optional
-Architecture: ${info.arch.deb}
+Architecture: ${info.arch.toDebArchitecture()}
 Maintainer: ${info.organizationName} <$!{info.organizationEmail}>
 Description: ${info.description}
-Distribution: development
+Distribution: stable
 #if(${info.url})
 Homepage: ${info.url}
 #end
