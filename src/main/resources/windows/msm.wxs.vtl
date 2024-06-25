@@ -22,7 +22,7 @@
 			<RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
 			<RegistryValue Root="HKLM" Key="Software\\${info.organizationName}\\${info.name}" Name="installed" Type="integer" Value="1" />
 		#else
-			<File Name="${file.name}" KeyPath="yes" Source="${file}"/>
+			<File Name="${file.name}" KeyPath="yes" Source="${file}" Id="${file.name.replaceAll("[^A-Za-z0-9_.]", "_")}_${id}"/>
 		#end
 		</Component>
 	#end
