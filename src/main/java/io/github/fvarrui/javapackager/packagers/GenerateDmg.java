@@ -87,7 +87,7 @@ public class GenerateDmg extends ArtifactGenerator<MacPackager> {
 		// creates image
 		Logger.info("Creating image: " + tempDmgFile.getAbsolutePath());
 		String osArchitecture = System.getProperty("os.arch");
-		boolean isAarch64 = osArchitecture.toLowerCase().equals("aarch64");
+		boolean isAarch64 = osArchitecture.equalsIgnoreCase("aarch64");
 		String fileSystem = isAarch64 ? "APFS" : "HFS+";
 		Logger.warn(osArchitecture + " architecture detected. Using " + fileSystem + " filesystem");
 		execute("hdiutil", "create", "-srcfolder", appFolder, "-volname", volumeName, "-ov", "-fs", fileSystem, "-format", "UDRW", tempDmgFile);
@@ -100,10 +100,9 @@ public class GenerateDmg extends ArtifactGenerator<MacPackager> {
 		// mounts image
 		Logger.info("Mounting image: " + tempDmgFile.getAbsolutePath());
 		String result = execute("hdiutil", "attach", "-readwrite", "-noverify", "-noautoopen", tempDmgFile);
-		Optional<String> optDeviceName = Arrays.asList(result.split("\n"))
-								.stream()
+		Optional<String> optDeviceName = Arrays.stream(result.split("\n"))
 								.filter(s -> s.contains(mountFolder.getAbsolutePath()))
-								.map(s -> StringUtils.normalizeSpace(s))
+								.map(StringUtils::normalizeSpace)
 								.map(s -> s.split(" ")[0])
 								.findFirst();
 		optDeviceName.ifPresent(deviceName -> Logger.info("- Device name: " + deviceName));

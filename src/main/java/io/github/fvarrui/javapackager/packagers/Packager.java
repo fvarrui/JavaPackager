@@ -25,7 +25,7 @@ public abstract class Packager extends PackagerSettings {
 
 	// artifact generators
 	protected List<ArtifactGenerator<?>> installerGenerators = new ArrayList<>();
-	private BundleJre generateJre = new BundleJre();
+	private final BundleJre generateJre = new BundleJre();
 
 	// internal generic properties (setted in "createAppStructure/createApp")
 	protected File appFolder;
@@ -395,13 +395,15 @@ public abstract class Packager extends PackagerSettings {
 		Logger.infoUnindent("Dependencies copied to " + libsFolder + "!");
 
 		// creates a runnable jar file
-		if (runnableJar != null && runnableJar.exists()) {
-			Logger.info("Using runnable JAR: " + runnableJar);
-			jarFile = runnableJar;
-		} else {
+		if (runnableJar == null) {
 			Logger.infoIndent("Creating runnable JAR...");
 			jarFile = Context.getContext().createRunnableJar(this);
 			Logger.infoUnindent("Runnable jar created in " + jarFile + "!");
+		} else if (runnableJar.exists()) {
+			Logger.info("Using runnable JAR: " + runnableJar);
+			jarFile = runnableJar;
+		} else {
+			throw new Exception("Runnable JAR doesn't exist: " + runnableJar);
 		}
 
 		// embeds a JRE if is required
