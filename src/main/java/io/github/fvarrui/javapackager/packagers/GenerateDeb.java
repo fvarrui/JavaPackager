@@ -22,7 +22,7 @@ import io.github.fvarrui.javapackager.utils.VelocityUtils;
  */
 public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 
-	private Console console;
+	private final Console console;
 	
 	public GenerateDeb() {
 		super("DEB package");
@@ -64,8 +64,8 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 		File executable = packager.getExecutable();
 		File javaFile = new File(appFolder, jreDirectoryName + "/bin/java");
 		File mimeXmlFile = packager.getMimeXmlFile();
-		File installationPath = packager.getLinuxConfig().getInstallationPath();
-		String appPath = new File(installationPath, name).toPath().normalize().toString();
+		String installationPath = packager.getLinuxConfig().getInstallationPath();
+		String appPath = installationPath + "/" + name;
 
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");

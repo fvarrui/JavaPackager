@@ -3,6 +3,7 @@ package io.github.fvarrui.javapackager.model;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -21,7 +22,7 @@ public class LinuxConfig implements Serializable {
 	private boolean generateAppImage = true;
 	private File pngFile;
 	private boolean wrapJar = true;
-	private File installationPath;
+	private String installationPath;
 	
 	public void setCategories(List<String> categories) {
 		this.categories = categories;
@@ -71,11 +72,11 @@ public class LinuxConfig implements Serializable {
 		this.wrapJar = wrapJar;
 	}
 	
-	public File getInstallationPath() {
+	public String getInstallationPath() {
 		return installationPath;
 	}
 	
-	public void setInstallationPath(File installationPath) {
+	public void setInstallationPath(String installationPath) {
 		this.installationPath = installationPath;
 	}
 
@@ -92,8 +93,8 @@ public class LinuxConfig implements Serializable {
 	 * @param packager Packager
 	 */
 	public void setDefaults(Packager packager) {
-		this.setCategories((categories == null || categories.isEmpty()) ? Arrays.asList("Utility") : categories);
-		this.setInstallationPath(ObjectUtils.defaultIfNull(installationPath, new File("/opt")));
+		this.setCategories((categories == null || categories.isEmpty()) ? Collections.singletonList("Utility") : categories);
+		this.setInstallationPath(ObjectUtils.defaultIfNull(installationPath, "/opt"));
 	}
 
 }
