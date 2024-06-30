@@ -47,5 +47,14 @@ public enum Arch {
 		default: return null;
 		}
 	}
+
+	public String toMsiArchitecture() {
+		switch (this) {
+		case aarch64: return "arm64";
+		case x64: return "x64";
+		case x86: return "x86";
+		default: return null;
+		}
+	}
 	
 }

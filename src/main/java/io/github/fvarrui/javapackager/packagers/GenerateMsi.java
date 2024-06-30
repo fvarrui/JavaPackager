@@ -63,7 +63,7 @@ public class GenerateMsi extends ArtifactGenerator<WindowsPackager> {
 		// lighting wxs file
 		Logger.info("Linking file " + wixobjFile);
 		File msiFile = new File(outputDirectory, name + "_" + version + ".msi");
-		execute("light", "-spdb", "-out", msiFile, wixobjFile);
+		execute("light", "-sw1076", "-spdb", "-out", msiFile, wixobjFile);
 
 		// setup file
 		if (!msiFile.exists()) {

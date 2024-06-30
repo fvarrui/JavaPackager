@@ -62,7 +62,7 @@ public class GenerateMsm extends ArtifactGenerator<WindowsPackager> {
 		// lighting wxs file
 		Logger.info("Linking file " + wixobjFile);
 		File msmFile = new File(outputDirectory, name + "_" + version + ".msm");
-		CommandUtils.execute("light", "-spdb", "-out", msmFile, wixobjFile);
+		CommandUtils.execute("light", "-sw1076", "-spdb", "-out", msmFile, wixobjFile);
 
 		// setup file
 		if (!msmFile.exists()) {
