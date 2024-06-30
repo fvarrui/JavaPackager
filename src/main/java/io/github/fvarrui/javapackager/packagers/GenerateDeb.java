@@ -22,7 +22,7 @@ import io.github.fvarrui.javapackager.utils.VelocityUtils;
  */
 public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 
-	private Console console;
+	private final Console console;
 	
 	public GenerateDeb() {
 		super("DEB package");
@@ -64,8 +64,8 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 		File executable = packager.getExecutable();
 		File javaFile = new File(appFolder, jreDirectoryName + "/bin/java");
 		File mimeXmlFile = packager.getMimeXmlFile();
-		File installationPath = packager.getLinuxConfig().getInstallationPath();
-		File appPath = new File(installationPath, name);
+		String installationPath = packager.getLinuxConfig().getInstallationPath();
+		String appPath = installationPath + "/" + name;
 
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");
@@ -82,14 +82,14 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 
 		// create data producers collections
 		
-		List<DataProducer> conffilesProducers = new ArrayList<>();		
+		List<DataProducer> confFilesProducers = new ArrayList<>();
 		List<DataProducer> dataProducers = new ArrayList<>();		
 		
 		// builds app folder data producer, except executable file and jre/bin/java
 		
 		Mapper appFolderMapper = new Mapper();
 		appFolderMapper.setType("perm");
-		appFolderMapper.setPrefix(appPath.getAbsolutePath());
+		appFolderMapper.setPrefix(appPath);
 		appFolderMapper.setFileMode("644");
 		
 		Data appFolderData = new Data();
@@ -104,7 +104,7 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 		
 		Mapper executableMapper = new Mapper();
 		executableMapper.setType("perm");
-		executableMapper.setPrefix(appPath.getAbsolutePath());
+		executableMapper.setPrefix(appPath);
 		executableMapper.setFileMode("755");
 		
 		Data executableData = new Data();
@@ -190,7 +190,7 @@ public class GenerateDeb extends ArtifactGenerator<LinuxPackager> {
 		
 		// builds deb file
 		
-        DebMaker debMaker = new DebMaker(console, dataProducers, conffilesProducers);
+        DebMaker debMaker = new DebMaker(console, dataProducers, confFilesProducers);
         debMaker.setDeb(debFile);
         debMaker.setControl(controlFile.getParentFile());
         debMaker.setCompression("gzip");

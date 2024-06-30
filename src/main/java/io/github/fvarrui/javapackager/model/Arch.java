@@ -29,6 +29,15 @@ public enum Arch {
 	public static Arch getDefault() {
 		return getArch(SystemUtils.OS_ARCH);
 	}
+
+	public String toDebArchitecture() {
+		switch (this) {
+		case aarch64: return "arm64";
+		case x64: return "amd64";
+		case x86: return "i386";
+		default: return null;
+		}
+	}
 	
 	public Architecture toRpmArchitecture() {		
 		switch (this) {

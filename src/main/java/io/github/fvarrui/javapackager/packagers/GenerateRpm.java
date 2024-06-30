@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.redline_rpm.Builder;
 import org.redline_rpm.header.Architecture;
@@ -44,9 +45,9 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 		String jreDirectoryName = packager.getJreDirectoryName();
 		Architecture arch = packager.getArch().toRpmArchitecture();
 		File mimeXmlFile = packager.getMimeXmlFile();
-		File installationPath = packager.getLinuxConfig().getInstallationPath();
-		File appPath = new File(installationPath, name);
-		
+		String installationPath = packager.getLinuxConfig().getInstallationPath();
+		String appPath = installationPath + "/" + name;
+
 		// generates desktop file from velocity template
 		File desktopFile = new File(assetsFolder, name + ".desktop");
 		VelocityUtils.render("linux/desktop.vtl", desktopFile, packager);
@@ -62,7 +63,7 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 		builder.setPackage(name, version, "1");
 		builder.setPackager(organizationName);
 		builder.setDescription(description);
-		builder.setPrefixes("opt");
+		builder.setPrefixes(installationPath);
 		
 		// list of files which needs execution permissions
 		List<File> executionPermissions = new ArrayList<>();
@@ -71,7 +72,7 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 		executionPermissions.add(new File(appFolder, jreDirectoryName + "/lib/jspawnhelper"));
 
 		// add all app files
-		addDirectory(builder, installationPath.getAbsolutePath(), appFolder, executionPermissions);
+		addDirectory(builder, installationPath, appFolder, executionPermissions);
 
 		// link to desktop file
 		addLink(builder, "/usr/share/applications/" + desktopFile.getName(), appPath + "/" + desktopFile.getName());
@@ -86,13 +87,13 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 		addLink(builder, "/usr/local/bin/" + executable.getName(), appPath + "/" + executable.getName());
 
 		// add all app files
-		addDirectory(builder, "/opt", appFolder, executionPermissions);
+		addDirectory(builder, installationPath, appFolder, executionPermissions);
 		
 		// build RPM file
 		builder.build(outputDirectory);
 
-		// renames genewrated RPM file if created
-		String suffix = "-1." + arch.name().toLowerCase() + ".rpm";
+		// renames generated RPM file if created
+		String suffix = "-1." + arch + ".rpm";
 		File originalRpm = new File(outputDirectory, name + "-" + version + suffix);
 		File rpm = null;
 		if (originalRpm.exists()) {
@@ -119,7 +120,7 @@ public class GenerateRpm extends ArtifactGenerator<LinuxPackager> {
 		String dirPath = parentPath + "/" + directory.getName();
 		Logger.info("Adding directory '" + directory + "' to RPM builder as '" + dirPath + "'");
 		builder.addDirectory(dirPath);
-		for (File f : directory.listFiles()) {
+		for (File f : Objects.requireNonNull(directory.listFiles())) {
 			if (f.isDirectory())
 				addDirectory(builder, dirPath, f, executionPermissions);
 			else {
