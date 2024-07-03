@@ -37,15 +37,14 @@ public class CommandUtils {
 	public static ExecutionResult executeWithResult(File workingDirectory, String executable, Object... arguments) throws IOException, CommandLineException {
 		ExecutionResult result = new ExecutionResult();
 		
-		StringBuffer outputBuffer = new StringBuffer();
-		StringBuffer errorBuffer = new StringBuffer();
+		StringBuilder outputBuffer = new StringBuilder();
+		StringBuilder errorBuffer = new StringBuilder();
 		
 		Commandline command = new Commandline();
 		command.setWorkingDirectory(workingDirectory);
 		command.setExecutable(executable);
 		command.createArguments(arguments);
-		command.toString();
-		
+
 		String commandLine = command.getCommandLineAsString();
 
 		Logger.info("Executing command: " + commandLine);
@@ -58,12 +57,12 @@ public class CommandUtils {
 			if (output.ready()) {
 				String outputLine = output.readLine();
 				Logger.info(outputLine);
-				outputBuffer.append(outputLine + "\n");
+				outputBuffer.append(outputLine).append("\n");
 			}
 			if (error.ready()) {
 				String errorLine = error.readLine();
 				Logger.error(errorLine);					
-				errorBuffer.append(errorLine + "\n");
+				errorBuffer.append(errorLine).append("\n");
 			}
 		}
 		output.close();
