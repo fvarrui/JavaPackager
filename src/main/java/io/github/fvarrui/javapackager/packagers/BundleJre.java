@@ -139,7 +139,8 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 			
 			// gets JDK release info 
 			Map<String,String> releaseMap = JDKUtils.getRelease(jdkPath);
-			String releaseInfo = "add:IMAGE_TYPE=\"JRE\":OS_ARCH=\"" + releaseMap.get("OS_ARCH") + "\":OS_NAME=\"" + releaseMap.get("OS_NAME") + "\"";
+            assert releaseMap != null;
+            String releaseInfo = "add:IMAGE_TYPE=\"JRE\":OS_ARCH=\"" + releaseMap.get("OS_ARCH") + "\":OS_NAME=\"" + releaseMap.get("OS_NAME") + "\"";
 
 			// full path to jlink command
 			File jlink = new File(currentJdk, "/bin/jlink");
@@ -222,7 +223,7 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 			modulesList = 
 				defaultModules
 					.stream()
-					.map(module -> module.trim())
+					.map(String::trim)
 					.collect(Collectors.toList());
 		
 		} else if (VersionUtils.getJavaMajorVersion() >= 13) { 
@@ -235,13 +236,14 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 					"--ignore-missing-deps",
 					"--print-module-deps",
 					"--add-modules=ALL-MODULE-PATH",
-					"--module-path=" + StringUtils.join(modulePaths, File.pathSeparator)				
+					"--module-path=" + StringUtils.join(modulePaths, File.pathSeparator),
+					libsFolder,
+					jarFile
 				);
 			
 			modulesList = 
-				Arrays.asList(modules.split(","))
-					.stream()
-					.map(module -> module.trim())
+				Arrays.stream(modules.split(","))
+					.map(String::trim)
 					.filter(module -> !module.isEmpty())
 					.collect(Collectors.toList());
 			
@@ -255,13 +257,14 @@ public class BundleJre extends ArtifactGenerator<Packager> {
 					"--ignore-missing-deps",					
 					"--list-deps",
 					"--add-modules=ALL-MODULE-PATH",
-					"--module-path=" + StringUtils.join(modulePaths, File.pathSeparator)				
+					"--module-path=" + StringUtils.join(modulePaths, File.pathSeparator),
+					libsFolder,
+					jarFile
 				);
 
 			modulesList = 
-				Arrays.asList(modules.split("\n"))
-					.stream()
-					.map(module -> module.trim())
+				Arrays.stream(modules.split("\n"))
+					.map(String::trim)
 					.map(module -> (module.contains("/") ? module.split("/")[0] : module))
 					.filter(module -> !module.isEmpty())
 					.filter(module -> !module.startsWith("JDK removed internal"))
