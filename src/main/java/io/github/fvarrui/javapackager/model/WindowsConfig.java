@@ -51,7 +51,18 @@ public class WindowsConfig implements Serializable {
 	private boolean removeOldLibs = false;
 	private WindowsExeCreationTool exeCreationTool = WindowsExeCreationTool.launch4j;
 	private String vmLocation;
-
+	
+	private SingleInstance singleInstance;
+	
+	public SingleInstance getSingleInstance() {
+		return singleInstance;
+	}
+	
+	public WindowsConfig setSingleInstance(SingleInstance singleInstance) {
+		this.singleInstance = singleInstance;
+		return this;
+	}
+	
 	public File getIcoFile() {
 		return icoFile;
 	}

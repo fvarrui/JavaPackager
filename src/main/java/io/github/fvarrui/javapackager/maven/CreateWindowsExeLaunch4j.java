@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.github.fvarrui.javapackager.model.SingleInstance;
 import net.jsign.WindowsSigner;
 import org.apache.commons.lang3.StringUtils;
 import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
@@ -89,6 +90,17 @@ public class CreateWindowsExeLaunch4j extends AbstractCreateWindowsExe {
 						element("addDependencies", "false")
 					)
 				);
+		
+		SingleInstance singleInstance = winConfig.getSingleInstance();
+		if(singleInstance != null){
+			pluginConfig.add(
+					element("singleInstance",
+							element("mutexName", singleInstance.getMutexName()),
+							element("windowTitle", singleInstance.getWindowTitle())
+					)
+			);
+		}
+		
 		pluginConfig.add(element("chdir", useResourcesAsWorkingDir ? "." : ""));		
 		pluginConfig.add(element("jre", jreElements.toArray(new Element[0])));
 		pluginConfig.add(
