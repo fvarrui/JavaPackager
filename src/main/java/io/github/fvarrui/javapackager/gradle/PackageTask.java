@@ -447,6 +447,18 @@ public class PackageTask extends AbstractPackageTask {
 
 	@Input
 	@Optional
+	private List<String> appArgs;
+
+	public List<String> getAppArgs() {
+		return appArgs;
+	}
+
+	public void setAppArgs(List<String> appArgs) {
+		this.appArgs = appArgs;
+	}
+
+	@Input
+	@Optional
 	private WindowsConfig winConfig;
 	
 	public WindowsConfig getWinConfig() {
@@ -656,6 +668,7 @@ public class PackageTask extends AbstractPackageTask {
 					.url(defaultIfNull(url, extension.getUrl()))
 					.version(defaultIfNull(version, extension.getVersion(), getProject().getVersion().toString()))
 					.vmArgs(defaultIfNull(vmArgs, extension.getVmArgs()))
+					.appArgs(defaultIfNull(appArgs, extension.getAppArgs()))
 					.winConfig(defaultIfNull(winConfig, extension.getWinConfig()));
 
 	}
