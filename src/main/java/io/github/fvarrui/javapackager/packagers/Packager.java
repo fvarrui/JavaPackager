@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.fvarrui.javapackager.gradle.GradleLocalContext;
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.FileUtils;
 import io.github.fvarrui.javapackager.utils.IconUtils;
@@ -43,6 +44,9 @@ public abstract class Packager extends PackagerSettings {
 
 	// processed classpaths list
 	protected List<String> classpaths = new ArrayList<>();
+
+	// Extra local context for packager
+	protected LocalContext localContext;
 
 	// ===============================================
 
@@ -84,6 +88,15 @@ public abstract class Packager extends PackagerSettings {
 
 	public File getBootstrapFile() {
 		return bootstrapFile;
+	}
+
+	public Packager setLocalContext(LocalContext localContext) {
+		this.localContext = localContext;
+		return this;
+	}
+
+	public LocalContext getLocalContext() {
+		return localContext;
 	}
 
 	// ===============================================
@@ -202,7 +215,7 @@ public abstract class Packager extends PackagerSettings {
 	 *                    here
 	 * @throws Exception 
 	 */
-	protected void copyAdditionalResources(List<File> resources, File destination) throws Exception {
+	protected void copyAdditionalResources(List<File> resources, Object o, File destination) throws Exception {
 
 		Logger.infoIndent("Copying additional resources");
 
@@ -213,6 +226,12 @@ public abstract class Packager extends PackagerSettings {
 				FileUtils.copyFolderToFolder(r, destination);
 			} else if (r.isFile()) {
 				FileUtils.copyFileToFolder(r, destination);
+			}
+		}
+
+		if (Context.isGradle() && o != null) {
+			if (getLocalContext() instanceof GradleLocalContext) {
+				((GradleLocalContext) getLocalContext()).copyAdditionalResources(o, destination);
 			}
 		}
 
@@ -387,7 +406,7 @@ public abstract class Packager extends PackagerSettings {
 		resolveResources();
 
 		// copies additional resources
-		copyAdditionalResources(additionalResources, resourcesDestinationFolder);
+		copyAdditionalResources(additionalResources, additionalResourceCollection, resourcesDestinationFolder);
 
 		// copies all dependencies to Java folder
 		Logger.infoIndent("Copying all dependencies ...");
@@ -396,9 +415,19 @@ public abstract class Packager extends PackagerSettings {
 
 		// creates a runnable jar file
 		if (runnableJar == null) {
-			Logger.infoIndent("Creating runnable JAR...");
-			jarFile = Context.getContext().createRunnableJar(this);
-			Logger.infoUnindent("Runnable jar created in " + jarFile + "!");
+            if (Context.isGradle() && getRunnableJarSource() != null) {
+                jarFile = ((GradleLocalContext) localContext).getSingleFile(getRunnableJarSource());
+
+				if (jarFile != null && jarFile.exists()) {
+					Logger.info("Using runnable JAR: " + jarFile);
+				} else {
+					throw new Exception("Runnable JAR doesn't exist: " + getRunnableJarSource());
+				}
+            } else {
+				Logger.infoIndent("Creating runnable JAR...");
+				jarFile = Context.getContext().createRunnableJar(this);
+				Logger.infoUnindent("Runnable jar created in " + jarFile + "!");
+			}
 		} else if (runnableJar.exists()) {
 			Logger.info("Using runnable JAR: " + runnableJar);
 			jarFile = runnableJar;

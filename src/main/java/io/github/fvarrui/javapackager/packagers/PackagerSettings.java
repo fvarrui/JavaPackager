@@ -43,6 +43,7 @@ public class PackagerSettings {
 	protected File jrePath;
 	protected File jdkPath;
 	protected List<File> additionalResources;
+	protected Object additionalResourceCollection;
 	protected List<String> modules;
 	protected List<String> additionalModules;
 	protected Platform platform;
@@ -70,7 +71,8 @@ public class PackagerSettings {
 	protected Scripts scripts;
 	protected Arch arch;
 	protected List<Template> templates;
-	
+	private Object runnableJarSource;
+
 	/**
 	 * Get packaging JDK
 	 * @return Packaging JDK
@@ -240,6 +242,14 @@ public class PackagerSettings {
 	}
 
 	/**
+	 * Get additional resourcxes
+	 * @return Additional resources
+	 */
+	public Object getAdditionalResourceCollection() {
+		return additionalResourceCollection;
+	}
+
+	/**
 	 * Get Modules
 	 * @return Modules
 	 */
@@ -285,6 +295,14 @@ public class PackagerSettings {
 	 */
 	public File getRunnableJar() {
 		return runnableJar;
+	}
+
+	/**
+	 * Get runnable JAR
+	 * @return Runnable JAR
+	 */
+	public Object getRunnableJarSource() {
+		return runnableJarSource;
 	}
 
 	/**
@@ -636,6 +654,16 @@ public class PackagerSettings {
 	}
 
 	/**
+	 * Set additional resources
+	 * @param additionalResources Additional resources
+	 * @return Packager settings
+	 */
+	public PackagerSettings additionalResourceCollection(Object additionalResources) {
+		this.additionalResourceCollection = additionalResources;
+		return this;
+	}
+
+	/**
 	 * Set modules list
 	 * @param modules Modules list
 	 * @return Packager settings
@@ -692,6 +720,16 @@ public class PackagerSettings {
 	 */
 	public PackagerSettings runnableJar(File runnableJar) {
 		this.runnableJar = runnableJar;
+		return this;
+	}
+
+	/**
+	 * Set runnable JAR
+	 * @param runnableJar Runnable JAR
+	 * @return Packager settings
+	 */
+	public PackagerSettings runnableJar(Object runnableJar) {
+		this.runnableJarSource = runnableJar;
 		return this;
 	}
 

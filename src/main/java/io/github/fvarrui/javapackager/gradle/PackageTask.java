@@ -7,12 +7,10 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import org.gradle.api.Task;
 import org.gradle.api.file.DuplicatesStrategy;
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputDirectory;
-import org.gradle.api.tasks.InputFile;
-import org.gradle.api.tasks.Optional;
-import org.gradle.api.tasks.OutputDirectory;
+import org.gradle.api.file.FileSystemOperations;
+import org.gradle.api.tasks.*;
 
 import groovy.lang.Closure;
 import io.github.fvarrui.javapackager.model.Arch;
@@ -27,6 +25,8 @@ import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.Packager;
 import io.github.fvarrui.javapackager.packagers.PackagerFactory;
+
+import javax.inject.Inject;
 
 /**
  * Packaging task fro Gradle 
@@ -71,6 +71,23 @@ public class PackageTask extends AbstractPackageTask {
 	
 	public void setAdditionalResources(List<File> additionalResources) {
 		this.additionalResources = additionalResources;
+	}
+
+	@InputFiles
+	@Optional
+	private Object additionalResourceCollection;
+
+	public Object getAdditionalResourceCollection() {
+		return additionalResourceCollection;
+	}
+
+	public void setAdditionalResourceCollection(Object additionalResources) {
+		if (additionalResources instanceof Task) {
+			additionalResources = ((Task) additionalResources).getOutputs().getFiles();
+		} else if (additionalResources instanceof TaskProvider<?>) {
+			additionalResources = ((TaskProvider<?>) additionalResources).get().getOutputs().getFiles();
+		}
+		this.additionalResourceCollection = additionalResources;
 	}
 	
 	@Input
@@ -408,6 +425,18 @@ public class PackageTask extends AbstractPackageTask {
 	public void setRunnableJar(File runnableJar) {
 		this.runnableJar = runnableJar;
 	}
+
+	@Optional
+	@InputFiles
+	private Object runnableJarSource;
+
+	public Object getRunnableJarSource() {
+		return runnableJarSource;
+	}
+
+	public void setRunnableJar(Object runnableJar) {
+		this.runnableJarSource = runnableJar;
+	}
 	
 	@Input
 	@Optional
@@ -599,6 +628,12 @@ public class PackageTask extends AbstractPackageTask {
 		this.duplicatesStrategy = duplicatesStrategy;
 	}
 
+	@Inject
+	protected FileSystemOperations getFileSystemOperator() {
+		// Method body is ignored
+		throw new UnsupportedOperationException();
+	}
+
 	// ===============
 	// create packager
 	// ===============
@@ -614,9 +649,11 @@ public class PackageTask extends AbstractPackageTask {
 		return
 			(Packager) PackagerFactory
 				.createPackager(defaultIfNull(platform, extension.getPlatform()))
+					.setLocalContext(new GradleLocalContext(getFileSystemOperator()))
 					.additionalModules(defaultIfNull(additionalModules, extension.getAdditionalModules()))
 					.additionalModulePaths(defaultIfNull(additionalModulePaths, extension.getAdditionalModulePaths()))
 					.additionalResources(defaultIfNull(additionalResources, extension.getAdditionalResources()))
+					.additionalResourceCollection(defaultIfNull(additionalResourceCollection, extension.getAdditionalResourceCollection()))
 					.administratorRequired(defaultIfNull(administratorRequired, extension.getAdministratorRequired()))
 					.arch(defaultIfNull(arch, extension.getArch()))
 					.assetsDir(defaultIfNull(assetsDir, extension.getAssetsDir()))
@@ -650,6 +687,7 @@ public class PackageTask extends AbstractPackageTask {
 					.outputDirectory(defaultIfNull(outputDirectory, extension.getOutputDirectory()))
 					.packagingJdk(defaultIfNull(packagingJdk, extension.getPackagingJdk(), Context.getGradleContext().getDefaultToolchain()))
 					.runnableJar(defaultIfNull(runnableJar, extension.getRunnableJar()))
+					.runnableJar(defaultIfNull(runnableJarSource, extension.getRunnableJarSource()))
 					.scripts(defaultIfNull(scripts, extension.getScripts()))
 					.templates(defaultIfNull(templates, extension.getTemplates()))
 					.useResourcesAsWorkingDir(defaultIfNull(useResourcesAsWorkingDir, extension.isUseResourcesAsWorkingDir()))
