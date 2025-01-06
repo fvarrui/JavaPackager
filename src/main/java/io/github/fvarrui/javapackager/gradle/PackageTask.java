@@ -607,7 +607,7 @@ public class PackageTask extends AbstractPackageTask {
 	@Override
 	protected Packager createPackager() throws Exception {
 
-		PackagePluginExtension extension = getProject().getExtensions().findByType(PackagePluginExtension.class);
+		PackagePluginExtension extension = Context.getGradleContext().getPackagePluginExtension();
 		
 		Context.getGradleContext().setDuplicatesStrategy(defaultIfNull(duplicatesStrategy, extension.getDuplicatesStrategy()));
 		
