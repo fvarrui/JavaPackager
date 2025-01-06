@@ -24,10 +24,12 @@ public class GradleContext extends Context<Logger> {
 	private Launch4jLibraryTask libraryTask;
 	private DuplicatesStrategy duplicatesStrategy;
 	private PackagePluginExtension packagePluginExtension;
+	private String defaultVersion;
 
 	public GradleContext(Project project) {
 		super();
 		this.project = project;
+		defaultVersion = project.getVersion().toString();
 	}
 
 	public Logger getLogger() {
@@ -139,5 +141,13 @@ public class GradleContext extends Context<Logger> {
 
     public void setPackagePluginExtension(PackagePluginExtension packagePluginExtension) {
         this.packagePluginExtension = packagePluginExtension;
+    }
+
+    public String getDefaultVersion() {
+        return defaultVersion;
+    }
+
+    public void setDefaultVersion(String defaultVersion) {
+        this.defaultVersion = defaultVersion;
     }
 }

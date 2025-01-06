@@ -654,7 +654,7 @@ public class PackageTask extends AbstractPackageTask {
 					.templates(defaultIfNull(templates, extension.getTemplates()))
 					.useResourcesAsWorkingDir(defaultIfNull(useResourcesAsWorkingDir, extension.isUseResourcesAsWorkingDir()))
 					.url(defaultIfNull(url, extension.getUrl()))
-					.version(defaultIfNull(version, extension.getVersion(), getProject().getVersion().toString()))
+					.version(defaultIfNull(version, extension.getVersion(), Context.getGradleContext().getDefaultVersion()))
 					.vmArgs(defaultIfNull(vmArgs, extension.getVmArgs()))
 					.winConfig(defaultIfNull(winConfig, extension.getWinConfig()));
 
