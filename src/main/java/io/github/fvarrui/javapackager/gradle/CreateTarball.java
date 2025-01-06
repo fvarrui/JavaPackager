@@ -1,14 +1,16 @@
 package io.github.fvarrui.javapackager.gradle;
 
-import java.io.File;
-import java.util.UUID;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.stream.Stream;
 
-import org.gradle.api.tasks.bundling.Compression;
-import org.gradle.api.tasks.bundling.Tar;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
-import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.MacPackager;
 import io.github.fvarrui.javapackager.packagers.Packager;
 
@@ -42,69 +44,97 @@ public class CreateTarball extends ArtifactGenerator<Packager> {
 		String format = ".tar.gz";
 		File tarFile = new File(outputDirectory, finalName + format);
 
-		Tar tarTask = createTarTask();
-		tarTask.setProperty("archiveFileName", tarFile.getName());
-		tarTask.setProperty("destinationDirectory", outputDirectory);
-		tarTask.setCompression(Compression.GZIP);
-		
-		// if zipball is for windows platform
-		if (Platform.windows.equals(platform)) {
-			
-			tarTask.from(appFolder.getParentFile(), copySpec -> {
-				copySpec.include(appFolder.getName() + "/**");
-			});
-			
+		try (OutputStream fos = Files.newOutputStream(tarFile.toPath());
+			 BufferedOutputStream bos = new BufferedOutputStream(fos);
+			 GzipCompressorOutputStream gcos = new GzipCompressorOutputStream(bos);
+			 TarArchiveOutputStream tarOut = new TarArchiveOutputStream(gcos)) {
+
+			if (Platform.windows.equals(platform)) {
+				Path basePath = appFolder.getParentFile().toPath();
+				try (Stream<Path> fileStream = Files.walk(appFolder.toPath())) {
+					fileStream.forEach(path -> {
+                        if (path.equals(tarFile.toPath())) {
+                            return;
+                        }
+						File file = path.toFile();
+						if (file.isFile()) {
+							try {
+								TarArchiveEntry entry = new TarArchiveEntry(path.toFile(), basePath.relativize(path).toString());
+								tarOut.putArchiveEntry(entry);
+								Files.copy(path, tarOut);
+								tarOut.closeArchiveEntry();
+							} catch (IOException e) {
+								throw new UncheckedIOException(e);
+							}
+						}
+					});
+				}
+			} else if (Platform.linux.equals(platform)) {
+				Path appPath = appFolder.getParentFile().toPath();
+				try (Stream<Path> fileStream = Files.walk(appPath)) {
+					fileStream.forEach(path -> {
+						if (path.equals(tarFile.toPath())) {
+							return;
+						}
+						try {
+							String relativePath = appPath.relativize(path).toString();
+							if (path.toFile().isFile()) {
+								if (!(relativePath.equals(executable.getName())
+											  || relativePath.startsWith(jreDirectoryName + "/bin/")
+											  || relativePath.startsWith("scripts/"))) {
+									TarArchiveEntry entry = new TarArchiveEntry(path.toFile(), relativePath);
+									if (relativePath.equals(executable.getName())
+											|| relativePath.startsWith(jreDirectoryName + "/bin/")
+											|| relativePath.startsWith("scripts/")) {
+										entry.setMode(0755);
+									}
+									tarOut.putArchiveEntry(entry);
+									Files.copy(path, tarOut);
+									tarOut.closeArchiveEntry();
+								}
+							}
+						} catch (IOException e) {
+							throw new UncheckedIOException(e);
+						}
+					});
+				}
+			} else if (Platform.mac.equals(platform)) {
+				MacPackager macPackager = (MacPackager) packager;
+				File appFile = macPackager.getAppFile();
+
+				Path appPath = appFolder.toPath();
+				try (Stream<Path> fileStream = Files.walk(appFolder.toPath())) {
+					fileStream.forEach(path -> {
+						if (path.equals(tarFile.toPath())) {
+							return;
+						}
+						try {
+							String relativePath = appPath.relativize(path).toString();
+							if (path.toFile().isFile()) {
+								if (!(relativePath.startsWith(appFile.getName() + "/Contents/MacOS/" + executable.getName())
+											  || relativePath.startsWith(appFile.getName() + "/Contents/MacOS/universalJavaApplicationStub")
+											  || relativePath.startsWith(appFile.getName() + "/Contents/PlugIns/" + jreDirectoryName + "/Contents/Home/bin/")
+											  || relativePath.startsWith(appFile.getName() + "/Contents/Resources/scripts/"))) {
+									TarArchiveEntry entry = new TarArchiveEntry(path.toFile(), relativePath);
+									if (relativePath.equals(executable.getName())
+											|| relativePath.startsWith(jreDirectoryName + "/bin/")
+											|| relativePath.startsWith("scripts/")) {
+										entry.setMode(0755);
+									}
+									tarOut.putArchiveEntry(entry);
+									Files.copy(path, tarOut);
+									tarOut.closeArchiveEntry();
+								}
+							}
+						} catch (IOException e) {
+							throw new UncheckedIOException(e);
+						}
+					});
+				}
+			}
 		}
-		
-		// if zipball is for linux platform
-		else if (Platform.linux.equals(platform)) {
-			
-			tarTask.from(appFolder.getParentFile(), copySpec -> {
-				copySpec.include(appFolder.getName() + "/**");
-				copySpec.exclude(appFolder.getName() + "/" + executable.getName());
-				copySpec.exclude(appFolder.getName() + "/" + jreDirectoryName + "/bin/*");
-				copySpec.exclude(appFolder.getName() + "/scripts/*");
-			});
-			tarTask.from(appFolder.getParentFile(), copySpec -> {
-				copySpec.include(appFolder.getName() + "/" + executable.getName());
-				copySpec.include(appFolder.getName() + "/" + jreDirectoryName + "/bin/*");
-				copySpec.include(appFolder.getName() + "/scripts/*");
-				copySpec.setFileMode(0755);
-			});
-			
-		}
-		
-		// if zipball is for macos platform
-		else if (Platform.mac.equals(platform)) {
-			
-			MacPackager macPackager = (MacPackager) packager;
-			File appFile = macPackager.getAppFile();
-			
-			tarTask.from(appFolder, copySpec -> {
-				copySpec.include(appFile.getName() + "/**");
-				copySpec.exclude(appFile.getName() + "/Contents/MacOS/" + executable.getName());
-				copySpec.exclude(appFile.getName() + "/Contents/MacOS/universalJavaApplicationStub");
-				copySpec.exclude(appFile.getName() + "/Contents/PlugIns/" + jreDirectoryName + "/Contents/Home/bin/*");
-				copySpec.exclude(appFile.getName() + "/Contents/Resources/scripts/*");
-				
-			});
-			tarTask.from(appFolder, copySpec -> {
-				copySpec.include(appFile.getName() + "/Contents/MacOS/" + executable.getName());
-				copySpec.include(appFile.getName() + "/Contents/MacOS/universalJavaApplicationStub");
-				copySpec.include(appFile.getName() + "/Contents/PlugIns/" + jreDirectoryName + "/Contents/Home/bin/*");
-				copySpec.include(appFile.getName() + "/Contents/Resources/scripts/*");
-				copySpec.setFileMode(0755);
-			});
-			
-		}
-		
-		tarTask.getActions().forEach(action -> action.execute(tarTask));
 
 		return tarFile;
-	}
-	
-	private Tar createTarTask() {
-		return Context.getGradleContext().getProject().getTasks().create("createTarball_" + UUID.randomUUID(), Tar.class);
 	}
 
 }
