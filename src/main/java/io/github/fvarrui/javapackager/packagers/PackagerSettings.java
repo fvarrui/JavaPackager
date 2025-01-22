@@ -48,6 +48,7 @@ public class PackagerSettings {
 	protected Platform platform;
 	protected String envPath;
 	protected List<String> vmArgs;
+	protected List<String> appArgs;
 	protected File runnableJar;
 	protected Boolean copyDependencies;
 	protected String jreDirectoryName;
@@ -277,6 +278,14 @@ public class PackagerSettings {
 	 */
 	public List<String> getVmArgs() {
 		return vmArgs;
+	}
+
+	/**
+	 * Get application args
+	 * @return Application args
+	 */
+	public List<String> getAppArgs() {
+		return appArgs;
 	}
 
 	/**
@@ -682,6 +691,11 @@ public class PackagerSettings {
 	 */
 	public PackagerSettings vmArgs(List<String> vmArgs) {
 		this.vmArgs = new ArrayList<>(vmArgs);
+		return this;
+	}
+
+	public PackagerSettings appArgs(List<String> appArgs) {
+		this.appArgs = new ArrayList<>(appArgs);
 		return this;
 	}
 

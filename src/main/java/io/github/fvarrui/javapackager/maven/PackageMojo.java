@@ -199,6 +199,12 @@ public class PackageMojo extends AbstractMojo {
 	 */	
 	@Parameter(property = "vmArgs", required = false)
 	private List<String> vmArgs;
+
+	/**
+	 * Additional arguments to provide to the application
+	 */
+	@Parameter(property = "appArgs", readonly = false)
+	private List<String> appArgs;
 	
 	/**
 	 * Provide your own runnable .jar (for example, a shaded .jar) instead of letting this plugin create one via
@@ -387,6 +393,7 @@ public class PackageMojo extends AbstractMojo {
 						.url(url)
 						.version(version)
 						.vmArgs(vmArgs)
+						.appArgs(appArgs)
 						.winConfig(winConfig);
 			
 			// generate app, installers and bundles

@@ -124,6 +124,14 @@
 			<false/>
 #end
 		</dict>
+#if ($info.appArgs)
+        <key>Arguments</key>
+        <array>
+#foreach ($appArg in $info.appArgs)
+            <string>$appArg</string>
+#end
+        </array>
+#end
 		<key>LSEnvironment</key>
 		<dict>
 #if ($info.bundleJre)
