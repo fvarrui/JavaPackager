@@ -16,6 +16,7 @@ import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.model.Scripts;
 import io.github.fvarrui.javapackager.model.WindowsConfig;
 import io.github.fvarrui.javapackager.packagers.PackagerSettings;
+import org.gradle.api.tasks.TaskProvider;
 
 /**
  * JavaPackager plugin extension for Gradle  
@@ -32,6 +33,7 @@ public class PackagePluginExtension extends PackagerSettings {
 		this.additionalModules = new ArrayList<>();
 		this.additionalModulePaths = new ArrayList<>();
 		this.additionalResources = new ArrayList<>();
+		this.additionalResourceCollection = null;
 		this.administratorRequired = false;
 		this.assetsDir = new File(project.getProjectDir(), "assets");
 		this.bundleJre = true;
@@ -97,4 +99,11 @@ public class PackagePluginExtension extends PackagerSettings {
 		return duplicatesStrategy;
 	}
 
+	@Override
+	public PackagerSettings additionalResourceCollection(Object additionalResources) {
+		if (additionalResources instanceof TaskProvider<?>) {
+			additionalResources = ((TaskProvider<?>) additionalResources).get();
+		}
+		return super.additionalResourceCollection(additionalResources);
+	}
 }

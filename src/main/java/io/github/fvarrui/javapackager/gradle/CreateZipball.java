@@ -1,13 +1,15 @@
 package io.github.fvarrui.javapackager.gradle;
 
-import java.io.File;
-import java.util.UUID;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.stream.Stream;
 
-import org.gradle.api.tasks.bundling.Zip;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.packagers.ArtifactGenerator;
-import io.github.fvarrui.javapackager.packagers.Context;
 import io.github.fvarrui.javapackager.packagers.MacPackager;
 import io.github.fvarrui.javapackager.packagers.Packager;
 
@@ -39,67 +41,96 @@ public class CreateZipball extends ArtifactGenerator<Packager> {
 		String zipFileName = packager.getZipballName() != null ? packager.getZipballName() : name + "-" + version + "-" + platform + ".zip";
 		File zipFile = new File(outputDirectory, zipFileName);
 
-		Zip zipTask = createZipTask();
-		zipTask.setProperty("archiveFileName", zipFile.getName());
-		zipTask.setProperty("destinationDirectory", outputDirectory);
-		
-		// if zipball is for windows platform
-		if (Platform.windows.equals(platform)) {
-			
-			zipTask.from(appFolder.getParentFile(), copySpec -> {
-				copySpec.include(appFolder.getName() + "/**");
-			});
-			
+		try (OutputStream fos = Files.newOutputStream(zipFile.toPath());
+             BufferedOutputStream bos = new BufferedOutputStream(fos);
+             ZipArchiveOutputStream zipOut = new ZipArchiveOutputStream(bos)) {
+
+			if (Platform.windows.equals(platform)) {
+				Path basePath = appFolder.getParentFile().toPath();
+				try (Stream<Path> fileStream = Files.walk(appFolder.toPath())) {
+					fileStream.forEach(path -> {
+						if (path.equals(zipFile.toPath())) {
+							return;
+						}
+						File file = path.toFile();
+						if (file.isFile()) {
+							try {
+								ZipArchiveEntry entry = new ZipArchiveEntry(path.toFile(), basePath.relativize(path).toString());
+								zipOut.putArchiveEntry(entry);
+								Files.copy(path, zipOut);
+								zipOut.closeArchiveEntry();
+							} catch (IOException e) {
+								throw new UncheckedIOException(e);
+							}
+						}
+					});
+				}
+			} else if (Platform.linux.equals(platform)) {
+				Path appPath = appFolder.getParentFile().toPath();
+				try (Stream<Path> fileStream = Files.walk(appPath)) {
+					fileStream.forEach(path -> {
+						if (path.equals(zipFile.toPath())) {
+							return;
+						}
+						try {
+							String relativePath = appPath.relativize(path).toString();
+							if (path.toFile().isFile()) {
+								if (!(relativePath.equals(executable.getName())
+											  || relativePath.startsWith(jreDirectoryName + "/bin/")
+											  || relativePath.startsWith("scripts/"))) {
+									ZipArchiveEntry entry = new ZipArchiveEntry(path.toFile(), relativePath);
+									if (relativePath.equals(executable.getName())
+											|| relativePath.startsWith(jreDirectoryName + "/bin/")
+											|| relativePath.startsWith("scripts/")) {
+										entry.setUnixMode(0755);
+									}
+									zipOut.putArchiveEntry(entry);
+									Files.copy(path, zipOut);
+									zipOut.closeArchiveEntry();
+								}
+							}
+						} catch (IOException e) {
+							throw new UncheckedIOException(e);
+						}
+					});
+				}
+			} else if (Platform.mac.equals(platform)) {
+				MacPackager macPackager = (MacPackager) packager;
+				File appFile = macPackager.getAppFile();
+
+				Path appPath = appFolder.toPath();
+				try (Stream<Path> fileStream = Files.walk(appFolder.toPath())) {
+					fileStream.forEach(path -> {
+						if (path.equals(zipFile.toPath())) {
+							return;
+						}
+						try {
+							String relativePath = appPath.relativize(path).toString();
+							if (path.toFile().isFile()) {
+								if (!(relativePath.startsWith(appFile.getName() + "/Contents/MacOS/" + executable.getName())
+											   || relativePath.startsWith(appFile.getName() + "/Contents/MacOS/universalJavaApplicationStub")
+											   || relativePath.startsWith(appFile.getName() + "/Contents/PlugIns/" + jreDirectoryName + "/Contents/Home/bin/")
+											   || relativePath.startsWith(appFile.getName() + "/Contents/Resources/scripts/"))) {
+									ZipArchiveEntry entry = new ZipArchiveEntry(path.toFile(), relativePath);
+									if (relativePath.equals(executable.getName())
+											|| relativePath.startsWith(jreDirectoryName + "/bin/")
+											|| relativePath.startsWith("scripts/")) {
+										entry.setUnixMode(0755);
+									}
+									zipOut.putArchiveEntry(entry);
+									Files.copy(path, zipOut);
+									zipOut.closeArchiveEntry();
+								}
+							}
+						} catch (IOException e) {
+							throw new UncheckedIOException(e);
+						}
+					});
+				}
+			}
 		}
-		
-		// if zipball is for linux platform
-		else if (Platform.linux.equals(platform)) {
-			
-			zipTask.from(appFolder.getParentFile(), copySpec -> {
-				copySpec.include(appFolder.getName() + "/**");
-				copySpec.exclude(appFolder.getName() + "/" + executable.getName());
-				copySpec.exclude(appFolder.getName() + "/" + jreDirectoryName + "/bin/*");
-				copySpec.exclude(appFolder.getName() + "/scripts/*");
-			});
-			zipTask.from(appFolder.getParentFile(), copySpec -> {
-				copySpec.include(appFolder.getName() + "/" + executable.getName());
-				copySpec.include(appFolder.getName() + "/" + jreDirectoryName + "/bin/*");
-				copySpec.include(appFolder.getName() + "/scripts/*");
-				copySpec.setFileMode(0755);
-			});
-			
-		}
-		
-		// if zipball is for macos platform
-		else if (Platform.mac.equals(platform)) {
-			
-			MacPackager macPackager = (MacPackager) packager;
-			File appFile = macPackager.getAppFile();
-			
-			zipTask.from(appFolder, copySpec -> {
-				copySpec.include(appFile.getName() + "/**");
-				copySpec.exclude(appFile.getName() + "/Contents/MacOS/" + executable.getName());
-				copySpec.exclude(appFile.getName() + "/Contents/MacOS/universalJavaApplicationStub");
-				copySpec.exclude(appFile.getName() + "/Contents/PlugIns/" + jreDirectoryName + "/Contents/Home/bin/*");
-				copySpec.exclude(appFile.getName() + "/Contents/Resources/scripts/*");				
-			});
-			zipTask.from(appFolder, copySpec -> {
-				copySpec.include(appFile.getName() + "/Contents/MacOS/" + executable.getName());
-				copySpec.include(appFile.getName() + "/Contents/MacOS/universalJavaApplicationStub");
-				copySpec.include(appFile.getName() + "/Contents/PlugIns/" + jreDirectoryName + "/Contents/Home/bin/*");
-				copySpec.include(appFile.getName() + "/Contents/Resources/scripts/*");				
-				copySpec.setFileMode(0755);
-			});
-			
-		}
-		
-		zipTask.getActions().forEach(action -> action.execute(zipTask));
 
 		return zipFile;
-	}
-	
-	private Zip createZipTask() {
-		return Context.getGradleContext().getProject().getTasks().create("createZipball_" + UUID.randomUUID(), Zip.class);
 	}
 
 }
