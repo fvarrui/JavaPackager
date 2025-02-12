@@ -1,6 +1,9 @@
 package io.github.fvarrui.javapackager.utils;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -26,41 +29,54 @@ public class XMLUtils {
 	 * @throws Exception Something went wrong
 	 */
 	public static final void prettify(File file) throws Exception {
+		modifyFile(file,"quotes","&quot;" );
 
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		Document document = builder.parse(file);
-		
+
 		trimWhitespace(document);
-		
+
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
 		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 
-        DocumentType doctype = document.getDoctype();
-        if(doctype != null) {
-            transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, doctype.getPublicId());
-            transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doctype.getSystemId());
-        }		
-		
+		DocumentType doctype = document.getDoctype();
+		if(doctype != null) {
+			transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, doctype.getPublicId());
+			transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doctype.getSystemId());
+		}
+
 		transformer.transform(new DOMSource(document), new StreamResult(file));
 
 	}
-	
+
 	/**
 	 * Removes whitespaces from nodes
 	 * @param node Root node
 	 */
 	public static void trimWhitespace(Node node) {
-	    NodeList children = node.getChildNodes();
-	    for(int i = 0; i < children.getLength(); ++i) {
-	        Node child = children.item(i);
-	        if(child.getNodeType() == Node.TEXT_NODE) {
-	            child.setTextContent(child.getTextContent().trim());
-	        }
-	        trimWhitespace(child);
-	    }
+		NodeList children = node.getChildNodes();
+		for(int i = 0; i < children.getLength(); ++i) {
+			Node child = children.item(i);
+			if(child.getNodeType() == Node.TEXT_NODE) {
+				child.setTextContent(child.getTextContent().trim());
+			}
+			trimWhitespace(child);
+		}
+	}
+
+
+	public static void modifyFile(File file, String targetWord, String replacement) throws IOException {
+		// Leer el archivo como String
+		String content = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
+
+		// Reemplazar la palabra
+		content = content.replaceAll(targetWord, replacement);
+
+		// Sobrescribir el archivo con el nuevo contenido
+		Files.write(file.toPath(), content.getBytes(StandardCharsets.UTF_8));
 	}
 
 }
