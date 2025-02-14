@@ -42,12 +42,25 @@
 #if ($info.winConfig.registry)
 			<Component Id="RegistryEntries" Guid="${GUID.randomUUID()}">
 #foreach ($entry in $info.winConfig.registry.entries)
+#if ($entry.registryValues)
 				<RegistryKey Root="${entry.root}" Key="${entry.subkey}" ForceDeleteOnUninstall="yes">
 #foreach ($registryValue in $entry.registryValues)
 					<RegistryValue Type="${registryValue.valueTypeAsWIXToolsetString}"
 					#if ($registryValue.valueName) Name="${registryValue.valueName}" #end
 					#if ($registryValue.valueData) Value="${registryValue.valueData}" #else Value=""  #end
 					/>
+#end
+#else
+				<RegistryKey Root="${entry.root}" Key="${entry.subkey}" ForceDeleteOnUninstall="yes">
+					<RegistryValue
+						Type="${entry.valueTypeAsWIXToolsetString}"
+#if ($entry.valueName)
+						Name="$!{entry.valueName}"
+#end
+#if ($entry.valueData)
+						Value="$!{entry.valueData}"
+#end
+/>
 #end
 				</RegistryKey>
 #end
