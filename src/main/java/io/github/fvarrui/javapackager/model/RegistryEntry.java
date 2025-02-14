@@ -88,13 +88,13 @@ public class RegistryEntry implements Serializable {
 	 */
 	public String getValueTypeAsInnoSetupString() {
 		switch(valueType) {
-			case REG_BINARY: return "binary";
-			case REG_DWORD: return "dword";
-			case REG_EXPAND_SZ: return "expandsz";
-			case REG_MULTI_SZ: return "multisz";
-			case REG_QWORD: return "qword";
-			case REG_SZ: return "string";
-			default: return "none";
+		case REG_BINARY: return "binary";
+		case REG_DWORD: return "dword";
+		case REG_EXPAND_SZ: return "expandsz";
+		case REG_MULTI_SZ: return "multisz";
+		case REG_QWORD: return "qword";
+		case REG_SZ: return "string";
+		default: return "none";
 		}
 	}
 
@@ -104,13 +104,13 @@ public class RegistryEntry implements Serializable {
 	 */
 	public String getValueTypeAsWIXToolsetString() {
 		switch(valueType) {
-			case REG_BINARY: return "binary";
-			case REG_DWORD: return "integer";
-			case REG_EXPAND_SZ: return "expandable";
-			case REG_MULTI_SZ: return "multiString";
-			case REG_QWORD: return "integer";
-			case REG_SZ: return "string";
-			default: return "none";
+		case REG_BINARY: return "binary";
+		case REG_DWORD: return "integer";
+		case REG_EXPAND_SZ: return "expandable";
+		case REG_MULTI_SZ: return "multiString";
+		case REG_QWORD: return "integer";
+		case REG_SZ: return "string";
+		default: return "none";
 		}
 	}
 
