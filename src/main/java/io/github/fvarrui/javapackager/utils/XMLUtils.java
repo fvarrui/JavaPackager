@@ -29,7 +29,7 @@ public class XMLUtils {
 	 * @throws Exception Something went wrong
 	 */
 	public static final void prettify(File file) throws Exception {
-		modifyFile(file,"quotes","&quot;" );
+		replaceWordInXMLFile(file,"quotes","&quot;" );
 
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
@@ -67,8 +67,15 @@ public class XMLUtils {
 		}
 	}
 
-
-	public static void modifyFile(File file, String targetWord, String replacement) throws IOException {
+	/**
+	 * Replaces all occurrences of a specified word in an XML file with another word.
+	 *
+	 * @param file        The XML file in which the replacement will be performed.
+	 * @param targetWord  The word to be replaced in the file.
+	 * @param replacement The word that will replace the target word.
+	 * @throws IOException If an error occurs while reading or writing the file.
+	 */
+	public static void replaceWordInXMLFile(File file, String targetWord, String replacement) throws IOException {
 		// Leer el archivo como String
 		String content = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
 
