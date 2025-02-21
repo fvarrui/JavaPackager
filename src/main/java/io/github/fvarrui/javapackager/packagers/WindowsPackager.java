@@ -19,6 +19,20 @@ public class WindowsPackager extends Packager {
 	
 	private File manifestFile;
 	private File msmFile;
+
+	public void setManifestFile(File manifestFile) {
+		this.manifestFile = manifestFile;
+	}
+
+	public File getMsiFile() {
+		return msiFile;
+	}
+
+	public void setMsiFile(File msiFile) {
+		this.msiFile = msiFile;
+	}
+
+	private File msiFile;
 	
 	public File getManifestFile() {
 		return manifestFile;
