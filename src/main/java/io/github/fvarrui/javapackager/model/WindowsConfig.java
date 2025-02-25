@@ -51,6 +51,7 @@ public class WindowsConfig implements Serializable {
 	private boolean removeOldLibs = false;
 	private WindowsExeCreationTool exeCreationTool = WindowsExeCreationTool.launch4j;
 	private String vmLocation;
+	private WixUi wixUi;
 
 	public File getIcoFile() {
 		return icoFile;
@@ -314,6 +315,14 @@ public class WindowsConfig implements Serializable {
 	
 	public void setVmLocation(String vmLocation) {
 		this.vmLocation = vmLocation;
+	}
+
+	public WixUi getWixUi() {
+		return wixUi;
+	}
+
+	public void setWixUi(WixUi wixUi) {
+		this.wixUi = wixUi;
 	}
 
 	@Override

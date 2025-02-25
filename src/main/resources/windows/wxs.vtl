@@ -4,6 +4,9 @@
     <Product Id="*" Codepage="1252" Language="1033" Manufacturer="${info.organizationName}" Name="${info.name}" UpgradeCode="${info.winConfig.msiUpgradeCode}" Version="${info.winConfig.productVersion}">
         <Package Compressed="yes" InstallScope="perMachine" InstallerVersion="200" Languages="1033" Platform="x64" SummaryCodepage="1252" Description="${info.description}"/>
         <Media Id="1" Cabinet="Application.cab" EmbedCab="yes"/>
+        #if($info.winConfig.wixUi)
+        <UIRef Id="${info.winConfig.wixUi}"/>
+        #end
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFiles64Folder">
 	            <Merge Id="${moduleName}" Language="1033" SourceFile="${info.msmFile}" DiskId="1" />
@@ -15,6 +18,8 @@
         <Icon Id="ICONFILE" SourceFile="${info.iconFile.getAbsolutePath()}"/>
         <Property Id="ARPPRODUCTICON" Value="ICONFILE"/>
 #if($info.licenseFile)
+        <WixVariable Id="WixUILicenseRtf" Value="${info.licenseFile.getAbsolutePath()}"/>
+#else
         <WixVariable Id="WixUILicenseRtf" Value="LICENSE"/>
 #end
         <MajorUpgrade AllowDowngrades="no" AllowSameVersionUpgrades="no" DowngradeErrorMessage="A later version of ${info.winConfig.productName} is already installed. Setup will now exit." IgnoreRemoveFailure="no"/>
