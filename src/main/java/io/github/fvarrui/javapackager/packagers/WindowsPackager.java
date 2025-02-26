@@ -20,24 +20,10 @@ public class WindowsPackager extends Packager {
 	private File manifestFile;
 	private File msmFile;
 
-	public void setManifestFile(File manifestFile) {
-		this.manifestFile = manifestFile;
-	}
-
-	public File getMsiFile() {
-		return msiFile;
-	}
-
-	public void setMsiFile(File msiFile) {
-		this.msiFile = msiFile;
-	}
-
-	private File msiFile;
-	
 	public File getManifestFile() {
 		return manifestFile;
 	}
-	
+
 	public File getMsmFile() {
 		return msmFile;
 	}
@@ -45,7 +31,7 @@ public class WindowsPackager extends Packager {
 	public void setMsmFile(File msmFile) {
 		this.msmFile = msmFile;
 	}
-	
+
 	public WindowsPackager() {		
 		super();
 		platform(Platform.windows);

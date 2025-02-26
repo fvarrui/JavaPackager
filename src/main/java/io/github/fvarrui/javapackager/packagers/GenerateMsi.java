@@ -50,9 +50,6 @@ public class GenerateMsi extends ArtifactGenerator<WindowsPackager> {
 		File outputDirectory = packager.getOutputDirectory();
 		String version = packager.getVersion();
 
-		File wixImages = new File(outputDirectory.getPath()+"/"+name+"/wix-images");
-		Logger.info("AQUI ESTA LA IMAGEN WIX en MSI"+wixImages);
-		
 		// generates WXS file from velocity template
 		File wxsFile = new File(assetsFolder, name + ".wxs");
 		VelocityUtils.render("windows/wxs.vtl", wxsFile, packager);
@@ -70,8 +67,11 @@ public class GenerateMsi extends ArtifactGenerator<WindowsPackager> {
 		// lighting wxs file
 		Logger.info("Linking file " + wixobjFile);
 		File msiFile = new File(outputDirectory, name + "_" + version + ".msi");
+
+		//Search custom images
+		File wixImages = new File(outputDirectory.getPath()+"/"+name+"/wix-images");
 		if(wixImages.exists()){
-			Logger.info("WIX IMAGE LOCALIZADO en MSI ");
+			Logger.info("WIX IMAGES EXISTS FOR MSI");
 			List<String> lightArguments = getLightArguments(wixImages);
 			CommandUtils.execute("light", "-sw1076", "-spdb",lightArguments.get(0),lightArguments.get(1),lightArguments.get(2),lightArguments.get(3),lightArguments.get(4),lightArguments.get(5),lightArguments.get(6),lightArguments.get(7), "-out", msiFile, wixobjFile);
 		}
@@ -79,18 +79,13 @@ public class GenerateMsi extends ArtifactGenerator<WindowsPackager> {
 			CommandUtils.execute("light", "-sw1076", "-spdb", "-out", msiFile, wixobjFile);
 		}
 
-
 		// setup file
 		if (!msiFile.exists()) {
 			throw new Exception("MSI installer file generation failed!");
 		}
 
-		packager.setMsiFile(msiFile);
-
-
-		
 		// sign installer
-		//WindowsSigner.sign(msiFile, packager.getDisplayName(), packager.getUrl(), packager.getWinConfig().getSigning());
+		WindowsSigner.sign(msiFile, packager.getDisplayName(), packager.getUrl(), packager.getWinConfig().getSigning());
 
 		return msiFile;
 	}

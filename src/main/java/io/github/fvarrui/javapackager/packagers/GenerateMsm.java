@@ -57,11 +57,6 @@ public class GenerateMsm extends ArtifactGenerator<WindowsPackager> {
 		// prettify wxs
 		XMLUtils.prettify(wxsFile);
 
-		File wixImages = new File(outputDirectory.getPath()+"/"+name+"/wix-images");
-		Logger.info("AQUI ESTA LA IMAGEN WIX"+wixImages);
-
-
-
 		// candle wxs file
 		Logger.info("Compiling file " + wxsFile);
 		File wixobjFile = new File(assetsFolder, name + ".msm.wixobj");
@@ -71,14 +66,17 @@ public class GenerateMsm extends ArtifactGenerator<WindowsPackager> {
 		// lighting wxs file
 		Logger.info("Linking file " + wixobjFile);
 		File msmFile = new File(outputDirectory, name + "_" + version + ".msm");
-		if(wixImages.exists()){
-			Logger.info("WIX IMAGE LOCALIZADO ");
+
+		//Search custom images
+		//File wixImages = new File(outputDirectory.getPath()+"/"+name+"/wix-images");
+		/*if(wixImages.exists()){
+			Logger.info("WIX IMAGES EXISTS FOR MSM");
 			List<String> lightArguments = getLightArguments(wixImages);
 			CommandUtils.execute("light", "-sw1076", "-spdb",lightArguments.get(0),lightArguments.get(1),lightArguments.get(2),lightArguments.get(3),lightArguments.get(4),lightArguments.get(5),lightArguments.get(6),lightArguments.get(7), "-out", msmFile, wixobjFile);
 		}
-		else {
+		else {*/
 			CommandUtils.execute("light", "-sw1076", "-spdb", "-out", msmFile, wixobjFile);
-		}
+		//}
 
 		// setup file
 		if (!msmFile.exists()) {
