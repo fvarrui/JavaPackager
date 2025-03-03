@@ -1,12 +1,16 @@
 package io.github.fvarrui.javapackager.packagers;
 
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.github.fvarrui.javapackager.model.Platform;
 import io.github.fvarrui.javapackager.utils.CommandUtils;
 import io.github.fvarrui.javapackager.utils.Logger;
 import io.github.fvarrui.javapackager.utils.VelocityUtils;
 import io.github.fvarrui.javapackager.utils.XMLUtils;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Creates an MSI file including all app folder's content only for Windows so app
@@ -62,7 +66,17 @@ public class GenerateMsm extends ArtifactGenerator<WindowsPackager> {
 		// lighting wxs file
 		Logger.info("Linking file " + wixobjFile);
 		File msmFile = new File(outputDirectory, name + "_" + version + ".msm");
-		CommandUtils.execute("light", "-sw1076", "-spdb", "-out", msmFile, wixobjFile);
+
+		//Search custom images
+		//File wixImages = new File(outputDirectory.getPath()+"/"+name+"/wix-images");
+		/*if(wixImages.exists()){
+			Logger.info("WIX IMAGES EXISTS FOR MSM");
+			List<String> lightArguments = getLightArguments(wixImages);
+			CommandUtils.execute("light", "-sw1076", "-spdb",lightArguments.get(0),lightArguments.get(1),lightArguments.get(2),lightArguments.get(3),lightArguments.get(4),lightArguments.get(5),lightArguments.get(6),lightArguments.get(7), "-out", msmFile, wixobjFile);
+		}
+		else {*/
+			CommandUtils.execute("light", "-sw1076", "-spdb", "-out", msmFile, wixobjFile);
+		//}
 
 		// setup file
 		if (!msmFile.exists()) {
@@ -72,6 +86,22 @@ public class GenerateMsm extends ArtifactGenerator<WindowsPackager> {
 		packager.setMsmFile(msmFile);
 		
 		return msmFile;
+	}
+
+	@NotNull
+	private static List<String> getLightArguments(File wixImages) {
+		List<String> lightArguments = new ArrayList<>();
+		lightArguments.add("-ext");
+		lightArguments.add("WixUIExtension");
+		lightArguments.add("-ext");
+		lightArguments.add("WixUtilExtension");
+		lightArguments.add("-dWixUIBannerBmp="+ wixImages.getPath()+"\\WixUIBannerBmp.bmp");
+		lightArguments.add("-dWixUIDialogBmp="+ wixImages.getPath()+"\\WixUIDialogBmp.bmp");
+		lightArguments.add("-dWixUIExclamationIco="+ wixImages.getPath()+"\\WixUIExclamationIco.ico");
+		lightArguments.add("-dWixUIInfoIco="+ wixImages.getPath()+"\\WixUIInfoIco.ico");
+		lightArguments.add("-dWixUINewIco="+ wixImages.getPath()+"\\WixUINewIco.ico");
+		lightArguments.add("-dWixUIUpIco="+ wixImages.getPath()+"\\WixUIUpIco.ico");
+		return lightArguments;
 	}
 
 }
