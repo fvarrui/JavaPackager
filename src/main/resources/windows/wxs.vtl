@@ -2,13 +2,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Product Id="*" Codepage="1252" Language="1033" Manufacturer="${info.organizationName}" Name="${info.name}" UpgradeCode="${info.winConfig.msiUpgradeCode}" Version="${info.winConfig.productVersion}">
-        <Package Compressed="yes" InstallScope="perMachine" InstallerVersion="200" Languages="1033" Platform="x64" SummaryCodepage="1252" Description="${info.description}"/>
+        <Package Compressed="yes" InstallScope="perMachine" InstallerVersion="200" Languages="1033" #if($info.arch.toMsiArchitecture())Platform="${info.arch}" #else Platform="x64" #end SummaryCodepage="1252" Description="${info.description}"/>
         <Media Id="1" Cabinet="Application.cab" EmbedCab="yes"/>
         #if($info.winConfig.wixUi)
         <UIRef Id="${info.winConfig.wixUi}"/>
         #end
-        <Directory Id="TARGETDIR" Name="SourceDir">
-            <Directory Id="ProgramFiles64Folder">
+       <Directory Id="TARGETDIR" Name="SourceDir">
+           #if ($info.arch.toMsiArchitecture() == "x64")
+               <Directory Id="ProgramFiles64Folder">
+           #else
+               <Directory Id="ProgramFilesFolder">
+           #end
 	            <Merge Id="${moduleName}" Language="1033" SourceFile="${info.msmFile}" DiskId="1" />
             </Directory>
         </Directory>
