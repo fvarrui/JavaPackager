@@ -8,10 +8,10 @@
         <UIRef Id="${info.winConfig.wixUi}"/>
         #end
        <Directory Id="TARGETDIR" Name="SourceDir">
-           #if ($info.arch.toMsiArchitecture() == "x64")
-               <Directory Id="ProgramFiles64Folder">
-           #else
+           #if ($info.arch.toMsiArchitecture() == "x86")
                <Directory Id="ProgramFilesFolder">
+           #else
+               <Directory Id="ProgramFiles64Folder">
            #end
 	            <Merge Id="${moduleName}" Language="1033" SourceFile="${info.msmFile}" DiskId="1" />
             </Directory>
