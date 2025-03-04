@@ -19,7 +19,7 @@
 		#end
 		</Directory>
 	#else
-		<Component Id="_${id}" Guid="${guid}" Win64="yes">
+		<Component Id="_${id}" Guid="${guid}" #if ($info.arch.toMsiArchitecture() != "x86") Win64="yes" #end >
 	    #if($file.equals(${info.executable}))
 	    	<File Id="EXEFILE" Name="${file.name}" KeyPath="yes" Source="${file}">
 				<Shortcut Id="ApplicationStartMenuShortcut" Name="${info.winConfig.shortcutName}" Description="${info.description}" Directory="ProgramMenuFolder" />
